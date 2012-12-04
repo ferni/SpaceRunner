@@ -152,7 +152,34 @@ var checkCollision = {
         this.TileWidth = me.game.currentLevel.tilewidth;
         this.TileHeight = me.game.currentLevel.tileheight;
     },
-
+    
+    
+    test_getCollisionTileStyle : function(){
+        var mX = 0;
+        var mY = 0;
+        var mRet = this.getCollisionTileStyle(mX, mY);
+        switch(mRet){
+            case 0:
+                assertTrue("none style", true);
+                break;
+            case 1:
+                assertTrue("plateform style", true);
+                break;
+            case 2:
+                assertTrue("solid style", true);
+                break;
+            case 3:
+                assertTrue("leftslope style", true);
+                break;
+            case 4:
+                assertTrue("rightslope style", true);
+                break;
+            default:
+                assertFalse(true);
+                break;
+        }
+    },
+    
         /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
     getCollisionTileStyle : function(pX, pY){
         
@@ -183,6 +210,12 @@ var checkCollision = {
         return 0;
     },
     
+    test_printRedStyle : function(){
+        this.printRedStyle(0, 0);
+        assertNotEquals(this.RedIndex, 0);
+        assertNotNull(this.RedScreen[this.RedIndex - 1]);
+    },
+    
     printRedStyle : function(mX, mY){
         this.RedScreen[this.RedIndex] = new RedColorObject(mX, mY, {});
         me.game.add(this.RedScreen[this.RedIndex], 101);
@@ -190,14 +223,32 @@ var checkCollision = {
         this.RedIndex ++;
     },
     
+    test_removeRedStyle : function(){
+        this.removeRedStyle();
+        assertEquals(this.RedIndex, 0);
+        assertNull(this.RedScreen[0]);
+    },
+    
+    
     removeRedStyle : function(){
         var i = 0;
         for(i = this.RedIndex; i > 0; i -- )
         {
             me.game.remove(this.RedScreen[i - 1]);
             delete this.RedScreen[i - 1];
+            this.RedScreen[i - 1] = null;
         }
         this.RedIndex = 0;
+    },
+    
+    
+    test_checkObjectCollision : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iEngineObject(mX, mY, {}, mID);
+        assertTrue(this.checkObjectCollision(mTemp));
     },
     
     /**/
@@ -262,7 +313,16 @@ var checkCollision = {
         return false;
     },
     
+    test_checkOutlineCollisionWithWeapon : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iWeaponObject(mX, mY, {}, mID);
+        assertFalse(this.checkOutlineCollisionWithWeapon(mTemp));
+    },
     
+   
     /* check and process collision of Weapon object with outline */
     checkOutlineCollisionWithWeapon : function(CurObj){
         var rectVector = new me.Vector2d(0, 0);
@@ -302,6 +362,18 @@ var checkCollision = {
         return mRet;
     },
     
+    test_checkOutlineCollisionWithEngine : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iEngineObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollisionWithWeapon(mTemp));
+    },
+    
+
     /* check and process collision of Engine object with outline */
     checkOutlineCollisionWithEngine : function(CurObj){
         var rectVector = new me.Vector2d(0, 0);
@@ -341,55 +413,20 @@ var checkCollision = {
         return mRet;
     },
     
+    test_checkOutlineCollisionWithPower : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iPowerObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollisionWithPower(mTemp));
+    },
+    
+
     /* check and process collision of Power with outline */
     checkOutlineCollisionWithPower : function(CurObj){
-        /*
-        var rectVector = new me.Vector2d(0, 0);
-        var PossibleRect = new me.Rect(rectVector, 0, 0);
-        var checkPoint = new me.Vector2d(0, 0);
-        var i = 0;
-        var mRet = true;
-        
-        for(i = 0; i < colPower.length; i ++)
-        {
-            rectVector.y = colPower[i].y * this.TileHeight;
-            
-            if(CurObj.pos.y <=  this.TileHeight * 1 || CurObj.pos.y >= this.TileHeight * 9 )
-            {
-               if(CurObj.pos.y == rectVector.y)
-                {
-                    rectVector.x = colPower[i].x * this.TileWidth;
-                    rectVector.y = colPower[i].y * this.TileHeight;
-                    PossibleRect.set(rectVector, colPower[i].w * this.TileWidth, colPower[i].h * this.TileHeight);
-                    break;
-                }
-            }
-            
-            if(CurObj.pos.y >  this.TileHeight * 2 && CurObj.pos.y < this.TileHeight * 8 )
-            {
-                rectVector.x = colPower[2].x * this.TileWidth;
-                rectVector.y = colPower[2].y * this.TileHeight;
-                PossibleRect.set(rectVector, colPower[2].w * this.TileWidth, colPower[2].h * this.TileHeight);
-                break;
-            }
-        }
-        
-        for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-        {
-            for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-            {
-                if(!PossibleRect.containsPoint(checkPoint))
-                {
-                    this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    mRet = false;
-                }
-            }
-        }
-        
-        delete PossibleRect;
-        delete rectVector;
-        delete checkPoint;
-        */
         var mRet = true;
         var mX = 0;
         var mY = 0;
@@ -407,6 +444,18 @@ var checkCollision = {
         return mRet;
     },
     
+    test_checkOutlineCollisionWithConsole : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iConsoleObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollisionWithConsole(mTemp));
+    },
+    
+    
     /* check and process collision of Console with outline */
     checkOutlineCollisionWithConsole : function(CurObj){
         
@@ -422,6 +471,18 @@ var checkCollision = {
         }
         return mRet;
     },
+    
+    test_checkOutlineCollisionWithComponent : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iComponentObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollisionWithComponent(mTemp));
+    },
+    
     
     /* check and process collision of Component with outline */
     checkOutlineCollisionWithComponent : function(CurObj){
@@ -442,6 +503,17 @@ var checkCollision = {
         return mRet;
     },
     
+    test_checkOutlineCollisionWithDoor : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iDoorObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollisionWithDoor(mTemp));
+    },
+
     /* check and process collision of Door with outline */
     checkOutlineCollisionWithDoor : function(CurObj){
         var mRet = true;
@@ -461,6 +533,17 @@ var checkCollision = {
         return mRet;
     },
     
+    test_checkOutlineCollisionWithWall : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iWallObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollisionWithWall(mTemp));
+    },
+
     /* check and process collision of Wall with outline */
     checkOutlineCollisionWithWall : function(CurObj){
         var mRet = true;
@@ -479,8 +562,19 @@ var checkCollision = {
         }
         return mRet;
     },
-    
-    
+
+    test_checkOutlineCollision : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iWallObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.checkOutlineCollision(mTemp));
+    },
+
+
     /* check and process collision of CurObj with outline */
     checkOutlineCollision : function(CurObj){
         var mRet = false;
@@ -514,8 +608,19 @@ var checkCollision = {
         /* process red style rect */
         return mRet;
     },
-    
-    
+
+    test_processCollision : function(){
+        var mX = 0;
+        var mY = 0;
+        var mID = 1;
+        
+        var mTemp = new iWallObject(mX, mY, {}, mID);
+        assertNotEquals(this.TileWidth, 0);
+        assertNotEquals(this.TileHeight, 0);
+        assertFalse(this.processCollision(mTemp));
+    },
+
+
     /* check and process collision of obj*/
     processCollision : function(CurObj){
         var mRet = true;
@@ -593,6 +698,18 @@ var PlayScreen = me.ScreenObject.extend({
         }
     },
     
+    test_mouseDbClick : function(){
+        assertNotNull(SelectObject);
+        
+        this.mouseDbClick(null);
+        
+        assertNull(SelectObject);
+        assertFalse(isDragable);
+        assertEquals(select_item, -1);
+        assertFalse(wallDrawing);
+        assertNull(WallMngObj);
+    },
+    
     mouseDbClick : function(e) {
         if(SelectObject)
         {
@@ -623,6 +740,17 @@ var PlayScreen = me.ScreenObject.extend({
     },
     
     mouseDown: function(e) {
+    },
+    
+    test_mouseMove : function(){
+        assertEquals(select_item);
+        assertFalse(isDragable);
+        
+        this.mouseMove(null);
+        
+        assertNotNull(SelectObject);
+        assertNotEquals(this.iItemID, 0);
+        assertTrue(isDragable);
     },
     
     /*
@@ -725,6 +853,21 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.repaint();
     },
 
+    test_mouseUp : function(){
+        if(select_item == 9)
+            assertFalse(wallDrawing);
+        else
+            assertNotNull(SelectObject);
+            
+        this.mouseUp(null);
+        
+        if(select_item == 9)
+            assertTrue(wallDrawing);
+        else
+            assertNull(SelectObject);
+    },
+    
+    
     mouseUp : function(e){
         /* check collision */
         if(select_item == 9)

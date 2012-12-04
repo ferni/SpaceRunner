@@ -35,11 +35,16 @@ $(document).ready(function(){
     $("#file_save").click(function(){
         onButtonSaveClick();
     });
-    
-//    $("#file_load").click(function(){
-//        onButtonLoadClick();
-//    });
 });
+
+
+function test_removeClassItem(){
+    var mItem = 5;
+    if( mItem < 3 || mItem > 9 )
+        assertTrue("mItem is between 3 and 9", false);
+    else
+        assertTrue("mItem is between 3 and 9", true);
+};
 
 function removeClassItem(i){
     switch(i){
@@ -66,7 +71,8 @@ function removeClassItem(i){
             break;
     }
 };
-    
+
+
 function addClassItem(i){
     switch(i){
         case 3: /* item_weapon */
@@ -90,6 +96,23 @@ function addClassItem(i){
         case 9:
             $("#item_wall").addClass("selection_item");
             break;
+    }
+};
+
+
+function test_onMouseClickItem(){
+    var oriStr = ["Error1", "Error1", "Error1", "item_engine", "item_engine", "item_power", "item_console", "item_components", "item_door", "item_wall"];
+    var mItem = 3;
+    
+    var mRet = onMouseClickItem(oriStr[mItem]);
+    
+    if(mRet >= 3 && mRet <= 9)
+    {
+        assertEquals(mItem, select_item);
+        assertNull(SelectObject);
+        assertNull(WallMngObj);
+        assertFalse(isDragable);
+        assertFalse(wallDrawing);
     }
 };
 
@@ -122,7 +145,7 @@ function onMouseClickItem(nameItem){
     }
     
     if( select_item == new_item )
-        return;
+        return 0;
         
     removeClassItem(select_item);
     addClassItem(new_item);
@@ -145,7 +168,21 @@ function onMouseClickItem(nameItem){
     wallDrawing = false;
     
     select_item = new_item;
+    return new_item;
 };
+
+function test_onButtonSaveClick(){
+    
+    var JsonString = makeJsonString;
+    assertNotNull(JsonString);
+    
+    var strData = JsonString.makeString();
+    assertNotNull(strData);
+    
+    var strName = 'ship_building.sav';
+    window.open("php/download.php?data=" + strData + "&name=" + strName);
+};
+
 
 function onButtonSaveClick(){
     var JsonString = makeJsonString;
@@ -156,33 +193,26 @@ function onButtonSaveClick(){
 
 $(function(){
     var btnUpload=$('#file_load');
-//        var status=$('#status');
     new AjaxUpload(btnUpload, {
         action: 'php/upload.php',
         name: 'uploadfile',
         onSubmit: function(file, ext){
-//             if (! (ext && /^(sav)$/.test(ext))){ 
-                // extension is not allowed 
-//                    status.text('Only JPG, PNG or GIF files are allowed');
-//                alert("file format error");
-//                return false;
-//            }
-//                status.text('Uploading...');
         },
         
         onComplete: function(file, response){
-            //On completion clear the status
             onButtonLoadClick(response);
         }
     });
     
 });
 
+function test_onButtonLoadClick(jString){
+    assertNotNull(LoadDraw);
+};
+
 function onButtonLoadClick(jString){
-    alert(jString);
     var LoadProc = LoadDraw;
     
-    LoadProc.init();
     jsApp.initLevel();
     LoadProc.draw(jString);
 };
