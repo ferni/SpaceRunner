@@ -10,5 +10,1106 @@ if (!(window.console && console.log)) {
         }
     }());
 }
+/* */
+var RedColorObject = me.ObjectEntity.extend({
 
-// Place any jQuery/helper plugins in here.
+    init : function (x, y, settings){
+        
+        settings.image = g_resources_size[2].name;
+        this.parent(x, y , settings);
+        
+        this.gravity = 0;
+        this.collidable = false;
+        this.type = g_resources_size[2].name;
+    },
+
+});
+
+/* individual object class */
+var ItemObject = me.ObjectEntity.extend({
+    mfix : false,
+    mid : 0,
+    
+    init : function (x, y, settings, iIndex){
+        
+        if( iIndex >= 0 )
+        {
+            settings.image = g_resources_size[iIndex].name;
+            this.parent(x, y , settings);
+            
+            this.gravity = 0;
+            this.collidable = true;
+            this.type =  g_resources_size[iIndex].name;
+            this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
+            this.name = "Building";
+        }
+    },
+    
+    /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
+    getTileStyle : function(pX, pY){
+        
+        var tileLayer = me.game.currentLevel.getLayerByName("collision");
+        if(tileLayer == null)
+            return 0;
+            
+        var tileId = tileLayer.getTileId(pX + 1, pY + 1);
+        if(tileId == null)
+            return 0;
+            
+        var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
+        if(tileSet == null)
+            return 0;
+            
+        var tilePro = tileSet.getTileProperties(tileId);
+        
+        if(tilePro.isSolid)
+            return 2;
+        else if(tilePro.isPlatform)
+            return 1;
+        else if(tilePro.isLeftSlope)
+            return 3;
+        else if(tilePro.isRightSlope)
+            return 4;
+            
+        return 0;
+    },
+    
+    /* check if obj contains the specified line 
+        sPos : start position
+        ePos : end position
+    */
+    containLine : function(obj, sPos, ePos){
+        if(obj.containsPoint(sPos) && obj.containsPoint(ePos))
+            return true;
+            
+        return false;
+    },
+    
+    onCollision : function(res, obj){
+    },
+
+});
+
+
+// weapon object 
+var iWeaponObject = ItemObject.extend({
+    // init function
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    
+    init : function(x, y, settings, mID){
+        this.mResource = 3;
+        this.mid = mID;
+        this.parent(x, y, settings, this.mResource);
+        
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
+    },
+    
+    onMouseDown : function() {
+        if(select_item == -1)
+        {
+            this.isDrag = true;
+            SelectObject = this;
+            select_item = this.mResource;
+            isDragable = true;
+            
+            this.preX = this.pos.x;
+            this.preY = this.pos.y;
+        }
+    },
+    
+    onMouseUp : function(){
+        if(this.isDrag == true)
+        {
+            this.isDrag = false;
+            SelectObject = null;
+            select_item = -1;
+            isDragable = false;
+            
+            if(checkCollision.processCollision(this))
+            {
+                checkCollision.removeRedStyle();
+                this.pos.x = this.preX;
+                this.pos.y = this.preY;
+            }
+        }
+    },
+    
+});
+
+// engine object 
+var iEngineObject = ItemObject.extend({
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    
+    // init function
+    init : function(x, y, settings, mID){
+        this.mResource = 4;
+        this.mid = mID;
+        this.parent(x, y, settings, this.mResource);
+        
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
+    },
+    
+    onMouseDown : function() {
+        if(select_item == -1)
+        {
+            this.isDrag = true;
+            SelectObject = this;
+            select_item = this.mResource;
+            isDragable = true;
+            
+            this.preX = this.pos.x;
+            this.preY = this.pos.y;
+        }
+    },
+    
+    onMouseUp : function(){
+        if(this.isDrag == true)
+        {
+            this.isDrag = false;
+            SelectObject = null;
+            select_item = -1;
+            isDragable = false;
+            
+            if(checkCollision.processCollision(this))
+            {
+                checkCollision.removeRedStyle();
+                this.pos.x = this.preX;
+                this.pos.y = this.preY;
+            }
+        }
+    },
+    
+});
+
+
+// power object 
+var iPowerObject = ItemObject.extend({
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    
+    // init function
+    init : function(x, y, settings, mID){
+        this.mResource = 5;
+        this.mid = mID;
+        this.parent(x, y, settings, this.mResource);
+        
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
+    },
+    
+    onMouseDown : function() {
+        if(select_item == -1)
+        {
+            this.isDrag = true;
+            SelectObject = this;
+            select_item = this.mResource;
+            isDragable = true;
+            
+            this.preX = this.pos.x;
+            this.preY = this.pos.y;
+        }
+    },
+    
+    onMouseUp : function(){
+        if(this.isDrag == true)
+        {
+            this.isDrag = false;
+            SelectObject = null;
+            select_item = -1;
+            isDragable = false;
+            
+            if(checkCollision.processCollision(this))
+            {
+                checkCollision.removeRedStyle();
+                this.pos.x = this.preX;
+                this.pos.y = this.preY;
+            }
+        }
+    },
+    
+});
+
+// console object class 
+var iConsoleObject = ItemObject.extend({
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    
+    // init function
+    init : function(x, y, settings, mID){
+        this.mResource = 6;
+        this.mid = mID;
+        this.parent(x, y, settings, this.mResource);
+        
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
+    },
+    
+    onMouseDown : function() {
+        if(select_item == -1)
+        {
+            this.isDrag = true;
+            SelectObject = this;
+            select_item = this.mResource;
+            isDragable = true;
+            
+            this.preX = this.pos.x;
+            this.preY = this.pos.y;
+        }
+    },
+    
+    onMouseUp : function(){
+        if(this.isDrag == true)
+        {
+            this.isDrag = false;
+            SelectObject = null;
+            select_item = -1;
+            isDragable = false;
+            
+            if(checkCollision.processCollision(this))
+            {
+                checkCollision.removeRedStyle();
+                this.pos.x = this.preX;
+                this.pos.y = this.preY;
+            }
+        }
+    },
+    
+    
+    checkItemPos : function(res, mX, mY, de, mItem){
+        
+        var sPos = new me.Vector2d(0, 0);
+        var ePos = new me.Vector2d(0, 0);
+        var mRet = false;
+        
+        switch(de)
+        {
+        case 0:
+            /* left line */
+            if(mItem != 3)
+            {
+                sPos.x = mX;
+                sPos.y = mY;
+                
+                ePos.x = mX;
+                ePos.y = mY + this.height;
+                
+                if(this.containLine(res.obj, sPos, ePos))
+                    mRet = true;
+            }
+            break;
+            
+        case 1:
+            // top line 
+            sPos.x = mX;
+            sPos.y = mY;
+            
+            ePos.x = mX + this.width;
+            ePos.y = mY;
+            
+            if(this.containLine(res.obj, sPos, ePos))
+                mRet = true;
+                
+            break;
+            
+        case 2:
+            /* right line */
+            if(mItem != 4)
+            {
+                sPos.x = mX + this.width;
+                sPos.y = mY;
+                
+                ePos.x = mX + this.width;
+                ePos.y = mY + this.height;
+                
+                if(this.containLine(res.obj, sPos, ePos))
+                    mRet = true;
+            }
+            break;
+        case 3:
+            /* bottom line */
+            sPos.x = mX;
+            sPos.y = mY + this.height;
+            
+            ePos.x = mX + this.width;
+            ePos.y = mY + this.height;
+            
+            if(this.containLine(res.obj, sPos, ePos))
+                mRet = true;
+                
+            break;
+        }
+        delete sPos;
+        delete ePos;
+        
+        return mRet;
+    },
+
+    checkCollisionAround : function(){
+        var mRet = false;
+        var mX = this.pos.x;
+        var mY = this.pos.y;
+            
+        for(i = 0; i < 4; i ++)
+        {
+            //left
+            if( i == 0 ){
+                this.updateColRect(1 - this.width / 2, this.width - 2,  1, this.height - 2);
+            }
+            else if( i == 1 ){//top
+                this.updateColRect(1 , this.width - 2,  1 - this.height / 2, this.height - 2);
+            }
+            else if( i == 2 ){//right
+                this.updateColRect(1 + this.width / 2 , this.width - 2,  1, this.height - 2);
+            }
+            else if( i == 3 ){//bottom
+                this.updateColRect(1 , this.width - 2,  1 + this.height / 2, this.height - 2);
+            }
+            
+            res = me.game.collide(this);
+            if(res)
+            {
+                /* Weapon */
+                if(res.obj.type == g_resources_size[3].name && this.checkItemPos(res, mX, mY, i, 3))
+                    mRet = true;
+                /* Engine */
+                if(res.obj.type == g_resources_size[4].name && this.checkItemPos(res, mX, mY, i, 4))
+                    mRet = true;
+                /* power */
+                if(res.obj.type == g_resources_size[5].name && this.checkItemPos(res, mX, mY, i, 5))
+                    mRet = true;
+            }
+        }
+        this.updateColRect(1, this.width - 2, 1, this.height - 2);
+        this.pos.x = mX;
+        this.pos.y = mY;
+        return mRet;
+    },
+    
+});
+
+// component object class
+var iComponentObject = ItemObject.extend({
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    
+    // init function
+    init : function(x, y, settings, mID){
+        this.mResource = 7;
+        this.mid = mID;
+        //image sprite width / height
+        settings.spritewidth = 64;
+        settings.spriteheight = 64;
+
+        this.parent(x, y, settings, this.mResource);
+
+        // add animation
+        this.addAnimation ("idle", [3]);
+        this.addAnimation ("charge", [0, 1, 2, 3, 4, 5, 5]);
+        
+        // set animation
+        this.setCurrentAnimation("idle");
+        this.animationspeed = 15;
+        
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
+    },
+    
+    onMouseDown : function() {
+        if(select_item == -1)
+        {
+            this.isDrag = true;
+            SelectObject = this;
+            select_item = this.mResource;
+            isDragable = true;
+            
+            this.preX = this.pos.x;
+            this.preY = this.pos.y;
+            
+            this.setCurrentAnimation("idle");
+        }
+    },
+    
+    onMouseUp : function(){
+        if(this.isDrag == true)
+        {
+            this.isDrag = false;
+            SelectObject = null;
+            select_item = -1;
+            isDragable = false;
+            this.setCurrentAnimation("charge");
+            
+            if(checkCollision.processCollision(this))
+            {
+                checkCollision.removeRedStyle();
+                this.pos.x = this.preX;
+                this.pos.y = this.preY;
+                
+            }
+        }
+    },
+    
+});
+
+
+// door object class 
+var iDoorObject = ItemObject.extend({
+                                    
+    rotateFlag : false,
+    
+    // init function
+    init : function(x, y, settings, mID){
+        this.mResource = 8;
+        this.mid = mID;
+        //image sprite width / height
+        settings.spritewidth = 64;
+        settings.spriteheight = 32;
+
+        this.parent(x, y, settings, this.mResource);
+
+        // add animation
+        this.addAnimation ("idle",  [2]);
+//        this.addAnimation ("v_open_close",  [10]);
+        this.addAnimation ("v_open_close",  [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
+        this.addAnimation ("h_open_close",  [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
+        this.angle = 0;
+        this.rotateFlag  = false;
+        // set animation
+        this.setCurrentAnimation("idle");
+        this.animationspeed = 10;
+        
+        this.angle = Math.PI / 2;
+        this.rotateFlag = true;
+        this.mfix = false;
+    },
+    
+    processRotate : function()
+    {
+        var dX = 0;
+        var dY = 0;
+        var dWidth = 0;
+        var dHeight = 0;
+        var mRes  = null;
+        var mOk = true;
+        
+        if(!this.rotateFlag)
+        {
+            dX = 0;
+            dY = 0;
+            dWidth = this.width;
+            dHeight = this.height;
+        }
+        else {
+            dX = -16;
+            dY = 16;
+            dWidth = this.width;
+            dHeight = this.height;
+        }
+        
+        // left and right
+        this.updateColRect(dX - checkCollision.TileWidth, checkCollision.TileWidth, dY, checkCollision.TileHeight);
+        mRes = me.game.collide(this);
+        if(!mRes || mRes.obj.mResource != 9)
+            mOk = false;
+
+        if(mOk)
+        {
+            this.updateColRect(dX + checkCollision.TileWidth + this.width, checkCollision.TileWidth, dY, checkCollision.TileHeight);
+            mRes = me.game.collide(this);
+            if(!mRes || mRes.obj.mResource != 9)
+                mOk = false;
+        }
+        
+        if(mOk)
+        {
+            this.rotateFlag = false;
+            this.angle = 0;
+        }
+        else{
+            this.rotateFlag = true;
+            this.angle = Math.PI / 2;
+        }
+        this.updateColRect(0, this.width, 0, this.height);
+    },
+    
+    /* remove wall */
+    removeWallinCollision : function() {
+        
+        var mRes = null;
+        var mTemp = null;
+        
+        while(1){
+            if(this.rotateFlag)
+            {
+                this.updateColRect(17, this.height - 1, -15, this.width - 1);
+                mRes = me.game.collide(this);
+                if(!mRes || mRes.obj.mResource != 9)
+                    break;
+                mRes.obj.removeObject();
+            }
+            else{
+                this.updateColRect(1, this.width - 2, 1, this.height - 2);
+                mRes = me.game.collide(this);
+                if(!mRes || mRes.obj.mResource != 9)
+                    break;
+                mRes.obj.removeObject();
+            }
+        }
+    },
+    
+//    update : function(){
+//        this.processRotate();
+//    },
+});
+
+// wall object class
+var iWallObject = ItemObject.extend({
+    // init function
+    init : function(x, y, settings, mID){
+        this.mResource = 9;
+        this.mid = mID;
+        //image sprite width / height
+        settings.spritewidth = 32;
+        settings.spriteheight = 32;
+
+        this.parent(x, y, settings, this.mResource);
+
+        // add animation
+        // add animation
+        this.addAnimation ("vWall", [0]);
+        this.addAnimation ("hWall", [1]);
+        this.addAnimation ("LL_Wall", [2]);
+        this.addAnimation ("E_Wall", [3]);
+        this.addAnimation ("PL_Wall", [4]);
+        this.addAnimation ("RL_Wall", [5]);
+        this.addAnimation ("I_LL_Wall", [6]);
+        this.addAnimation ("I_E_Wall", [7]);
+        this.addAnimation ("I_RL_Wall", [8]);
+        this.addAnimation ("LE_Wall", [9]);
+        this.addAnimation ("RE_Wall", [10]);
+        
+        // set animation
+        this.setCurrentAnimation("hWall");
+        
+        this.animationspeed = 6;
+    },
+    
+    checkTopAndBottomWall : function()
+    {
+        var mRet = 0;
+        var mX = 0;
+        var mY = 0;
+        var mRes = 0;
+        
+        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight / 2, this.height + checkCollision.TileHeight );
+        
+        mRes = me.game.collide(this);
+        
+        if( !mRes )
+        {
+            this.updateColRect( 0, this.width, 0, this.height );
+            return 0;
+        }
+        
+/*        if(mRes.obj.mResource < this.mResource - 1)
+        {
+            this.updateColRect( 0, this.width, 0, this.height );
+            return 1;
+        }*/
+        mRet = 2;
+        /* top */
+        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight / 2, this.height);
+        mRes = me.game.collide(this);
+        if( mRes && mRes.obj.mResource >= this.mResource - 1 )
+        {
+            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
+            {
+            }
+            else
+                mRet += 1; //3
+        }
+            
+        /* bottom */
+        this.updateColRect( 0, this.width, 0 + checkCollision.TileHeight / 2, this.height);
+        mRes = me.game.collide(this);
+        if( mRes && mRes.obj.mResource >= this.mResource - 1 )
+        {
+            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
+            {
+            }
+            else
+                mRet += 2; //4, 5
+        }
+        
+        this.updateColRect( 0, this.width, 0, this.height );
+        if(mRet == 2)
+            return 1;
+            
+        return mRet;
+    },
+
+    checkLeftAndRightWall : function()
+    {
+        var mRet = 0;
+        var mX = 0;
+        var mY = 0;
+        var mRes = 0;
+        
+        this.updateColRect( 0 - checkCollision.TileWidth / 2 , this.width + checkCollision.TileWidth,
+                           0, this.height);
+        
+        mRes = me.game.collide(this);
+        
+        this.updateColRect( 0, this.width, 0, this.height );
+        
+        if( !mRes )
+        {
+            this.updateColRect( 0, this.width, 0, this.height );
+            return 0;
+        }
+/*            
+        if(mRes.obj.mResource < this.mResource - 1)
+        {
+            this.updateColRect( 0, this.width, 0, this.height );
+            return 1;
+        }
+*/
+        mRet = 8;
+        /* left */
+        this.updateColRect( 0 - checkCollision.TileWidth / 2 , this.width, 0, this.height );
+        
+        mRes = me.game.collide(this);
+        if( mRes &&  mRes.obj.mResource >= this.mResource - 1)
+        {
+            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
+            {
+            }
+            else
+                mRet -= 1; //7 / left
+        }
+            
+        /* right */
+        this.updateColRect(  0 + checkCollision.TileWidth / 2, this.width , 0, this.height );
+        mRes = me.game.collide(this);
+        
+        if(mRes && mRes.obj.mResource >= this.mResource - 1)
+        {
+            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
+            {
+            }
+            else
+                mRet -= 2; //6, 5 right / both
+        }
+    
+        this.updateColRect( 0, this.width, 0, this.height );
+        
+        if(mRet == 8)
+            return 1;
+            
+        return mRet;
+    },
+
+    /* check direction of wall (horizon / vertical / L-model / E - Model / Crosshair )*/
+    checkDirectWall : function()
+    {
+        var mX = 0;
+        var mY = 0;
+        var mDirect = 0;
+        var mTopBottom = mTopBottom = this.checkTopAndBottomWall();
+        var mLeftRight = this.checkLeftAndRightWall();
+        
+        if(mLeftRight == 0 && mTopBottom == 0)
+            return ;
+
+        this.angle = 0;
+
+        switch(mLeftRight)
+        {
+        case 0://none
+        case 1:
+            switch(mTopBottom)
+            {
+            case 3://top
+            case 4://bottom
+            case 5://both
+                this.setCurrentAnimation("hWall");
+                break;
+            }
+            break;
+        case 5:
+            switch(mTopBottom)
+            {
+            case 0:
+            case 1:
+                this.setCurrentAnimation("vWall");
+                break;
+            case 3://top
+                this.setCurrentAnimation("E_Wall");
+                break;
+            case 4://bottom
+                this.setCurrentAnimation("I_E_Wall");
+                break;
+            case 5:
+                this.setCurrentAnimation("PL_Wall");
+                break;
+            }
+            break;
+        case 7://left
+            switch(mTopBottom)
+            {
+            case 0:
+            case 1:
+                this.setCurrentAnimation("vWall");
+                break;
+            case 3://top
+                this.setCurrentAnimation("RL_Wall");
+                break;
+            case 4://bottom
+                this.setCurrentAnimation("I_RL_Wall");
+                break;
+            case 5://both
+                this.setCurrentAnimation("LE_Wall");
+                break;
+            }
+            break;
+        case 6://right
+            switch(mTopBottom)
+            {
+            case 0:
+            case 1:
+                this.setCurrentAnimation("vWall");
+                break;
+            case 3://top
+                this.setCurrentAnimation("LL_Wall");
+                break;
+            case 4://bottom
+                this.setCurrentAnimation("I_LL_Wall");
+                break;
+            case 5:
+                this.setCurrentAnimation("RE_Wall");
+                break;
+            }
+            break;
+        }
+    },
+    
+    removeObject : function(){
+        me.game.remove(this);
+        delete this;
+    },
+    
+    update : function(){
+        this.checkDirectWall();
+    },
+    
+});
+
+// wall manager object class
+var WallMngObject = ItemObject.extend({
+                                      
+    mWallObject : [],
+    mIndex : 0,
+    
+    init : function(mID, sObj){
+        this.mIndex = 0;
+        this.mid = mID;
+        this.mWallObject[0] = sObj;
+        
+        me.game.add(this.mWallObject[0], 100);
+        this.mIndex ++ ;
+    },
+    
+    removeWallObject : function(eIndex) {
+        var i = 0;
+        
+        for( i = this.mIndex - 1; i >= eIndex; i -- )
+            me.game.remove(this.mWallObject[i]);
+            
+        this.mIndex = eIndex;
+    },
+    
+    drawWallObject : function(mPos) {
+        var addObj = null;
+        var mX = this.mWallObject[0].pos.x;
+        var mY = this.mWallObject[0].pos.y;
+        var mPluse = false;
+        var res = null;
+        
+        if(Math.abs(mX - mPos.x) > Math.abs(mY - mPos.y))
+        {
+            if(mX != mPos.x)
+            {
+                if(mX < mPos.x)
+                {
+                    mPluse = true;
+                    mX += checkCollision.TileWidth;
+                }
+                else{
+                    mX -= checkCollision.TileWidth;
+                }
+                
+                for( ; mX != mPos.x; )
+                {
+                    addObj = new iWallObject(mX, mY, {}, this.mIndex);
+                    me.game.add(addObj, 100);
+                    
+                    if(checkCollision.processCollision(addObj))
+                    {
+                        res = me.game.collide(addObj);
+                        checkCollision.removeRedStyle();
+                        me.game.remove(addObj);
+                        delete addObj;
+                        addObj = null;
+
+                        if( res && res.obj.mResource != 9 )
+                            break;
+                    }
+                    else{
+                        this.mWallObject[this.mIndex] = addObj;
+                        this.mIndex ++;
+                    }
+                    if(mPluse)
+                        mX += checkCollision.TileWidth;
+                    else
+                        mX -= checkCollision.TileWidth;
+                }
+            }
+        }
+        else
+        {
+            if(mY != mPos.y)
+            {
+                if(mY < mPos.y)
+                {
+                    mPluse = true;
+                    mY += checkCollision.TileHeight;
+                }
+                else{
+                    mY -= checkCollision.TileHeight;
+                }
+                    
+                for( ; mY != mPos.y; )
+                {
+                    addObj = new iWallObject(mX, mY, {}, this.mIndex);
+                    me.game.add(addObj, 100);
+                    
+                    if(checkCollision.processCollision(addObj))
+                    {
+                        res = me.game.collide(addObj);
+                        checkCollision.removeRedStyle();
+                        me.game.remove(addObj);
+                        delete addObj;
+                        addObj = null;
+                        
+                        if( res && res.obj.mResource != 9 )
+                            break;
+                    }
+                    else{
+                        this.mWallObject[this.mIndex] = addObj;
+                        this.mIndex ++;
+                    }
+                    
+                    if(mPluse)
+                        mY += checkCollision.TileHeight;
+                    else
+                        mY -= checkCollision.TileHeight;
+                }
+            }
+        }
+    },
+    
+    
+    /* process wall objects  */
+    processWallObject : function(mPos){
+        if( this.mWallObject[this.mIndex - 1].pos.x != mPos.x ||
+            this.mWallObject[this.mIndex - 1].pos.y != mPos.y )
+        {
+            this.removeWallObject(1);
+            this.drawWallObject(mPos);
+        }
+    },
+    
+    setFixFlag : function(){
+        var mItem = null;
+        var mIndex = 0;
+        
+        for(mIndex = 0; mIndex < this.mWallObject.length; mIndex ++)
+            this.mWallObject[mIndex].mfix = true;
+    },
+    
+});
+
+
+var makeJsonString = {
+    /*
+    JsonString = {
+        'Objects' : [
+            {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234},
+            {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234, 'Setting' : 'wewer'},
+            {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234, 'Setting' : 'wewer'},
+            {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234, 'Setting' : 'wewer'},
+        ]
+    }
+    */
+    JsonString : "",
+    init : function(){
+        this.JsonString += "";
+    },
+    
+    setFirstString : function(){
+        this.JsonString = '{"Objects" : [';
+    },
+    
+    makeObjecttoString : function(curObj, firstItem){
+        if(curObj)
+        {
+            if(!firstItem)
+                this.JsonString += ',';
+                
+            this.JsonString += '{"Resource":' + curObj.mResource;
+            this.JsonString += ',"id":' + curObj.mid;
+            this.JsonString += ',"PosX":' + curObj.pos.x;
+            this.JsonString += ',"PosY":' + curObj.pos.y;
+            this.JsonString += ',"Fix":' + curObj.mfix;
+            this.JsonString += ',"angle":' + curObj.angle;
+            
+            this.JsonString += ',"animation":"' + curObj.current.name;
+            this.JsonString += '"}';
+            
+        }
+    },
+    
+    setEndString : function(){
+        this.JsonString += ']}';
+    },
+    
+    makeString : function(){
+        var mX = 0;
+        var mY = 0;
+        var TempObject = new ItemObject(0, 0, {}, 9);
+        var firstFlag = true;
+        var tempPos = new me.Vector2d(0, 0);
+        
+        this.init();
+        
+        this.setFirstString();
+        me.game.add(TempObject, 1);
+        TempObject.updateColRect(1, checkCollision.TileWidth -2, 1, checkCollision.TileHeight - 2);
+        
+        for(mX = 0; mX < g_resources_size[1].width; mX += checkCollision.TileWidth)
+        {
+            for(mY = 0; mY < g_resources_size[1].height; mY += checkCollision.TileHeight)
+            {
+                TempObject.pos.x = mX;
+                TempObject.pos.y = mY;
+                
+                res = me.game.collide(TempObject);
+                
+                if(res)
+                {
+                    tempPos.x = res.obj.pos.x;
+                    tempPos.y = res.obj.pos.y;
+                    
+                    if(res.obj.mResource == 8)
+                    {
+                        tempPos.x += res.obj.collisionBox.colPos.x;
+                        tempPos.y += res.obj.collisionBox.colPos.y;
+                    }
+                    if(TempObject.containsPoint(tempPos) && res.obj.mfix)
+                    {
+                        this.makeObjecttoString(res.obj, firstFlag);
+                    
+                        if(firstFlag == true)
+                            firstFlag = false;
+                    }
+                }
+            }
+        }
+        
+        this.setEndString();
+        me.game.remove(TempObject);
+        delete TempObject;
+        delete tempPos;
+        
+        return this.JsonString;
+    },
+    
+};
+
+var LoadDraw = {
+    init : function(){
+//        me.levelDirector.loadLevel("small");
+    },
+    
+    draw : function(JString){
+        var i = 0;
+        var ParseStr = null;
+        var ParseItem = null;
+        var OneObject = null;
+        ParseStr = JSON.parse(JString);
+        
+        for(i = 0; i < ParseStr.Objects.length; i ++){
+            ParseItem = ParseStr.Objects[i];
+            if(!ParseItem)
+                break;
+                
+            switch(ParseItem.Resource){
+            case 3://weapon
+                OneObject = new iWeaponObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            case 4://engine
+                OneObject = new iEngineObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            case 5://power
+                OneObject = new iPowerObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            case 6://console
+                OneObject = new iConsoleObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            case 7://component
+                OneObject = new iComponentObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.setCurrentAnimation(ParseItem.animation);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            case 8://door
+                OneObject = new iDoorObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.setCurrentAnimation(ParseItem.animation);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            case 9://wall
+                OneObject = new iWallObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
+                OneObject.angle = ParseItem.angle;
+                OneObject.mfix = ParseItem.Fix;
+                me.game.add( OneObject, 100 );
+                break;
+            }
+        }
+        me.game.sort();
+        me.game.repaint();
+    },
+    
+};
