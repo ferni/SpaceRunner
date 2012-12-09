@@ -111,4 +111,24 @@ textarea {
     height:32px;
     text-align:center;
     padding:2px;
+	cursor:pointer;
+}
+
+#itemboard #item_main .items #item_weapon, 
+#itemboard #item_main .items #item_engine, 
+#itemboard #item_main .items #item_power, 
+#itemboard #item_main .items #item_console, 
+#itemboard #item_main .items #item_components, 
+#itemboard #item_main .items #item_door, 
+#itemboard #item_main .items #item_wall
+{
+	cursor:pointer;
+}
+
+#contextMenu{
+	visibility:hidden;
+}
+
+#delete{
+	font-size:14px;
 }

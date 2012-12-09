@@ -10,61 +10,25 @@ if (!(window.console && console.log)) {
         }
     }());
 }
-
-function test_RedColorObject(){
-    var mX = 0;
-    var mY = 0;
-    var mObj = new RedColorObject(0, 0, {});
-    assertEquals(g_resources_size[2].name, mObj.settings.image);
-    assertEquals(0, mObj.gravity);
-    assertFalse(mObj.collidable);
-    assertEquals(g_resources_size[2].name, mObj.type);
-};
-
 /* */
 var RedColorObject = me.ObjectEntity.extend({
-
     init : function (x, y, settings){
-        
         settings.image = g_resources_size[2].name;
         this.parent(x, y , settings);
-        
         this.gravity = 0;
         this.collidable = false;
         this.type = g_resources_size[2].name;
     },
-
 });
-
-function test_ItemObject(){
-    var mX = 0;
-    var mY = 0;
-    var mIndex = 5;
-    if( mIndex >= 3 && mIndex <= 9 )
-        assertTrue(true);
-    else
-        assertFalse(false);
-        
-    var mObj = new ItemObject(0, 0, {}, mIndex);
-    assertNotNull(mObj);
-    assertEquals(g_resources_size[mIndex].name, mObj.settings.image);
-    assertEquals(0, mObj.gravity);
-    assertTrue(mObj.collidable);
-    assertEquals(g_resources_size[mIndex].name, mObj.type);
-};
-
 /* individual object class */
 var ItemObject = me.ObjectEntity.extend({
     mfix : false,
     mid : 0,
-    
     init : function (x, y, settings, iIndex){
-        
         if( iIndex >= 0 )
         {
             settings.image = g_resources_size[iIndex].name;
             this.parent(x, y , settings);
-            
             this.gravity = 0;
             this.collidable = true;
             this.type =  g_resources_size[iIndex].name;
@@ -72,50 +36,18 @@ var ItemObject = me.ObjectEntity.extend({
             this.name = "Building";
         }
     },
-    
-    test_getTileStyle : function(){
-        var mX = 0;
-        var mY = 0;
-        var mRet = this.getTileStyle(mX, mY);
-        switch(mRet){
-            case 0:
-                assertTrue("none style", true);
-                break;
-            case 1:
-                assertTrue("plateform style", true);
-                break;
-            case 2:
-                assertTrue("solid style", true);
-                break;
-            case 3:
-                assertTrue("leftslope style", true);
-                break;
-            case 4:
-                assertTrue("rightslope style", true);
-                break;
-            default:
-                assertFalse(true);
-                break;
-        }
-    },
-    
     /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
     getTileStyle : function(pX, pY){
-        
         var tileLayer = me.game.currentLevel.getLayerByName("collision");
         if(tileLayer == null)
             return 0;
-            
         var tileId = tileLayer.getTileId(pX + 1, pY + 1);
         if(tileId == null)
             return 0;
-            
         var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
         if(tileSet == null)
             return 0;
-            
         var tilePro = tileSet.getTileProperties(tileId);
-        
         if(tilePro.isSolid)
             return 2;
         else if(tilePro.isPlatform)
@@ -124,22 +56,8 @@ var ItemObject = me.ObjectEntity.extend({
             return 3;
         else if(tilePro.isRightSlope)
             return 4;
-            
         return 0;
     },
-    
-    
-    test_containLine : function(){
-        var sPos = new me.Vector2d(0, 0);
-        var mRect = new me.Rect(sPos, 32, 32);
-        var ePos = new me.Vector2d(10, 10);
-        
-        assertNotNull(mRect);
-        assertNotNull(ePos);
-        assertNotNull(sPos);
-        assertTrue(this.containLine(mRect,sPos,ePos));
-    },
-    
     /* check if obj contains the specified line 
         sPos : start position
         ePos : end position
@@ -147,31 +65,12 @@ var ItemObject = me.ObjectEntity.extend({
     containLine : function(obj, sPos, ePos){
         if(obj.containsPoint(sPos) && obj.containsPoint(ePos))
             return true;
-            
         return false;
     },
-    
     onCollision : function(res, obj){
     },
-
 });
 
-
-function test_iWeaponObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iWeaponObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 3);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-    mTemp.test_onMouseDown();
-    mTemp.test_onMouseUp();
-};
 
 // weapon object 
 var iWeaponObject = ItemObject.extend({
@@ -179,32 +78,13 @@ var iWeaponObject = ItemObject.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
-    
     init : function(x, y, settings, mID){
         this.mResource = 3;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
-    
-    test_onMouseDown : function(){
-        this.pos.x = 100;
-        this.pos.y = 100;
-        
-        assertNotEquals(select_item, -1);
-        
-        this.onMouseDown();
-        assertTrue(this.isDrag);
-        assertEquals(SelectObject, this);
-        assertEquals(select_item, this.mResource);
-        assertTrue(isDragable);
-        
-        assertEquals(this.preX, this.pos.x);
-        assertEquals(this.preY, this.pos.y);
-    },
-    
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -215,92 +95,48 @@ var iWeaponObject = ItemObject.extend({
             
             this.preX = this.pos.x;
             this.preY = this.pos.y;
+            this.setWalkable();
+            displayMoveCursor();
         }
     },
-    
-    
-    test_onMouseUp : function(){
-        assertTrue(this.isDrag);
-        
-        this.onMouseUp();
-        assertFalse(this.isDrag);
-        assertNull(SelectObject);
-        assertEquals(select_item, -1);
-        assertFalse(isDragable);
-        
-        assertNotEquals(this.pos.x, this.preX);
-        assertNotEquals(this.pos.y, this.preY);
-    },
-    
     onMouseUp : function(){
         if(this.isDrag == true)
         {
+            DeleteObject = this;
             this.isDrag = false;
             SelectObject = null;
             select_item = -1;
             isDragable = false;
-            
             if(checkCollision.processCollision(this))
             {
                 checkCollision.removeRedStyle();
                 this.pos.x = this.preX;
                 this.pos.y = this.preY;
             }
+            this.setUnWalkable();
+            displayDefaultCursor();
         }
     },
-    
+    setWalkable : function(){
+            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    setUnWalkable : function(){
+        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
 });
-
-function test_iEngineObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iEngineObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 4);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-    
-    mTemp.test_onMouseDown();
-    mTemp.test_onMouseUp();
-};
-
 // engine object 
 var iEngineObject = ItemObject.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
-    
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 4;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
-    
-    test_onMouseDown : function(){
-        this.pos.x = 100;
-        this.pos.y = 100;
-        
-        assertNotEquals(select_item, -1);
-        
-        this.onMouseDown();
-        assertTrue(this.isDrag);
-        assertEquals(SelectObject, this);
-        assertEquals(select_item, this.mResource);
-        assertTrue(isDragable);
-        
-        assertEquals(this.preX, this.pos.x);
-        assertEquals(this.preY, this.pos.y);
-    },
-    
-    
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -308,93 +144,52 @@ var iEngineObject = ItemObject.extend({
             SelectObject = this;
             select_item = this.mResource;
             isDragable = true;
-            
             this.preX = this.pos.x;
             this.preY = this.pos.y;
+            this.setWalkable();
+            displayMoveCursor();
         }
     },
-    
-    test_onMouseUp : function(){
-        assertTrue(this.isDrag);
-        
-        this.onMouseUp();
-        assertFalse(this.isDrag);
-        assertNull(SelectObject);
-        assertEquals(select_item, -1);
-        assertFalse(isDragable);
-        
-        assertNotEquals(this.pos.x, this.preX);
-        assertNotEquals(this.pos.y, this.preY);
-    },
-    
     onMouseUp : function(){
         if(this.isDrag == true)
         {
+            DeleteObject = this;
             this.isDrag = false;
             SelectObject = null;
             select_item = -1;
             isDragable = false;
-            
             if(checkCollision.processCollision(this))
             {
                 checkCollision.removeRedStyle();
                 this.pos.x = this.preX;
                 this.pos.y = this.preY;
             }
+            this.setUnWalkable();
+            displayDefaultCursor();
         }
     },
-    
+    setWalkable : function(){
+            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    setUnWalkable : function(){
+        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
 });
 
-function test_iPowerObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iPowerObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 5);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-    
-    mTemp.test_onMouseDown();
-    mTemp.test_onMouseUp();
-};
 
 // power object 
 var iPowerObject = ItemObject.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
-    
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 5;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
-    
-    test_onMouseDown : function(){
-        this.pos.x = 100;
-        this.pos.y = 100;
-        
-        assertNotEquals(select_item, -1);
-        
-        this.onMouseDown();
-        assertTrue(this.isDrag);
-        assertEquals(SelectObject, this);
-        assertEquals(select_item, this.mResource);
-        assertTrue(isDragable);
-        
-        assertEquals(this.preX, this.pos.x);
-        assertEquals(this.preY, this.pos.y);
-    },
-    
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -402,94 +197,51 @@ var iPowerObject = ItemObject.extend({
             SelectObject = this;
             select_item = this.mResource;
             isDragable = true;
-            
             this.preX = this.pos.x;
             this.preY = this.pos.y;
+            this.setWalkable();
+            displayMoveCursor();
         }
     },
-    
-    test_onMouseUp : function(){
-        assertTrue(this.isDrag);
-        
-        this.onMouseUp();
-        assertFalse(this.isDrag);
-        assertNull(SelectObject);
-        assertEquals(select_item, -1);
-        assertFalse(isDragable);
-        
-        assertNotEquals(this.pos.x, this.preX);
-        assertNotEquals(this.pos.y, this.preY);
-    },
-    
     onMouseUp : function(){
         if(this.isDrag == true)
         {
+            DeleteObject = this;
             this.isDrag = false;
             SelectObject = null;
             select_item = -1;
             isDragable = false;
-            
             if(checkCollision.processCollision(this))
             {
                 checkCollision.removeRedStyle();
                 this.pos.x = this.preX;
                 this.pos.y = this.preY;
             }
+            this.setUnWalkable();
+            displayDefaultCursor();
         }
     },
-    
+    setWalkable : function(){
+            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    setUnWalkable : function(){
+        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
 });
-
-function test_iConsoleObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iConsoleObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 6);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-    
-    mTemp.test_onMouseDown();
-    mTemp.test_onMouseUp();
-};
-
 
 // console object class 
 var iConsoleObject = ItemObject.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
-    
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 6;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
-    
-    test_onMouseDown : function(){
-        this.pos.x = 100;
-        this.pos.y = 100;
-        
-        assertNotEquals(select_item, -1);
-        
-        this.onMouseDown();
-        assertTrue(this.isDrag);
-        assertEquals(SelectObject, this);
-        assertEquals(select_item, this.mResource);
-        assertTrue(isDragable);
-        
-        assertEquals(this.preX, this.pos.x);
-        assertEquals(this.preY, this.pos.y);
-    },
-    
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -497,63 +249,40 @@ var iConsoleObject = ItemObject.extend({
             SelectObject = this;
             select_item = this.mResource;
             isDragable = true;
-            
             this.preX = this.pos.x;
             this.preY = this.pos.y;
+            this.setWalkable();
+            displayMoveCursor();
         }
     },
-    
-    test_onMouseUp : function(){
-        assertTrue(this.isDrag);
-        
-        this.onMouseUp();
-        assertFalse(this.isDrag);
-        assertNull(SelectObject);
-        assertEquals(select_item, -1);
-        assertFalse(isDragable);
-        
-        assertNotEquals(this.pos.x, this.preX);
-        assertNotEquals(this.pos.y, this.preY);
-    },
-    
     onMouseUp : function(){
         if(this.isDrag == true)
         {
+            DeleteObject = this;
             this.isDrag = false;
             SelectObject = null;
             select_item = -1;
             isDragable = false;
-            
             if(checkCollision.processCollision(this))
             {
                 checkCollision.removeRedStyle();
                 this.pos.x = this.preX;
                 this.pos.y = this.preY;
             }
+            this.setUnWalkable();
+            displayDefaultCursor();
         }
     },
-    
-    test_checkItemPos : function(){
-        var obj = this;
-        var mX = 0;
-        var mY = 0;
-        var de = 1;
-        
-        assertNotNull(obj);
-        if(de >= 0 && de <= 3)
-            assertTrue(true);
-        else
-            assertFalse(true);
-            
-        assertTrue(this.checkItemPos(obj, mX, mY, de, this.mResource));
+    setWalkable : function(){
+            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
-    
+    setUnWalkable : function(){
+        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
     checkItemPos : function(res, mX, mY, de, mItem){
-        
         var sPos = new me.Vector2d(0, 0);
         var ePos = new me.Vector2d(0, 0);
         var mRet = false;
-        
         switch(de)
         {
         case 0:
@@ -562,39 +291,30 @@ var iConsoleObject = ItemObject.extend({
             {
                 sPos.x = mX;
                 sPos.y = mY;
-                
                 ePos.x = mX;
                 ePos.y = mY + this.height;
-                
-                if(this.containLine(res, sPos, ePos))
+                if(this.containLine(res.obj, sPos, ePos))
                     mRet = true;
             }
             break;
-            
         case 1:
             // top line 
             sPos.x = mX;
             sPos.y = mY;
-            
             ePos.x = mX + this.width;
             ePos.y = mY;
-            
-            if(this.containLine(res, sPos, ePos))
+            if(this.containLine(res.obj, sPos, ePos))
                 mRet = true;
-                
             break;
-            
         case 2:
             /* right line */
             if(mItem != 4)
             {
                 sPos.x = mX + this.width;
                 sPos.y = mY;
-                
                 ePos.x = mX + this.width;
                 ePos.y = mY + this.height;
-                
-                if(this.containLine(res, sPos, ePos))
+                if(this.containLine(res.obj, sPos, ePos))
                     mRet = true;
             }
             break;
@@ -602,30 +322,20 @@ var iConsoleObject = ItemObject.extend({
             /* bottom line */
             sPos.x = mX;
             sPos.y = mY + this.height;
-            
             ePos.x = mX + this.width;
             ePos.y = mY + this.height;
-            
-            if(this.containLine(res, sPos, ePos))
+            if(this.containLine(res.obj, sPos, ePos))
                 mRet = true;
-                
             break;
         }
         delete sPos;
         delete ePos;
-        
         return mRet;
     },
-
-    test_checkCollisionAround : function(){
-        assertTrue(this.checkCollisionAround());
-    },
-    
     checkCollisionAround : function(){
         var mRet = false;
         var mX = this.pos.x;
         var mY = this.pos.y;
-            
         for(i = 0; i < 4; i ++)
         {
             //left
@@ -641,18 +351,17 @@ var iConsoleObject = ItemObject.extend({
             else if( i == 3 ){//bottom
                 this.updateColRect(1 , this.width - 2,  1 + this.height / 2, this.height - 2);
             }
-            
             res = me.game.collide(this);
             if(res)
             {
                 /* Weapon */
-                if(res.obj.type == g_resources_size[3].name && this.checkItemPos(res.obj, mX, mY, i, 3))
+                if(res.obj.type == g_resources_size[3].name && this.checkItemPos(res, mX, mY, i, 3))
                     mRet = true;
                 /* Engine */
-                if(res.obj.type == g_resources_size[4].name && this.checkItemPos(res.obj, mX, mY, i, 4))
+                if(res.obj.type == g_resources_size[4].name && this.checkItemPos(res, mX, mY, i, 4))
                     mRet = true;
                 /* power */
-                if(res.obj.type == g_resources_size[5].name && this.checkItemPos(res.obj, mX, mY, i, 5))
+                if(res.obj.type == g_resources_size[5].name && this.checkItemPos(res, mX, mY, i, 5))
                     mRet = true;
             }
         }
@@ -661,33 +370,12 @@ var iConsoleObject = ItemObject.extend({
         this.pos.y = mY;
         return mRet;
     },
-    
 });
-
-
-function test_iComponentObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iComponentObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 7);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-    
-    mTemp.test_onMouseDown();
-    mTemp.test_onMouseUp();
-};
-
 // component object class
 var iComponentObject = ItemObject.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
-    
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 7;
@@ -695,38 +383,16 @@ var iComponentObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 64;
-
         this.parent(x, y, settings, this.mResource);
-
         // add animation
         this.addAnimation ("idle", [3]);
         this.addAnimation ("charge", [0, 1, 2, 3, 4, 5, 5]);
-        
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 15;
-        
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
-
-    test_onMouseDown : function(){
-        this.pos.x = 100;
-        this.pos.y = 100;
-        
-        assertNotEquals(select_item, -1);
-        
-        this.onMouseDown();
-        assertTrue(this.isDrag);
-        assertEquals(SelectObject, this);
-        assertEquals(select_item, this.mResource);
-        assertTrue(isDragable);
-        
-        assertEquals(this.preX, this.pos.x);
-        assertEquals(this.preY, this.pos.y);
-    },
-    
-
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -734,68 +400,42 @@ var iComponentObject = ItemObject.extend({
             SelectObject = this;
             select_item = this.mResource;
             isDragable = true;
-            
             this.preX = this.pos.x;
             this.preY = this.pos.y;
-            
             this.setCurrentAnimation("idle");
+            this.setWalkable();
+            displayMoveCursor();
         }
     },
-    
-    test_onMouseUp : function(){
-        assertTrue(this.isDrag);
-        
-        this.onMouseUp();
-        assertFalse(this.isDrag);
-        assertNull(SelectObject);
-        assertEquals(select_item, -1);
-        assertFalse(isDragable);
-        
-        assertNotEquals(this.pos.x, this.preX);
-        assertNotEquals(this.pos.y, this.preY);
-    },
-    
     onMouseUp : function(){
         if(this.isDrag == true)
         {
+            DeleteObject = this;
             this.isDrag = false;
             SelectObject = null;
             select_item = -1;
             isDragable = false;
             this.setCurrentAnimation("charge");
-            
             if(checkCollision.processCollision(this))
             {
                 checkCollision.removeRedStyle();
                 this.pos.x = this.preX;
                 this.pos.y = this.preY;
-                
             }
+            this.setUnWalkable();
+            displayDefaultCursor();
         }
     },
-    
+    setWalkable : function(){
+            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    setUnWalkable : function(){
+        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
 });
-
-function test_iDoorObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iDoorObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 8);
-    assertEquals(mTemp.mid, mID);
-    assertTrue(this.rotateFlag);
-    assertFalse(this.mfix);
-    assertEquals(this.angle, Math.PI / 2);
-};
-
-
 // door object class 
 var iDoorObject = ItemObject.extend({
-                                    
     rotateFlag : false,
-    
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 8;
@@ -803,9 +443,7 @@ var iDoorObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 32;
-
         this.parent(x, y, settings, this.mResource);
-
         // add animation
         this.addAnimation ("idle",  [2]);
 //        this.addAnimation ("v_open_close",  [10]);
@@ -816,20 +454,10 @@ var iDoorObject = ItemObject.extend({
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 10;
-        
         this.angle = Math.PI / 2;
         this.rotateFlag = true;
         this.mfix = false;
     },
-    
-    test_processRotate : function(){
-        this.processRotate();
-        assertFalse(this.rotateFlag);
-        assertEquals(this.angle, 0);
-        assertNotEquals(this.width, 0);
-        assertNotEquals(this.height, 0);
-    },
-    
     processRotate : function()
     {
         var dX = 0;
@@ -838,7 +466,6 @@ var iDoorObject = ItemObject.extend({
         var dHeight = 0;
         var mRes  = null;
         var mOk = true;
-        
         if(!this.rotateFlag)
         {
             dX = 0;
@@ -852,13 +479,11 @@ var iDoorObject = ItemObject.extend({
             dWidth = this.width;
             dHeight = this.height;
         }
-        
         // left and right
         this.updateColRect(dX - checkCollision.TileWidth, checkCollision.TileWidth, dY, checkCollision.TileHeight);
         mRes = me.game.collide(this);
         if(!mRes || mRes.obj.mResource != 9)
             mOk = false;
-
         if(mOk)
         {
             this.updateColRect(dX + checkCollision.TileWidth + this.width, checkCollision.TileWidth, dY, checkCollision.TileHeight);
@@ -866,7 +491,6 @@ var iDoorObject = ItemObject.extend({
             if(!mRes || mRes.obj.mResource != 9)
                 mOk = false;
         }
-        
         if(mOk)
         {
             this.rotateFlag = false;
@@ -878,18 +502,11 @@ var iDoorObject = ItemObject.extend({
         }
         this.updateColRect(0, this.width, 0, this.height);
     },
-    
-    test_removeWallinCollision : function(){
-        this.removeWallinCollision();
-        assertNull(me.game.collide(this));
-    },
-    
     /* remove wall */
     removeWallinCollision : function() {
-        
         var mRes = null;
         var mTemp = null;
-        
+        var mWallGroup = null;
         while(1){
             if(this.rotateFlag)
             {
@@ -897,32 +514,27 @@ var iDoorObject = ItemObject.extend({
                 mRes = me.game.collide(this);
                 if(!mRes || mRes.obj.mResource != 9)
                     break;
-                mRes.obj.removeObject();
             }
             else{
                 this.updateColRect(1, this.width - 2, 1, this.height - 2);
                 mRes = me.game.collide(this);
                 if(!mRes || mRes.obj.mResource != 9)
                     break;
-                mRes.obj.removeObject();
+            }
+            mWallGroup = ObjectsMng.searchWallGroupfromWall(mRes.obj);
+            if(mWallGroup)
+            {
+                mWallGroup.removeWallObject(mRes.obj);
             }
         }
+        if(mWallGroup)
+            mWallGroup.addOtherObject(this);
+        this.updateColRect(0, this.width, 0, this.height);
     },
+//    update : function(){
+//        this.processRotate();
+//    },
 });
-
-
-function test_iWallObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    
-    var mTemp = new iWallObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 9);
-    assertEquals(mTemp.mid, mID);
-};
-
-
 // wall object class
 var iWallObject = ItemObject.extend({
     // init function
@@ -932,9 +544,7 @@ var iWallObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 32;
         settings.spriteheight = 32;
-
         this.parent(x, y, settings, this.mResource);
-
         // add animation
         // add animation
         this.addAnimation ("vWall", [0]);
@@ -948,61 +558,65 @@ var iWallObject = ItemObject.extend({
         this.addAnimation ("I_RL_Wall", [8]);
         this.addAnimation ("LE_Wall", [9]);
         this.addAnimation ("RE_Wall", [10]);
-        
         // set animation
         this.setCurrentAnimation("hWall");
-        
         this.animationspeed = 6;
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
-    
-    test_checkTopAndBottomWall : function(){
-        var mRet = this.checkTopAndBottomWall();
-        switch(mRet){
-        case 0:
-            assertEquals("None collide", 0, mRet);
-            break;
-        case 2:
-            assertEquals("collide with object else wall", 2, mRet);
-            break;
-        case 3:
-            assertEquals("collide with wall on topside", 3, mRet);
-            break;
-        case 4:
-            assertEquals("collide with wall on bottomside", 4, mRet);
-            break;
-        case 5:
-            assertEquals("collide with wall on top/bottomside", 5, mRet);
-            break
-        default:
-            assertEquals("Unknown value", 0, mRet);
+    onMouseDown : function() {
+        if(select_item == -1)
+        {
+            SelectObject = ObjectsMng.searchWallGroupfromWall(this);
+            if(SelectObject)
+            {
+                this.isDrag = true;
+                select_item = 101;
+                isDragable = true;
+                SelectObject.setPrePostoCurPos();
+                SelectObject.WallPosX = this.pos.x;
+                SelectObject.WallPosY = this.pos.y;
+                SelectObject.setWalkable();
+                displayMoveCursor();
+            }
         }
     },
-    
+    onMouseUp : function(){
+        if(this.isDrag == true)
+        {
+            if(SelectObject)
+            {
+                DeleteObject = SelectObject;
+                if(SelectObject.checkCollissionGroup())
+                {
+                    checkCollision.removeRedStyle();
+                    SelectObject.setCurPostoPrePos();
+                }
+                SelectObject.setUnWalkable();
+                SelectObject = null;
+            }
+            this.isDrag = false;
+            select_item = -1;
+            isDragable = false;
+            displayDefaultCursor();
+       }
+    },
     checkTopAndBottomWall : function()
     {
         var mRet = 0;
         var mX = 0;
         var mY = 0;
         var mRes = 0;
-        
-        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight / 2, this.height + checkCollision.TileHeight );
-        
+        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight, this.height + checkCollision.TileHeight * 2 );
         mRes = me.game.collide(this);
-        
         if( !mRes )
         {
             this.updateColRect( 0, this.width, 0, this.height );
             return 0;
         }
-        
-/*        if(mRes.obj.mResource < this.mResource - 1)
-        {
-            this.updateColRect( 0, this.width, 0, this.height );
-            return 1;
-        }*/
         mRet = 2;
         /* top */
-        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight / 2, this.height);
+        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight, this.height);
         mRes = me.game.collide(this);
         if( mRes && mRes.obj.mResource >= this.mResource - 1 )
         {
@@ -1012,9 +626,8 @@ var iWallObject = ItemObject.extend({
             else
                 mRet += 1; //3
         }
-            
         /* bottom */
-        this.updateColRect( 0, this.width, 0 + checkCollision.TileHeight / 2, this.height);
+        this.updateColRect( 0, this.width, 0 + checkCollision.TileHeight, this.height);
         mRes = me.game.collide(this);
         if( mRes && mRes.obj.mResource >= this.mResource - 1 )
         {
@@ -1024,66 +637,30 @@ var iWallObject = ItemObject.extend({
             else
                 mRet += 2; //4, 5
         }
-        
         this.updateColRect( 0, this.width, 0, this.height );
         if(mRet == 2)
             return 1;
             
         return mRet;
     },
-
-    test_checkLeftAndRightWall : function(){
-        var mRet = this.checkLeftAndRightWall();
-        switch(mRet){
-        case 0:
-            assertEquals("None collide", 0, mRet);
-            break;
-        case 8:
-            assertEquals("collide with object else wall", 2, mRet);
-            break;
-        case 7:
-            assertEquals("collide with wall on leftside", 3, mRet);
-            break;
-        case 6:
-            assertEquals("collide with wall on rightside", 4, mRet);
-            break;
-        case 5:
-            assertEquals("collide with wall on left/right side", 5, mRet);
-            break
-        default:
-            assertEquals("Unknown value", 0, mRet);
-        }
-    },
-
     checkLeftAndRightWall : function()
     {
         var mRet = 0;
         var mX = 0;
         var mY = 0;
         var mRes = 0;
-        
-        this.updateColRect( 0 - checkCollision.TileWidth / 2 , this.width + checkCollision.TileWidth,
+        this.updateColRect( 0 - checkCollision.TileWidth , this.width + checkCollision.TileWidth * 2,
                            0, this.height);
-        
         mRes = me.game.collide(this);
-        
         this.updateColRect( 0, this.width, 0, this.height );
-        
         if( !mRes )
         {
             this.updateColRect( 0, this.width, 0, this.height );
             return 0;
         }
-/*            
-        if(mRes.obj.mResource < this.mResource - 1)
-        {
-            this.updateColRect( 0, this.width, 0, this.height );
-            return 1;
-        }
-*/
         mRet = 8;
         /* left */
-        this.updateColRect( 0 - checkCollision.TileWidth / 2 , this.width, 0, this.height );
+        this.updateColRect( 0 - checkCollision.TileWidth , this.width, 0, this.height );
         
         mRes = me.game.collide(this);
         if( mRes &&  mRes.obj.mResource >= this.mResource - 1)
@@ -1094,9 +671,8 @@ var iWallObject = ItemObject.extend({
             else
                 mRet -= 1; //7 / left
         }
-            
         /* right */
-        this.updateColRect(  0 + checkCollision.TileWidth / 2, this.width , 0, this.height );
+        this.updateColRect(  0 + checkCollision.TileWidth, this.width , 0, this.height );
         mRes = me.game.collide(this);
         
         if(mRes && mRes.obj.mResource >= this.mResource - 1)
@@ -1107,38 +683,11 @@ var iWallObject = ItemObject.extend({
             else
                 mRet -= 2; //6, 5 right / both
         }
-    
         this.updateColRect( 0, this.width, 0, this.height );
-        
         if(mRet == 8)
             return 1;
-            
         return mRet;
     },
-    
-    test_checkDirectWall : function(){
-        this.checkDirectWall();
-        
-        this.addAnimation ("vWall", [0]);
-        this.addAnimation ("hWall", [1]);
-        this.addAnimation ("LL_Wall", [2]);
-        this.addAnimation ("E_Wall", [3]);
-        this.addAnimation ("PL_Wall", [4]);
-        this.addAnimation ("RL_Wall", [5]);
-        this.addAnimation ("I_LL_Wall", [6]);
-        this.addAnimation ("I_E_Wall", [7]);
-        this.addAnimation ("I_RL_Wall", [8]);
-        this.addAnimation ("LE_Wall", [9]);
-        this.addAnimation ("RE_Wall", [10]);
-        
-        if(this.isCurrentAnimation("vWall") || this.isCurrentAnimation("hWall") || this.isCurrentAnimation("LL_Wall") || this.isCurrentAnimation("E_Wall") ||
-            this.isCurrentAnimation("PL_Wall") || this.isCurrentAnimation("RL_Wall") || this.isCurrentAnimation("I_LL_Wall") || this.isCurrentAnimation("I_E_Wall") ||
-            this.isCurrentAnimation("I_RL_Wall") || this.isCurrentAnimation("LE_Wall") || this.isCurrentAnimation("RE_Wall"))
-            assertTrue(true);
-        else
-            assertFalse(true);
-    },
-    
     /* check direction of wall (horizon / vertical / L-model / E - Model / Crosshair )*/
     checkDirectWall : function()
     {
@@ -1147,12 +696,9 @@ var iWallObject = ItemObject.extend({
         var mDirect = 0;
         var mTopBottom = mTopBottom = this.checkTopAndBottomWall();
         var mLeftRight = this.checkLeftAndRightWall();
-        
         if(mLeftRight == 0 && mTopBottom == 0)
             return ;
-
         this.angle = 0;
-
         switch(mLeftRight)
         {
         case 0://none
@@ -1222,197 +768,180 @@ var iWallObject = ItemObject.extend({
             break;
         }
     },
-    
     removeObject : function(){
         me.game.remove(this);
         delete this;
     },
-    
     update : function(){
         this.checkDirectWall();
     },
-    
 });
 
-function test_WallMngObject(){
-    var mX = 0;
-    var mY = 0;
-    var mID = 1;
-    var mTemp1 = new iWallObject(mX, mY, {}, mID);
-    var mTemp = new WallMngObject(mID, mTemp1);
-    
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mIndex, 1);
-    assertEquals(mTemp.mWallObject, mTemp1);
-};
-
-// wall manager object class
-var WallMngObject = ItemObject.extend({
-                                      
+var WallGroupObject = ItemObject.extend({
     mWallObject : [],
-    mIndex : 0,
-    
-    init : function(mID, sObj){
-        this.mIndex = 0;
+    mStarti : 0,
+    WallPosX : 0,
+    WallPosY : 0,
+    init : function(mID){
         this.mid = mID;
-        this.mWallObject[0] = sObj;
-        
-        me.game.add(this.mWallObject[0], 100);
-        this.mIndex ++ ;
+        this.mResource = 101;
+        this.WallPosX = 0;
+        this.WallPosY = 0;
+        this.mStarti = 0;
+        this.mWallObject = [];
     },
-    
-    test_removeWallObject : function(){
-        var dIndex = 1;
-        
-        this.removeWallObject(dIndex);
-        assertEquals(this.mIndex, dIndex);
+    addOtherObject : function(Obj){
+        if(Obj)
+            this.mWallObject[this.mWallObject.length] = Obj;
     },
-    
-    removeWallObject : function(eIndex) {
+    addWallObject : function(x, y){
+        var wallObj = new iWallObject(x, y, {}, this.mid);
+        me.game.add(wallObj, 102);
+        this.mWallObject[this.mWallObject.length] = wallObj;
+        return wallObj;
+    },
+    removeWallObject : function(Obj){
+        if(Obj && this.mid == Obj.mid)
+        {
+            me.game.remove(Obj);
+            this.mWallObject.remove(Obj);
+            return true;
+        }
+        return false;
+    },
+    removeAll : function(eIndex) {
         var i = 0;
+        var Obj = null;
         
-        for( i = this.mIndex - 1; i >= eIndex; i -- )
-            me.game.remove(this.mWallObject[i]);
+        for( i = this.mWallObject.length - 1; i >= eIndex; i -- )
+        {
+            Obj = this.mWallObject[i];
+            me.game.remove(Obj);
+            this.mWallObject.remove(Obj);
+        }
+    },
+    removeUnFixedObject : function() {
+        var i = 0;
+        var Obj = null;
+        for( i = this.mWallObject.length - 1; i >= 0; i -- )
+        {
+            Obj = this.mWallObject[i];
             
-        this.mIndex = eIndex;
-    },
-    
-    test_drawWallObject : function(){
-        var mPos = new me.Vector2d(100, 100);
-        assertNotNull(mPos);
-        assertNotNull(this.mWallObject[0]);
-        this.drawWallObject(mPos);
-        assertNotEquals(this.mIndex, 0);
-    },
-    
-    drawWallObject : function(mPos) {
-        var addObj = null;
-        var mX = this.mWallObject[0].pos.x;
-        var mY = this.mWallObject[0].pos.y;
-        var mPluse = false;
-        var res = null;
-        
-        if(Math.abs(mX - mPos.x) > Math.abs(mY - mPos.y))
-        {
-            if(mX != mPos.x)
-            {
-                if(mX < mPos.x)
-                {
-                    mPluse = true;
-                    mX += checkCollision.TileWidth;
-                }
-                else{
-                    mX -= checkCollision.TileWidth;
-                }
-                
-                for( ; mX != mPos.x; )
-                {
-                    addObj = new iWallObject(mX, mY, {}, this.mIndex);
-                    me.game.add(addObj, 100);
-                    
-                    if(checkCollision.processCollision(addObj))
-                    {
-                        res = me.game.collide(addObj);
-                        checkCollision.removeRedStyle();
-                        me.game.remove(addObj);
-                        delete addObj;
-                        addObj = null;
-
-                        if( res && res.obj.mResource != 9 )
-                            break;
-                    }
-                    else{
-                        this.mWallObject[this.mIndex] = addObj;
-                        this.mIndex ++;
-                    }
-                    if(mPluse)
-                        mX += checkCollision.TileWidth;
-                    else
-                        mX -= checkCollision.TileWidth;
-                }
-            }
+            if(Obj.mfix == true)
+                break;
+            me.game.remove(Obj);
+            this.mWallObject.remove(Obj);
         }
-        else
+        return i;
+    },
+    getFirstWallObject : function(){
+        return this.mWallObject[0];
+    },
+    process : function(dragflag, mPos){
+        if(!dragflag)
         {
-            if(mY != mPos.y)
-            {
-                if(mY < mPos.y)
-                {
-                    mPluse = true;
-                    mY += checkCollision.TileHeight;
-                }
-                else{
-                    mY -= checkCollision.TileHeight;
-                }
-                    
-                for( ; mY != mPos.y; )
-                {
-                    addObj = new iWallObject(mX, mY, {}, this.mIndex);
-                    me.game.add(addObj, 100);
-                    
-                    if(checkCollision.processCollision(addObj))
-                    {
-                        res = me.game.collide(addObj);
-                        checkCollision.removeRedStyle();
-                        me.game.remove(addObj);
-                        delete addObj;
-                        addObj = null;
-                        
-                        if( res && res.obj.mResource != 9 )
-                            break;
-                    }
-                    else{
-                        this.mWallObject[this.mIndex] = addObj;
-                        this.mIndex ++;
-                    }
-                    
-                    if(mPluse)
-                        mY += checkCollision.TileHeight;
-                    else
-                        mY -= checkCollision.TileHeight;
-                }
-            }
+            this.mWallObject[0].pos.x = mPos.x;
+            this.mWallObject[0].pos.y = mPos.y;
+            checkCollision.processCollision(this.mWallObject[0]);
+        }
+        else{
+            if(this.mWallObject[0].mfix != true)
+                this.mWallObject[0].mfix = true;
+            this.mStarti = this.removeUnFixedObject();
+            this.drawWall(mPos);
         }
     },
-    
-    test_processWallObject : function(){
-        var mPos = new me.Vector2d(100, 100);
-        assertNotNull(mPos);
-        assertNotNull(this.mWallObject[0]);
-        this.processWallObject(mPos);
-        assertNotEquals(this.mIndex, 0);
+    drawWall : function(mPos){
+        var startX = this.mWallObject[this.mStarti].pos.x / checkCollision.TileWidth;
+        var startY = this.mWallObject[this.mStarti].pos.y / checkCollision.TileHeight;
+        var endX = mPos.x / checkCollision.TileWidth;
+        var endY = mPos.y / checkCollision.TileHeight;
+        var finder = new PF.BestFirstFinder();
+        var cloneGrid = MapMatrix.MapGrid.clone();
+        var path = finder.findPath(startX, startY, endX, endY, cloneGrid);
+        var i = 0;
+        for(i = 1; i < path.length; i ++)
+            this.addWallObject(path[i][0] * checkCollision.TileWidth, path[i][1] * checkCollision.TileHeight);
     },
-    
-    /* process wall objects  */
-    processWallObject : function(mPos){
-        if( this.mWallObject[this.mIndex - 1].pos.x != mPos.x ||
-            this.mWallObject[this.mIndex - 1].pos.y != mPos.y )
-        {
-            this.removeWallObject(1);
-            this.drawWallObject(mPos);
-        }
-    },
-    
-    test_setFixFlag : function() {
-        var mIndex = 0;
-        
-        this.setFixFlag();
-        for(mIndex = 0; mIndex < this.mWallObject.length; mIndex ++)
-        {
-            assertNotNull(this.mWallObject[mIndex]);
-            assertTrue(this.mWallObject[mIndex].mfix, true);
-        }
-    },
-    
     setFixFlag : function(){
         var mIndex = 0;
-        
         for(mIndex = 0; mIndex < this.mWallObject.length; mIndex ++)
+        {
             this.mWallObject[mIndex].mfix = true;
+            MapMatrix.setUnWalkable(this.mWallObject[mIndex].pos.x, this.mWallObject[mIndex].pos.y, this.mWallObject[mIndex].width, this.mWallObject[mIndex].height);
+        }
     },
-    
+    setWalkable : function(){
+        var mIndex = 0;
+        for(mIndex = 0; mIndex < this.mWallObject.length; mIndex ++)
+        {
+            if(this.mWallObject[mIndex].mResource == 8)
+                MapMatrix.setWalkable(this.mWallObject[mIndex].pos.x, this.mWallObject[mIndex].pos.y, this.mWallObject[mIndex].width, this.mWallObject[mIndex].height * 2);
+            else
+                MapMatrix.setWalkable(this.mWallObject[mIndex].pos.x, this.mWallObject[mIndex].pos.y, this.mWallObject[mIndex].width, this.mWallObject[mIndex].height);
+        }
+    },
+    setUnWalkable : function(){
+        var mIndex = 0;
+        for(mIndex = 0; mIndex < this.mWallObject.length; mIndex ++)
+        {
+            if(this.mWallObject[mIndex].mResource == 8)
+                MapMatrix.setUnWalkable(this.mWallObject[mIndex].pos.x, this.mWallObject[mIndex].pos.y, this.mWallObject[mIndex].width, this.mWallObject[mIndex].height * 2);
+            else
+                MapMatrix.setUnWalkable(this.mWallObject[mIndex].pos.x, this.mWallObject[mIndex].pos.y, this.mWallObject[mIndex].width, this.mWallObject[mIndex].height);
+        }
+    },
+    movePorcess : function(mX, mY){
+        var dtX = mX - this.WallPosX;
+        var dtY = mY - this.WallPosY;
+        this.WallPosX = mX;
+        this.WallPosY = mY;
+        var i = 0;
+        checkCollision.removeRedStyle();
+        for(i = 0; i < this.mWallObject.length; i ++)
+        {
+            this.mWallObject[i].pos.x += dtX;
+            this.mWallObject[i].pos.y += dtY;
+            
+            this.checkCollission(this.mWallObject[i]);
+        }
+    },
+    checkCollissionGroup : function(){
+        var mRet = false;
+        var i = 0;
+        for(i = 0; i < this.mWallObject.length; i ++)
+        {
+            if(this.checkCollission(this.mWallObject[i]))
+            {
+                mRet = true;
+                break;
+            }
+        }
+        return mRet;
+    },
+    checkCollission : function(Obj){
+        var mRet = true;
+        var mTemp1 = checkCollision.checkObjectCollision(Obj);
+        var mTemp2 = checkCollision.checkOutlineCollision(Obj);
+        if( mTemp1 && mTemp2)
+            mRet = false;
+        return mRet;
+    },
+    setPrePostoCurPos : function(){
+        for(i = 0; i < this.mWallObject.length; i ++)
+        {
+            this.mWallObject[i].preX = this.mWallObject[i].pos.x;
+            this.mWallObject[i].preY = this.mWallObject[i].pos.y;
+        }
+    },
+    setCurPostoPrePos : function(){
+        for(i = 0; i < this.mWallObject.length; i ++)
+        {
+            this.mWallObject[i].pos.x = this.mWallObject[i].preX;
+            this.mWallObject[i].pos.y = this.mWallObject[i].preY;
+        }
+    },
 });
-
 var makeJsonString = {
     /*
     JsonString = {
@@ -1421,200 +950,140 @@ var makeJsonString = {
             {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234, 'Setting' : 'wewer'},
             {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234, 'Setting' : 'wewer'},
             {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234, 'Setting' : 'wewer'},
-        ]
+            {'Resource' : 101, Walls : [{'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234}, {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234},{...}]},
+            {'Resource' : 101, Walls : [{'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234}, {'Resource' : 1, 'id' : 3, 'PosX' : 123, 'PosY' : 234},{...}]},
+        ],
     }
     */
     JsonString : "",
-    
-    test_init : function(){
-        this.init();
-        assertEquals(this.JsonString, "");
-    },
-    
     init : function(){
         this.JsonString = "";
     },
-    
-    test_setFirstString : function(){
-        this.setFirstString();
-        assertEquals(this.JsonString, '{"Objects" : [');
-    },
-    
     setFirstString : function(){
         this.JsonString = '{"Objects" : [';
     },
-    
-    test_makeObjecttoString : function(){
-        var mTemp1 = new iWallObject(0, 0, {}, 1);
-        assertNotNull(mTemp1);
-        
-        this.makeObjecttoString(mTemp1, true);
-        assertEquals(this.JsonString, '{"Resource":9,"id":1,"PosX":0,"PosY":0,"Fix":false,"angle":0,"animation":"hWall"}');
-    },
-    
     makeObjecttoString : function(curObj, firstItem){
+        var i = 0;
+        var subObj = null;
+        var subfirst = true;
         if(curObj)
         {
             if(!firstItem)
                 this.JsonString += ',';
-                
             this.JsonString += '{"Resource":' + curObj.mResource;
             this.JsonString += ',"id":' + curObj.mid;
-            this.JsonString += ',"PosX":' + curObj.pos.x;
-            this.JsonString += ',"PosY":' + curObj.pos.y;
-            this.JsonString += ',"Fix":' + curObj.mfix;
-            this.JsonString += ',"angle":' + curObj.angle;
-            
-            this.JsonString += ',"animation":"' + curObj.current.name;
-            this.JsonString += '"}';
+            if(curObj.mResource == 101)
+            {
+                this.JsonString += ',"Walls":[';
+                for(i = 0; i < curObj.mWallObject.length; i ++)
+                {
+                    subObj = curObj.mWallObject[i];
+                    if(subObj)
+                    {
+                        this.makeObjecttoString(subObj, subfirst);
+                        if(subfirst == true)
+                            subfirst = false;
+                    }
+                }
+                this.setEndString();
+            }
+            else{
+                this.JsonString += ',"PosX":' + curObj.pos.x;
+                this.JsonString += ',"PosY":' + curObj.pos.y;
+                this.JsonString += ',"Fix":' + curObj.mfix;
+                this.JsonString += ',"angle":' + curObj.angle;
+                this.JsonString += ',"animation":"' + curObj.current.name;
+                this.JsonString += '"}';
+            }
         }
     },
-    
-    test_setEndString : function(){
-        this.JsonString = "";
-        this.setEndString();
-        assertEquals(this.JsonString, ']}');
-    },
-    
     setEndString : function(){
         this.JsonString += ']}';
     },
-    
-    test_makeString : function(){
-        var mTemp1 = new iWallObject(32, 32, {}, 1);
-        assertNotNull(mTemp1);
-        me.game.add(mTemp1);
-        
-        this.makeString();
-        assertEquals(this.JsonString, '{"Objects" : [{"Resource":9,"id":1,"PosX":32,"PosY":32,"Fix":false,"angle":0,"animation":"hWall"}]}');
-    },
-    
     makeString : function(){
         var mX = 0;
         var mY = 0;
         var TempObject = new ItemObject(0, 0, {}, 9);
         var firstFlag = true;
         var tempPos = new me.Vector2d(0, 0);
-        
+        var res = null;
         this.init();
-        
         this.setFirstString();
         me.game.add(TempObject, 1);
         TempObject.updateColRect(1, checkCollision.TileWidth -2, 1, checkCollision.TileHeight - 2);
-        
         for(mX = 0; mX < g_resources_size[1].width; mX += checkCollision.TileWidth)
         {
             for(mY = 0; mY < g_resources_size[1].height; mY += checkCollision.TileHeight)
             {
                 TempObject.pos.x = mX;
                 TempObject.pos.y = mY;
-                
                 res = me.game.collide(TempObject);
-                
                 if(res)
                 {
                     tempPos.x = res.obj.pos.x;
                     tempPos.y = res.obj.pos.y;
-                    
-                    if(res.obj.mResource == 8)
+                    if(res.obj.mResource != 8 && res.obj.mResource != 9)
                     {
-                        tempPos.x += res.obj.collisionBox.colPos.x;
-                        tempPos.y += res.obj.collisionBox.colPos.y;
-                    }
-                    if(TempObject.containsPoint(tempPos) && res.obj.mfix)
-                    {
-                        this.makeObjecttoString(res.obj, firstFlag);
-                    
-                        if(firstFlag == true)
-                            firstFlag = false;
+                        if(TempObject.containsPoint(tempPos) && res.obj.mfix)
+                        {
+                            this.makeObjecttoString(res.obj, firstFlag);
+                            if(firstFlag == true)
+                                firstFlag = false;
+                        }
                     }
                 }
             }
         }
-        
+        var i = 0;
+        for(i = 0; i < ObjectsMng.Objects.length; i ++)
+        {
+            res = ObjectsMng.Objects[i];
+            if(res)
+            {
+                this.makeObjecttoString(res, firstFlag);
+                if(firstFlag == true)
+                    firstFlag = false;
+            }
+        }
         this.setEndString();
         me.game.remove(TempObject);
         delete TempObject;
         delete tempPos;
-        
         return this.JsonString;
     },
     
 };
 
-var LoadDraw = {
-    test_draw : function(){
-        var jString = '{"Objects" : [{"Resource":9,"id":1,"PosX":32,"PosY":32,"Fix":false,"angle":0,"animation":"hWall"}]}';
-        assertTrue(this.draw(jString));
+var ObjectsMng = {
+    Objects : [],
+    init : function(){
+        this.Objects = [];
     },
-    
-    draw : function(JString){
+    addObject : function(Obj){
+        if(Obj)
+            this.Objects[this.Objects.length] = Obj;
+    },
+    removeObject : function(Obj){
+        if(Obj)
+            this.Objects.remove(Obj);
+    },
+    getSize : function(){
+        return this.Objects.length;
+    },
+    searchWallGroupfromWall : function(Obj){
         var i = 0;
-        var ParseStr = null;
-        var ParseItem = null;
-        var OneObject = null;
-        ParseStr = JSON.parse(JString);
-        if(!ParseStr)
+        var mObj = null;
+        if( Obj && (Obj.mResource == 9 || Obj.mResource == 8) )
         {
-            alert("Unknown string format!");
-            return false;
-        }
-        
-        for(i = 0; i < ParseStr.Objects.length; i ++){
-            ParseItem = ParseStr.Objects[i];
-            if(!ParseItem)
-                break;
-                
-            switch(ParseItem.Resource){
-            case 3://weapon
-                OneObject = new iWeaponObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
-            case 4://engine
-                OneObject = new iEngineObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
-            case 5://power
-                OneObject = new iPowerObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
-            case 6://console
-                OneObject = new iConsoleObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
-            case 7://component
-                OneObject = new iComponentObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.setCurrentAnimation(ParseItem.animation);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
-            case 8://door
-                OneObject = new iDoorObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.setCurrentAnimation(ParseItem.animation);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
-            case 9://wall
-                OneObject = new iWallObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-                OneObject.angle = ParseItem.angle;
-                OneObject.mfix = ParseItem.Fix;
-                me.game.add( OneObject, 100 );
-                break;
+            for(i = 0; i < this.getSize(); i ++)
+            {
+                mObj = this.Objects[i];
+                if(mObj && mObj.mResource == 101 && mObj.mid == Obj.mid)
+                    return mObj;
             }
         }
-        me.game.sort();
-        me.game.repaint();
-        return true;
+        return null;
     },
+    
     
 };

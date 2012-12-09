@@ -8,65 +8,72 @@
         <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
         <link rel="stylesheet" type="text/css" href="css/main.css" title="style" />
 
-		<script type="text/javascript" src="js/vendor/ajaxupload.3.5.js" ></script>        
+        <script type="text/javascript" src="js/vendor/ajaxupload.3.5.js" ></script>        
         <script type="text/javascript" src="js/vendor/jquery.js"></script>
-		<script type="text/javascript" src="js/vendor/melonJS-0.9.4-min.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.contextmenu.r2.js"></script>
+        <script type="text/javascript" src="js/vendor/melonJS-0.9.4-min.js"></script>
+        <script type="text/javascript" src="js/vendor/pathfinding-browser.min.js"></script>
+        <script type="text/javascript" src="js/finding_matrix.js"></script>
         <script type="text/javascript" src="js/plugins.js"></script>
         <script type="text/javascript" src="js/mainlink.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
 
     </head>
-    
+
     <body bgcolor="black">
-    	<div id="itemboard">
-        	<div class="empty">&nbsp;</div>
+        <div id="itemboard">
+            <div class="empty">&nbsp;</div>
                 <div id="item_main">
                     <div class="items">
                         <img id="item_weapon" src="data/img/render/weapon_01.png" width="64px" height="43px" style="background-color:#000000" />
                         <span>&nbsp;Weapon</span>
                      </div>
-                     
+
                     <div class="items" >
                         <img id="item_engine" src="data/img/render/engine_01.png" width="64px" height="43px" style="background-color:#000000" />
                         <span>&nbsp;Engine</span>
                     </div>
-                    
+
                     <div class="items" >
                         <img id="item_power" src="data/img/render/power_01.png" width="43px" height="43px" style="background-color:#000000" />
                         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Power</span>
                     </div>
-                    
+
                     <div class="items">
                         <img id="item_console" src="data/img/render/console_02.png" width="43px" height="43px" style="background-color:#000000"/>
                         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console</span>
                     </div>
-                    
+
                     <div class="items">
                         <img id="item_components" src="data/img/render/components_02.png" width="43px" height="43px" style="background-color:#000000"/>
                         <span>&nbsp;&nbsp;Component</span>
                     </div>
-                    
+
                     <div class="items">
                         <img id="item_door" src="data/img/render/door_02.png" width="64px" height="43px" style="background-color:#000000"/>
                         <span>&nbsp;Door</span>
                     </div>
-                    
+
                     <div class="items">
                         <img id="item_wall" src="data/img/render/wall_02.png" width="43px" height="43px" style="background-color:#000000"/>
                         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wall</span>
                     </div>
-                    
+
                     <div class="blackempty">&nbsp;</div>
                     <div class="blackempty">
-                    	<button class = "globalbutton" id="file_save">Save</button>
-                    	<button class = "globalbutton" id="file_load">Load</button>
+                        <button class = "globalbutton" id="file_save">Save</button>
+                        <button class = "globalbutton" id="file_load">Load</button>
                     </div>
-				</div>
-	        <div class="empty">&nbsp;</div>
+                </div>
+            <div class="empty">&nbsp;</div>
         </div>
-        
         <div id="info">
             <div id="jsapp"></div>
+        </div>
+        <div class="contextMenu" id="myMenu1">
+            <ul>
+                <li id="delete"><img src="data/icon/cross.png">Delete</li>
+            </ul>
         </div>
     </body>
 </html>

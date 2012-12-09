@@ -36,7 +36,6 @@
             if(!feof($fHandle)){
                 echo "Error: unexpected fgets() fail\n";
             }
-            
             fclose($fHandle);
             unlink($filePath);
         }
