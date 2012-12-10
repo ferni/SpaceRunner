@@ -15,7 +15,7 @@ var g_resources = [
                     {name: "component",        type: "image",     src: "data/img/render/components_01.png"},
                     {name: "door",            type: "image",     src: "data/img/render/door_01.png"},
                     {name: "wall",            type: "image",     src: "data/img/render/wall_001.png"},
-                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"},
+                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"}
                 ];
 
 var g_resources_size = [
@@ -28,7 +28,7 @@ var g_resources_size = [
                     {name: "console",         width: 32,         height: 32},
                     {name: "component",        width: 64,         height: 64},
                     {name: "door",            width: 64,         height: 32},
-                    {name: "wall",            width: 32,         height: 32},
+                    {name: "wall",            width: 32,         height: 32}
                         ];
 
 //indexes for the g_resources array.
@@ -60,19 +60,19 @@ var colWeapon = [
                     {x: 13, y: 6},
                     {x: 12, y: 7},
                     {x: 11, y: 8},
-                    {x: 10, y: 9}, 
+                    {x: 10, y: 9} 
                  ];
 var colEngine = [
                     {x: 0, y: 1}, 
                     {x: 3, y: 4},
                     {x: 3, y: 5},
                     {x: 3, y: 6},
-                    {x: 0, y: 9}, 
+                    {x: 0, y: 9} 
                  ];
 var colPower = [
                 {x: 1, y : 1, w : 11, h : 2},
                 {x: 1, y : 9, w : 11, h : 2},
-                {x: 4, y : 3, w : 2 , h : 6},
+                {x: 4, y : 3, w : 2 , h : 6}
                 ];
 var select_item = -1;
 var isSelectObject = false;
@@ -333,7 +333,7 @@ var checkCollision = {
     },
     /* check and process collision of Power with outline */
     checkOutlineCollisionWithPower : function(CurObj){
-        var mRet = true;
+        var isClear = true;//doesn't collide with anything
         var mX = 0;
         var mY = 0;
         for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
@@ -343,11 +343,11 @@ var checkCollision = {
                 if( CurObj.getTileStyle(mX, mY) != 0 )
                 {
                     this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
+                    isClear = false;
                 }
             }
         }
-        return mRet;
+        return isClear;
     },
     /* check and process collision of Console with outline */
     checkOutlineCollisionWithConsole : function(CurObj){

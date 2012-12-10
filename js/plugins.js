@@ -35,6 +35,8 @@ var ItemObject = me.ObjectEntity.extend({
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
             this.name = "Building";
         }
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
     /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
     getTileStyle : function(pX, pY){
@@ -69,22 +71,7 @@ var ItemObject = me.ObjectEntity.extend({
     },
     onCollision : function(res, obj){
     },
-});
-
-
-// weapon object 
-var iWeaponObject = ItemObject.extend({
-    // init function
-    isDrag : false,
-    preX : 0,
-    preY : 0,
-    init : function(x, y, settings, mID){
-        this.mResource = 3;
-        this.mid = mID;
-        this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
+    //drag functionality
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -116,13 +103,29 @@ var iWeaponObject = ItemObject.extend({
             this.setUnWalkable();
             displayDefaultCursor();
         }
+    }
+    
+});
+
+
+// weapon object 
+var iWeaponObject = ItemObject.extend({
+    // init function
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    init : function(x, y, settings, mID){
+        this.mResource = 3;
+        this.mid = mID;
+        this.parent(x, y, settings, this.mResource);
+        
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
+    }
 });
 // engine object 
 var iEngineObject = ItemObject.extend({
@@ -134,46 +137,13 @@ var iEngineObject = ItemObject.extend({
         this.mResource = 4;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    onMouseDown : function() {
-        if(select_item == -1)
-        {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
+    }
 });
 
 
@@ -187,39 +157,6 @@ var iPowerObject = ItemObject.extend({
         this.mResource = 5;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    onMouseDown : function() {
-        if(select_item == -1)
-        {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
@@ -239,39 +176,6 @@ var iConsoleObject = ItemObject.extend({
         this.mResource = 6;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    onMouseDown : function() {
-        if(select_item == -1)
-        {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
@@ -390,8 +294,6 @@ var iComponentObject = ItemObject.extend({
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 15;
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
     onMouseDown : function() {
         if(select_item == -1)
