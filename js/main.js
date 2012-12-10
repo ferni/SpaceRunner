@@ -30,6 +30,26 @@ var g_resources_size = [
                     {name: "door",            width: 64,         height: 32},
                     {name: "wall",            width: 32,         height: 32},
                         ];
+
+//indexes for the g_resources array.
+var idx = {
+    weapon: 3,
+    engine: 4,
+    power: 5,
+    console: 6,
+    component: 7,
+    door: 8,
+    wall: 9
+};
+
+//returns the name of the object given the index
+function getItemName(index){
+    if(!g_resources[index]){
+        return null;
+    }
+    return g_resources[index].name;
+}
+
 /*collision detection point */
 var colWeapon = [
                     {x: 10, y: 1}, 
@@ -474,7 +494,7 @@ var PlayScreen = me.ScreenObject.extend({
         if( me.input.isKeyPressed("escape") )
         {
             if((SelectObject && select_item != -1) || DeleteObject)
-                onMouseClickItem(-1);
+                onMouseClickItem();
         }
     },
     mouseDbClick : function(e) {
