@@ -71,6 +71,7 @@ var ItemObject = me.ObjectEntity.extend({
     },
     onCollision : function(res, obj){
     },
+    
     //drag functionality
     onMouseDown : function() {
         if(select_item == -1)
@@ -103,6 +104,118 @@ var ItemObject = me.ObjectEntity.extend({
             this.setUnWalkable();
             displayDefaultCursor();
         }
+    },
+    
+    // ------ Collisions ------
+    checkOutlineCollision: function () {
+        var isClear = true;//doesn't collide with anything
+        var mX = 0;
+        var mY = 0;
+        var tileWidth = me.game.currentLevel.tilewidth;
+        var tileHeight = me.game.currentLevel.tileheight;
+        for(mX = this.pos.x + tileWidth / 2; mX < this.pos.x + this.width; mX += tileWidth)
+        {
+            for(mY = this.pos.y + tileHeight / 2; mY < this.pos.y + this.height; mY += tileHeight)
+            {
+                if( this.getTileStyle(mX, mY) != 0 )
+                {
+                    checkCollision.printRedStyle( mX - (tileWidth / 2), mY - (tileHeight / 2) );
+                    isClear = false;
+                }
+            }
+        }
+        return isClear;   
+    },
+    /*Checks compliance with "onlyIn" placement rule*/
+    checkOnlyInCollision: function () {
+        var isClear = true;
+        
+         var rectVector = new me.Vector2d(0, 0);
+        var possibleRect = new me.Rect(rectVector, 0, 0);
+        var checkPoint = new me.Vector2d(0, 0);
+        var i = 0;
+        
+        var tileWidth = me.game.currentLevel.tilewidth;
+        var tileHeight = me.game.currentLevel.tileheight;
+        
+        for(i = 0; i < this.placement.onlyIn.length; i ++)
+        {
+            rectVector.y = this.placement.onlyIn[i].y * tileHeight;
+            if(this.pos.y == rectVector.y)
+            {
+                rectVector.x = this.placement.onlyIn[i].x * tileWidth;
+                rectVector.y = this.placement.onlyIn[i].y * tileHeight;
+                possibleRect.set(rectVector, this.width, this.height);
+                break;
+            }
+        }
+        for(checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += tileWidth)
+        {
+            for(checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += tileHeight)
+            {
+                if(!possibleRect.containsPoint(checkPoint))
+                {
+                    checkCollision.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
+                    isClear = false;
+                }
+            }
+        }
+        delete possibleRect;
+        delete rectVector;
+        delete checkPoint;
+        return isClear;
+    },
+    checkObjectCollision:function () {
+        var res = me.game.collide(this);
+        var checkPoint = new me.Vector2d(0, 0);
+        var tileWidth = me.game.currentLevel.tilewidth;
+        var tileHeight = me.game.currentLevel.tileheight;
+        if(!res)
+             return true;
+        for(checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += tileWidth)
+        {
+            for(checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += tileHeight)
+            {
+                this.updateColRect(checkPoint.x - this.pos.x, tileWidth - 2, checkPoint.y - this.pos.y, tileHeight - 2);
+                res = me.game.collide(this);
+                if(res){
+                    checkCollision.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
+                }
+            }
+        }
+        this.updateColRect(0, this.width, 0, this.height);
+        
+        delete checkPoint;
+        /* process red style rect */
+        return false;
+    },
+    /*This is the general, all-encompassing function for checking collisions*/
+    processCollision: function () {
+       var collides = true;
+        /* remove red style */
+        checkCollision.removeRedStyle();
+        /* check collision */
+        var objectsClear = this.checkObjectCollision();
+        var outlineClear = true;
+        var onlyInClear = true;
+        if(this.placement.onlyIn === null || this.placement.onlyIn.length <= 0) {
+            outlineClear = this.checkOutlineCollision();
+        } else {
+            onlyInClear = this.checkOnlyInCollision();   
+        }
+        if( objectsClear && outlineClear && onlyInClear)
+            collides = false;
+        return collides;  
+    },
+
+    /*Rules for placement
+        override this in any object with special placement rules
+        */
+    placement: {
+        /*An array of {x:<num>, y:<num>}*/
+        /*Constrain the object to be placed in those tiles.*/
+        onlyIn: [],
+        onlyNextTo: []
     }
     
 });
@@ -125,6 +238,19 @@ var iWeaponObject = ItemObject.extend({
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    placement: {
+        onlyIn: [
+                    {x: 10, y: 1}, 
+                    {x: 11, y: 2},
+                    {x: 12, y: 3},
+                    {x: 13, y: 4},
+                    {x: 14, y: 5},
+                    {x: 13, y: 6},
+                    {x: 12, y: 7},
+                    {x: 11, y: 8},
+                    {x: 10, y: 9} 
+                 ]
     }
 });
 // engine object 
@@ -143,6 +269,15 @@ var iEngineObject = ItemObject.extend({
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    placement: {
+        onlyIn:[
+                    {x: 0, y: 1}, 
+                    {x: 3, y: 4},
+                    {x: 3, y: 5},
+                    {x: 3, y: 6},
+                    {x: 0, y: 9} 
+                 ]
     }
 });
 
@@ -163,7 +298,8 @@ var iPowerObject = ItemObject.extend({
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
+    }
+    
 });
 
 // console object class 
@@ -274,6 +410,16 @@ var iConsoleObject = ItemObject.extend({
         this.pos.y = mY;
         return mRet;
     },
+    //overrides ItemObject.checkOutlineCollision
+    checkOutlineCollision: function () {
+        var isClear = true;
+        isClear = this.parent();
+        if(!this.checkCollisionAround()){
+            checkCollision.printRedStyle(this.pos.x, this.pos.y);
+            isClear = false;
+        }
+        return isClear;
+    }
 });
 // component object class
 var iComponentObject = ItemObject.extend({
@@ -433,6 +579,60 @@ var iDoorObject = ItemObject.extend({
             mWallGroup.addOtherObject(this);
         this.updateColRect(0, this.width, 0, this.height);
     },
+    checkObjectCollision: function() {
+        var res = me.game.collide(this);
+        var checkPoint = new me.Vector2d(0, 0);
+        var mflag = true;
+        var tileWidth = me.game.currentLevel.tilewidth;
+        var tileHeight = me.game.currentLevel.tileheight;
+        if(this.rotateFlag == false)
+        {
+            for( checkPoint.x = 0 ; checkPoint.x < this.width; checkPoint.x += tileWidth )
+            {
+                this.updateColRect( checkPoint.x, tileWidth, 0, tileHeight );
+                res = me.game.collide( this );
+                if(this.mfix == true)
+                {
+                    if(res)
+                    {
+                        checkCollision.printRedStyle( this.pos.x + checkPoint.x, this.pos.y );
+                        mflag = false;
+                    }
+                }
+                else{
+                    if(!res ||res.obj.mResource != 9){
+                        checkCollision.printRedStyle( this.pos.x + checkPoint.x, this.pos.y );
+                        mflag = false;
+                    }
+                }
+            }
+            this.updateColRect(0, this.width, 0, this.height);
+        }
+        else{
+            for( checkPoint.y = 0 ; checkPoint.y < this.width; checkPoint.y += tileHeight )
+            {
+                this.updateColRect( 16, tileWidth, checkPoint.y - 16, tileHeight );
+                res = me.game.collide( this );
+                if(this.mfix == true)
+                {
+                    if(res)
+                    {
+                        checkCollision.printRedStyle( this.pos.x + 16,  this.pos.y - 16 + checkPoint.y );
+                        mflag = false;
+                    }
+                }
+                else{
+                    if(!res ||res.obj.mResource != 9){
+                        checkCollision.printRedStyle( this.pos.x + 16,  this.pos.y - 16 + checkPoint.y );
+                        mflag = false;
+                    }
+                }
+            }
+            this.updateColRect(16, this.height, 0 - 16, this.width);
+        }
+        return mflag;
+        
+    }
 //    update : function(){
 //        this.processRotate();
 //    },
