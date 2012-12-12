@@ -15,7 +15,7 @@ var g_resources = [
                     {name: "component",        type: "image",     src: "data/img/render/components_01.png"},
                     {name: "door",            type: "image",     src: "data/img/render/door_01.png"},
                     {name: "wall",            type: "image",     src: "data/img/render/wall_001.png"},
-                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"},
+                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"}
                 ];
 
 var g_resources_size = [
@@ -28,31 +28,34 @@ var g_resources_size = [
                     {name: "console",         width: 32,         height: 32},
                     {name: "component",        width: 64,         height: 64},
                     {name: "door",            width: 64,         height: 32},
-                    {name: "wall",            width: 32,         height: 32},
+                    {name: "wall",            width: 32,         height: 32}
                         ];
+
+//indexes for the g_resources array.
+var idx = {
+    weapon: 3,
+    engine: 4,
+    power: 5,
+    console: 6,
+    component: 7,
+    door: 8,
+    wall: 9
+};
+
+//returns the name of the object given the index
+function getItemName(index){
+    if(!g_resources[index]){
+        return null;
+    }
+    return g_resources[index].name;
+}
+
 /*collision detection point */
-var colWeapon = [
-                    {x: 10, y: 1}, 
-                    {x: 11, y: 2},
-                    {x: 12, y: 3},
-                    {x: 13, y: 4},
-                    {x: 14, y: 5},
-                    {x: 13, y: 6},
-                    {x: 12, y: 7},
-                    {x: 11, y: 8},
-                    {x: 10, y: 9}, 
-                 ];
-var colEngine = [
-                    {x: 0, y: 1}, 
-                    {x: 3, y: 4},
-                    {x: 3, y: 5},
-                    {x: 3, y: 6},
-                    {x: 0, y: 9}, 
-                 ];
+
 var colPower = [
                 {x: 1, y : 1, w : 11, h : 2},
                 {x: 1, y : 9, w : 11, h : 2},
-                {x: 4, y : 3, w : 2 , h : 6},
+                {x: 4, y : 3, w : 2 , h : 6}
                 ];
 var select_item = -1;
 var isSelectObject = false;
@@ -170,278 +173,10 @@ var checkCollision = {
         this.RedIndex = 0;
     },
     /**/
-    checkObjectCollision : function(CurObj){
-        var res = me.game.collide(CurObj);
-        var checkPoint = new me.Vector2d(0, 0);
-        var mflag = true;
-        if(CurObj.mResource == 8){//door
-            if(CurObj.rotateFlag == false)
-            {
-                for( checkPoint.x = 0 ; checkPoint.x < CurObj.width; checkPoint.x += this.TileWidth )
-                {
-                    CurObj.updateColRect( checkPoint.x, this.TileWidth, 0, this.TileHeight );
-                    res = me.game.collide( CurObj );
-                    if(CurObj.mfix == true)
-                    {
-                        if(res)
-                        {
-                            this.printRedStyle( CurObj.pos.x + checkPoint.x, CurObj.pos.y );
-                            mflag = false;
-                        }
-                    }
-                    else{
-                        if(!res ||res.obj.mResource != 9){
-                            this.printRedStyle( CurObj.pos.x + checkPoint.x, CurObj.pos.y );
-                            mflag = false;
-                        }
-                    }
-                }
-                CurObj.updateColRect(0, CurObj.width, 0, CurObj.height);
-            }
-            else{
-                for( checkPoint.y = 0 ; checkPoint.y < CurObj.width; checkPoint.y += this.TileHeight )
-                {
-                    CurObj.updateColRect( 16, this.TileWidth, checkPoint.y - 16, this.TileHeight );
-                    res = me.game.collide( CurObj );
-                    if(CurObj.mfix == true)
-                    {
-                        if(res)
-                        {
-                            this.printRedStyle( CurObj.pos.x + 16,  CurObj.pos.y - 16 + checkPoint.y );
-                            mflag = false;
-                        }
-                    }
-                    else{
-                        if(!res ||res.obj.mResource != 9){
-                            this.printRedStyle( CurObj.pos.x + 16,  CurObj.pos.y - 16 + checkPoint.y );
-                            mflag = false;
-                        }
-                    }
-                }
-                CurObj.updateColRect(16, CurObj.height, 0 - 16, CurObj.width);
-            }
-            return mflag;
-        }
-        else
-        {
-            if(!res)
-                return true;
-            for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-            {
-                for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-                {
-                    CurObj.updateColRect(checkPoint.x - CurObj.pos.x, this.TileWidth - 2, checkPoint.y - CurObj.pos.y, this.TileHeight - 2);
-                    res = me.game.collide(CurObj);
-                    if(res){
-                        this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    }
-                }
-            }
-            CurObj.updateColRect(0, CurObj.width, 0, CurObj.height);
-        }
-        delete checkPoint;
-        /* process red style rect */
-        return false;
-    },
-    /* check and process collision of Weapon object with outline */
-    checkOutlineCollisionWithWeapon : function(CurObj){
-        var rectVector = new me.Vector2d(0, 0);
-        var PossibleRect = new me.Rect(rectVector, 0, 0);
-        var checkPoint = new me.Vector2d(0, 0);
-        var i = 0;
-        var mRet = true;
-        for(i = 0; i < colWeapon.length; i ++)
-        {
-            rectVector.y = colWeapon[i].y * this.TileHeight;
-            if(CurObj.pos.y == rectVector.y)
-            {
-                rectVector.x = colWeapon[i].x * this.TileWidth;
-                rectVector.y = colWeapon[i].y * this.TileHeight;
-                PossibleRect.set(rectVector, CurObj.width, CurObj.height);
-                break;
-            }
-        }
-        for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-        {
-            for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-            {
-                if(!PossibleRect.containsPoint(checkPoint))
-                {
-                    this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    mRet = false;
-                }
-            }
-        }
-        delete PossibleRect;
-        delete rectVector;
-        delete checkPoint;
-        return mRet;
-    },
-    /* check and process collision of Engine object with outline */
-    checkOutlineCollisionWithEngine : function(CurObj){
-        var rectVector = new me.Vector2d(0, 0);
-        var PossibleRect = new me.Rect(rectVector, 0, 0);
-        var checkPoint = new me.Vector2d(0, 0);
-        var i = 0;
-        var mRet = true;
-        for(i = 0; i < colEngine.length; i ++)
-        {
-            rectVector.y = colEngine[i].y * this.TileHeight;
-            if(CurObj.pos.y == rectVector.y)
-            {
-                rectVector.x = colEngine[i].x * this.TileWidth;
-                rectVector.y = colEngine[i].y * this.TileHeight;
-                PossibleRect.set(rectVector, CurObj.width, CurObj.height);
-                break;
-            }
-        }
-        for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-        {
-            for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-            {
-                if(!PossibleRect.containsPoint(checkPoint))
-                {
-                    this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    mRet = false;
-                }
-            }
-        }
-        delete PossibleRect;
-        delete rectVector;
-        delete checkPoint;
-        return mRet;
-    },
-    /* check and process collision of Power with outline */
-    checkOutlineCollisionWithPower : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of Console with outline */
-    checkOutlineCollisionWithConsole : function(CurObj){
-        var mRet = true;
-        if(CurObj.getTileStyle(CurObj.pos.x + this.TileWidth / 2, CurObj.pos.y + this.TileHeight / 2) != 0)
-        {
-            this.printRedStyle(CurObj.pos.x, CurObj.pos.y);
-            mRet = false;
-        }
-        else if(!CurObj.checkCollisionAround()){
-            this.printRedStyle(CurObj.pos.x, CurObj.pos.y);
-            mRet = false;
-        }
-        return mRet;
-    },
-    /* check and process collision of Component with outline */
-    checkOutlineCollisionWithComponent : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of Door with outline */
-    checkOutlineCollisionWithDoor : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2));
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of Wall with outline */
-    checkOutlineCollisionWithWall : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of CurObj with outline */
-    checkOutlineCollision : function(CurObj){
-        var mRet = false;
-        if(!CurObj)
-            return false;
-        switch(CurObj.mResource)
-        {
-        case 3:// weapon
-            mRet = this.checkOutlineCollisionWithWeapon(CurObj);
-            break;
-        case 4: //engine
-            mRet = this.checkOutlineCollisionWithEngine(CurObj);
-            break;
-        case 5: // power 
-            mRet = this.checkOutlineCollisionWithPower(CurObj);
-            break;
-        case 6: // console
-            mRet = this.checkOutlineCollisionWithConsole(CurObj);
-            break;
-        case 7: // component
-            mRet = this.checkOutlineCollisionWithComponent(CurObj);
-            break;
-        case 8: // door
-            mRet = this.checkOutlineCollisionWithDoor(CurObj);
-            break;
-        case 9: // wall 
-            mRet = this.checkOutlineCollisionWithWall(CurObj);
-            break;
-        }
-        /* process red style rect */
-        return mRet;
-    },
+    
     /* check and process collision of obj*/
     processCollision : function(CurObj){
-        var mRet = true;
-        var mTemp1 = false;
-        var mTemp2 = false;
-        /* remove red style */
-        this.removeRedStyle();
-        /* check collision */
-        mTemp1 = this.checkObjectCollision(CurObj);
-        mTemp2 = this.checkOutlineCollision(CurObj);
-        if( mTemp1 && mTemp2)
-            mRet = false;
-        return mRet;
+        return CurObj.processCollision();
     },
     
 };
@@ -474,7 +209,7 @@ var PlayScreen = me.ScreenObject.extend({
         if( me.input.isKeyPressed("escape") )
         {
             if((SelectObject && select_item != -1) || DeleteObject)
-                onMouseClickItem(-1);
+                onMouseClickItem();
         }
     },
     mouseDbClick : function(e) {
