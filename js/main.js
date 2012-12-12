@@ -100,7 +100,7 @@ var jsApp = {
     },
     // get tile row and col from pixels
     getTilePosition: function(x, y) {
-        var pos = [];
+        var pos = {};
         pos.x = Math.floor(x / me.game.currentLevel.tilewidth);
         pos.y = Math.floor(y / me.game.currentLevel.tileheight);
         return pos;

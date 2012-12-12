@@ -33,7 +33,9 @@ var ItemObject = me.ObjectEntity.extend({
             this.collidable = true;
             this.type =  g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
+            
             this.name = "Building";
+            this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.tileWidth, this.tileHeight));
         }
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
@@ -108,63 +110,11 @@ var ItemObject = me.ObjectEntity.extend({
     
     // ------ Collisions ------
     checkOutlineCollision: function () {
-        var isClear = true;//doesn't collide with anything
-        var mX = 0;
-        var mY = 0;
-        var tileWidth = me.game.currentLevel.tilewidth;
-        var tileHeight = me.game.currentLevel.tileheight;
-        for(mX = this.pos.x + tileWidth / 2; mX < this.pos.x + this.width; mX += tileWidth)
-        {
-            for(mY = this.pos.y + tileHeight / 2; mY < this.pos.y + this.height; mY += tileHeight)
-            {
-                if( this.getTileStyle(mX, mY) != 0 )
-                {
-                    checkCollision.printRedStyle( mX - (tileWidth / 2), mY - (tileHeight / 2) );
-                    isClear = false;
-                }
-            }
-        }
-        return isClear;   
+        var position = jsApp.getTilePosition(this.pos.x, this.pos.y);
+        var map = charMap.get();
+        return _.every(this.placementRules, function(rule) { return rule.compliesAt(position.x, position.y, map); });
     },
-    /*Checks compliance with "onlyIn" placement rule*/
-    checkOnlyInCollision: function () {
-        var isClear = true;
-        
-         var rectVector = new me.Vector2d(0, 0);
-        var possibleRect = new me.Rect(rectVector, 0, 0);
-        var checkPoint = new me.Vector2d(0, 0);
-        var i = 0;
-        
-        var tileWidth = me.game.currentLevel.tilewidth;
-        var tileHeight = me.game.currentLevel.tileheight;
-        
-        for(i = 0; i < this.placement.onlyIn.length; i ++)
-        {
-            rectVector.y = this.placement.onlyIn[i].y * tileHeight;
-            if(this.pos.y == rectVector.y)
-            {
-                rectVector.x = this.placement.onlyIn[i].x * tileWidth;
-                rectVector.y = this.placement.onlyIn[i].y * tileHeight;
-                possibleRect.set(rectVector, this.width, this.height);
-                break;
-            }
-        }
-        for(checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += tileWidth)
-        {
-            for(checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += tileHeight)
-            {
-                if(!possibleRect.containsPoint(checkPoint))
-                {
-                    checkCollision.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    isClear = false;
-                }
-            }
-        }
-        delete possibleRect;
-        delete rectVector;
-        delete checkPoint;
-        return isClear;
-    },
+    
     checkObjectCollision:function () {
         var res = me.game.collide(this);
         var checkPoint = new me.Vector2d(0, 0);
@@ -196,27 +146,13 @@ var ItemObject = me.ObjectEntity.extend({
         checkCollision.removeRedStyle();
         /* check collision */
         var objectsClear = this.checkObjectCollision();
-        var outlineClear = true;
-        var onlyInClear = true;
-        if(this.placement.onlyIn === null || this.placement.onlyIn.length <= 0) {
-            outlineClear = this.checkOutlineCollision();
-        } else {
-            onlyInClear = this.checkOnlyInCollision();   
-        }
-        if( objectsClear && outlineClear && onlyInClear)
+        var outlineClear = this.checkOutlineCollision();
+        
+        if( objectsClear && outlineClear)
             collides = false;
         return collides;  
     },
-
-    /*Rules for placement
-        override this in any object with special placement rules
-        */
-    placement: {
-        /*An array of {x:<num>, y:<num>}*/
-        /*Constrain the object to be placed in those tiles.*/
-        onlyIn: [],
-        onlyNextTo: []
-    }
+    placementRules: []
     
 });
 
@@ -228,30 +164,22 @@ var iWeaponObject = ItemObject.extend({
     preX : 0,
     preY : 0,
     init : function(x, y, settings, mID){
+        this.tileWidth = 2;
+        this.tileHeight = 2;
         this.mResource = 3;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
         
+        /*this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._front, 
+                                                       inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));*/
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    placement: {
-        onlyIn: [
-                    {x: 10, y: 1}, 
-                    {x: 11, y: 2},
-                    {x: 12, y: 3},
-                    {x: 13, y: 4},
-                    {x: 14, y: 5},
-                    {x: 13, y: 6},
-                    {x: 12, y: 7},
-                    {x: 11, y: 8},
-                    {x: 10, y: 9} 
-                 ]
     }
+    
 });
 // engine object 
 var iEngineObject = ItemObject.extend({
@@ -262,22 +190,22 @@ var iEngineObject = ItemObject.extend({
     init : function(x, y, settings, mID){
         this.mResource = 4;
         this.mid = mID;
+        this.tileWidth = 2;
+        this.tileHeight = 2;
         this.parent(x, y, settings, this.mResource);
+        /*
+        this.placementRules = []; //remove space rule
+        //write custom space rule
+        this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._cleared, 
+                                                       inAll: [{x: 1, y:0},{x: 2, y: 0},{x:1, y:1},{x:2, y:1}]}));*/
+        /*this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._back, 
+                                                       inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));*/
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    placement: {
-        onlyIn:[
-                    {x: 0, y: 1}, 
-                    {x: 3, y: 4},
-                    {x: 3, y: 5},
-                    {x: 3, y: 6},
-                    {x: 0, y: 9} 
-                 ]
     }
 });
 
