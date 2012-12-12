@@ -24,6 +24,9 @@ var RedColorObject = me.ObjectEntity.extend({
 var ItemObject = me.ObjectEntity.extend({
     mfix : false,
     mid : 0,
+    isDrag : false,
+    preX : 0,
+    preY : 0,
     init : function (x, y, settings, iIndex){
         if( iIndex >= 0 )
         {
@@ -40,28 +43,6 @@ var ItemObject = me.ObjectEntity.extend({
         }
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
-    getTileStyle : function(pX, pY){
-        var tileLayer = me.game.currentLevel.getLayerByName("collision");
-        if(tileLayer == null)
-            return 0;
-        var tileId = tileLayer.getTileId(pX + 1, pY + 1);
-        if(tileId == null)
-            return 0;
-        var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
-        if(tileSet == null)
-            return 0;
-        var tilePro = tileSet.getTileProperties(tileId);
-        if(tilePro.isSolid)
-            return 2;
-        else if(tilePro.isPlatform)
-            return 1;
-        else if(tilePro.isLeftSlope)
-            return 3;
-        else if(tilePro.isRightSlope)
-            return 4;
-        return 0;
     },
     /* check if obj contains the specified line 
         sPos : start position
@@ -153,6 +134,12 @@ var ItemObject = me.ObjectEntity.extend({
             collides = false;
         return collides;  
     },
+    setWalkable : function(){
+            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
+    setUnWalkable : function(){
+        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
+    },
     placementRules: []
     
 });
@@ -161,9 +148,6 @@ var ItemObject = me.ObjectEntity.extend({
 // weapon object 
 var iWeaponObject = ItemObject.extend({
     // init function
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     init : function(x, y, settings, mID){
         this.size = [2, 2];
         this.mResource = 3;
@@ -172,20 +156,11 @@ var iWeaponObject = ItemObject.extend({
         
         this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._front, 
                                                        inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     }
     
 });
 // engine object 
 var iEngineObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 4;
@@ -199,42 +174,24 @@ var iEngineObject = ItemObject.extend({
                                                        inAll: [{x: 1, y:0},{x: 2, y: 0},{x:1, y:1},{x:2, y:1}]}));
         this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._back, 
                                                        inAll:[{ x: 0, y: 0 }, { x: 0, y: 1 }]}));
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     }
 });
 
 
 // power object 
 var iPowerObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 5;
         this.mid = mID;
         this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     }
     
 });
 
 // console object class 
 var iConsoleObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     
     // init function
     init : function(x, y, settings, mID){
@@ -242,12 +199,6 @@ var iConsoleObject = ItemObject.extend({
         this.mid = mID;
         this.size = [1, 1];
         this.parent(x, y, settings, this.mResource);
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     checkItemPos : function(res, mX, mY, de, mItem){
         var sPos = new me.Vector2d(0, 0);
@@ -353,9 +304,6 @@ var iConsoleObject = ItemObject.extend({
 });
 // component object class
 var iComponentObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 7;
@@ -375,34 +323,15 @@ var iComponentObject = ItemObject.extend({
     onMouseDown : function() {
         if(select_item == -1)
         {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
+            this.parent();
             this.setCurrentAnimation("idle");
-            this.setWalkable();
-            displayMoveCursor();
         }
     },
     onMouseUp : function(){
         if(this.isDrag == true)
         {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
+            this.parent();
             this.setCurrentAnimation("charge");
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
         }
     },
     setWalkable : function(){

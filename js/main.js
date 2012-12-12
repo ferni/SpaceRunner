@@ -53,9 +53,17 @@ function getItemName(index){
 }
 
 function getQueriedShip() {
+    var defaultShip = "small";
     var ship = getParameterByName("ship");
-    if(ship === null) return "small";
-    return ship;
+    if(ship === null) return defaultShip;
+    for (var i = 0; i < g_resources.length; i++) {
+        if(g_resources[i].name == ship && g_resources[i].type == "tmx") {
+            return ship;
+        }
+    }
+    alert("Ship \"" + ship + "\" doesn't exist. Loading \""+defaultShip+"\" instead.");
+    return defaultShip;
+    
 }
 
 
@@ -137,28 +145,6 @@ var checkCollision = {
     init : function(){
         this.TileWidth = me.game.currentLevel.tilewidth;
         this.TileHeight = me.game.currentLevel.tileheight;
-    },
-        /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
-    getCollisionTileStyle : function(pX, pY){
-        var tileLayer = me.game.currentLevel.getLayerByName("collision");
-        if(tileLayer == null)
-            return 0;
-        var tileId = tileLayer.getTileId(pX + 1, pY + 1);
-        if(tileId == null)
-            return 0;
-        var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
-        if(tileSet == null)
-            return 0;
-        var tilePro = tileSet.getTileProperties(tileId);
-        if(tilePro.isSolid)
-            return 2;
-        else if(tilePro.isPlatform)
-            return 1;
-        else if(tilePro.isLeftSlope)
-            return 3;
-        else if(tilePro.isRightSlope)
-            return 4;
-        return 0;
     },
     printRedStyle : function(mX, mY){
         this.RedScreen[this.RedIndex] = new RedColorObject(mX, mY, {});
