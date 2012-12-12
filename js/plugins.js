@@ -35,7 +35,8 @@ var ItemObject = me.ObjectEntity.extend({
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
             
             this.name = "Building";
-            this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.tileWidth, this.tileHeight));
+            this.placementRules = new Array();
+            this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
         }
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
@@ -164,14 +165,13 @@ var iWeaponObject = ItemObject.extend({
     preX : 0,
     preY : 0,
     init : function(x, y, settings, mID){
-        this.tileWidth = 2;
-        this.tileHeight = 2;
+        this.size = [2, 2];
         this.mResource = 3;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
         
-        /*this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._front, 
-                                                       inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));*/
+        this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._front, 
+                                                       inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
@@ -190,16 +190,15 @@ var iEngineObject = ItemObject.extend({
     init : function(x, y, settings, mID){
         this.mResource = 4;
         this.mid = mID;
-        this.tileWidth = 2;
-        this.tileHeight = 2;
+        this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
-        /*
+        
         this.placementRules = []; //remove space rule
         //write custom space rule
         this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._cleared, 
-                                                       inAll: [{x: 1, y:0},{x: 2, y: 0},{x:1, y:1},{x:2, y:1}]}));*/
-        /*this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._back, 
-                                                       inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));*/
+                                                       inAll: [{x: 1, y:0},{x: 2, y: 0},{x:1, y:1},{x:2, y:1}]}));
+        this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._back, 
+                                                       inAll:[{ x: 0, y: 0 }, { x: 0, y: 1 }]}));
     },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
@@ -219,6 +218,7 @@ var iPowerObject = ItemObject.extend({
     init : function(x, y, settings, mID){
         this.mResource = 5;
         this.mid = mID;
+        this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
     },
     setWalkable : function(){
@@ -235,10 +235,12 @@ var iConsoleObject = ItemObject.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
+    
     // init function
     init : function(x, y, settings, mID){
         this.mResource = 6;
         this.mid = mID;
+        this.size = [1, 1];
         this.parent(x, y, settings, this.mResource);
     },
     setWalkable : function(){
@@ -358,6 +360,7 @@ var iComponentObject = ItemObject.extend({
     init : function(x, y, settings, mID){
         this.mResource = 7;
         this.mid = mID;
+        this.size = [2, 2];
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 64;
@@ -574,6 +577,8 @@ var iWallObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 32;
         settings.spriteheight = 32;
+        
+        this.size = [1, 1];
         this.parent(x, y, settings, this.mResource);
         // add animation
         // add animation
