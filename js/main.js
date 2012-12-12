@@ -15,7 +15,8 @@ var g_resources = [
                     {name: "component",        type: "image",     src: "data/img/render/components_01.png"},
                     {name: "door",            type: "image",     src: "data/img/render/door_01.png"},
                     {name: "wall",            type: "image",     src: "data/img/render/wall_001.png"},
-                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"}
+                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"},
+                    {name: "test",          type: "tmx",       src: "data/outlines/test.tmx"}
                 ];
 
 var g_resources_size = [
@@ -28,7 +29,8 @@ var g_resources_size = [
                     {name: "console",         width: 32,         height: 32},
                     {name: "component",        width: 64,         height: 64},
                     {name: "door",            width: 64,         height: 32},
-                    {name: "wall",            width: 32,         height: 32}
+                    {name: "wall",            width: 32,         height: 32},
+                    {name: "test",         width: 576,     height: 384}
                         ];
 
 //indexes for the g_resources array.
@@ -50,13 +52,13 @@ function getItemName(index){
     return g_resources[index].name;
 }
 
-/*collision detection point */
+function getQueriedShip() {
+    var ship = getParameterByName("ship");
+    if(ship === null) return "small";
+    return ship;
+}
 
-var colPower = [
-                {x: 1, y : 1, w : 11, h : 2},
-                {x: 1, y : 9, w : 11, h : 2},
-                {x: 4, y : 3, w : 2 , h : 6}
-                ];
+
 var select_item = -1;
 var isSelectObject = false;
 var SelectObject = null;
@@ -122,7 +124,7 @@ var jsApp = {
     },
     initLevel : function(){
          me.game.reset();
-         me.levelDirector.loadLevel("small");
+         me.levelDirector.loadLevel(getQueriedShip());
 //         me.state.set(me.state.PLAY, GameScreen);
     },
 };
@@ -192,7 +194,7 @@ var PlayScreen = me.ScreenObject.extend({
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel("small");
+        me.levelDirector.loadLevel(getQueriedShip());
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
