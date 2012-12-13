@@ -1,8 +1,6 @@
 ﻿window.charMap = {
+    _current: null,
     codes: {
-        weapon: "W",
-        power: "P",
-        //etc
         _solid: "s",
         _front: "f",
         _back: "b",
@@ -30,22 +28,23 @@
         return charMap.codes._cleared;
     },
     get: function () {
+        if (this._current !== null) return this._current;
         var tileWidth = me.game.currentLevel.tilewidth;
         var tileHeight = me.game.currentLevel.tileheight;
         var y, x;
         var pixelPos = { x: tileWidth / 2, y: tileHeight / 2 };
-        var map = new Array();
+        this._current = new Array();
         for (y = 0; y < me.game.currentLevel.height; y++) {
             var row = [];
             pixelPos.x = tileWidth / 2;
-            for (x = 0; x < me.game.currentLevel.width; x++) {    
-                row.push(charMap.getCollisionTileChar(pixelPos.x, pixelPos.y));
+            for (x = 0; x < me.game.currentLevel.width; x++) {
+                row.push(this.getCollisionTileChar(pixelPos.x, pixelPos.y));
                 pixelPos.x += tileWidth;
             }
-            map.push("");
-            map[y] = row.join("");
+            this._current.push("");
+            this._current[y] = row.join("");
             pixelPos.y += tileHeight;
         }
-        return map;
+        return this._current;
     }
 };

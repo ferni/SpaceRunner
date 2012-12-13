@@ -55,6 +55,7 @@ var items = {
 };
 items.addNames();
 
+//For loading different ships by adding ship=<name> in the query string.
 function getQueriedShip() {
     var defaultShip = "small";
     var ship = getParameterByName("ship");
@@ -165,6 +166,8 @@ var checkCollision = {
     
     /* check and process collision of obj*/
     processCollision : function(CurObj){
+        //TODO: Replace calls to processCollision(obj) for obj.processCollision()
+        //and remove this function from "checkCollision" object.
         return CurObj.processCollision();
     },
     

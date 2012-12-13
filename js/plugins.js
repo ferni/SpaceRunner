@@ -38,7 +38,6 @@ var ItemObject = me.ObjectEntity.extend({
             this.type =  g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
             
-
             this.name = "Building";
             this.placementRules = new Array();
             this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
@@ -152,7 +151,7 @@ var iWeaponObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
         this.size = [2, 2];
-        this.mResource = 3;
+        this.mResource = items.weapon.index;
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
         
@@ -165,7 +164,7 @@ var iWeaponObject = ItemObject.extend({
 var iEngineObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 4;
+        this.mResource = items.engine.index;
         this.mid = mID;
         this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
@@ -184,7 +183,7 @@ var iEngineObject = ItemObject.extend({
 var iPowerObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 5;
+        this.mResource = items.power.index;
         this.mid = mID;
         this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
@@ -197,7 +196,7 @@ var iConsoleObject = ItemObject.extend({
     
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 6;
+        this.mResource = items.console.index;
         this.mid = mID;
         this.size = [1, 1];
         this.parent(x, y, settings, this.mResource);
@@ -308,7 +307,7 @@ var iConsoleObject = ItemObject.extend({
 var iComponentObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 7;
+        this.mResource = items.component.index;
         this.mid = mID;
         this.size = [2, 2];
         //image sprite width / height
@@ -348,7 +347,7 @@ var iDoorObject = ItemObject.extend({
     rotateFlag : false,
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 8;
+        this.mResource = items.door.index;
         this.mid = mID;
         //image sprite width / height
         settings.spritewidth = 64;
@@ -503,7 +502,7 @@ var iDoorObject = ItemObject.extend({
 var iWallObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 9;
+        this.mResource = items.wall.index;
         this.mid = mID;
         //image sprite width / height
         settings.spritewidth = 32;
