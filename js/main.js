@@ -240,8 +240,8 @@ var PlayScreen = me.ScreenObject.extend({
         {
             if(select_item == 101)
             {
-                mX -= (Math.floor(g_resources_size[9].width / (32 * 2)) * 32);
-                mY -= (Math.floor(g_resources_size[9].height / (32 * 2)) * 32);
+                mX -= (Math.floor(g_resources_size[items.wall.index].width / (32 * 2)) * 32);
+                mY -= (Math.floor(g_resources_size[items.wall.index].height / (32 * 2)) * 32);
             }
             else
             {

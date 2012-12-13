@@ -90,12 +90,17 @@ var ItemObject = me.ObjectEntity.extend({
             displayDefaultCursor();
         }
     },
-    
+
     // ------ Collisions ------
     checkOutlineCollision: function () {
         var position = jsApp.getTilePosition(this.pos.x, this.pos.y);
         var map = charMap.get();
-        return _.every(this.placementRules, function(rule) { return rule.compliesAt(position.x, position.y, map); });
+        for (var i = 0; i < this.placementRules.length; i++) {
+            if(!this.placementRules[i].compliesAt(position.x, position.y, map)){
+                return false;
+            }
+        };
+        return true;
     },
     
     checkObjectCollision:function () {
