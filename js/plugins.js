@@ -27,6 +27,7 @@ var ItemObject = me.ObjectEntity.extend({
     isDrag : false,
     preX : 0,
     preY : 0,
+    size: [1,1],
     init : function (x, y, settings, iIndex){
         if( iIndex >= 0 )
         {
@@ -37,6 +38,7 @@ var ItemObject = me.ObjectEntity.extend({
             this.type =  g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
             
+
             this.name = "Building";
             this.placementRules = new Array();
             this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));

@@ -33,24 +33,27 @@ var g_resources_size = [
                     {name: "test",         width: 576,     height: 384}
                         ];
 
-//indexes for the g_resources array.
-var idx = {
-    weapon: 3,
-    engine: 4,
-    power: 5,
-    console: 6,
-    component: 7,
-    door: 8,
-    wall: 9
-};
-
-//returns the name of the object given the index
-function getItemName(index){
-    if(!g_resources[index]){
+var items = {
+    getBy: function (property, value) {
+        for(var p in this) {
+            if(this[p][property] == value) return this[p];
+        }
         return null;
-    }
-    return g_resources[index].name;
-}
+    },
+    addNames: function () {
+        for(var p in this) {
+            this[p].name = p;
+        }
+    },
+    weapon: {index:3, Constructor: iWeaponObject},
+    engine: {index:4, Constructor: iEngineObject},
+    power: {index:5, Constructor: iPowerObject},
+    console: {index: 6 ,Constructor: iConsoleObject},
+    component: {index: 7 ,Constructor: iComponentObject},
+    door: {index: 8 ,Constructor: iDoorObject},
+    wall: {index: 9 ,Constructor: iWallObject}
+};
+items.addNames();
 
 function getQueriedShip() {
     var defaultShip = "small";
@@ -63,9 +66,7 @@ function getQueriedShip() {
     }
     alert("Ship \"" + ship + "\" doesn't exist. Loading \""+defaultShip+"\" instead.");
     return defaultShip;
-    
 }
-
 
 var select_item = -1;
 var isSelectObject = false;
@@ -205,7 +206,7 @@ var PlayScreen = me.ScreenObject.extend({
         {
             if(SelectObject.mResource == 101)
             {
-                removeClassItem(9);
+                removeClassItem(items.wall.index);
                 ObjectsMng.addObject(SelectObject);
             }
             else
@@ -229,6 +230,7 @@ var PlayScreen = me.ScreenObject.extend({
     mouseDown: function(e) {
     },
     mouseMove : function(e){
+        var needsRedrawing = false;
         var mX = me.input.mouse.pos.x;
         var mY = me.input.mouse.pos.y;
         if(select_item != -1)
@@ -246,63 +248,38 @@ var PlayScreen = me.ScreenObject.extend({
             var mPos = jsApp.getTilePosPixels(mX, mY);
             if(isDragable == false)
             {
-                switch(select_item)
-                {
-                case 3:
-                    SelectObject = new iWeaponObject(mPos.x, mPos.y, {}, this.iItemID);
-                    me.game.add( SelectObject, 100 );
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 4:
-                    SelectObject = new iEngineObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 5:
-                    SelectObject = new iPowerObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 6:
-                    SelectObject = new iConsoleObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 7:
-                    SelectObject = new iComponentObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 8:
-                    SelectObject = new iDoorObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 110);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 9:
+                if(select_item == items.wall.index) {
                     SelectObject = new WallGroupObject(this.iItemID);
                     SelectObject.addWallObject(mPos.x, mPos.y);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
                 }
+                else {
+                    var item = items.getBy("index", select_item);
+                    if(item) {
+                        SelectObject = new item.Constructor(mX, mY, { }, this.iItemID);
+                    }else {
+                        console.warning("The index selected " + select_item + " does not point to a valid item.");
+                    }
+                    me.game.add( SelectObject, 100 );
+                }
+                
+                this.iItemID ++;
+                isDragable = true;
+
             }
-            else if( select_item == 9 )
+            else if( select_item == items.wall.index )
             {
                 SelectObject.process(wallDrawing, mPos);
+                needsRedrawing = true;
             }
             else if(SelectObject)
             {
+                var prevPosX = SelectObject.pos.x;
+                var prevPosY = SelectObject.pos.y;
                 if(SelectObject.mResource == 101)
                     SelectObject.movePorcess(mPos.x, mPos.y);
                 else
                 {
-                    if(SelectObject.mResource == 8 && SelectObject.rotateFlag)
+                    if(SelectObject.mResource == items.door.index && SelectObject.rotateFlag)
                     {
                         SelectObject.pos.x = mPos.x + 16;
                         SelectObject.pos.y = mPos.y - 16;
@@ -312,19 +289,23 @@ var PlayScreen = me.ScreenObject.extend({
                         SelectObject.pos.x = mPos.x;
                         SelectObject.pos.y = mPos.y;
                     }
-                    if(SelectObject.mResource == 8)
+                    if(SelectObject.mResource == items.door.index)
                         SelectObject.processRotate();
                     /* collision check */
                     checkCollision.processCollision(SelectObject);
                 }
+                if(SelectObject.pos.x != prevPosX || SelectObject.pos.y != prevPosY)
+                    needsRedrawing = true;
             }
         }
-        me.game.sort();
-        me.game.repaint();
+        if(needsRedrawing) {
+            me.game.sort();
+            me.game.repaint();
+        }
     },
     mouseUp : function(e){
         /* check collision */
-        if(select_item == 9)
+        if(select_item == items.wall.index)
         {
             if(wallDrawing == false && 
                !checkCollision.processCollision(SelectObject.getFirstWallObject()))
@@ -340,7 +321,7 @@ var PlayScreen = me.ScreenObject.extend({
                 if(!isDragable)
                 {
                     SelectObject.mfix = true;
-                    if(SelectObject.mResource == 8)
+                    if(SelectObject.mResource == items.door.index)
                     {
                         if(!SelectObject.rotateFlag)
                             SelectObject.setCurrentAnimation("v_open_close");
@@ -350,7 +331,7 @@ var PlayScreen = me.ScreenObject.extend({
                         SelectObject.removeWallinCollision();
                         SelectObject = null;
                     }
-                    else if(SelectObject.mResource == 7 )
+                    else if(SelectObject.mResource == items.component.index )
                         SelectObject.setCurrentAnimation("charge");
                     if(SelectObject)
                         MapMatrix.setUnWalkable(SelectObject.pos.x, SelectObject.pos.y, SelectObject.width, SelectObject.height);

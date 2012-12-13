@@ -25,12 +25,16 @@ $(document).ready(function(){
 });
 
 function removeClassItem(idxItem){
-    var itemName = getItemName(idxItem);
+    var item = items.getBy("index", idxItem);
+    var itemName = "";
+    if (item) itemName = item.name;
     $("#item_"+itemName).removeClass("selection_item");
 };
 
 function addClassItem(idxItem){
-    var itemName = getItemName(idxItem);
+    var item = items.getBy("index", idxItem);
+    var itemName = "";
+    if (item) itemName = item.name;
     $("#item_"+itemName).addClass("selection_item");
 };
 
@@ -42,7 +46,7 @@ function onMouseClickItem(itemName){
     if(itemName === undefined)
         new_item = -1;
     else        
-        new_item = idx[itemName];
+        new_item = items[itemName].index;
 
     if(new_item === undefined || new_item === null){
         console.error("No such item '"+itemName+"'. (onMouseClickItem(itemName))");
