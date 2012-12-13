@@ -5,55 +5,57 @@
 
 // game resources
 var g_resources = [
-                    {name: "outline",         type: "image",     src: "data/img/render/outline.png"},
-                    {name: "small",         type: "tmx",     src: "data/outlines/small.tmx"},
-                    {name: "selector",         type: "image",     src: "data/img/render/selector.png"},
-                    {name: "weapon",         type: "image",     src: "data/img/render/weapon_01.png"},
-                    {name: "engine",         type: "image",    src: "data/img/render/engine_01.png"},
-                    {name: "power",         type: "image",     src: "data/img/render/power_01.png"},
-                    {name: "console",         type: "image",     src: "data/img/render/console_02.png"},
-                    {name: "component",        type: "image",     src: "data/img/render/components_01.png"},
-                    {name: "door",            type: "image",     src: "data/img/render/door_01.png"},
-                    {name: "wall",            type: "image",     src: "data/img/render/wall_001.png"},
-                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"},
-                ];
+    {name: "outline",   type: "image", src: "data/img/render/outline.png"},
+    {name: "selector",  type: "image", src: "data/img/render/selector.png"},
+    {name: "weapon",    type: "image", src: "data/img/render/weapon_01.png"},
+    {name: "engine",    type: "image", src: "data/img/render/engine_01.png"},
+    {name: "power",     type: "image", src: "data/img/render/power_01.png"},
+    {name: "console",   type: "image", src: "data/img/render/console_02.png"},
+    {name: "component", type: "image", src: "data/img/render/components_01.png"},
+    {name: "door",      type: "image", src: "data/img/render/door_01.png"},
+    {name: "wall",      type: "image", src: "data/img/render/wall_001.png"},
+    {name: "colTile",   type: "image", src: "data/img/render/metatiles32x32.png"},
+    {name: "area_01",   type: "tmx",   src: "data/outlines/small.tmx"},
+    ];
 
 var g_resources_size = [
-                    {name: "outline",         width: 192,     height: 256},
-                    {name: "small",         width: 576,     height: 384},
-                    {name: "selector",         width: 32,         height: 32},
-                    {name: "weapon",         width: 96,         height: 64},
-                    {name: "engine",         width: 96,         height: 64},
-                    {name: "power",         width: 64,         height: 64},
-                    {name: "console",         width: 32,         height: 32},
-                    {name: "component",        width: 64,         height: 64},
-                    {name: "door",            width: 64,         height: 32},
-                    {name: "wall",            width: 32,         height: 32},
-                        ];
+    {name: "outline",   width: 192, height: 256},
+    {name: "small",     width: 576, height: 384},
+    {name: "selector",  width:  32, height:  32},
+    {name: "weapon",    width:  96, height:  64},
+    {name: "engine",    width:  96, height:  64},
+    {name: "power",     width:  64, height:  64},
+    {name: "console",   width:  32, height:  32},
+    {name: "component", width:  64, height:  64},
+    {name: "door",      width:  64, height:  32},
+    {name: "wall",      width:  32, height:  32},
+    {name: "colTile",   width: 160, height:  32},
+    ];
+
 /*collision detection point */
 var colWeapon = [
-                    {x: 10, y: 1}, 
-                    {x: 11, y: 2},
-                    {x: 12, y: 3},
-                    {x: 13, y: 4},
-                    {x: 14, y: 5},
-                    {x: 13, y: 6},
-                    {x: 12, y: 7},
-                    {x: 11, y: 8},
-                    {x: 10, y: 9}, 
-                 ];
+    {x: 10, y: 1}, 
+    {x: 11, y: 2},
+    {x: 12, y: 3},
+    {x: 13, y: 4},
+    {x: 14, y: 5},
+    {x: 13, y: 6},
+    {x: 12, y: 7},
+    {x: 11, y: 8},
+    {x: 10, y: 9}, 
+    ];
 var colEngine = [
-                    {x: 0, y: 1}, 
-                    {x: 3, y: 4},
-                    {x: 3, y: 5},
-                    {x: 3, y: 6},
-                    {x: 0, y: 9}, 
-                 ];
+    {x: 0, y: 1}, 
+    {x: 3, y: 4},
+    {x: 3, y: 5},
+    {x: 3, y: 6},
+    {x: 0, y: 9}, 
+    ];
 var colPower = [
-                {x: 1, y : 1, w : 11, h : 2},
-                {x: 1, y : 9, w : 11, h : 2},
-                {x: 4, y : 3, w : 2 , h : 6},
-                ];
+    {x: 1, y : 1, w : 11, h : 2},
+    {x: 1, y : 9, w : 11, h : 2},
+    {x: 4, y : 3, w : 2 , h : 6},
+    ];
 var select_item = -1;
 var isSelectObject = false;
 var SelectObject = null;
@@ -119,7 +121,7 @@ var jsApp = {
     },
     initLevel : function(){
          me.game.reset();
-         me.levelDirector.loadLevel("small");
+         me.levelDirector.loadLevel("area_01");
 //         me.state.set(me.state.PLAY, GameScreen);
     },
 };
@@ -457,18 +459,18 @@ var PlayScreen = me.ScreenObject.extend({
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel("small");
+        me.levelDirector.loadLevel("area_01");
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
         me.input.registerMouseEvent('mousemove', me.game.viewport, this.mouseMove.bind(this));
-        me.input.registerMouseEvent('mouseup',      me.game.viewport, this.mouseUp.bind(this));
+        me.input.registerMouseEvent('mouseup',   me.game.viewport, this.mouseUp.bind(this));
         me.video.getScreenCanvas().addEventListener("dblclick", this.mouseDbClick, false);
-		
+        
         checkCollision.init();
         MapMatrix.init();
     },
-	
+    
     update : function(){
         this.addAsObject = true;
         if( me.input.isKeyPressed("escape") )
