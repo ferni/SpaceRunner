@@ -1,6 +1,8 @@
 /*
  * JavaScript Code : 
 */
+
+//This makes no sense; expression ( mItem < 3 || mItem > 9 ) is always false.
 function test_removeClassItem(){
     var mItem = 5;
     if( mItem < 3 || mItem > 9 )
