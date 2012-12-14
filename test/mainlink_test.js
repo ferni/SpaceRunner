@@ -24,6 +24,6 @@ function test_onMouseClickItem(){
 };
 
 function test_drawObjectfromJstring(){
-    var JString = "json test string";
+    var JString = '{"Obje" : 234, "sssef" : "sefee"}';
     assertFalse(drawObjectfromJstring(JString));
 };

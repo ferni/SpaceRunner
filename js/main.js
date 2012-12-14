@@ -5,33 +5,34 @@
 
 // game resources
 var g_resources = [
-                    {name: "outline",         type: "image",     src: "data/img/render/outline.png"},
-                    {name: "small",         type: "tmx",     src: "data/outlines/small.tmx"},
-                    {name: "selector",         type: "image",     src: "data/img/render/selector.png"},
-                    {name: "weapon",         type: "image",     src: "data/img/render/weapon_01.png"},
-                    {name: "engine",         type: "image",    src: "data/img/render/engine_01.png"},
-                    {name: "power",         type: "image",     src: "data/img/render/power_01.png"},
-                    {name: "console",         type: "image",     src: "data/img/render/console_02.png"},
-                    {name: "component",        type: "image",     src: "data/img/render/components_01.png"},
-                    {name: "door",            type: "image",     src: "data/img/render/door_01.png"},
-                    {name: "wall",            type: "image",     src: "data/img/render/wall_001.png"},
-                    {name: "colTile",        type: "image",    src: "data/img/render/metatiles32x32.png"},
+    {name: "outline",   type: "image", src: "data/img/render/outline.png"},
+    {name: "selector",  type: "image", src: "data/img/render/selector.png"},
+    {name: "weapon",    type: "image", src: "data/img/render/weapon_01.png"},
+    {name: "engine",    type: "image", src: "data/img/render/engine_01.png"},
+    {name: "power",     type: "image", src: "data/img/render/power_01.png"},
+    {name: "console",   type: "image", src: "data/img/render/console_02.png"},
+    {name: "component", type: "image", src: "data/img/render/components_01.png"},
+    {name: "door",      type: "image", src: "data/img/render/door_01.png"},
+    {name: "wall",      type: "image", src: "data/img/render/wall_001.png"},
+    {name: "colTile",   type: "image", src: "data/img/render/metatiles32x32.png"},
+    {name: "area_01",   type: "tmx",   src: "data/outlines/small.tmx"},
                     {name: "test",          type: "tmx",       src: "data/outlines/test.tmx"}
                 ];
 
 var g_resources_size = [
-                    {name: "outline",         width: 192,     height: 256},
-                    {name: "small",         width: 576,     height: 384},
-                    {name: "selector",         width: 32,         height: 32},
-                    {name: "weapon",         width: 96,         height: 64},
-                    {name: "engine",         width: 96,         height: 64},
-                    {name: "power",         width: 64,         height: 64},
-                    {name: "console",         width: 32,         height: 32},
-                    {name: "component",        width: 64,         height: 64},
-                    {name: "door",            width: 64,         height: 32},
-                    {name: "wall",            width: 32,         height: 32},
-                    {name: "test",         width: 576,     height: 384}
-                        ];
+    {name: "outline",   width: 192, height: 256},
+    {name: "small",     width: 576, height: 384},
+    {name: "selector",  width:  32, height:  32},
+    {name: "weapon",    width:  96, height:  64},
+    {name: "engine",    width:  96, height:  64},
+    {name: "power",     width:  64, height:  64},
+    {name: "console",   width:  32, height:  32},
+    {name: "component", width:  64, height:  64},
+    {name: "door",      width:  64, height:  32},
+    {name: "wall",      width:  32, height:  32},
+    {name: "colTile",   width: 160, height:  32},
+    ];
+
 
 var items = {
     getBy: function (property, value) {
@@ -57,7 +58,7 @@ items.addNames();
 
 //For loading different ships by adding ship=<name> in the query string.
 function getQueriedShip() {
-    var defaultShip = "small";
+    var defaultShip = "area_01";
     var ship = getParameterByName("ship");
     if(ship === null) return defaultShip;
     for (var i = 0; i < g_resources.length; i++) {
@@ -189,13 +190,13 @@ var PlayScreen = me.ScreenObject.extend({
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
         me.input.registerMouseEvent('mousemove', me.game.viewport, this.mouseMove.bind(this));
-        me.input.registerMouseEvent('mouseup',      me.game.viewport, this.mouseUp.bind(this));
+        me.input.registerMouseEvent('mouseup',   me.game.viewport, this.mouseUp.bind(this));
         me.video.getScreenCanvas().addEventListener("dblclick", this.mouseDbClick, false);
-		
+        
         checkCollision.init();
         MapMatrix.init();
     },
-	
+    
     update : function(){
         this.addAsObject = true;
         if( me.input.isKeyPressed("escape") )

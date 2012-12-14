@@ -1,0 +1,3 @@
+[submodule "js/vendor/jsunit-master"]
+	path = js/vendor/jsunit-master
+	url = https://github.com/pivotal/jsunit.git

@@ -139,7 +139,7 @@ function drawObjectfromJstring(JString){
     var OneObject = null;
     var SubObject = null;
     ParseStr = JSON.parse(JString);
-    if(ParseStr == null)
+    if(ParseStr == null || ParseStr.Objects == undefined)
         return false;
     for(i = 0; i < ParseStr.Objects.length; i ++){
         ParseItem = ParseStr.Objects[i];
