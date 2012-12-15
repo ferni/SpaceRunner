@@ -24,6 +24,9 @@ function test_checkCollision_removeRedStyle(){
     assertEquals(mClass.RedIndex, 0);
 };
 
+/*
+//Change: This test should no longer use checkCollision object
+//checkObjectCollision is in ItemObject
 function test_checkCollision_checkObjectCollision(){
     var Obj1 = new iWeaponObject(0, 0, {}, 1);
     me.game.add(Obj1);
@@ -36,6 +39,8 @@ function test_checkCollision_checkObjectCollision(){
     me.game.remove(Obj2);
 };
 
+//Obsolete: checkOutlineCollisionWithWeapon removed from checkCollision
+//Now there is a  PlacementRule added in iWeaponObject instead
 function test_checkCollision_checkOutlineCollisionWithWeapon(){
     var Obj1 = new iWeaponObject(0, 0, {}, 2);
     me.game.add(Obj1)
@@ -45,6 +50,8 @@ function test_checkCollision_checkOutlineCollisionWithWeapon(){
     me.game.remove(Obj1);
 };
 
+//Obsolete: checkOutlineCollisionWithEngine removed from checkCollision
+//Now there is a  PlacementRule added in iEngineObject instead
 function test_checkCollision_checkOutlineCollisionWithEngine(){
     var Obj1 = new iEngineObject(0, 0, {}, 2);
     me.game.add(Obj1)
@@ -54,6 +61,7 @@ function test_checkCollision_checkOutlineCollisionWithEngine(){
     me.game.remove(Obj1);
 };
 
+//Obsolete: checkOutlineCollisionWithPower removed from checkCollision
 function test_checkCollision_checkOutlineCollisionWithPower(){
     var Obj1 = new iPowerObject(0, 0, {}, 2);
     me.game.add(Obj1)
@@ -63,6 +71,8 @@ function test_checkCollision_checkOutlineCollisionWithPower(){
     me.game.remove(Obj1);
 };
 
+
+//Change: checkOutlineCollision moved to ItemObject
 function test_checkCollision_checkOutlineCollision(){
     var Obj1 = new iWeaponObject(0, 0, {}, 2);
     me.game.add(Obj1)
@@ -71,6 +81,7 @@ function test_checkCollision_checkOutlineCollision(){
     assertEquals(mClass.RedIndex, 27);
     me.game.remove(Obj1);
 };
+*/
 
 /* Screen Object */
 function test_PlayScreen(){

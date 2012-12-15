@@ -28,6 +28,10 @@ var RedColorObject = me.ObjectEntity.extend({
 var ItemObject = me.ObjectEntity.extend({
     mfix : false,
     mid : 0,
+    isDrag : false,
+    preX : 0,
+    preY : 0,
+    size: [1,1],
     init : function (x, y, settings, iIndex){
         if( iIndex >= 0 )
         {
@@ -37,30 +41,13 @@ var ItemObject = me.ObjectEntity.extend({
             this.collidable = true;
             this.type =  g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
+            
             this.name = "Building";
+            this.placementRules = new Array();
+            this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
         }
-    },
-    /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
-    getTileStyle : function(pX, pY){
-        var tileLayer = me.game.currentLevel.getLayerByName("collision");
-        if(tileLayer == null)
-            return 0;
-        var tileId = tileLayer.getTileId(pX + 1, pY + 1);
-        if(tileId == null)
-            return 0;
-        var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
-        if(tileSet == null)
-            return 0;
-        var tilePro = tileSet.getTileProperties(tileId);
-        if(tilePro.isSolid)
-            return 2;
-        else if(tilePro.isPlatform)
-            return 1;
-        else if(tilePro.isLeftSlope)
-            return 3;
-        else if(tilePro.isRightSlope)
-            return 4;
-        return 0;
+        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
+        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
     /* check if obj contains the specified line 
         sPos : start position
@@ -73,22 +60,8 @@ var ItemObject = me.ObjectEntity.extend({
     },
     onCollision : function(res, obj){
     },
-});
-
-
-// weapon object 
-var iWeaponObject = ItemObject.extend({
-    // init function
-    isDrag : false,
-    preX : 0,
-    preY : 0,
-    init : function(x, y, settings, mID){
-        this.mResource = 3;
-        this.mid = mID;
-        this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
+    
+    //drag functionality
     onMouseDown : function() {
         if(select_item == -1)
         {
@@ -121,167 +94,121 @@ var iWeaponObject = ItemObject.extend({
             displayDefaultCursor();
         }
     },
+
+    // ------ Collisions ------
+    checkOutlineCollision: function () {
+        var position = jsApp.getTilePosition(this.pos.x, this.pos.y);
+        var map = charMap.get();
+        for (var i = 0; i < this.placementRules.length; i++) {
+            if(!this.placementRules[i].compliesAt(position.x, position.y, map)){
+                return false;
+            }
+        };
+        return true;
+    },
+    
+    checkObjectCollision:function () {
+        var res = me.game.collide(this);
+        var checkPoint = new me.Vector2d(0, 0);
+        var tileWidth = me.game.currentLevel.tilewidth;
+        var tileHeight = me.game.currentLevel.tileheight;
+        if(!res)
+             return true;
+        for(checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += tileWidth)
+        {
+            for(checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += tileHeight)
+            {
+                this.updateColRect(checkPoint.x - this.pos.x, tileWidth - 2, checkPoint.y - this.pos.y, tileHeight - 2);
+                res = me.game.collide(this);
+                if(res){
+                    checkCollision.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
+                }
+            }
+        }
+        this.updateColRect(0, this.width, 0, this.height);
+        
+        delete checkPoint;
+        /* process red style rect */
+        return false;
+    },
+    /*This is the general, all-encompassing function for checking collisions*/
+    processCollision: function () {
+       var collides = true;
+        /* remove red style */
+        checkCollision.removeRedStyle();
+        /* check collision */
+        var objectsClear = this.checkObjectCollision();
+        var outlineClear = this.checkOutlineCollision();
+        
+        if( objectsClear && outlineClear)
+            collides = false;
+        return collides;  
+    },
     setWalkable : function(){
             MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     setUnWalkable : function(){
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
+    placementRules: []
+    
+});
+
+
+// weapon object 
+var iWeaponObject = ItemObject.extend({
+    // init function
+    init : function(x, y, settings, mID){
+        this.size = [2, 2];
+        this.mResource = items.weapon.index;
+        this.mid = mID;
+        this.parent(x, y, settings, this.mResource);
+        
+        this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._front, 
+                                                       inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));
+    }
+    
 });
 // engine object 
 var iEngineObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 4;
+        this.mResource = items.engine.index;
         this.mid = mID;
+        this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    onMouseDown : function() {
-        if(select_item == -1)
-        {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
+        
+        this.placementRules = []; //remove space rule
+        //write custom space rule
+        this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._cleared, 
+                                                       inAll: [{x: 1, y:0},{x: 2, y: 0},{x:1, y:1},{x:2, y:1}]}));
+        this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._back, 
+                                                       inAll:[{ x: 0, y: 0 }, { x: 0, y: 1 }]}));
+    }
 });
 
 
 // power object 
 var iPowerObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 5;
+        this.mResource = items.power.index;
         this.mid = mID;
+        this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    onMouseDown : function() {
-        if(select_item == -1)
-        {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
+    }
+    
 });
 
 // console object class 
 var iConsoleObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
+    
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 6;
+        this.mResource = items.console.index;
         this.mid = mID;
+        this.size = [1, 1];
         this.parent(x, y, settings, this.mResource);
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
-    },
-    onMouseDown : function() {
-        if(select_item == -1)
-        {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
-    },
-    setWalkable : function(){
-            MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable : function(){
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     checkItemPos : function(res, mX, mY, de, mItem){
         var sPos = new me.Vector2d(0, 0);
@@ -374,16 +301,24 @@ var iConsoleObject = ItemObject.extend({
         this.pos.y = mY;
         return mRet;
     },
+    //overrides ItemObject.checkOutlineCollision
+    checkOutlineCollision: function () {
+        var isClear = true;
+        isClear = this.parent();
+        if(!this.checkCollisionAround()){
+            checkCollision.printRedStyle(this.pos.x, this.pos.y);
+            isClear = false;
+        }
+        return isClear;
+    }
 });
 // component object class
 var iComponentObject = ItemObject.extend({
-    isDrag : false,
-    preX : 0,
-    preY : 0,
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 7;
+        this.mResource = items.component.index;
         this.mid = mID;
+        this.size = [2, 2];
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 64;
@@ -394,40 +329,19 @@ var iComponentObject = ItemObject.extend({
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 15;
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
     onMouseDown : function() {
         if(select_item == -1)
         {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
+            this.parent();
             this.setCurrentAnimation("idle");
-            this.setWalkable();
-            displayMoveCursor();
         }
     },
     onMouseUp : function(){
         if(this.isDrag == true)
         {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
+            this.parent();
             this.setCurrentAnimation("charge");
-            if(checkCollision.processCollision(this))
-            {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
         }
     },
     setWalkable : function(){
@@ -442,7 +356,7 @@ var iDoorObject = ItemObject.extend({
     rotateFlag : false,
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 8;
+        this.mResource = items.door.index;
         this.mid = mID;
         //image sprite width / height
         settings.spritewidth = 64;
@@ -535,6 +449,60 @@ var iDoorObject = ItemObject.extend({
             mWallGroup.addOtherObject(this);
         this.updateColRect(0, this.width, 0, this.height);
     },
+    checkObjectCollision: function() {
+        var res = me.game.collide(this);
+        var checkPoint = new me.Vector2d(0, 0);
+        var mflag = true;
+        var tileWidth = me.game.currentLevel.tilewidth;
+        var tileHeight = me.game.currentLevel.tileheight;
+        if(this.rotateFlag == false)
+        {
+            for( checkPoint.x = 0 ; checkPoint.x < this.width; checkPoint.x += tileWidth )
+            {
+                this.updateColRect( checkPoint.x, tileWidth, 0, tileHeight );
+                res = me.game.collide( this );
+                if(this.mfix == true)
+                {
+                    if(res)
+                    {
+                        checkCollision.printRedStyle( this.pos.x + checkPoint.x, this.pos.y );
+                        mflag = false;
+                    }
+                }
+                else{
+                    if(!res ||res.obj.mResource != 9){
+                        checkCollision.printRedStyle( this.pos.x + checkPoint.x, this.pos.y );
+                        mflag = false;
+                    }
+                }
+            }
+            this.updateColRect(0, this.width, 0, this.height);
+        }
+        else{
+            for( checkPoint.y = 0 ; checkPoint.y < this.width; checkPoint.y += tileHeight )
+            {
+                this.updateColRect( 16, tileWidth, checkPoint.y - 16, tileHeight );
+                res = me.game.collide( this );
+                if(this.mfix == true)
+                {
+                    if(res)
+                    {
+                        checkCollision.printRedStyle( this.pos.x + 16,  this.pos.y - 16 + checkPoint.y );
+                        mflag = false;
+                    }
+                }
+                else{
+                    if(!res ||res.obj.mResource != 9){
+                        checkCollision.printRedStyle( this.pos.x + 16,  this.pos.y - 16 + checkPoint.y );
+                        mflag = false;
+                    }
+                }
+            }
+            this.updateColRect(16, this.height, 0 - 16, this.width);
+        }
+        return mflag;
+        
+    }
 //    update : function(){
 //        this.processRotate();
 //    },
@@ -543,11 +511,13 @@ var iDoorObject = ItemObject.extend({
 var iWallObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
-        this.mResource = 9;
+        this.mResource = items.wall.index;
         this.mid = mID;
         //image sprite width / height
         settings.spritewidth = 32;
         settings.spriteheight = 32;
+        
+        this.size = [1, 1];
         this.parent(x, y, settings, this.mResource);
         // add animation
         // add animation

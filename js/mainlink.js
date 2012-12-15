@@ -4,32 +4,10 @@
 
 $(document).ready(function(){
 
-    $("#item_weapon").click(function(){
-        onMouseClickItem("item_weapon");
-    });
-
-    $("#item_engine").click(function(){
-        onMouseClickItem("item_engine");
-    });
-
-    $("#item_power").click(function(){
-        onMouseClickItem("item_power");
-    });
-
-    $("#item_console").click(function(){
-        onMouseClickItem("item_console");
-    });
-
-    $("#item_components").click(function(){
-        onMouseClickItem("item_components");
-    });
-
-    $("#item_door").click(function(){
-        onMouseClickItem("item_door");
-    });
-
-    $("#item_wall").click(function(){
-        onMouseClickItem("item_wall");
+    $(".items").click(function(){
+        var idItem = $("img", this).attr("id");
+        var itemName = idItem.substring(5, idItem.length);
+        onMouseClickItem(itemName);
     });
 
     $("#file_save").click(function(){
@@ -40,90 +18,39 @@ $(document).ready(function(){
         bindings: {
           'delete': function(t) {
               if(select_item == -1 && !SelectObject && DeleteObject)
-                  onMouseClickItem(-1);
+                  onMouseClickItem();
           }
         }
     });
 });
 
-function removeClassItem(i){
-    switch(i){
-        case 3: /* item_weapon */
-            $("#item_weapon").removeClass("selection_item");
-            break;
-        case 4: /* item_engine */
-            $("#item_engine").removeClass("selection_item");
-            break;
-        case 5:
-            $("#item_power").removeClass("selection_item");
-            break;
-        case 6:
-            $("#item_console").removeClass("selection_item");
-            break;
-        case 7:
-            $("#item_components").removeClass("selection_item");
-            break;
-        case 8:
-            $("#item_door").removeClass("selection_item");
-            break;
-        case 9:
-            $("#item_wall").removeClass("selection_item");
-            break;
-    }
+function removeClassItem(idxItem){
+    var item = items.getBy("index", idxItem);
+    var itemName = "";
+    if (item) itemName = item.name;
+    $("#item_"+itemName).removeClass("selection_item");
 };
 
-function addClassItem(i){
-    switch(i){
-        case 3: /* item_weapon */
-            $("#item_weapon").addClass("selection_item");
-            break;
-        case 4: /* item_engine */
-            $("#item_engine").addClass("selection_item");
-            break;
-        case 5:
-            $("#item_power").addClass("selection_item");
-            break;
-        case 6:
-            $("#item_console").addClass("selection_item");
-            break;
-        case 7:
-            $("#item_components").addClass("selection_item");
-            break;
-        case 8:
-            $("#item_door").addClass("selection_item");
-            break;
-        case 9:
-            $("#item_wall").addClass("selection_item");
-            break;
-    }
+function addClassItem(idxItem){
+    var item = items.getBy("index", idxItem);
+    var itemName = "";
+    if (item) itemName = item.name;
+    $("#item_"+itemName).addClass("selection_item");
 };
 
-function onMouseClickItem(nameItem){
+//If it's called without parameteres, unselects the item (sets select_item to -1)
+function onMouseClickItem(itemName){
 
-    var new_item = -1;
+    var new_item;
 
-    switch(nameItem){
-        case "item_weapon":
-            new_item = 3;
-            break;
-        case "item_engine":
-            new_item = 4;
-            break;
-        case "item_power":
-            new_item = 5;
-            break;
-        case "item_console":
-            new_item = 6;
-            break;
-        case "item_components":
-            new_item = 7;
-            break;
-        case "item_door":
-            new_item = 8;
-            break;
-        case "item_wall":
-            new_item = 9;
-            break;
+    if(itemName === undefined)
+        new_item = -1;
+    else        
+        new_item = items[itemName].index;
+
+    if(new_item === undefined || new_item === null){
+        console.error("No such item '"+itemName+"'. (onMouseClickItem(itemName))");
+        return 0;
     }
 
 //    if( select_item == new_item )

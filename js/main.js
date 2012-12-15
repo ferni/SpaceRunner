@@ -16,6 +16,7 @@ var g_resources = [
     {name: "wall",      type: "image", src: "data/img/render/wall_001.png"},
     {name: "colTile",   type: "image", src: "data/img/render/metatiles32x32.png"},
     {name: "area_01",   type: "tmx",   src: "data/outlines/small.tmx"},
+    {name: "test",      type: "tmx",   src: "data/outlines/test.tmx"}
     ];
 
 var g_resources_size = [
@@ -32,30 +33,43 @@ var g_resources_size = [
     {name: "colTile",   width: 160, height:  32},
     ];
 
-/*collision detection point */
-var colWeapon = [
-    {x: 10, y: 1}, 
-    {x: 11, y: 2},
-    {x: 12, y: 3},
-    {x: 13, y: 4},
-    {x: 14, y: 5},
-    {x: 13, y: 6},
-    {x: 12, y: 7},
-    {x: 11, y: 8},
-    {x: 10, y: 9}, 
-    ];
-var colEngine = [
-    {x: 0, y: 1}, 
-    {x: 3, y: 4},
-    {x: 3, y: 5},
-    {x: 3, y: 6},
-    {x: 0, y: 9}, 
-    ];
-var colPower = [
-    {x: 1, y : 1, w : 11, h : 2},
-    {x: 1, y : 9, w : 11, h : 2},
-    {x: 4, y : 3, w : 2 , h : 6},
-    ];
+
+var items = {
+    getBy: function (property, value) {
+        for(var p in this) {
+            if(this[p][property] == value) return this[p];
+        }
+        return null;
+    },
+    addNames: function () {
+        for(var p in this) {
+            this[p].name = p;
+        }
+    },
+    weapon: {index:3, Constructor: iWeaponObject},
+    engine: {index:4, Constructor: iEngineObject},
+    power: {index:5, Constructor: iPowerObject},
+    console: {index: 6 ,Constructor: iConsoleObject},
+    component: {index: 7 ,Constructor: iComponentObject},
+    door: {index: 8 ,Constructor: iDoorObject},
+    wall: {index: 9 ,Constructor: iWallObject}
+};
+items.addNames();
+
+//For loading different ships by adding ship=<name> in the query string.
+function getQueriedShip() {
+    var defaultShip = "area_01";
+    var ship = getParameterByName("ship");
+    if(ship === null) return defaultShip;
+    for (var i = 0; i < g_resources.length; i++) {
+        if(g_resources[i].name == ship && g_resources[i].type == "tmx") {
+            return ship;
+        }
+    }
+    alert("Ship \"" + ship + "\" doesn't exist. Loading \""+defaultShip+"\" instead.");
+    return defaultShip;
+}
+
 var select_item = -1;
 var isSelectObject = false;
 var SelectObject = null;
@@ -99,7 +113,7 @@ var jsApp = {
     },
     // get tile row and col from pixels
     getTilePosition: function(x, y) {
-        var pos = [];
+        var pos = {};
         pos.x = Math.floor(x / me.game.currentLevel.tilewidth);
         pos.y = Math.floor(y / me.game.currentLevel.tileheight);
         return pos;
@@ -121,7 +135,7 @@ var jsApp = {
     },
     initLevel : function(){
          me.game.reset();
-         me.levelDirector.loadLevel("area_01");
+         me.levelDirector.loadLevel(getQueriedShip());
 //         me.state.set(me.state.PLAY, GameScreen);
     },
 };
@@ -134,28 +148,6 @@ var checkCollision = {
     init : function(){
         this.TileWidth = me.game.currentLevel.tilewidth;
         this.TileHeight = me.game.currentLevel.tileheight;
-    },
-        /* get tile style : (none = 0 / solid = 1 / plateform = 2 / leftslope = 3 / right = 4)*/
-    getCollisionTileStyle : function(pX, pY){
-        var tileLayer = me.game.currentLevel.getLayerByName("collision");
-        if(tileLayer == null)
-            return 0;
-        var tileId = tileLayer.getTileId(pX + 1, pY + 1);
-        if(tileId == null)
-            return 0;
-        var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
-        if(tileSet == null)
-            return 0;
-        var tilePro = tileSet.getTileProperties(tileId);
-        if(tilePro.isSolid)
-            return 2;
-        else if(tilePro.isPlatform)
-            return 1;
-        else if(tilePro.isLeftSlope)
-            return 3;
-        else if(tilePro.isRightSlope)
-            return 4;
-        return 0;
     },
     printRedStyle : function(mX, mY){
         this.RedScreen[this.RedIndex] = new RedColorObject(mX, mY, {});
@@ -172,278 +164,12 @@ var checkCollision = {
         this.RedIndex = 0;
     },
     /**/
-    checkObjectCollision : function(CurObj){
-        var res = me.game.collide(CurObj);
-        var checkPoint = new me.Vector2d(0, 0);
-        var mflag = true;
-        if(CurObj.mResource == 8){//door
-            if(CurObj.rotateFlag == false)
-            {
-                for( checkPoint.x = 0 ; checkPoint.x < CurObj.width; checkPoint.x += this.TileWidth )
-                {
-                    CurObj.updateColRect( checkPoint.x, this.TileWidth, 0, this.TileHeight );
-                    res = me.game.collide( CurObj );
-                    if(CurObj.mfix == true)
-                    {
-                        if(res)
-                        {
-                            this.printRedStyle( CurObj.pos.x + checkPoint.x, CurObj.pos.y );
-                            mflag = false;
-                        }
-                    }
-                    else{
-                        if(!res ||res.obj.mResource != 9){
-                            this.printRedStyle( CurObj.pos.x + checkPoint.x, CurObj.pos.y );
-                            mflag = false;
-                        }
-                    }
-                }
-                CurObj.updateColRect(0, CurObj.width, 0, CurObj.height);
-            }
-            else{
-                for( checkPoint.y = 0 ; checkPoint.y < CurObj.width; checkPoint.y += this.TileHeight )
-                {
-                    CurObj.updateColRect( 16, this.TileWidth, checkPoint.y - 16, this.TileHeight );
-                    res = me.game.collide( CurObj );
-                    if(CurObj.mfix == true)
-                    {
-                        if(res)
-                        {
-                            this.printRedStyle( CurObj.pos.x + 16,  CurObj.pos.y - 16 + checkPoint.y );
-                            mflag = false;
-                        }
-                    }
-                    else{
-                        if(!res ||res.obj.mResource != 9){
-                            this.printRedStyle( CurObj.pos.x + 16,  CurObj.pos.y - 16 + checkPoint.y );
-                            mflag = false;
-                        }
-                    }
-                }
-                CurObj.updateColRect(16, CurObj.height, 0 - 16, CurObj.width);
-            }
-            return mflag;
-        }
-        else
-        {
-            if(!res)
-                return true;
-            for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-            {
-                for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-                {
-                    CurObj.updateColRect(checkPoint.x - CurObj.pos.x, this.TileWidth - 2, checkPoint.y - CurObj.pos.y, this.TileHeight - 2);
-                    res = me.game.collide(CurObj);
-                    if(res){
-                        this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    }
-                }
-            }
-            CurObj.updateColRect(0, CurObj.width, 0, CurObj.height);
-        }
-        delete checkPoint;
-        /* process red style rect */
-        return false;
-    },
-    /* check and process collision of Weapon object with outline */
-    checkOutlineCollisionWithWeapon : function(CurObj){
-        var rectVector = new me.Vector2d(0, 0);
-        var PossibleRect = new me.Rect(rectVector, 0, 0);
-        var checkPoint = new me.Vector2d(0, 0);
-        var i = 0;
-        var mRet = true;
-        for(i = 0; i < colWeapon.length; i ++)
-        {
-            rectVector.y = colWeapon[i].y * this.TileHeight;
-            if(CurObj.pos.y == rectVector.y)
-            {
-                rectVector.x = colWeapon[i].x * this.TileWidth;
-                rectVector.y = colWeapon[i].y * this.TileHeight;
-                PossibleRect.set(rectVector, CurObj.width, CurObj.height);
-                break;
-            }
-        }
-        for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-        {
-            for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-            {
-                if(!PossibleRect.containsPoint(checkPoint))
-                {
-                    this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    mRet = false;
-                }
-            }
-        }
-        delete PossibleRect;
-        delete rectVector;
-        delete checkPoint;
-        return mRet;
-    },
-    /* check and process collision of Engine object with outline */
-    checkOutlineCollisionWithEngine : function(CurObj){
-        var rectVector = new me.Vector2d(0, 0);
-        var PossibleRect = new me.Rect(rectVector, 0, 0);
-        var checkPoint = new me.Vector2d(0, 0);
-        var i = 0;
-        var mRet = true;
-        for(i = 0; i < colEngine.length; i ++)
-        {
-            rectVector.y = colEngine[i].y * this.TileHeight;
-            if(CurObj.pos.y == rectVector.y)
-            {
-                rectVector.x = colEngine[i].x * this.TileWidth;
-                rectVector.y = colEngine[i].y * this.TileHeight;
-                PossibleRect.set(rectVector, CurObj.width, CurObj.height);
-                break;
-            }
-        }
-        for(checkPoint.x = CurObj.pos.x + 1; checkPoint.x < CurObj.pos.x + CurObj.width; checkPoint.x += this.TileWidth)
-        {
-            for(checkPoint.y = CurObj.pos.y + 1; checkPoint.y < CurObj.pos.y + CurObj.height; checkPoint.y += this.TileHeight)
-            {
-                if(!PossibleRect.containsPoint(checkPoint))
-                {
-                    this.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                    mRet = false;
-                }
-            }
-        }
-        delete PossibleRect;
-        delete rectVector;
-        delete checkPoint;
-        return mRet;
-    },
-    /* check and process collision of Power with outline */
-    checkOutlineCollisionWithPower : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of Console with outline */
-    checkOutlineCollisionWithConsole : function(CurObj){
-        var mRet = true;
-        if(CurObj.getTileStyle(CurObj.pos.x + this.TileWidth / 2, CurObj.pos.y + this.TileHeight / 2) != 0)
-        {
-            this.printRedStyle(CurObj.pos.x, CurObj.pos.y);
-            mRet = false;
-        }
-        else if(!CurObj.checkCollisionAround()){
-            this.printRedStyle(CurObj.pos.x, CurObj.pos.y);
-            mRet = false;
-        }
-        return mRet;
-    },
-    /* check and process collision of Component with outline */
-    checkOutlineCollisionWithComponent : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of Door with outline */
-    checkOutlineCollisionWithDoor : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2));
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of Wall with outline */
-    checkOutlineCollisionWithWall : function(CurObj){
-        var mRet = true;
-        var mX = 0;
-        var mY = 0;
-        for(mX = CurObj.pos.x + this.TileWidth / 2; mX < CurObj.pos.x + CurObj.width; mX += this.TileWidth)
-        {
-            for(mY = CurObj.pos.y + this.TileHeight / 2; mY < CurObj.pos.y + CurObj.height; mY += this.TileHeight)
-            {
-                if( CurObj.getTileStyle(mX, mY) != 0 )
-                {
-                    this.printRedStyle( mX - (this.TileWidth / 2), mY - (this.TileHeight / 2) );
-                    mRet = false;
-                }
-            }
-        }
-        return mRet;
-    },
-    /* check and process collision of CurObj with outline */
-    checkOutlineCollision : function(CurObj){
-        var mRet = false;
-        if(!CurObj)
-            return false;
-        switch(CurObj.mResource)
-        {
-        case 3:// weapon
-            mRet = this.checkOutlineCollisionWithWeapon(CurObj);
-            break;
-        case 4: //engine
-            mRet = this.checkOutlineCollisionWithEngine(CurObj);
-            break;
-        case 5: // power 
-            mRet = this.checkOutlineCollisionWithPower(CurObj);
-            break;
-        case 6: // console
-            mRet = this.checkOutlineCollisionWithConsole(CurObj);
-            break;
-        case 7: // component
-            mRet = this.checkOutlineCollisionWithComponent(CurObj);
-            break;
-        case 8: // door
-            mRet = this.checkOutlineCollisionWithDoor(CurObj);
-            break;
-        case 9: // wall 
-            mRet = this.checkOutlineCollisionWithWall(CurObj);
-            break;
-        }
-        /* process red style rect */
-        return mRet;
-    },
+    
     /* check and process collision of obj*/
     processCollision : function(CurObj){
-        var mRet = true;
-        var mTemp1 = false;
-        var mTemp2 = false;
-        /* remove red style */
-        this.removeRedStyle();
-        /* check collision */
-        mTemp1 = this.checkObjectCollision(CurObj);
-        mTemp2 = this.checkOutlineCollision(CurObj);
-        if( mTemp1 && mTemp2)
-            mRet = false;
-        return mRet;
+        //TODO: Replace calls to processCollision(obj) for obj.processCollision()
+        //and remove this function from "checkCollision" object.
+        return CurObj.processCollision();
     },
     
 };
@@ -459,7 +185,7 @@ var PlayScreen = me.ScreenObject.extend({
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel("area_01");
+        me.levelDirector.loadLevel(getQueriedShip());
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
@@ -476,7 +202,7 @@ var PlayScreen = me.ScreenObject.extend({
         if( me.input.isKeyPressed("escape") )
         {
             if((SelectObject && select_item != -1) || DeleteObject)
-                onMouseClickItem(-1);
+                onMouseClickItem();
         }
     },
     mouseDbClick : function(e) {
@@ -484,7 +210,7 @@ var PlayScreen = me.ScreenObject.extend({
         {
             if(SelectObject.mResource == 101)
             {
-                removeClassItem(9);
+                removeClassItem(items.wall.index);
                 ObjectsMng.addObject(SelectObject);
             }
             else
@@ -508,14 +234,15 @@ var PlayScreen = me.ScreenObject.extend({
     mouseDown: function(e) {
     },
     mouseMove : function(e){
+        var needsRedrawing = false;
         var mX = me.input.mouse.pos.x;
         var mY = me.input.mouse.pos.y;
         if(select_item != -1)
         {
             if(select_item == 101)
             {
-                mX -= (Math.floor(g_resources_size[9].width / (32 * 2)) * 32);
-                mY -= (Math.floor(g_resources_size[9].height / (32 * 2)) * 32);
+                mX -= (Math.floor(g_resources_size[items.wall.index].width / (32 * 2)) * 32);
+                mY -= (Math.floor(g_resources_size[items.wall.index].height / (32 * 2)) * 32);
             }
             else
             {
@@ -525,63 +252,38 @@ var PlayScreen = me.ScreenObject.extend({
             var mPos = jsApp.getTilePosPixels(mX, mY);
             if(isDragable == false)
             {
-                switch(select_item)
-                {
-                case 3:
-                    SelectObject = new iWeaponObject(mPos.x, mPos.y, {}, this.iItemID);
-                    me.game.add( SelectObject, 100 );
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 4:
-                    SelectObject = new iEngineObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 5:
-                    SelectObject = new iPowerObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 6:
-                    SelectObject = new iConsoleObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 7:
-                    SelectObject = new iComponentObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 100);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 8:
-                    SelectObject = new iDoorObject(mX, mY, {}, this.iItemID);
-                    me.game.add( SelectObject, 110);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
-                case 9:
+                if(select_item == items.wall.index) {
                     SelectObject = new WallGroupObject(this.iItemID);
                     SelectObject.addWallObject(mPos.x, mPos.y);
-                    this.iItemID ++;
-                    isDragable = true;
-                    break;
                 }
+                else {
+                    var item = items.getBy("index", select_item);
+                    if(item) {
+                        SelectObject = new item.Constructor(mX, mY, { }, this.iItemID);
+                    }else {
+                        console.warning("The index selected " + select_item + " does not point to a valid item.");
+                    }
+                    me.game.add( SelectObject, 100 );
+                }
+                
+                this.iItemID ++;
+                isDragable = true;
+
             }
-            else if( select_item == 9 )
+            else if( select_item == items.wall.index )
             {
                 SelectObject.process(wallDrawing, mPos);
+                needsRedrawing = true;
             }
             else if(SelectObject)
             {
+                var prevPosX = SelectObject.pos.x;
+                var prevPosY = SelectObject.pos.y;
                 if(SelectObject.mResource == 101)
                     SelectObject.movePorcess(mPos.x, mPos.y);
                 else
                 {
-                    if(SelectObject.mResource == 8 && SelectObject.rotateFlag)
+                    if(SelectObject.mResource == items.door.index && SelectObject.rotateFlag)
                     {
                         SelectObject.pos.x = mPos.x + 16;
                         SelectObject.pos.y = mPos.y - 16;
@@ -591,19 +293,23 @@ var PlayScreen = me.ScreenObject.extend({
                         SelectObject.pos.x = mPos.x;
                         SelectObject.pos.y = mPos.y;
                     }
-                    if(SelectObject.mResource == 8)
+                    if(SelectObject.mResource == items.door.index)
                         SelectObject.processRotate();
                     /* collision check */
                     checkCollision.processCollision(SelectObject);
                 }
+                if(SelectObject.pos.x != prevPosX || SelectObject.pos.y != prevPosY)
+                    needsRedrawing = true;
             }
         }
-        me.game.sort();
-        me.game.repaint();
+        if(needsRedrawing) {
+            me.game.sort();
+            me.game.repaint();
+        }
     },
     mouseUp : function(e){
         /* check collision */
-        if(select_item == 9)
+        if(select_item == items.wall.index)
         {
             if(wallDrawing == false && 
                !checkCollision.processCollision(SelectObject.getFirstWallObject()))
@@ -619,7 +325,7 @@ var PlayScreen = me.ScreenObject.extend({
                 if(!isDragable)
                 {
                     SelectObject.mfix = true;
-                    if(SelectObject.mResource == 8)
+                    if(SelectObject.mResource == items.door.index)
                     {
                         if(!SelectObject.rotateFlag)
                             SelectObject.setCurrentAnimation("v_open_close");
@@ -629,7 +335,7 @@ var PlayScreen = me.ScreenObject.extend({
                         SelectObject.removeWallinCollision();
                         SelectObject = null;
                     }
-                    else if(SelectObject.mResource == 7 )
+                    else if(SelectObject.mResource == items.component.index )
                         SelectObject.setCurrentAnimation("charge");
                     if(SelectObject)
                         MapMatrix.setUnWalkable(SelectObject.pos.x, SelectObject.pos.y, SelectObject.width, SelectObject.height);
