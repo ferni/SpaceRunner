@@ -32,6 +32,8 @@ var ItemObject = me.ObjectEntity.extend({
     preX : 0,
     preY : 0,
     size: [1,1],
+    cannonTile : [0,0],
+    greenSpotsForPlacement: [],
     init : function (x, y, settings, iIndex){
         if( iIndex >= 0 )
         {
@@ -41,10 +43,10 @@ var ItemObject = me.ObjectEntity.extend({
             this.collidable = true;
             this.type =  g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
-            
+            this.buildPlacementRules();
+            this.greenSpotsForPlacement = pr.getGreenSpotsMatrix(charMap.get(), this.placementRules, this.size, this.cannonTile);
             this.name = "Building";
-            this.placementRules = new Array();
-            this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
+            
         }
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
@@ -97,28 +99,31 @@ var ItemObject = me.ObjectEntity.extend({
 
     // ------ Collisions ------
     checkOutlineCollision: function () {
+        var isClear = true;
         var position = jsApp.getTilePosition(this.pos.x, this.pos.y);
-        var map = charMap.get();
-        for (var i = 0; i < this.placementRules.length; i++) {
-            if(!this.placementRules[i].compliesAt(position.x, position.y, map)){
-                return false;
+        position.x += this.cannonTile[0];
+        position.y += this.cannonTile[1];
+        for (var x = position.x; x < position.x + this.size[0]; x++) {
+            for (var y = position.y; y < position.y + this.size[1]; y++) {
+                if(this.greenSpotsForPlacement[y][x] == 0) {
+                    isClear = false;
+                    checkCollision.printRedStyle(x, y, true);
+                }
             }
-        };
-        return true;
+        }
+        return isClear;
     },
     
     checkObjectCollision:function () {
         var res = me.game.collide(this);
         var checkPoint = new me.Vector2d(0, 0);
-        var tileWidth = me.game.currentLevel.tilewidth;
-        var tileHeight = me.game.currentLevel.tileheight;
         if(!res)
              return true;
-        for(checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += tileWidth)
+        for(checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += TILE_SIZE)
         {
-            for(checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += tileHeight)
+            for(checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += TILE_SIZE)
             {
-                this.updateColRect(checkPoint.x - this.pos.x, tileWidth - 2, checkPoint.y - this.pos.y, tileHeight - 2);
+                this.updateColRect(checkPoint.x - this.pos.x, TILE_SIZE - 2, checkPoint.y - this.pos.y, TILE_SIZE - 2);
                 res = me.game.collide(this);
                 if(res){
                     checkCollision.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
@@ -151,6 +156,12 @@ var ItemObject = me.ObjectEntity.extend({
         MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
     placementRules: []
+    ,
+    buildPlacementRules: function () {
+        this.placementRules = new Array();
+        this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
+    }
+    
     
 });
 
@@ -164,6 +175,9 @@ var iWeaponObject = ItemObject.extend({
         this.mid = mID;
         this.parent(x, y, settings, this.mResource);
         
+    },
+    buildPlacementRules : function() {
+        this.parent();
         this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._front, 
                                                        inAny:[{ x: 2, y: 0 }, { x: 2, y: 1 }]}));
     }
@@ -176,15 +190,19 @@ var iEngineObject = ItemObject.extend({
         this.mResource = items.engine.index;
         this.mid = mID;
         this.size = [2, 2];
+        this.cannonTile = [1, 0];
         this.parent(x, y, settings, this.mResource);
-        
-        this.placementRules = []; //remove space rule
+    },
+    buildPlacementRules : function() {
+        //this doesn't use ItemObjects' placementRules
+        this.placementRules = new Array();
         //write custom space rule
         this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._cleared, 
                                                        inAll: [{x: 1, y:0},{x: 2, y: 0},{x:1, y:1},{x:2, y:1}]}));
         this.placementRules.push(new pr.PlacementRule({tile:charMap.codes._back, 
                                                        inAll:[{ x: 0, y: 0 }, { x: 0, y: 1 }]}));
     }
+    
 });
 
 
