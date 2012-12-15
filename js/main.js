@@ -459,7 +459,7 @@ var PlayScreen = me.ScreenObject.extend({
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel("area_01");
+        me.levelDirector.loadLevel("area_01");
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
