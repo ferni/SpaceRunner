@@ -44,7 +44,7 @@ var ItemObject = me.ObjectEntity.extend({
             this.type =  g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1,g_resources_size[iIndex].height - 1);
             this.buildPlacementRules();
-            this.greenSpotsForPlacement = pr.getGreenSpotsMatrix(charMap.get(), this.placementRules, this.size, this.cannonTile);
+            this.greenSpotsForPlacement = pr.spots.getAllowedSpots(charMap.get(), this.placementRules, this.size, this.cannonTile);
             this.name = "Building";
             
         }
@@ -99,14 +99,13 @@ var ItemObject = me.ObjectEntity.extend({
 
     // ------ Collisions ------
     checkOutlineCollision: function () {
-        var isClear = true;
         var position = jsApp.getTilePosition(this.pos.x, this.pos.y);
         position.x += this.cannonTile[0];
         position.y += this.cannonTile[1];
+        var isClear = this.greenSpotsForPlacement[position.y][position.x] == pr.spots.allowed;
         for (var x = position.x; x < position.x + this.size[0]; x++) {
             for (var y = position.y; y < position.y + this.size[1]; y++) {
-                if(this.greenSpotsForPlacement[y][x] == 0) {
-                    isClear = false;
+                if(this.greenSpotsForPlacement[y][x] == pr.spots.forbidden) {
                     checkCollision.printRedStyle(x, y, true);
                 }
             }

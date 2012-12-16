@@ -20,29 +20,37 @@
             return new pr.PlacementRule({ tile: spaceChar, inAll: coordArray });
         }
     },
-    getGreenSpotsMatrix: function (map, placementRules, objSize, cannonTile) {
-        var matrix = this.utils.getZeroMatrix(map[0].length, map.length);
-        var objWidth = objSize[0];
-        var objHeight = objSize[1];
-        for (var y = 0; y < map.length; y++) {
-            for (var x = 0; x < map[y].length; x++) {
-                var compliesAll = true;
-                for (var r = 0; r < placementRules.length; r++) {
-                    if (!placementRules[r].compliesAt(x, y, map)) {
-                        compliesAll = false;
-                        break;
-                    }
-                };
-                if (compliesAll) {
-                    for (var i = 0; i < objWidth; i++) {
-                        for (var j = 0; j < objHeight; j++) {
-                            matrix[y + j + cannonTile[1]][x + i + cannonTile[0]] = 1;
+    spots: {
+        getAllowedSpots: function (map, placementRules, objSize, cannonTile) {
+            var matrix = pr.utils.getZeroMatrix(map[0].length, map.length);
+            var objWidth = objSize[0];
+            var objHeight = objSize[1];
+            for (var y = 0; y < map.length; y++) {
+                for (var x = 0; x < map[y].length; x++) {
+                    var compliesAll = true;
+                    for (var r = 0; r < placementRules.length; r++) {
+                        if (!placementRules[r].compliesAt(x, y, map)) {
+                            compliesAll = false;
+                            break;
                         }
+                    };
+                    if (compliesAll) {
+                        for (var i = 0; i < objWidth; i++) {
+                            for (var j = 0; j < objHeight; j++) {
+                                matrix[y + j + cannonTile[1]][x + i + cannonTile[0]] = pr.spots.allowedZone;
+                            }
+                        }
+                        matrix[y + cannonTile[1]][x + cannonTile[0]] = pr.spots.allowed;
                     }
+
                 }
             }
-        }
-        return matrix;
+            return matrix;
+        },
+        //Spot types
+        forbidden: 0, //Forbidden spot
+        allowed: 1, //Can place at that position
+        allowedZone: 2 //Is part of an allowed zone
     }
     ,
     utils: {

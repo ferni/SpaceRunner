@@ -164,7 +164,6 @@ var checkCollision = {
         this.RedIndex ++;
     },
     removeRedStyle : function(){
-        console.log("Removed red style");
         var i = 0;
         for(i = this.RedIndex; i > 0; i -- )
         {
