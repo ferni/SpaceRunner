@@ -20,6 +20,39 @@
             return new pr.PlacementRule({ tile: spaceChar, inAll: coordArray });
         }
     },
+    spots: {
+        getAllowedSpots: function (map, placementRules, objSize, cannonTile) {
+            var matrix = pr.utils.getZeroMatrix(map[0].length, map.length);
+            var objWidth = objSize[0];
+            var objHeight = objSize[1];
+            for (var y = 0; y < map.length; y++) {
+                for (var x = 0; x < map[y].length; x++) {
+                    var compliesAll = true;
+                    for (var r = 0; r < placementRules.length; r++) {
+                        if (!placementRules[r].compliesAt(x, y, map)) {
+                            compliesAll = false;
+                            break;
+                        }
+                    };
+                    if (compliesAll) {
+                        for (var i = 0; i < objWidth; i++) {
+                            for (var j = 0; j < objHeight; j++) {
+                                matrix[y + j + cannonTile[1]][x + i + cannonTile[0]] = pr.spots.allowedZone;
+                            }
+                        }
+                        matrix[y + cannonTile[1]][x + cannonTile[0]] = pr.spots.allowed;
+                    }
+
+                }
+            }
+            return matrix;
+        },
+        //Spot types
+        forbidden: 0, //Forbidden spot
+        allowed: 1, //Can place at that position
+        allowedZone: 2 //Is part of an allowed zone
+    }
+    ,
     utils: {
         //check if a tile is at any of the positions in the "relativeCoordinates" parameter
         checkIsInAny: function (tileMap, wantedTile, relativeCoordinates, currentCoordinate) {
@@ -45,6 +78,16 @@
                 }
             }
             return !inAny;
+        },
+        getZeroMatrix: function (width, height) {
+            var matrix = new Array();
+            for (var i = 0; i < height; i++) {
+                matrix.push(new Array());
+                for (var j = 0; j < width; j++) {
+                    matrix[i].push(0);
+                }
+            }
+            return matrix;
         }
     }
 };

@@ -78,6 +78,8 @@ var wallDrawing = false;
 var DeleteObject = null;
 var GameScreen = null;
 
+var TILE_SIZE = 0;
+
 //var weaponmng = new WeaponMng();
 
 var jsApp = {
@@ -110,6 +112,8 @@ var jsApp = {
         me.state.set(me.state.PLAY, GameScreen);
         // start the game
         me.state.change(me.state.PLAY);
+        
+        
     },
     // get tile row and col from pixels
     getTilePosition: function(x, y) {
@@ -149,7 +153,12 @@ var checkCollision = {
         this.TileWidth = me.game.currentLevel.tilewidth;
         this.TileHeight = me.game.currentLevel.tileheight;
     },
-    printRedStyle : function(mX, mY){
+    printRedStyle : function(mX, mY, useTilePosition){
+        if(useTilePosition) {
+            var coor = jsApp.getTileCoord(mX, mY);
+            mX = coor.x;
+            mY = coor.y;
+        }
         this.RedScreen[this.RedIndex] = new RedColorObject(mX, mY, {});
         me.game.add(this.RedScreen[this.RedIndex], 101);
         this.RedIndex ++;
@@ -186,6 +195,7 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.reset();
         // stuff to reset on state change
         me.levelDirector.loadLevel(getQueriedShip());
+        window.TILE_SIZE =  me.game.currentLevel.tilewidth;
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
@@ -296,10 +306,12 @@ var PlayScreen = me.ScreenObject.extend({
                     if(SelectObject.mResource == items.door.index)
                         SelectObject.processRotate();
                     /* collision check */
+                    
+                }
+                if(SelectObject.pos.x != prevPosX || SelectObject.pos.y != prevPosY) {
+                    needsRedrawing = true;
                     checkCollision.processCollision(SelectObject);
                 }
-                if(SelectObject.pos.x != prevPosX || SelectObject.pos.y != prevPosY)
-                    needsRedrawing = true;
             }
         }
         if(needsRedrawing) {
