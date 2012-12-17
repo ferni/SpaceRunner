@@ -1,331 +1,331 @@
 // Avoid `console` errors in browsers that lack a console.
 
 /* test plugins.js*/
-
+module("plugins.js");
 /*RedColorObject*/
-function test_onPreLoad(){
-	me.loader.preload(g_resources);
-	me.levelDirector.loadLevel("area_01");
-}
+test("onPreLoad", function() {
+    me.loader.preload(g_resources);
+    me.levelDirector.loadLevel("area_01");
+});
 
-function test_RedColorObject(){
+test("RedColorObject", function() {
     var mX = 0;
     var mY = 0;
     var mClass = new RedColorObject(0, 0, {});
-    assertEquals(0, mClass.gravity);
-    assertFalse(mClass.collidable);
-    assertEquals(g_resources_size[2].name, mClass.type);
-};
+    equal(0, mClass.gravity);
+    strictEqual(mClass.collidable, false);
+    equal(g_resources_size[2].name, mClass.type);
+});
 
 /*ItemObjectObject*/
-function test_ItemObject(){
+test("ItemObject", function() {
     var mX = 0;
     var mY = 0;
     var mIndex = 5;
     if( mIndex >= 3 && mIndex <= 9 )
-        assertTrue(true);
+        ok(true);
     else
-        assertFalse(false);
+        strictEqual(false, false);
     var mClass = new ItemObject(0, 0, {}, mIndex);
-    assertNotNull(mClass);
-    assertEquals(0, mClass.gravity);
-    assertTrue(mClass.collidable);
-    assertEquals(g_resources_size[mIndex].name, mClass.type);
-};
+    notStrictEqual(mClass, null);
+    equal(0, mClass.gravity);
+    ok(mClass.collidable);
+    equal(g_resources_size[mIndex].name, mClass.type);
+});
 
-function test_ItemObject_containLine(){
+test("ItemObject_containLine", function() {
     var sPos = new me.Vector2d(0, 0);
     var mRect = new me.Rect(sPos, 32, 32);
     var ePos = new me.Vector2d(10, 10);
     var mClass = new ItemObject(0, 0, {}, 5);
-    assertNotNull(mRect);
-    assertNotNull(ePos);
-    assertNotNull(sPos);
-    assertTrue(mClass.containLine(mRect,sPos,ePos));
-};
+    notStrictEqual(mRect, null);
+    notStrictEqual(ePos, null);
+    notStrictEqual(sPos, null);
+    ok(mClass.containLine(mRect,sPos,ePos));
+});
 /* Weapon Class */
-function test_iWeaponObject(){
+test("iWeaponObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iWeaponObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 3);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 3);
+    equal(mTemp.mid, mID);
+    strictEqual(mTemp.isDrag, false);
+    equal(mTemp.preX, 0);
+    equal(mTemp.preY, 0);
+});
 
-function test_iWeaponObject_onMouseDown(){
+test("iWeaponObject_onMouseDown", function() {
     me.input.mouse.pos.x = 100;
     me.input.mouse.pos.y = 100;
-	select_item = 3;
+    select_item = 3;
     var mClass = new iWeaponObject(0, 0, {}, 1);
-	mClass.isDrag = true;
-	isDragable = true;
-    assertNotEquals(select_item, -1);
+    mClass.isDrag = true;
+    isDragable = true;
+    notEqual(select_item, -1);
     mClass.onMouseDown();
-    assertTrue(mClass.isDrag);
-    assertEquals(select_item, mClass.mResource);
-    assertTrue(isDragable);
-    assertEquals(mClass.preX, mClass.pos.x);
-    assertEquals(mClass.preY, mClass.pos.y);
-};
+    ok(mClass.isDrag);
+    equal(select_item, mClass.mResource);
+    ok(isDragable);
+    equal(mClass.preX, mClass.pos.x);
+    equal(mClass.preY, mClass.pos.y);
+});
 
-function test_iWeaponObject_onMouseUp(){
+test("iWeaponObject_onMouseUp", function() {
     var mClass = new iWeaponObject(10, 10, {}, 1);
-	mClass.isDrag = false;
-	isDragable = false;
+    mClass.isDrag = false;
+    isDragable = false;
     mClass.onMouseUp();
-    assertFalse(mClass.isDrag);
-    assertNull(SelectObject);
-    assertFalse(isDragable);
-    assertNotEquals(mClass.pos.x, mClass.preX);
-    assertNotEquals(mClass.pos.y, mClass.preY);
-};
+    strictEqual(mClass.isDrag, false);
+    strictEqual(SelectObject, null);
+    strictEqual(isDragable, false);
+    notEqual(mClass.pos.x, mClass.preX);
+    notEqual(mClass.pos.y, mClass.preY);
+});
 /**/
-function test_iEngineObject(){
+test("iEngineObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iEngineObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 4);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 4);
+    equal(mTemp.mid, mID);
+    strictEqual(mTemp.isDrag, false);
+    equal(mTemp.preX, 0);
+    equal(mTemp.preY, 0);
+});
 
-function test_iEngineObject_onMouseDown(){
+test("iEngineObject_onMouseDown", function() {
     me.input.mouse.pos.x = 100;
     me.input.mouse.pos.y = 100;
-	select_item = 4;
+    select_item = 4;
     var mClass = new iEngineObject(0, 0, {}, 1);
     mClass.onMouseDown();
-    assertNotEquals(select_item, -1);
-    assertFalse(mClass.isDrag);
-    assertEquals(select_item, mClass.mResource);
-    assertFalse(isDragable);
-    assertEquals(mClass.preX, mClass.pos.x);
-    assertEquals(mClass.preY, mClass.pos.y);
-};
+    notEqual(select_item, -1);
+    strictEqual(mClass.isDrag, false);
+    equal(select_item, mClass.mResource);
+    strictEqual(isDragable, false);
+    equal(mClass.preX, mClass.pos.x);
+    equal(mClass.preY, mClass.pos.y);
+});
 
-function test_iEngineObject_onMouseUp(){
+test("iEngineObject_onMouseUp", function() {
     var mClass = new iEngineObject(0, 0, {}, 1);
     mClass.onMouseUp();
-    assertFalse(mClass.isDrag);
-    assertFalse(isDragable);
-    assertEquals(mClass.pos.x, 0);
-    assertEquals(mClass.pos.y, 0);
-};
-function test_iPowerObject(){
+    strictEqual(mClass.isDrag, false);
+    strictEqual(isDragable, false);
+    equal(mClass.pos.x, 0);
+    equal(mClass.pos.y, 0);
+});
+test("iPowerObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iPowerObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 5);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 5);
+    equal(mTemp.mid, mID);
+    strictEqual(mTemp.isDrag, false);
+    equal(mTemp.preX, 0);
+    equal(mTemp.preY, 0);
+});
 
-function test_iPowerObject_onMouseDown(){
+test("iPowerObject_onMouseDown", function() {
     var mClass = new iPowerObject(0, 0, {}, 1);
-	select_item = 5;
+    select_item = 5;
     mClass.onMouseDown();
-    assertFalse(mClass.isDrag);
-    assertEquals(select_item, mClass.mResource);
-    assertFalse(isDragable);
-    assertEquals(mClass.preX, 0);
-    assertEquals(mClass.preY, 0);
-};
+    strictEqual(mClass.isDrag, false);
+    equal(select_item, mClass.mResource);
+    strictEqual(isDragable, false);
+    equal(mClass.preX, 0);
+    equal(mClass.preY, 0);
+});
 
-function test_iPowerObject_onMouseUp(){
+test("iPowerObject_onMouseUp", function() {
     var mClass = new iPowerObject(0, 0, {}, 1);
     mClass.onMouseUp();
-    assertFalse(mClass.isDrag);
-    assertNull(SelectObject);
-    assertNotEquals(select_item, -1);
-    assertFalse(isDragable);
-    assertEquals(mClass.pos.x, 0);
-    assertEquals(mClass.pos.y, 0);
-};
+    strictEqual(mClass.isDrag, false);
+    strictEqual(SelectObject, null);
+    notEqual(select_item, -1);
+    strictEqual(isDragable, false);
+    equal(mClass.pos.x, 0);
+    equal(mClass.pos.y, 0);
+});
 
-function test_iConsoleObject(){
+test("iConsoleObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iConsoleObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 6);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 6);
+    equal(mTemp.mid, mID);
+    strictEqual(mTemp.isDrag, false);
+    equal(mTemp.preX, 0);
+    equal(mTemp.preY, 0);
+});
 
-function test_iConsoleObject_onMouseDown(){
+test("iConsoleObject_onMouseDown", function() {
     var mClass = new iConsoleObject(0, 0, {}, 1);
-	select_item = 6;
+    select_item = 6;
     mClass.onMouseDown();
-    assertFalse(mClass.isDrag);
-    assertEquals(select_item, mClass.mResource);
-    assertFalse(isDragable);
-    assertEquals(mClass.preX, 0);
-    assertEquals(mClass.preY, 0);
-};
+    strictEqual(mClass.isDrag, false);
+    equal(select_item, mClass.mResource);
+    strictEqual(isDragable, false);
+    equal(mClass.preX, 0);
+    equal(mClass.preY, 0);
+});
 
-function test_iConsoleObject_onMouseUp(){
+test("iConsoleObject_onMouseUp", function() {
     var mClass = new iConsoleObject(0, 0, {}, 1);
     mClass.onMouseUp();
-    assertFalse(mClass.isDrag);
-    assertNull(SelectObject);
-    assertNotEquals(select_item, -1);
-    assertFalse(isDragable);
-    assertEquals(mClass.pos.x, 0);
-    assertEquals(mClass.pos.y, 0);
-};
+    strictEqual(mClass.isDrag, false);
+    strictEqual(SelectObject, null);
+    notEqual(select_item, -1);
+    strictEqual(isDragable, false);
+    equal(mClass.pos.x, 0);
+    equal(mClass.pos.y, 0);
+});
 
-function test_iConsoleObject_checkItemPos(){
+test("iConsoleObject_checkItemPos", function() {
     var mClass = new iConsoleObject(0, 0, {}, 1);
     var mX = 0;
     var mY = 0;
     var de = 1;
-    assertNotNull(mClass);
+    notStrictEqual(mClass, null);
     if(de >= 0 && de <= 3)
-        assertTrue(true);
+        ok(true);
     else
-        assertFalse(true);
-};
+        strictEqual(true, false);
+});
 
-function test_iComponentObject(){
+test("iComponentObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iComponentObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 7);
-    assertEquals(mTemp.mid, mID);
-    assertFalse(mTemp.isDrag);
-    assertEquals(mTemp.preX, 0);
-    assertEquals(mTemp.preY, 0);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 7);
+    equal(mTemp.mid, mID);
+    strictEqual(mTemp.isDrag, false);
+    equal(mTemp.preX, 0);
+    equal(mTemp.preY, 0);
+});
 
-function test_iComponentObject_onMouseDown(){
+test("iComponentObject_onMouseDown", function() {
     var mClass = new iComponentObject(0, 0, {}, 1);
-	select_item = 7;
+    select_item = 7;
     mClass.onMouseDown();
-    assertFalse(mClass.isDrag);
-    assertEquals(select_item, mClass.mResource);
-    assertFalse(isDragable);
-    assertEquals(mClass.preX, 0);
-    assertEquals(mClass.preY, 0);
-};
+    strictEqual(mClass.isDrag, false);
+    equal(select_item, mClass.mResource);
+    strictEqual(isDragable, false);
+    equal(mClass.preX, 0);
+    equal(mClass.preY, 0);
+});
 
-function test_iComponentObject_onMouseUp(){
+test("iComponentObject_onMouseUp", function() {
     var mClass = new iComponentObject(0, 0, {}, 1);
-    assertFalse(mClass.isDrag);
-    assertNull(SelectObject);
-    assertNotEquals(select_item, -1);
-    assertFalse(isDragable);
-    assertEquals(mClass.pos.x, 0);
-    assertEquals(mClass.pos.y, 0);
-};
+    strictEqual(mClass.isDrag, false);
+    strictEqual(SelectObject, null);
+    notEqual(select_item, -1);
+    strictEqual(isDragable, false);
+    equal(mClass.pos.x, 0);
+    equal(mClass.pos.y, 0);
+});
 
-function test_iDoorObject(){
+test("iDoorObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iDoorObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 8);
-    assertEquals(mTemp.mid, mID);
-    assertTrue(mTemp.rotateFlag);
-    assertFalse(mTemp.mfix);
-    assertEquals(mTemp.angle, Math.PI / 2);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 8);
+    equal(mTemp.mid, mID);
+    ok(mTemp.rotateFlag);
+    strictEqual(mTemp.mfix, false);
+    equal(mTemp.angle, Math.PI / 2);
+});
 
-function test_iDoorObject_processRotate(){
+test("iDoorObject_processRotate", function() {
     var mClass = new iDoorObject(0, 0, {}, 1);
     mClass.processRotate();
-    assertTrue(mClass.rotateFlag);
-    assertNotEquals(mClass.angle, 0);
-    assertNotEquals(mClass.width, 0);
-    assertNotEquals(mClass.height, 0);
-};
+    ok(mClass.rotateFlag);
+    notEqual(mClass.angle, 0);
+    notEqual(mClass.width, 0);
+    notEqual(mClass.height, 0);
+});
 
     
-function test_iDoorObject_removeWallinCollision(){
+test("iDoorObject_removeWallinCollision", function() {
     var mClass = new iDoorObject(0, 0, {}, 1);
     me.game.add(mClass);
     mClass.removeWallinCollision();
-    assertNull(me.game.collide(mClass));
+    strictEqual(me.game.collide(mClass), null);
     me.game.remove(mClass);
-};
+});
 
-function test_iWallObject(){
+test("iWallObject", function() {
     var mX = 0;
     var mY = 0;
     var mID = 1;
     var mTemp = new iWallObject(mX, mY, {}, mID);
-    assertNotNull(mTemp);
-    assertEquals(mTemp.mResource, 9);
-    assertEquals(mTemp.mid, mID);
-};
+    notStrictEqual(mTemp, null);
+    equal(mTemp.mResource, 9);
+    equal(mTemp.mid, mID);
+});
 
-function test_iWallObject_checkTopAndBottomWall(){
+test("iWallObject_checkTopAndBottomWall", function() {
     var mClass = new iWallObject(0, 0, {}, 3);
     var mRet = mClass.checkTopAndBottomWall();
     switch(mRet){
     case 0:
-        assertEquals("None collide", 0, mRet);
+        equal("None collide", 0, mRet);
         break;
     case 2:
-        assertEquals("collide with object else wall", 2, mRet);
+        equal("collide with object else wall", 2, mRet);
         break;
     case 3:
-        assertEquals("collide with wall on topside", 3, mRet);
+        equal("collide with wall on topside", 3, mRet);
         break;
     case 4:
-        assertEquals("collide with wall on bottomside", 4, mRet);
+        equal("collide with wall on bottomside", 4, mRet);
         break;
     case 5:
-        assertEquals("collide with wall on top/bottomside", 5, mRet);
+        equal("collide with wall on top/bottomside", 5, mRet);
         break
     default:
-        assertEquals("Unknown value", 0, mRet);
+        equal("Unknown value", 0, mRet);
     }
-};
+});
 
-function test_iWallObject_checkLeftAndRightWall(){
+test("iWallObject_checkLeftAndRightWall", function() {
     var mClass = new iWallObject(0, 0, {}, 3);
     var mRet = mClass.checkLeftAndRightWall();
     switch(mRet){
     case 0:
-        assertEquals("None collide", 0, mRet);
+        equal("None collide", 0, mRet);
         break;
     case 8:
-        assertEquals("collide with object else wall", 2, mRet);
+        equal("collide with object else wall", 2, mRet);
         break;
     case 7:
-        assertEquals("collide with wall on leftside", 3, mRet);
+        equal("collide with wall on leftside", 3, mRet);
         break;
     case 6:
-        assertEquals("collide with wall on rightside", 4, mRet);
+        equal("collide with wall on rightside", 4, mRet);
         break;
     case 5:
-        assertEquals("collide with wall on left/right side", 5, mRet);
+        equal("collide with wall on left/right side", 5, mRet);
         break
     default:
-        assertEquals("Unknown value", 0, mRet);
+        equal("Unknown value", 0, mRet);
     }
-};
+});
 
-function test_iWallObject_checkDirectWall(){
+test("iWallObject_checkDirectWall", function() {
     var mClass = new iWallObject(0, 0, {}, 3);
     mClass.checkDirectWall();
     mClass.addAnimation ("vWall", [0]);
@@ -342,85 +342,85 @@ function test_iWallObject_checkDirectWall(){
     if(mClass.isCurrentAnimation("vWall") || mClass.isCurrentAnimation("hWall") || mClass.isCurrentAnimation("LL_Wall") || mClass.isCurrentAnimation("E_Wall") ||
         mClass.isCurrentAnimation("PL_Wall") || mClass.isCurrentAnimation("RL_Wall") || mClass.isCurrentAnimation("I_LL_Wall") || mClass.isCurrentAnimation("I_E_Wall") ||
         mClass.isCurrentAnimation("I_RL_Wall") || mClass.isCurrentAnimation("LE_Wall") || mClass.isCurrentAnimation("RE_Wall"))
-        assertTrue(true);
+        ok(true);
     else
-        assertFalse(true);
-};
-function test_WallGroupObject(){
+        strictEqual(true, false);
+});
+test("WallGroupObject", function() {
     var mClass = new WallGroupObject(1);
-    assertEquals(mClass.mid, 1);
-    assertEquals(mClass.mResource, 101);
-    assertEquals(mClass.WallPosX, 0);
-    assertEquals(mClass.WallPosY, 0);
-    assertEquals(mClass.mStarti, 0);
-    assertEquals(mClass.mWallObject.length, 0);
-};
+    equal(mClass.mid, 1);
+    equal(mClass.mResource, 101);
+    equal(mClass.WallPosX, 0);
+    equal(mClass.WallPosY, 0);
+    equal(mClass.mStarti, 0);
+    equal(mClass.mWallObject.length, 0);
+});
 
-function test_WallGroupObject_addWallObject(){
+test("WallGroupObject_addWallObject", function() {
     var mClass = new WallGroupObject(1);
     var wallObj = mClass.addWallObject(100, 100);
-    assertEquals(mClass.mWallObject[mClass.mWallObject.length - 1] , wallObj);
-};
+    equal(mClass.mWallObject[mClass.mWallObject.length - 1] , wallObj);
+});
     
-function test_WallGroupObject_removeWallObject(){
+test("WallGroupObject_removeWallObject", function() {
     var mClass = new WallGroupObject(1);
     var mWall = new iWallObject(0, 0, {}, 2);
-    assertFalse(mClass.removeWallObject(mWall));
-};
+    strictEqual(mClass.removeWallObject(mWall), false);
+});
 
-function test_WallGroupObject_removeAll() {
+test("WallGroupObject_removeAll", function() {
     var mClass = new WallGroupObject(1);
     mClass.addWallObject(100, 100);
     mClass.addWallObject(100, 100);
     mClass.addWallObject(100, 100);
     mClass.removeAll(1);
-    assertEquals(mClass.mWallObject.length, 1);
-};
+    equal(mClass.mWallObject.length, 1);
+});
 
-function test_WallGroupObject_getFirstWallObject() {
+test("WallGroupObject_getFirstWallObject", function() {
     var mClass = new WallGroupObject(1);
     mClass.addWallObject(100, 100);
-    assertNotNull(mClass.getFirstWallObject());
-};
+    notStrictEqual(mClass.getFirstWallObject(), null);
+});
 
-function test_WallGroupObject_setPrePostoCurPos(){
+test("WallGroupObject_setPrePostoCurPos", function() {
     var mClass = new WallGroupObject(1);
     mClass.addWallObject(100, 100);
     mClass.setPrePostoCurPos();
-    assertEquals(mClass.mWallObject[0].preX, mClass.mWallObject[0].pos.x);
-    assertEquals(mClass.mWallObject[0].preY, mClass.mWallObject[0].pos.y);
-};
+    equal(mClass.mWallObject[0].preX, mClass.mWallObject[0].pos.x);
+    equal(mClass.mWallObject[0].preY, mClass.mWallObject[0].pos.y);
+});
 
-function test_WallGroupObject_setCurPostoPrePos(){
+test("WallGroupObject_setCurPostoPrePos", function() {
     var mClass = new WallGroupObject(1);
     mClass.addWallObject(100, 100);
     mClass.setCurPostoPrePos();
-    assertEquals(mClass.mWallObject[0].preX, mClass.mWallObject[0].pos.x);
-    assertEquals(mClass.mWallObject[0].preY, mClass.mWallObject[0].pos.y);
-};
+    equal(mClass.mWallObject[0].preX, mClass.mWallObject[0].pos.x);
+    equal(mClass.mWallObject[0].preY, mClass.mWallObject[0].pos.y);
+});
 
-function test_makeJsonString(){
+test("makeJsonString", function() {
     var mClass = makeJsonString;
-    assertEquals(mClass.JsonString, "");
-};
+    equal(mClass.JsonString, "");
+});
 
-function test_makeJsonString_setFirstString(){
+test("makeJsonString_setFirstString", function() {
     var mClass = makeJsonString;
     mClass.setFirstString();
-    assertEquals(mClass.JsonString, '{"Objects" : [');
-};
+    equal(mClass.JsonString, '{"Objects" : [');
+});
 
-function test_makeJsonString_makeObjecttoString(){
+test("makeJsonString_makeObjecttoString", function() {
     var mClass = makeJsonString;
     var mTemp1 = new iWallObject(0, 0, {}, 1);
-    assertNotNull(mTemp1);
+    notStrictEqual(mTemp1, null);
     mClass.makeObjecttoString(mTemp1, true);
-    assertEquals(mClass.JsonString, '{"Objects" : [{"Resource":9,"id":1,"PosX":0,"PosY":0,"Fix":false,"angle":0,"animation":"hWall"}');
-};
+    equal(mClass.JsonString, '{"Objects" : [{"Resource":9,"id":1,"PosX":0,"PosY":0,"Fix":false,"angle":0,"animation":"hWall"}');
+});
 
-function test_makeJsonString_setEndString(){
+test("makeJsonString_setEndString", function() {
     var mClass = makeJsonString;
     mClass.JsonString = "";
     mClass.setEndString();
-    assertEquals(mClass.JsonString, ']}');
-};
+    equal(mClass.JsonString, ']}');
+});

@@ -1,31 +1,31 @@
 /*
  * JavaScript Code : 
 */
-
+module("mainlink.js");
 //This makes no sense; expression ( mItem < 3 || mItem > 9 ) is always false.
-function test_removeClassItem(){
+test("removeClassItem", function() {
     var mItem = 5;
     if( mItem < 3 || mItem > 9 )
-        assertTrue("mItem is between 3 and 9", false);
+        ok("mItem is between 3 and 9", false);
     else
-        assertTrue("mItem is between 3 and 9", true);
-};
+        ok("mItem is between 3 and 9", true);
+});
 
-function test_onMouseClickItem(){
+test("onMouseClickItem", function() {
     var oriStr = ["Error1", "Error1", "Error1", "item_engine", "item_engine", "item_power", "item_console", "item_components", "item_door", "item_wall"];
     var mItem = 3;
     var mRet = onMouseClickItem(oriStr[mItem]);
     if(mRet >= 3 && mRet <= 9)
     {
-        assertEquals(mItem, select_item);
-        assertNull(SelectObject);
-        assertNull(WallMngObj);
-        assertFalse(isDragable);
-        assertFalse(wallDrawing);
+        equal(mItem, select_item);
+        strictEqual(SelectObject, null);
+        strictEqual(WallMngObj, null);
+        strictEqual(isDragable, false);
+        strictEqual(wallDrawing, false);
     }
-};
+});
 
-function test_drawObjectfromJstring(){
+test("drawObjectfromJstring", function() {
     var JString = '{"Obje" : 234, "sssef" : "sefee"}';
-    assertFalse(drawObjectfromJstring(JString));
-};
+    strictEqual(drawObjectfromJstring(JString), false);
+});

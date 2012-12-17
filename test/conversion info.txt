@@ -1,0 +1,16 @@
+Straightforward:
+
+assertEquals		->		equal
+
+assertNotEquals		->		notEqual
+
+assertTrue			->		ok
+
+Not straightforward:
+
+assertFalse(		->		strictEqual(..., false
+
+assertNull(			->		strictEqual(..., null 
+
+assertNotNull(		->		notStrictEqual(..., null
+

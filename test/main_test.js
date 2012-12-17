@@ -3,91 +3,93 @@
  vim: set ts=4 sw=4 et sts=4 ai:
  */
 
-// test main.js
-function test_checkCollision(){
-    var mClass = checkCollision;
-    assertNotNull(mClass.RedScreen);
-    assertEquals(mClass.TileWidth, 0);
-    assertEquals(mClass.TileHeight, 0);
-};
+module("main.js");
 
-function test_checkCollision_printRedStyle(){
+// test main.js
+test("checkCollision", function() {
+    var mClass = checkCollision;
+    notStrictEqual(mClass.RedScreen, null);
+    equal(mClass.TileWidth, 0);
+    equal(mClass.TileHeight, 0);
+});
+
+test("checkCollision_printRedStyle", function() {
     var mClass = checkCollision;
     var preValue = mClass.RedIndex;
     mClass.printRedStyle(0, 0);
-    assertNotEquals(mClass.RedIndex, preValue);
-};
+    notEqual(mClass.RedIndex, preValue);
+});
 
-function test_checkCollision_removeRedStyle(){
+test("checkCollision_removeRedStyle", function() {
     var mClass = checkCollision;
     mClass.removeRedStyle();
-    assertEquals(mClass.RedIndex, 0);
-};
+    equal(mClass.RedIndex, 0);
+});
 
 /*
 //Change: This test should no longer use checkCollision object
 //checkObjectCollision is in ItemObject
-function test_checkCollision_checkObjectCollision(){
+test("checkCollision_checkObjectCollision", function() {
     var Obj1 = new iWeaponObject(0, 0, {}, 1);
     me.game.add(Obj1);
     var Obj2 = new iWeaponObject(0, 0, {}, 2);
     me.game.add(Obj2);
     var mClass = checkCollision;
-    assertFalse(mClass.checkObjectCollision(Obj2));
-    assertEquals(mClass.RedIndex, 0);
+    strictEqual(mClass.checkObjectCollision(Obj2), false);
+    equal(mClass.RedIndex, 0);
     me.game.remove(Obj1);
     me.game.remove(Obj2);
-};
+});
 
 //Obsolete: checkOutlineCollisionWithWeapon removed from checkCollision
 //Now there is a  PlacementRule added in iWeaponObject instead
-function test_checkCollision_checkOutlineCollisionWithWeapon(){
+test("checkCollision_checkOutlineCollisionWithWeapon", function() {
     var Obj1 = new iWeaponObject(0, 0, {}, 2);
     me.game.add(Obj1)
     var mClass = checkCollision;
-    assertTrue(mClass.checkOutlineCollisionWithWeapon(Obj1));
-    assertEquals(mClass.RedIndex, 0);
+    ok(mClass.checkOutlineCollisionWithWeapon(Obj1));
+    equal(mClass.RedIndex, 0);
     me.game.remove(Obj1);
-};
+});
 
 //Obsolete: checkOutlineCollisionWithEngine removed from checkCollision
 //Now there is a  PlacementRule added in iEngineObject instead
-function test_checkCollision_checkOutlineCollisionWithEngine(){
+test("checkCollision_checkOutlineCollisionWithEngine", function() {
     var Obj1 = new iEngineObject(0, 0, {}, 2);
     me.game.add(Obj1)
     var mClass = checkCollision;
-    assertTrue(mClass.checkOutlineCollisionWithEngine(Obj1));
-    assertEquals(mClass.RedIndex, 0);
+    ok(mClass.checkOutlineCollisionWithEngine(Obj1));
+    equal(mClass.RedIndex, 0);
     me.game.remove(Obj1);
-};
+});
 
 //Obsolete: checkOutlineCollisionWithPower removed from checkCollision
-function test_checkCollision_checkOutlineCollisionWithPower(){
+test("checkCollision_checkOutlineCollisionWithPower", function() {
     var Obj1 = new iPowerObject(0, 0, {}, 2);
     me.game.add(Obj1)
     var mClass = checkCollision;
-    assertTrue(mClass.checkOutlineCollisionWithPower(Obj1));
-    assertEquals(mClass.RedIndex, 0);
+    ok(mClass.checkOutlineCollisionWithPower(Obj1));
+    equal(mClass.RedIndex, 0);
     me.game.remove(Obj1);
-};
+});
 
 
 //Change: checkOutlineCollision moved to ItemObject
-function test_checkCollision_checkOutlineCollision(){
+test("checkCollision_checkOutlineCollision", function() {
     var Obj1 = new iWeaponObject(0, 0, {}, 2);
     me.game.add(Obj1)
     var mClass = checkCollision;
-    assertTrue(mClass.checkOutlineCollision(Obj1));
-    assertEquals(mClass.RedIndex, 0);
+    ok(mClass.checkOutlineCollision(Obj1));
+    equal(mClass.RedIndex, 0);
     me.game.remove(Obj1);
-};
+});
 */
 
 /* Screen Object */
-function test_PlayScreen(){
+test("PlayScreen", function() {
     var mClass = new PlayScreen;
-    assertEquals(mClass.iItemID, 0);
-    assertNotNull(checkCollision.RedScreen);
-    assertEquals(checkCollision.TileWidth, 0);
-    assertEquals(checkCollision.TileHeight, 0);
-};
+    equal(mClass.iItemID, 0);
+    notStrictEqual(checkCollision.RedScreen, null);
+    equal(checkCollision.TileWidth, 0);
+    equal(checkCollision.TileHeight, 0);
+});
