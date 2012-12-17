@@ -22,11 +22,15 @@
     },
     spots: {
         getAllowedSpots: function (map, placementRules, objSize, cannonTile) {
-            var matrix = pr.utils.getZeroMatrix(map[0].length, map.length);
+            var mapHeight = map.length;
+            var mapWidth = 0;
+            if(map[0])
+                mapWidth = map[0].length;
+            var matrix = pr.utils.getZeroMatrix(mapWidth, mapHeight);
             var objWidth = objSize[0];
             var objHeight = objSize[1];
-            for (var y = 0; y < map.length; y++) {
-                for (var x = 0; x < map[y].length; x++) {
+            for (var y = 0; y < mapHeight; y++) {
+                for (var x = 0; x < mapWidth; x++) {
                     var compliesAll = true;
                     for (var r = 0; r < placementRules.length; r++) {
                         if (!placementRules[r].compliesAt(x, y, map)) {
