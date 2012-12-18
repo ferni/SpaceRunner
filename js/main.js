@@ -16,8 +16,8 @@ var g_resources = [
     {name: "wall",      type: "image", src: "data/img/render/wall_001.png"},
     {name: "colTile",   type: "image", src: "data/img/render/metatiles32x32.png"},
     {name: "area_01",   type: "tmx",   src: "data/outlines/small.tmx"},
-                    {name: "test",          type: "tmx",       src: "data/outlines/test.tmx"}
-                ];
+    {name: "test",      type: "tmx",   src: "data/outlines/test.tmx"}
+    ];
 
 var g_resources_size = [
     {name: "outline",   width: 192, height: 256},
