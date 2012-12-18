@@ -39,9 +39,10 @@
                         }
                     };
                     if (compliesAll) {
-                        for (var i = 0; i < objWidth; i++) {
-                            for (var j = 0; j < objHeight; j++) {
-                                matrix[y + j + cannonTile[1]][x + i + cannonTile[0]] = pr.spots.allowedZone;
+                        for (var i = x; i < objWidth + x && i < mapWidth; i++) {
+                            for (var j = y; j < objHeight + y && j < mapHeight; j++) {
+                                if(matrix[j + cannonTile[1]][i + cannonTile[0]] == pr.spots.forbidden)
+                                    matrix[j + cannonTile[1]][i + cannonTile[0]] = pr.spots.allowedZone;
                             }
                         }
                         matrix[y + cannonTile[1]][x + cannonTile[0]] = pr.spots.allowed;
