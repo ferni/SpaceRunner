@@ -41,39 +41,6 @@ test("checkCollision_checkObjectCollision", function() {
     me.game.remove(Obj2);
 });
 
-//Obsolete: checkOutlineCollisionWithWeapon removed from checkCollision
-//Now there is a  PlacementRule added in iWeaponObject instead
-test("checkCollision_checkOutlineCollisionWithWeapon", function() {
-    var Obj1 = new iWeaponObject(0, 0, {}, 2);
-    me.game.add(Obj1)
-    var mClass = checkCollision;
-    ok(mClass.checkOutlineCollisionWithWeapon(Obj1));
-    equal(mClass.RedIndex, 0);
-    me.game.remove(Obj1);
-});
-
-//Obsolete: checkOutlineCollisionWithEngine removed from checkCollision
-//Now there is a  PlacementRule added in iEngineObject instead
-test("checkCollision_checkOutlineCollisionWithEngine", function() {
-    var Obj1 = new iEngineObject(0, 0, {}, 2);
-    me.game.add(Obj1)
-    var mClass = checkCollision;
-    ok(mClass.checkOutlineCollisionWithEngine(Obj1));
-    equal(mClass.RedIndex, 0);
-    me.game.remove(Obj1);
-});
-
-//Obsolete: checkOutlineCollisionWithPower removed from checkCollision
-test("checkCollision_checkOutlineCollisionWithPower", function() {
-    var Obj1 = new iPowerObject(0, 0, {}, 2);
-    me.game.add(Obj1)
-    var mClass = checkCollision;
-    ok(mClass.checkOutlineCollisionWithPower(Obj1));
-    equal(mClass.RedIndex, 0);
-    me.game.remove(Obj1);
-});
-
-
 //Change: checkOutlineCollision moved to ItemObject
 test("checkCollision_checkOutlineCollision", function() {
     var Obj1 = new iWeaponObject(0, 0, {}, 2);

@@ -31,7 +31,7 @@ test("pr.spots.getAllowedSpots", function () {
 
     var closeToA3Rule = new pr.PlacementRule({ tile: "3",
         inAny: [{ x: -1, y: -1 }, { x: 0, y: -1 }, { x: 1, y: -1 },
-                { x: -1, y: 0 }, { x: 1, y: 0 },
+                { x: -1, y: 0 },                    { x: 1, y: 0 },
                 { x: -1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 1}]
     });
     ok(closeToA3Rule.compliesAt(1, 1, tileMap)); //includes diagonals

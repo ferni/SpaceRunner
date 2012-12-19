@@ -53,6 +53,8 @@ function onMouseClickItem(itemName){
         return 0;
     }
 
+    ui.choose(itemName);
+    return 0;
 //    if( select_item == new_item )
 //        return;
 

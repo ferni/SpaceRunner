@@ -18,7 +18,7 @@ var g_resources = [
     {name: "area_01",   type: "tmx",   src: "data/outlines/small.tmx"},
     {name: "test",      type: "tmx",   src: "data/outlines/test.tmx"}
     ];
-
+    
 var g_resources_size = [
     {name: "outline",   width: 192, height: 256},
     {name: "small",     width: 576, height: 384},
@@ -76,7 +76,6 @@ var SelectObject = null;
 var isDragable = false;
 var wallDrawing = false;
 var DeleteObject = null;
-var GameScreen = null;
 
 var TILE_SIZE = 0;
 
@@ -108,8 +107,7 @@ var jsApp = {
      --- */
     loaded: function() {
         // set the "Play/Ingame" Screen Object
-        GameScreen = new PlayScreen;
-        me.state.set(me.state.PLAY, GameScreen);
+        me.state.set(me.state.PLAY, new PlayScreen());
         // start the game
         me.state.change(me.state.PLAY);
         
@@ -143,6 +141,8 @@ var jsApp = {
 //         me.state.set(me.state.PLAY, GameScreen);
     },
 };
+
+
 
 var checkCollision = {
     RedScreen : [],
@@ -188,6 +188,7 @@ var PlayScreen = me.ScreenObject.extend({
     iItemID : 0,
     init : function(){
         this.parent(true);
+        this.cartel = "asdf";
     },
    onResetEvent: function()
     {
@@ -196,6 +197,8 @@ var PlayScreen = me.ScreenObject.extend({
         // stuff to reset on state change
         me.levelDirector.loadLevel(getQueriedShip());
         window.TILE_SIZE =  me.game.currentLevel.tilewidth;
+       window.WIDTH = me.game.currentLevel.width;
+       window.HEIGHT = me.game.currentLevel.height;
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
@@ -205,6 +208,8 @@ var PlayScreen = me.ScreenObject.extend({
         
         checkCollision.init();
         MapMatrix.init();
+        ui.init();
+       window.ship = new Ship();
     },
     
     update : function(){
@@ -216,6 +221,7 @@ var PlayScreen = me.ScreenObject.extend({
         }
     },
     mouseDbClick : function(e) {
+        alert(this.cartel);
         if(SelectObject)
         {
             if(SelectObject.mResource == 101)
@@ -244,9 +250,18 @@ var PlayScreen = me.ScreenObject.extend({
     mouseDown: function(e) {
     },
     mouseMove : function(e){
+        if(ui.mouseDomain) {//the mouse is involved in a specific object
+            ui.mouseDomain.mouseMove();//delegate handling of mouseMove to the object
+        }
+        if(!ui.chosen) return;
+        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        
+        ui.moveGhost(mouseTile.x, mouseTile.y);
+        me.game.sort();
+        me.game.repaint();
+        return;
+        
         var needsRedrawing = false;
-        var mX = me.input.mouse.pos.x;
-        var mY = me.input.mouse.pos.y;
         if(select_item != -1)
         {
             if(select_item == 101)
@@ -320,6 +335,15 @@ var PlayScreen = me.ScreenObject.extend({
         }
     },
     mouseUp : function(e){
+        if(ui.mouseDomain) {//the mouse is involved in a specific object
+            ui.mouseDomain.mouseUp();//delegate handling of mouseMove to the object
+        }
+        if(!ui.chosen) return;
+        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        if(ui.chosen.canBuildAt(mouseTile.x, mouseTile.y))
+            ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
+
+        return;
         /* check collision */
         if(select_item == items.wall.index)
         {
@@ -365,6 +389,135 @@ var PlayScreen = me.ScreenObject.extend({
     onDestroyEvent: function() {
     }
 });
+
+function Ship(tmxName) {
+    this.tmxName = tmxName;
+    this.buildings = new Array();
+    this.buildAt = function(x, y, buildingType) {
+        var item = items[buildingType];
+        if(!item) {
+            console.error("No such buildingType '" + buildingType + "'.");
+            return;
+        }  
+        var building = new item.Constructor(x, y, {});
+        this.buildings.push(building);
+        me.game.add(building, 100);
+        
+    };    
+}
+
+/*Everything related to the graphics during the process of building */
+var ui = {
+   chosen: null,//the chosen object from the panel (an ItemObject)
+   mouseDomain: null, //who the mouse actions pertain to. null = the screen itself
+   ghostItems:{} ,//Items that exist for the sole purpose of...
+                    // ...showing the position at which they will be built.
+   
+    init: function () {
+      this.ghostItems = new Object();//Items to be used when choosing building location
+      for(var name in items) {
+          if(items[name].Constructor !== undefined) {
+              var newItem = new items[name].Constructor(0, 0, {  }, 123);
+              this.ghostItems[name] = newItem;
+              this.hide(newItem);
+              me.game.add(newItem, 100);
+          }
+      }
+        this.greenSpots = pr.utils.getZeroMatrix(me.game.currentLevel.width, me.game.currentLevel.height);
+    },
+   choose:function(name)
+   {
+       if(this.chosen) {
+           if(this.chosen.type == name) return;
+           this.hide(this.chosen);
+       }
+       this.chosen = this.ghostItems[name];
+       if(!this.chosen) return;
+       this.show(this.chosen);
+       this.updateGreenSpots();
+       
+   },
+    show:function (obj) {
+        
+    },
+    hide:function (obj) {
+        obj.x(-100).y(-100);
+    },
+   moveGhost: function(x,y) {
+       var shouldUpdateRed = false;
+       if(x != this.chosen.x() || y != this.chosen.y())
+           shouldUpdateRed = true;
+       this.chosen.x(x).y(y);
+       if(shouldUpdateRed) {
+           this.clearRed();
+           var self = this;
+           utils.itemTiles(this.chosen, function(iX, iY) {
+               if(self.greenSpots[iY][iX] == 0) self.printRed(iX, iY);
+           });
+       }
+   },
+   
+   redScreen : [],
+   redIndex : 0,
+   printRed : function(x, y){
+        this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
+        me.game.add(this.redScreen[this.redIndex], 101);
+        this.redIndex ++;
+   },
+   clearRed : function(){
+        var i = 0;
+        for(i = this.redIndex; i > 0; i -- )
+        {
+            me.game.remove(this.redScreen[i - 1]);
+            delete this.redScreen[i - 1];
+        }
+        this.redIndex = 0;
+    },
+   //A matrix of 1 and 0. In 0 should be red overlay when trying to build
+   greenSpots: null,
+   updateGreenSpots: function () {
+       var self = this;
+       self.greenSpots = pr.utils.getZeroMatrix(WIDTH, HEIGHT);
+       utils.levelTiles(function(x, y) {
+           if(self.chosen.canBuildAt(x,y)) {
+               for (var i = x; i < self.chosen.size[0] + x && i < WIDTH; i++) {
+                    for (var j = y; j < self.chosen.size[1] + y && j < HEIGHT; j++) {
+                        self.greenSpots[j][i] = 1;
+                    }
+                }
+           }
+       });
+   }
+};
+
+var utils = {
+    toTileVector: function(vector2D) {
+        var v = new me.Vector2d();
+        v.x = Math.floor(vector2D.x / me.game.currentLevel.tilewidth);
+        v.y = Math.floor(vector2D.y / me.game.currentLevel.tileheight);
+        return v;
+    },
+    //useful when wanting to do something at every coordinate of a matrix
+    matrixTiles : function (width, height, callback) {//the callback must have x and y
+        for (var x = 0; x < width; x++) {
+            for (var y = 0; y < height; y++) {
+                callback(x, y);
+            }
+        }
+    },
+    //useful when wanting to do something at every coordinate of the level
+    levelTiles: function (callback) {//the callback must have x and y
+        utils.matrixTiles(WIDTH, HEIGHT, callback);
+    },
+    //traverses every tile coordinate inside the level of an item
+    itemTiles: function(item, callback) {//the callback must have x and y
+        for (var x = item.x(); x < item.size[0] + item.x() && x < WIDTH && x >=0; x++) {
+                for (var y = item.y(); y < item.size[1] + item.y() && y < HEIGHT && y >=0; y++) {
+                    callback(x, y);
+                }
+            }
+    }
+};
 
 //bootstrap :)
 window.onReady(function() {
