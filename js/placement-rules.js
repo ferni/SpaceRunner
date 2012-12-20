@@ -20,44 +20,6 @@
             return new pr.PlacementRule({ tile: spaceChar, inAll: coordArray });
         }
     },
-    spots: {
-        getAllowedSpots: function (map, placementRules, objSize, cannonTile) {
-            var mapHeight = map.length;
-            var mapWidth = 0;
-            if(map[0])
-                mapWidth = map[0].length;
-            var matrix = pr.utils.getZeroMatrix(mapWidth, mapHeight);
-            var objWidth = objSize[0];
-            var objHeight = objSize[1];
-            for (var y = 0; y < mapHeight; y++) {
-                for (var x = 0; x < mapWidth; x++) {
-                    var compliesAll = true;
-                    for (var r = 0; r < placementRules.length; r++) {
-                        if (!placementRules[r].compliesAt(x, y, map)) {
-                            compliesAll = false;
-                            break;
-                        }
-                    };
-                    if (compliesAll) {
-                        for (var i = x; i < objWidth + x && i < mapWidth; i++) {
-                            for (var j = y; j < objHeight + y && j < mapHeight; j++) {
-                                if(matrix[j + cannonTile[1]][i + cannonTile[0]] == pr.spots.forbidden)
-                                    matrix[j + cannonTile[1]][i + cannonTile[0]] = pr.spots.allowedZone;
-                            }
-                        }
-                        matrix[y + cannonTile[1]][x + cannonTile[0]] = pr.spots.allowed;
-                    }
-
-                }
-            }
-            return matrix;
-        },
-        //Spot types
-        forbidden: 0, //Forbidden spot
-        allowed: 1, //Can place at that position
-        allowedZone: 2 //Is part of an allowed zone
-    }
-    ,
     utils: {
         //check if a tile is at any of the positions in the "relativeCoordinates" parameter
         checkIsInAny: function (tileMap, wantedTile, relativeCoordinates, currentCoordinate) {
@@ -83,16 +45,7 @@
                 }
             }
             return !inAny;
-        },
-        getZeroMatrix: function (width, height) {
-            var matrix = new Array();
-            for (var i = 0; i < height; i++) {
-                matrix.push(new Array());
-                for (var j = 0; j < width; j++) {
-                    matrix[i].push(0);
-                }
-            }
-            return matrix;
         }
+        
     }
 };

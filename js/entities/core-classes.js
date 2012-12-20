@@ -35,7 +35,6 @@ var ItemObject = TileObject.extend({
     preX: 0,
     preY: 0,
     
-    greenSpotsForPlacement: [],
     init: function (x, y, settings, iIndex) {
         if (iIndex >= 0) {
             settings.image = g_resources_size[iIndex].name;
@@ -45,7 +44,6 @@ var ItemObject = TileObject.extend({
             this.type = g_resources_size[iIndex].name;
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1, g_resources_size[iIndex].height - 1);
             this.buildPlacementRules();
-            this.greenSpotsForPlacement = pr.spots.getAllowedSpots(charMap.get(), this.placementRules, this.size, this.cannonTile);
             this.name = "Building";
 
         }
@@ -95,55 +93,6 @@ var ItemObject = TileObject.extend({
         }
     },
 
-    // ------ Collisions ------
-    checkOutlineCollision: function () {
-        var position = jsApp.getTilePosition(this.pos.x, this.pos.y);
-        position.x += this.cannonTile[0];
-        position.y += this.cannonTile[1];
-        var isClear = this.greenSpotsForPlacement[position.y][position.x] == pr.spots.allowed;
-        for (var x = position.x; x < position.x + this.size[0]; x++) {
-            for (var y = position.y; y < position.y + this.size[1]; y++) {
-                if (this.greenSpotsForPlacement[y][x] == pr.spots.forbidden) {
-                    checkCollision.printRedStyle(x, y, true);
-                }
-            }
-        }
-        return isClear;
-    },
-
-    checkObjectCollision: function () {
-        var res = me.game.collide(this);
-        var checkPoint = new me.Vector2d(0, 0);
-        if (!res)
-            return true;
-        for (checkPoint.x = this.pos.x + 1; checkPoint.x < this.pos.x + this.width; checkPoint.x += TILE_SIZE) {
-            for (checkPoint.y = this.pos.y + 1; checkPoint.y < this.pos.y + this.height; checkPoint.y += TILE_SIZE) {
-                this.updateColRect(checkPoint.x - this.pos.x, TILE_SIZE - 2, checkPoint.y - this.pos.y, TILE_SIZE - 2);
-                res = me.game.collide(this);
-                if (res) {
-                    checkCollision.printRedStyle(checkPoint.x - 1, checkPoint.y - 1);
-                }
-            }
-        }
-        this.updateColRect(0, this.width, 0, this.height);
-
-        delete checkPoint;
-        /* process red style rect */
-        return false;
-    },
-    /*This is the general, all-encompassing function for checking collisions*/
-    processCollision: function () {
-        var collides = true;
-        /* remove red style */
-        checkCollision.removeRedStyle();
-        /* check collision */
-        var objectsClear = this.checkObjectCollision();
-        var outlineClear = this.checkOutlineCollision();
-
-        if (objectsClear && outlineClear)
-            collides = false;
-        return collides;
-    },
     canBuildAt: function (x, y) {
         return _.every(this.placementRules, function (r) { return r.compliesAt(x, y, charMap.get()); });
     },

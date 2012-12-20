@@ -178,6 +178,7 @@ var checkCollision = {
     processCollision : function(CurObj){
         //TODO: Replace calls to processCollision(obj) for obj.processCollision()
         //and remove this function from "checkCollision" object.
+        return true;
         return CurObj.processCollision();
     },
     
@@ -396,14 +397,69 @@ function Ship(tmxName) {
     this.buildAt = function(x, y, buildingType) {
         var item = items[buildingType];
         if(!item) {
-            console.error("No such buildingType '" + buildingType + "'.");
+            console.error("No such buildingType '" + buildingType + "' (Ship.buildAt()).");
             return;
         }  
         var building = new item.Constructor(x, y, {});
         this.buildings.push(building);
         me.game.add(building, 100);
+        this.buildingsMap.update();
         
-    };    
+    };
+    this._map = null;
+    this.map = function() {
+        if(this.buildingsMap.changed || this.hullMap.changed || this._map == null) {
+            this._map = this._getJointMap();
+            this.buildingsMap.changed = false;
+            this.hullMap.changed = false;
+        }
+        return this._map;
+    };
+    this.buildingsMap = {
+        changed: true,
+        _buildingsMap: null,
+        update: function () {
+            console.log("updating buildings");
+            var self = this;
+            self._buildingsMap = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
+            _.each(ship.buildings, function (b) {
+                utils.itemTiles(b, function(x,y) {
+                    self._buildingsMap[y][x] = b.charCode;
+                });
+            });
+            
+            this.changed = true;
+        },
+        get : function () {
+            if(this._buildingsMap === null) this.update();
+            return this._buildingsMap;
+        }
+    },
+    this.hullMap = {
+        changed: true,
+        _hullMap: null,
+        update: function () {
+            console.log("updating hull");
+            this._hullMap = charMap.get();//todo: move the charMap logic to here
+            this._changed = true;
+        },
+        get : function () {
+            if(this._hullMap === null) this.update();
+            return this._hullMap;
+        }
+    };
+    //joins hullMap and buildingsMap
+    this._getJointMap = function() {
+        var self = this;
+        var joint = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
+        utils.levelTiles(function(x,y) {
+            joint[y][x] = self.hullMap.get()[y][x];
+            if(self.buildingsMap.get()[y][x] != charMap.codes._cleared)
+                joint[y][x] = self.buildingsMap.get()[y][x];
+        });
+        return joint;
+    };
+    
 }
 
 /*Everything related to the graphics during the process of building */
@@ -423,7 +479,7 @@ var ui = {
               me.game.add(newItem, 100);
           }
       }
-        this.greenSpots = pr.utils.getZeroMatrix(me.game.currentLevel.width, me.game.currentLevel.height);
+        this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
     },
    choose:function(name)
    {
@@ -477,7 +533,7 @@ var ui = {
    greenSpots: null,
    updateGreenSpots: function () {
        var self = this;
-       self.greenSpots = pr.utils.getZeroMatrix(WIDTH, HEIGHT);
+       self.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
        utils.levelTiles(function(x, y) {
            if(self.chosen.canBuildAt(x,y)) {
                for (var i = x; i < self.chosen.size[0] + x && i < WIDTH; i++) {
@@ -516,7 +572,17 @@ var utils = {
                     callback(x, y);
                 }
             }
-    }
+    },
+    getEmptyMatrix: function (width, height, initialValue) {
+            var matrix = new Array();
+            for (var i = 0; i < height; i++) {
+                matrix.push(new Array());
+                for (var j = 0; j < width; j++) {
+                    matrix[i].push(initialValue);
+                }
+            }
+            return matrix;
+        }
 };
 
 //bootstrap :)

@@ -6,6 +6,7 @@ var iWeaponObject = ItemObject.extend({
         this.size = [2, 2];
         this.mResource = items.weapon.index;
         this.mid = mID;
+        this.charCode = "W";
         this.parent(x, y, settings, this.mResource);
         
     },
@@ -24,6 +25,7 @@ var iEngineObject = ItemObject.extend({
         this.mid = mID;
         this.size = [2, 2];
         this.cannonTile = [1, 0];
+        this.charCode = "E";
         this.parent(x, y, settings, this.mResource);
     },
     buildPlacementRules : function() {
@@ -42,6 +44,7 @@ var iPowerObject = ItemObject.extend({
         this.mResource = items.power.index;
         this.mid = mID;
         this.size = [2, 2];
+        this.charCode = "P";
         this.parent(x, y, settings, this.mResource);
     }
     
@@ -55,6 +58,7 @@ var iConsoleObject = ItemObject.extend({
         this.mResource = items.console.index;
         this.mid = mID;
         this.size = [1, 1];
+        this.charCode = "C";
         this.parent(x, y, settings, this.mResource);
     },
     checkItemPos : function(res, mX, mY, de, mItem){
@@ -169,6 +173,7 @@ var iComponentObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 64;
+        this.charCode = "O";
         this.parent(x, y, settings, this.mResource);
         // add animation
         this.addAnimation ("idle", [3]);
@@ -208,6 +213,7 @@ var iDoorObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 32;
+        this.charCode = "D";
         this.parent(x, y, settings, this.mResource);
         // add animation
         this.addAnimation ("idle",  [2]);
@@ -365,6 +371,7 @@ var iWallObject = ItemObject.extend({
         settings.spriteheight = 32;
         
         this.size = [1, 1];
+        this.charCode = "A";
         this.parent(x, y, settings, this.mResource);
         // add animation
         // add animation

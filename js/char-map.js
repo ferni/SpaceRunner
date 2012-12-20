@@ -4,7 +4,7 @@
         _solid: "s",
         _front: "f",
         _back: "b",
-        _cleared: "#"
+        _cleared: "."
     },
     getCollisionTileChar: function (x, y) {
         var tileLayer = me.game.currentLevel.getLayerByName("collision");
