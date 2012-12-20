@@ -425,7 +425,7 @@ function Ship(tmxName) {
             self._buildingsMap = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
             _.each(ship.buildings, function (b) {
                 utils.itemTiles(b, function(x,y) {
-                    self._buildingsMap[y][x] = b.charCode;
+                    self._buildingsMap[y][x] = b;
                 });
             });
             

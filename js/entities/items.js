@@ -63,17 +63,9 @@ var iConsoleObject = ItemObject.extend({
     },
     buildPlacementRules: function () {
         this.parent();
-        this.placementRulesAny = new Array();//has to comply at least one (see "canBuildAt")
-        this.placementRulesAny.push(pr.make.nextToRule(items.weapon.code, this.size[0], this.size[1]));
-        this.placementRulesAny.push(pr.make.nextToRule(items.engine.code, this.size[0], this.size[1]));
-        this.placementRulesAny.push(pr.make.nextToRule(items.power.code, this.size[0], this.size[1]));
-    },
-    //overrides ItemObject.canBuildAt
-    canBuildAt: function (x,y) {
-        return this.parent(x,y)
-            && _.some(this.placementRulesAny, function(r) {
-                    return r.compliesAt(x,y, ship.map());
-                });
+        this.placementRules.push(pr.make.nextToRule(function (tile) {
+            return tile.type == "weapon" || tile.type == "engine" || tile.type == "power";
+        }, this.size[0], this.size[1]));
     }
 });
 
@@ -269,6 +261,12 @@ var iDoorObject = ItemObject.extend({
         }
         return mflag;
         
+    },
+    buildPlacementRules: function () {
+        //doesn't use inherited spaceRule
+        this.placementRules = new Array();
+        this.placementRules.push(pr.make.spaceRule(items.wall.code, this.size[0], this.size[1]));
+        this.rotatedPlacementRules = new Array();
     }
 //    update : function(){
 //        this.processRotate();
