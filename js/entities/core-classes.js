@@ -93,9 +93,6 @@ var ItemObject = TileObject.extend({
         }
     },
 
-    canBuildAt: function (x, y) {
-        return _.every(this.placementRules, function (r) { return r.compliesAt(x, y, charMap.get()); });
-    },
     setWalkable: function () {
         MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
@@ -107,6 +104,10 @@ var ItemObject = TileObject.extend({
     buildPlacementRules: function () {
         this.placementRules = new Array();
         this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
+    },
+    
+    canBuildAt: function (x, y) {
+        return _.every(this.placementRules, function (r) { return r.compliesAt(x, y, ship.map()); });
     }
 
 

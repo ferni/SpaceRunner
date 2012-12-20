@@ -46,13 +46,13 @@ var items = {
             this[p].name = p;
         }
     },
-    weapon: {index:3, Constructor: iWeaponObject},
-    engine: {index:4, Constructor: iEngineObject},
-    power: {index:5, Constructor: iPowerObject},
-    console: {index: 6 ,Constructor: iConsoleObject},
-    component: {index: 7 ,Constructor: iComponentObject},
-    door: {index: 8 ,Constructor: iDoorObject},
-    wall: {index: 9 ,Constructor: iWallObject}
+    weapon: {index:3, Constructor: iWeaponObject, code: "W"},
+    engine: {index:4, Constructor: iEngineObject, code: "E"},
+    power: {index:5, Constructor: iPowerObject, code: "P"},
+    console: {index: 6 ,Constructor: iConsoleObject, code:"C"},
+    component: {index: 7 ,Constructor: iComponentObject, code:"O"},
+    door: {index: 8 ,Constructor: iDoorObject, code:"D"},
+    wall: {index: 9 ,Constructor: iWallObject, code:"+"}
 };
 items.addNames();
 
@@ -404,6 +404,7 @@ function Ship(tmxName) {
         this.buildings.push(building);
         me.game.add(building, 100);
         this.buildingsMap.update();
+        ui.updateGreenSpots();
         
     };
     this._map = null;
@@ -450,6 +451,7 @@ function Ship(tmxName) {
     };
     //joins hullMap and buildingsMap
     this._getJointMap = function() {
+        console.log("building joint map");
         var self = this;
         var joint = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
         utils.levelTiles(function(x,y) {

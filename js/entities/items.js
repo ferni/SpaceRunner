@@ -6,7 +6,7 @@ var iWeaponObject = ItemObject.extend({
         this.size = [2, 2];
         this.mResource = items.weapon.index;
         this.mid = mID;
-        this.charCode = "W";
+        this.charCode = items.weapon.code;
         this.parent(x, y, settings, this.mResource);
         
     },
@@ -25,7 +25,7 @@ var iEngineObject = ItemObject.extend({
         this.mid = mID;
         this.size = [2, 2];
         this.cannonTile = [1, 0];
-        this.charCode = "E";
+        this.charCode = items.engine.code;
         this.parent(x, y, settings, this.mResource);
     },
     buildPlacementRules : function() {
@@ -44,7 +44,7 @@ var iPowerObject = ItemObject.extend({
         this.mResource = items.power.index;
         this.mid = mID;
         this.size = [2, 2];
-        this.charCode = "P";
+        this.charCode = items.power.code;
         this.parent(x, y, settings, this.mResource);
     }
     
@@ -58,111 +58,25 @@ var iConsoleObject = ItemObject.extend({
         this.mResource = items.console.index;
         this.mid = mID;
         this.size = [1, 1];
-        this.charCode = "C";
+        this.charCode = items.console.code;
         this.parent(x, y, settings, this.mResource);
     },
-    checkItemPos : function(res, mX, mY, de, mItem){
-        var sPos = new me.Vector2d(0, 0);
-        var ePos = new me.Vector2d(0, 0);
-        var mRet = false;
-        switch(de)
-        {
-        case 0:
-            /* left line */
-            if(mItem != 3)
-            {
-                sPos.x = mX;
-                sPos.y = mY;
-                ePos.x = mX;
-                ePos.y = mY + this.height;
-                if(this.containLine(res.obj, sPos, ePos))
-                    mRet = true;
-            }
-            break;
-        case 1:
-            // top line 
-            sPos.x = mX;
-            sPos.y = mY;
-            ePos.x = mX + this.width;
-            ePos.y = mY;
-            if(this.containLine(res.obj, sPos, ePos))
-                mRet = true;
-            break;
-        case 2:
-            /* right line */
-            if(mItem != 4)
-            {
-                sPos.x = mX + this.width;
-                sPos.y = mY;
-                ePos.x = mX + this.width;
-                ePos.y = mY + this.height;
-                if(this.containLine(res.obj, sPos, ePos))
-                    mRet = true;
-            }
-            break;
-        case 3:
-            /* bottom line */
-            sPos.x = mX;
-            sPos.y = mY + this.height;
-            ePos.x = mX + this.width;
-            ePos.y = mY + this.height;
-            if(this.containLine(res.obj, sPos, ePos))
-                mRet = true;
-            break;
-        }
-        delete sPos;
-        delete ePos;
-        return mRet;
+    buildPlacementRules: function () {
+        this.parent();
+        this.placementRulesAny = new Array();//has to comply at least one (see "canBuildAt")
+        this.placementRulesAny.push(pr.make.nextToRule(items.weapon.code, this.size[0], this.size[1]));
+        this.placementRulesAny.push(pr.make.nextToRule(items.engine.code, this.size[0], this.size[1]));
+        this.placementRulesAny.push(pr.make.nextToRule(items.power.code, this.size[0], this.size[1]));
     },
-    checkCollisionAround : function(){
-        var mRet = false;
-        var mX = this.pos.x;
-        var mY = this.pos.y;
-        for(i = 0; i < 4; i ++)
-        {
-            //left
-            if( i == 0 ){
-                this.updateColRect(1 - this.width / 2, this.width - 2,  1, this.height - 2);
-            }
-            else if( i == 1 ){//top
-                this.updateColRect(1 , this.width - 2,  1 - this.height / 2, this.height - 2);
-            }
-            else if( i == 2 ){//right
-                this.updateColRect(1 + this.width / 2 , this.width - 2,  1, this.height - 2);
-            }
-            else if( i == 3 ){//bottom
-                this.updateColRect(1 , this.width - 2,  1 + this.height / 2, this.height - 2);
-            }
-            res = me.game.collide(this);
-            if(res)
-            {
-                /* Weapon */
-                if(res.obj.type == g_resources_size[3].name && this.checkItemPos(res, mX, mY, i, 3))
-                    mRet = true;
-                /* Engine */
-                if(res.obj.type == g_resources_size[4].name && this.checkItemPos(res, mX, mY, i, 4))
-                    mRet = true;
-                /* power */
-                if(res.obj.type == g_resources_size[5].name && this.checkItemPos(res, mX, mY, i, 5))
-                    mRet = true;
-            }
-        }
-        this.updateColRect(1, this.width - 2, 1, this.height - 2);
-        this.pos.x = mX;
-        this.pos.y = mY;
-        return mRet;
-    },
-    //overrides ItemObject.checkOutlineCollision
-    checkOutlineCollision: function () {
-        var isClear = true;
-        isClear = this.parent();
-        if(!this.checkCollisionAround()){
-            checkCollision.printRedStyle(this.pos.x, this.pos.y);
-            isClear = false;
-        }
-        return isClear;
+    //overrides ItemObject.canBuildAt
+    canBuildAt: function (x,y) {
+        return this.parent(x,y)
+            && _.some(this.placementRulesAny, function(r) {
+                    return r.compliesAt(x,y, ship.map());
+                });
     }
 });
+
 // component object class
 var iComponentObject = ItemObject.extend({
     // init function
@@ -173,7 +87,7 @@ var iComponentObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 64;
-        this.charCode = "O";
+        this.charCode = items.component.code;
         this.parent(x, y, settings, this.mResource);
         // add animation
         this.addAnimation ("idle", [3]);
@@ -213,7 +127,7 @@ var iDoorObject = ItemObject.extend({
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 32;
-        this.charCode = "D";
+        this.charCode = items.door.code;
         this.parent(x, y, settings, this.mResource);
         // add animation
         this.addAnimation ("idle",  [2]);
@@ -371,7 +285,7 @@ var iWallObject = ItemObject.extend({
         settings.spriteheight = 32;
         
         this.size = [1, 1];
-        this.charCode = "A";
+        this.charCode = items.wall.code;
         this.parent(x, y, settings, this.mResource);
         // add animation
         // add animation

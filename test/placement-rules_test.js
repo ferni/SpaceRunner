@@ -26,6 +26,33 @@ test("pr.make.spaceRule", function () {
     equal(spaceRule.compliesAt(3, 0, tileMap), false);
 });
 
+test("pr.make.nextToRule", function () {
+    var tileMap = ["112o", "o#oo", "3o3o"];
+
+    var nextToRule = pr.make.nextToRule("3", 1, 2);
+    ok(_.some(nextToRule.inAny, function (c) {//left
+        return c.x == -1 && c.y == 0;
+    }));
+    ok(_.some(nextToRule.inAny, function (c) {
+        return c.x == -1 && c.y == 1;
+    }));
+    ok(_.some(nextToRule.inAny, function (c) {//bottom
+        return c.x == 0 && c.y == 2;
+    }));
+    ok(_.some(nextToRule.inAny, function (c) {//top
+        return c.x == 0 && c.y == -1;
+    }));
+    ok(_.some(nextToRule.inAny, function (c) {//right
+        return c.x == 1 && c.y == 0;
+    }));
+    ok(_.some(nextToRule.inAny, function (c) {
+        return c.x == 1 && c.y == 1;
+    }));
+    equal(nextToRule.compliesAt(3, 0, tileMap), false);
+    equal(nextToRule.compliesAt(3, 1, tileMap), true);
+});
+
+
 test("pr.spots.getAllowedSpots", function () {
     var tileMap = ["112o", "o#oo", "3o3o"];
 
@@ -68,7 +95,7 @@ test("pr.utils.checkIsInAll", function () {
 });
 
 test("pr.utils.getZeroMatrix", function () {
-    var matrix = pr.utils.getZeroMatrix(2, 3);
+    var matrix = utils.getEmptyMatrix(2, 3, 0);
     equal(matrix[0][0], 0);
     equal(matrix[0][1], 0);
     equal(matrix[1][0], 0);

@@ -18,6 +18,19 @@
                 }
             }
             return new pr.PlacementRule({ tile: spaceChar, inAll: coordArray });
+        },
+        //has to be next to something
+        nextToRule: function (nextChar, width, height) {
+            var coordArray = [];
+            for (var x = 0; x < width; x++) {
+                coordArray.push({ x: x, y: -1 }); //top
+                coordArray.push({ x: x, y: height }); //bottom
+            }
+            for (var y = 0; y < height; y++) {
+                coordArray.push({ x: -1, y: y }); //left
+                coordArray.push({ x: width, y: y }); //right
+            }
+            return new pr.PlacementRule({ tile: nextChar, inAny: coordArray });
         }
     },
     utils: {
@@ -46,6 +59,6 @@
             }
             return !inAny;
         }
-        
+
     }
 };
