@@ -136,6 +136,13 @@ var ItemObject = TileObject.extend({
             }
             return this.size[index];
         }
+    },
+    occupies: function (x, y) {//returns true is some part of the item is occupying the tile
+        var occupies = false;
+        utils.itemTiles(this, function (tX, tY) {
+            if (x == tX && y == tY) occupies = true;
+        });
+        return occupies;
     }
 
 });

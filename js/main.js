@@ -222,7 +222,9 @@ var PlayScreen = me.ScreenObject.extend({
         }
     },
     mouseDbClick : function(e) {
-        alert(this.cartel);
+        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        
+
         if(SelectObject)
         {
             if(SelectObject.mResource == 101)
@@ -286,6 +288,7 @@ function Ship(tmxName) {
     this.tmxName = tmxName;
     this.buildings = new Array();
     this.buildAt = function(x, y, buildingType) {
+        var self = this;
         var item = items[buildingType];
         if(!item) {
             console.error("No such buildingType '" + buildingType + "' (Ship.buildAt()).");
@@ -301,11 +304,34 @@ function Ship(tmxName) {
         }
         if(canBuild || canBuildRotated) {
             building.x(x).y(y);
+            //remove anything in its way
+            utils.itemTiles(building, function(iX, iY) {
+                self.removeAt(iX,iY);
+            });
             this.buildings.push(building);
             me.game.add(building, 100);
             this.buildingsMap.update();
             ui.updateGreenSpots();
         }
+    };
+    this.removeAt = function(x, y) {
+        if(this.map()[y][x] == charMap.codes._cleared) return;
+        var self = this;
+        _.each(this.buildings, function(b) {
+            if(b.occupies(x,y)) {
+                self.remove(b, false);
+            }
+        });
+        this.buildingsMap.update();
+    };
+    this.remove = function(item, updateBuildings) {
+        if(updateBuildings === undefined) 
+            updateBuildings = true;//updates by default
+        var index = _.indexOf(this.buildings, item);
+        this.buildings.splice(index, 1);
+        me.game.remove(item);
+        if(updateBuildings)
+            this.buildingsMap.update();
     };
     this._map = null;
     this.map = function() {
