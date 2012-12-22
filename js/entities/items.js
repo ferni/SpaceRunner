@@ -114,7 +114,7 @@ var iDoorObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
         this.mResource = items.door.index;
-        this.mid = mID;
+        this.mid = 110;
         //image sprite width / height
         settings.spritewidth = 64;
         settings.spriteheight = 32;

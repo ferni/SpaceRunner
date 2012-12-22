@@ -38,7 +38,6 @@ var ItemObject = TileObject.extend({
     isDrag: false,
     preX: 0,
     preY: 0,
-
     init: function (x, y, settings, iIndex) {
         if (iIndex >= 0) {
             settings.image = g_resources_size[iIndex].name;
@@ -115,9 +114,6 @@ var ItemObject = TileObject.extend({
     },
     canBuildRotated: function (x, y) {
         return false;
-    },
-    rotatedSize: function () {
-        return [this.size[1], this.size[0]];
     }
     ,
     _rotated: false,
@@ -130,6 +126,16 @@ var ItemObject = TileObject.extend({
         }
         this._rotated = rotated;
         return this;
+    },
+    trueSize: function (index) {//takes rotation into account
+        if (index === undefined) {//can pass an index: 0= width, 1= height (like the size object)
+            return this.rotated() ? [this.size[1], this.size[0]] : this.size;
+        } else {
+            if (this.rotated()) {
+                index = (index == 1) ? 0 : 1; //toggles 1 and 0
+            }
+            return this.size[index];
+        }
     }
 
 });

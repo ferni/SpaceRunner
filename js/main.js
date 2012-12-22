@@ -399,17 +399,13 @@ var ui = {
         obj.x(-100).y(-100);
     },
    moveGhost: function(x,y) {
-       var shouldUpdateRed = false;
-       if(x != this.chosen.x() || y != this.chosen.y())
-           shouldUpdateRed = true;
        this.chosen.x(x).y(y);
-       if(shouldUpdateRed) {
-           this.clearRed();
-           var self = this;
-           utils.itemTiles(this.chosen, function(iX, iY) {
-               if(self.greenSpots[iY][iX] == 0) self.printRed(iX, iY);
-           });
-       }
+       //process rotation
+       if(!this.chosen.rotated() && this.chosen.canBuildRotated(x,y))
+           this.chosen.rotated(true);
+       if(this.chosen.rotated() && this.chosen.canBuildAt(x,y)) 
+           this.chosen.rotated(false);
+       this.updateRed();
    },
    
    redScreen : [],
@@ -428,15 +424,30 @@ var ui = {
         }
         this.redIndex = 0;
     },
+   updateRed: function() {
+       this.clearRed();
+        var self = this;
+        utils.itemTiles(this.chosen, function(iX, iY) {
+            if(self.greenSpots[iY][iX] == 0) self.printRed(iX, iY);
+        });
+   },
    //A matrix of 1 and 0. In 0 should be red overlay when trying to build
    greenSpots: null,
    updateGreenSpots: function () {
        var self = this;
        self.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
        utils.levelTiles(function(x, y) {
-           if(self.chosen.canBuildAt(x,y)) {
-               for (var i = x; i < self.chosen.size[0] + x && i < WIDTH; i++) {
-                    for (var j = y; j < self.chosen.size[1] + y && j < HEIGHT; j++) {
+           var i, j;
+           if(self.chosen.canBuildAt(x, y)) {
+               for ( i = x; i < self.chosen.size[0] + x && i < WIDTH; i++) {
+                    for ( j = y; j < self.chosen.size[1] + y && j < HEIGHT; j++) {
+                        self.greenSpots[j][i] = 1;
+                    }
+                }
+           }
+           if(self.chosen.canBuildRotated(x, y)) {
+               for ( i = x; i < self.chosen.size[1] + x && i < WIDTH; i++) {
+                    for ( j = y; j < self.chosen.size[0] + y && j < HEIGHT; j++) {
                         self.greenSpots[j][i] = 1;
                     }
                 }
@@ -466,8 +477,8 @@ var utils = {
     },
     //traverses every tile coordinate inside the level of an item
     itemTiles: function(item, callback) {//the callback must have x and y
-        for (var x = item.x(); x < item.size[0] + item.x() && x < WIDTH && x >=0; x++) {
-                for (var y = item.y(); y < item.size[1] + item.y() && y < HEIGHT && y >=0; y++) {
+        for (var x = item.x(); x < item.trueSize(0) + item.x() && x < WIDTH && x >=0; x++) {
+                for (var y = item.y(); y < item.trueSize(1) + item.y() && y < HEIGHT && y >=0; y++) {
                     callback(x, y);
                 }
             }
