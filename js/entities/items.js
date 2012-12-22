@@ -173,13 +173,6 @@ var iWallObject = ItemObject.extend({
         this.size = [1, 1];
         this.charCode = items.wall.code;
         this.parent(x, y, settings, this.mResource);
-        window.buildWalls = 0;
-        this.mouseLock = new MouseLock({
-            item: this, 
-            mouseMove: function () {
-                window.buildWalls = window.buildWalls+1;
-                ship.buildAt(window.buildWalls, window.buildWalls, "wall");
-        }});
         // add animation
         // add animation
         //Wall connects: t=top, l=left, b=bottom, r=right

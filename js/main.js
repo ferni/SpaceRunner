@@ -228,28 +228,6 @@ var PlayScreen = me.ScreenObject.extend({
             return;
         }
         
-
-        if(SelectObject)
-        {
-            if(SelectObject.mResource == 101)
-            {
-                removeClassItem(items.wall.index);
-                ObjectsMng.addObject(SelectObject);
-            }
-            else
-                removeClassItem(SelectObject.mResource);
-            if(SelectObject.mResource != 101 && checkCollision.processCollision(SelectObject))
-            {
-                me.game.remove(SelectObject);
-                delete SelectObject;
-            }
-            checkCollision.removeRedStyle();
-            SelectObject = null;
-        }
-        isDragable = false;
-        select_item = -1;
-        wallDrawing = false;
-        
         me.game.sort();
         me.game.repaint();
         
@@ -273,7 +251,6 @@ var PlayScreen = me.ScreenObject.extend({
         ui.moveGhost(mouseTile.x, mouseTile.y);
         me.game.sort();
         me.game.repaint();
-        return;
         
     },
     mouseUp : function(e){
@@ -297,17 +274,11 @@ var PlayScreen = me.ScreenObject.extend({
     }
 });
 
-function Ship(tmxName) {
-    this.tmxName = tmxName;
+function Ship() {
     this.buildings = new Array();
     this.buildAt = function(x, y, buildingType) {
         var self = this;
-        var item = items[buildingType];
-        if(!item) {
-            console.error("No such buildingType '" + buildingType + "' (Ship.buildAt()).");
-            return;
-        }  
-        var building = new item.Constructor(-100, -100, {});
+        var building = utils.makeItem(x, y, buildingType);
         var canBuild = building.canBuildAt(x, y);
         if(!canBuild) {
             var canBuildRotated = building.canBuildRotated(x, y);
@@ -495,7 +466,29 @@ var ui = {
                 }
            }
        });
+   },
+   drawingScreen: [],
+   //draws arbitrary stuff
+   draw: function (x,y,type) {
+       var item = utils.makeItem(x, y, type);
+       me.game.add(item, 120);
+       this.drawingScreen.push(item);
+
+       me.game.sort();
+       me.game.repaint();
+       
+   },
+   clear: function () {
+       _.each(this.drawingScreen, function(i) {
+           me.game.remove(i);
+       });
+       this.drawingScreen = new Array();
+       this.clearRed();
+       
+       me.game.sort();
+       me.game.repaint();
    }
+   
 };
 
 var utils = {
@@ -534,7 +527,15 @@ var utils = {
                 }
             }
             return matrix;
+        },
+    makeItem: function (x,y,type) {
+        var itemInfo = items[type];
+        if(!itemInfo || itemInfo.Constructor === undefined) {
+            console.error("No such item type '" + type + "' (utils.makeItem).");
+            return null;
         }
+       return new itemInfo.Constructor(x,y,{});
+    }
 };
 
 //bootstrap :)
