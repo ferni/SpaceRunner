@@ -413,7 +413,7 @@ var ui = {
     },
    moveGhost: function(x,y) {
        this.chosen.x(x).y(y);
-       //process rotation
+       //Rotate if it fits somewhere
        if(!this.chosen.rotated() && this.chosen.canBuildRotated(x,y))
            this.chosen.rotated(true);
        if(this.chosen.rotated() && this.chosen.canBuildAt(x,y)) 
@@ -473,7 +473,6 @@ var ui = {
        var item = utils.makeItem(x, y, type);
        me.game.add(item, 120);
        this.drawingScreen.push(item);
-
        me.game.sort();
        me.game.repaint();
        
@@ -487,6 +486,20 @@ var ui = {
        
        me.game.sort();
        me.game.repaint();
+   },
+   //combines the ship map with the drawing screen
+   mapAt: function(x,y){
+       for (var i = 0; i < this.drawingScreen.length; i++) {
+           if(this.drawingScreen[i].occupies(x,y))
+               return this.drawingScreen[i];
+       }
+       var shipTile = null;
+       if(ship.map()[y] !== undefined && ship.map()[y][x] !== undefined)
+           shipTile = ship.map()[y][x];
+       
+       if(shipTile == charMap.codes._cleared && this.chosen && this.chosen.occupies(x,y))
+           return this.chosen;
+       return shipTile;
    }
    
 };

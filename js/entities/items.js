@@ -130,7 +130,6 @@ var iDoorObject = ItemObject.extend({
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 10;
-        //this.rotated(true);
         this.mfix = false;
         window.changed = 0;
     },
@@ -236,15 +235,18 @@ var iWallObject = ItemObject.extend({
         var wallsAround = [];
         var x = this._x;
         var y = this._y;
-        var map = ship.map();
-        if(map[y-1] !== undefined && map[y-1][x] !== undefined && map[y-1][x].type == "wall")
-            wallsAround.push("t");//top
-        if(map[y] !== undefined && map[y][x-1] !== undefined && map[y][x-1].type == "wall")
-            wallsAround.push("l");//left
-        if(map[y+1] !== undefined && map[y+1][x] !== undefined && map[y+1][x].type == "wall")
-            wallsAround.push("b");//bottom
-        if(map[y] !== undefined && map[y][x+1] !== undefined && map[y][x+1].type == "wall")
-            wallsAround.push("r");//right
+        var top = ui.mapAt(x, y - 1);
+        var left = ui.mapAt(x - 1, y);
+        var bottom = ui.mapAt(x, y + 1);
+        var right = ui.mapAt(x + 1, y);
+        if(top != null && (top.type == "wall" || (top.type == "door" && top.rotated() && top.y() == y - 2)))
+            wallsAround.push("t");
+        if(left != null && (left.type == "wall" || (left.type == "door" && !left.rotated() && left.x() == x - 2)))
+            wallsAround.push("l");
+        if(bottom != null && (bottom.type == "wall" ||(bottom.type == "door" && bottom.rotated() && bottom.y() == y + 1)))
+            wallsAround.push("b");
+        if(right != null && (right.type == "wall" || (right.type == "door" && !right.rotated() && right.x() == x + 1)))
+            wallsAround.push("r");
         if(wallsAround.length == 0) {
             this.setCurrentAnimation("lrWall");//default
             return;
@@ -272,14 +274,51 @@ var iWallObject = ItemObject.extend({
     },
     onBuilt: function(){
         this.parent();
-        //ui.mouseLockedOn = this;
+        if(ui.mouseLockedOn == this) return;
+
+        var pfMatrix = utils.getEmptyMatrix(WIDTH, HEIGHT, 1);
+        utils.levelTiles(function(x,y) {
+            if(ship.map()[y][x] == charMap.codes._cleared)
+                pfMatrix[y][x] = 0;//cleared tiles are walkable
+        });
+        pfMatrix[this.y()][this.x()] = 0;//self tile will be walkable for pathfinding purposes
+        this.grid = new PF.Grid(WIDTH, HEIGHT, pfMatrix);
+        
+        this.temp.preMouseX = this.x();
+        this.temp.preMouseY = this.y();
+        
+        ui.mouseLockedOn = this;
     },
     lockedMouseMove: function (mouseTile) {
         this.parent();
         
+        if((mouseTile.x == this.x() && mouseTile.y == this.y())
+          || (mouseTile.x == this.temp.preMouseX && mouseTile.y == this.temp.preMouseY)) 
+            return;
+        this.temp.preMouseX = mouseTile.x;
+        this.temp.preMouseY = mouseTile.y;
+        ui.clear();
+        var finder = new PF.BestFirstFinder();
+        var cloneGrid = MapMatrix.MapGrid.clone();
+        var path = finder.findPath(this.x(), this.y(), mouseTile.x, mouseTile.y, cloneGrid);
+        var i = 0;
+        for(i = 1; i < path.length; i++)
+            ui.draw(path[i][0], path[i][1], "wall");
+        this.temp.drawnWalls = ui.drawingScreen;
+
     },
     lockedMouseUp: function (mouseTile) {
         this.parent();
+    },
+    lockedMouseDbClick: function (mouseTile) {
+        this.parent();
+        _.each(this.temp.drawnWalls, function(wall) {
+            ship.buildAt(wall.x(), wall.y(), "wall");
+        });
+        this.temp.drawnWalls = null;
+        ui.clear();
+
+        ui.mouseLockedOn = null;
     }
 });
 

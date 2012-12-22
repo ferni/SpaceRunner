@@ -157,7 +157,8 @@ var ItemObject = TileObject.extend({
     },
     onBuilt: function () {
         //abstract method
-    }
+    },
+    temp: {}//for storing temporary stuff
     
 
 });
