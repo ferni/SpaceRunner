@@ -223,6 +223,10 @@ var PlayScreen = me.ScreenObject.extend({
     },
     mouseDbClick : function(e) {
         var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        if(ui.mouseLockedOn) {//the mouse is involved in a specific object
+            ui.mouseLockedOn.lockedMouseDbClick(mouseTile);//delegate handling to the object
+            return;
+        }
         
 
         if(SelectObject)
@@ -251,13 +255,20 @@ var PlayScreen = me.ScreenObject.extend({
         
     },
     mouseDown: function(e) {
+        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        if(ui.mouseLockedOn) {//the mouse is involved in a specific object
+            ui.mouseLockedOn.lockedMouseDown(mouseTile);//delegate handling to the object
+            return;
+        }
     },
     mouseMove : function(e){
-        if(ui.mouseDomain) {//the mouse is involved in a specific object
-            ui.mouseDomain.mouseMove();//delegate handling of mouseMove to the object
+        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        if(ui.mouseLockedOn) {//the mouse is involved in a specific object
+            ui.mouseLockedOn.lockedMouseMove(mouseTile);//delegate handling to the object
+            return;
         }
         if(!ui.chosen) return;
-        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        
         
         ui.moveGhost(mouseTile.x, mouseTile.y);
         me.game.sort();
@@ -266,11 +277,13 @@ var PlayScreen = me.ScreenObject.extend({
         
     },
     mouseUp : function(e){
-        if(ui.mouseDomain) {//the mouse is involved in a specific object
-            ui.mouseDomain.mouseUp();//delegate handling of mouseMove to the object
+        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        if(ui.mouseLockedOn) {//the mouse is involved in a specific object
+            ui.mouseLockedOn.lockedMouseUp(mouseTile);//delegate handling to the object
+            return;
         }
         if(!ui.chosen) return;
-        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        
         ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
 
         me.game.sort();
@@ -312,6 +325,9 @@ function Ship(tmxName) {
             me.game.add(building, 100);
             this.buildingsMap.update();
             ui.updateGreenSpots();
+            building.onBuilt();
+            me.game.sort();
+            me.game.repaint();
         }
     };
     this.removeAt = function(x, y) {
@@ -390,7 +406,7 @@ function Ship(tmxName) {
 /*Everything related to the graphics during the process of building */
 var ui = {
    chosen: null,//the chosen object from the panel (an ItemObject)
-   mouseDomain: null, //who the mouse actions pertain to. null = the screen itself
+   mouseLockedOn: null, //who the mouse actions pertain to. 
    ghostItems:{} ,//Items that exist for the sole purpose of...
                     // ...showing the position at which they will be built.
    

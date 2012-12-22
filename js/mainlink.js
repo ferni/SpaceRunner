@@ -223,6 +223,8 @@ function drawObjectfromJstring(JString){
     return true;
 };
 
+
+//TODO: move to utils
 function displayMoveCursor()
 {
     document.getElementById("jsapp").style.cursor="move";

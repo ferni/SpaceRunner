@@ -39,6 +39,7 @@ var ItemObject = TileObject.extend({
     preX: 0,
     preY: 0,
     init: function (x, y, settings, iIndex) {
+
         if (iIndex >= 0) {
             settings.image = g_resources_size[iIndex].name;
             this.parent(x, y, settings);
@@ -95,7 +96,15 @@ var ItemObject = TileObject.extend({
             displayDefaultCursor();
         }
     },
-
+    /*functions to do when mouse-locked (override in each item)*/
+    lockedMouseUp: function (mouseTile) {
+    },
+    lockedMouseDown: function (mouseTile) {
+    },
+    lockedMouseMove: function (mouseTile) {
+    },
+    lockedMouseDbClick: function (mouseTile) {
+    },
     setWalkable: function () {
         MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
     },
@@ -127,7 +136,8 @@ var ItemObject = TileObject.extend({
         this._rotated = rotated;
         return this;
     },
-    trueSize: function (index) {//takes rotation into account
+    //takes rotation into account
+    trueSize: function (index) {
         if (index === undefined) {//can pass an index: 0= width, 1= height (like the size object)
             return this.rotated() ? [this.size[1], this.size[0]] : this.size;
         } else {
@@ -137,12 +147,17 @@ var ItemObject = TileObject.extend({
             return this.size[index];
         }
     },
-    occupies: function (x, y) {//returns true is some part of the item is occupying the tile
+    //returns true is some part of the item is occupying the tile
+    occupies: function (x, y) {
         var occupies = false;
         utils.itemTiles(this, function (tX, tY) {
             if (x == tX && y == tY) occupies = true;
         });
         return occupies;
+    },
+    onBuilt: function () {
+        //abstract method
     }
+    
 
 });

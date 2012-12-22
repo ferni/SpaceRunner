@@ -133,36 +133,6 @@ var iDoorObject = ItemObject.extend({
         //this.rotated(true);
         this.mfix = false;
         window.changed = 0;
-    }
-    ,
-    /* remove wall */
-    removeWallinCollision : function() {
-        var mRes = null;
-        var mTemp = null;
-        var mWallGroup = null;
-        while(1){
-            if(this.rotateFlag)
-            {
-                this.updateColRect(17, this.height - 1, -15, this.width - 1);
-                mRes = me.game.collide(this);
-                if(!mRes || mRes.obj.mResource != 9)
-                    break;
-            }
-            else{
-                this.updateColRect(1, this.width - 2, 1, this.height - 2);
-                mRes = me.game.collide(this);
-                if(!mRes || mRes.obj.mResource != 9)
-                    break;
-            }
-            mWallGroup = ObjectsMng.searchWallGroupfromWall(mRes.obj);
-            if(mWallGroup)
-            {
-                mWallGroup.removeWallObject(mRes.obj);
-            }
-        }
-        if(mWallGroup)
-            mWallGroup.addOtherObject(this);
-        this.updateColRect(0, this.width, 0, this.height);
     },
     buildPlacementRules: function () {
         //doesn't use inherited placementRules
@@ -179,17 +149,21 @@ var iDoorObject = ItemObject.extend({
         return _.every(this.rotatedPlacementRules, function(r) {
             return r.compliesAt(x, y, ship.map());
         });
+    },
+    onBuilt: function () {
+        if(this.rotated()) {
+            this.setCurrentAnimation("h_open_close");
+        }else {
+            this.setCurrentAnimation("v_open_close");
+        }
     }
     
-    
-//    update : function(){
-//        this.processRotate();
-//    },
 });
 // wall object class
 var iWallObject = ItemObject.extend({
     // init function
     init : function(x, y, settings, mID){
+        var self = this;
         this.mResource = items.wall.index;
         this.mid = mID;
         //image sprite width / height
@@ -199,6 +173,13 @@ var iWallObject = ItemObject.extend({
         this.size = [1, 1];
         this.charCode = items.wall.code;
         this.parent(x, y, settings, this.mResource);
+        window.buildWalls = 0;
+        this.mouseLock = new MouseLock({
+            item: this, 
+            mouseMove: function () {
+                window.buildWalls = window.buildWalls+1;
+                ship.buildAt(window.buildWalls, window.buildWalls, "wall");
+        }});
         // add animation
         // add animation
         //Wall connects: t=top, l=left, b=bottom, r=right
@@ -296,9 +277,16 @@ var iWallObject = ItemObject.extend({
     update : function(){
         this.updateAnimation();
     },
-    onPositionChange:function () {
+    onBuilt: function(){
         this.parent();
-        //this.updateAnimation();
+        //ui.mouseLockedOn = this;
+    },
+    lockedMouseMove: function (mouseTile) {
+        this.parent();
+        
+    },
+    lockedMouseUp: function (mouseTile) {
+        this.parent();
     }
 });
 
