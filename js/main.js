@@ -262,78 +262,6 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.repaint();
         return;
         
-        var needsRedrawing = false;
-        if(select_item != -1)
-        {
-            if(select_item == 101)
-            {
-                mX -= (Math.floor(g_resources_size[items.wall.index].width / (32 * 2)) * 32);
-                mY -= (Math.floor(g_resources_size[items.wall.index].height / (32 * 2)) * 32);
-            }
-            else
-            {
-                mX -= (Math.floor(g_resources_size[select_item].width / (32 * 2)) * 32);
-                mY -= (Math.floor(g_resources_size[select_item].height / (32 * 2)) * 32);
-            }
-            var mPos = jsApp.getTilePosPixels(mX, mY);
-            if(isDragable == false)
-            {
-                if(select_item == items.wall.index) {
-                    SelectObject = new WallGroupObject(this.iItemID);
-                    SelectObject.addWallObject(mPos.x, mPos.y);
-                }
-                else {
-                    var item = items.getBy("index", select_item);
-                    if(item) {
-                        SelectObject = new item.Constructor(mX, mY, { }, this.iItemID);
-                    }else {
-                        console.warning("The index selected " + select_item + " does not point to a valid item.");
-                    }
-                    me.game.add( SelectObject, 100 );
-                }
-                
-                this.iItemID ++;
-                isDragable = true;
-
-            }
-            else if( select_item == items.wall.index )
-            {
-                SelectObject.process(wallDrawing, mPos);
-                needsRedrawing = true;
-            }
-            else if(SelectObject)
-            {
-                var prevPosX = SelectObject.pos.x;
-                var prevPosY = SelectObject.pos.y;
-                if(SelectObject.mResource == 101)
-                    SelectObject.movePorcess(mPos.x, mPos.y);
-                else
-                {
-                    if(SelectObject.mResource == items.door.index && SelectObject.rotateFlag)
-                    {
-                        SelectObject.pos.x = mPos.x + 16;
-                        SelectObject.pos.y = mPos.y - 16;
-                    }
-                    else
-                    {
-                        SelectObject.pos.x = mPos.x;
-                        SelectObject.pos.y = mPos.y;
-                    }
-                    if(SelectObject.mResource == items.door.index)
-                        SelectObject.processRotate();
-                    /* collision check */
-                    
-                }
-                if(SelectObject.pos.x != prevPosX || SelectObject.pos.y != prevPosY) {
-                    needsRedrawing = true;
-                    checkCollision.processCollision(SelectObject);
-                }
-            }
-        }
-        if(needsRedrawing) {
-            me.game.sort();
-            me.game.repaint();
-        }
     },
     mouseUp : function(e){
         if(ui.mouseDomain) {//the mouse is involved in a specific object
@@ -341,48 +269,11 @@ var PlayScreen = me.ScreenObject.extend({
         }
         if(!ui.chosen) return;
         var mouseTile = utils.toTileVector(me.input.mouse.pos);
-        if(ui.chosen.canBuildAt(mouseTile.x, mouseTile.y))
-            ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
+        ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
 
-        return;
-        /* check collision */
-        if(select_item == items.wall.index)
-        {
-            if(wallDrawing == false && 
-               !checkCollision.processCollision(SelectObject.getFirstWallObject()))
-                    wallDrawing = true;
-            else if(wallDrawing == true)
-                    SelectObject.setFixFlag();
-        }
-        else
-        {
-            if(SelectObject && SelectObject.mid != 101)
-            {
-                isDragable = checkCollision.processCollision(SelectObject);
-                if(!isDragable)
-                {
-                    SelectObject.mfix = true;
-                    if(SelectObject.mResource == items.door.index)
-                    {
-                        if(!SelectObject.rotateFlag)
-                            SelectObject.setCurrentAnimation("v_open_close");
-                        else
-                            SelectObject.setCurrentAnimation("h_open_close");
-                        /* remove wall */
-                        SelectObject.removeWallinCollision();
-                        SelectObject = null;
-                    }
-                    else if(SelectObject.mResource == items.component.index )
-                        SelectObject.setCurrentAnimation("charge");
-                    if(SelectObject)
-                        MapMatrix.setUnWalkable(SelectObject.pos.x, SelectObject.pos.y, SelectObject.width, SelectObject.height);
-                }
-            }
-            else
-                isDragable = false;
-        }
         me.game.sort();
         me.game.repaint();
+        
     },
     /* ---
      action to perform when game is finished (state change)
@@ -400,12 +291,21 @@ function Ship(tmxName) {
             console.error("No such buildingType '" + buildingType + "' (Ship.buildAt()).");
             return;
         }  
-        var building = new item.Constructor(x, y, {});
-        this.buildings.push(building);
-        me.game.add(building, 100);
-        this.buildingsMap.update();
-        ui.updateGreenSpots();
-        
+        var building = new item.Constructor(-100, -100, {});
+        var canBuild = building.canBuildAt(x, y);
+        if(!canBuild) {
+            var canBuildRotated = building.canBuildRotated(x, y);
+            if (canBuildRotated) {
+                building.rotated(true);
+            }
+        }
+        if(canBuild || canBuildRotated) {
+            building.x(x).y(y);
+            this.buildings.push(building);
+            me.game.add(building, 100);
+            this.buildingsMap.update();
+            ui.updateGreenSpots();
+        }
     };
     this._map = null;
     this.map = function() {
@@ -420,7 +320,6 @@ function Ship(tmxName) {
         changed: true,
         _buildingsMap: null,
         update: function () {
-            console.log("updating buildings");
             var self = this;
             self._buildingsMap = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
             _.each(ship.buildings, function (b) {
@@ -439,8 +338,7 @@ function Ship(tmxName) {
     this.hullMap = {
         changed: true,
         _hullMap: null,
-        update: function () {
-            console.log("updating hull");
+        update: function () {;
             this._hullMap = charMap.get();//todo: move the charMap logic to here
             this._changed = true;
         },
@@ -451,7 +349,6 @@ function Ship(tmxName) {
     };
     //joins hullMap and buildingsMap
     this._getJointMap = function() {
-        console.log("building joint map");
         var self = this;
         var joint = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
         utils.levelTiles(function(x,y) {

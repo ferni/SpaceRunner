@@ -2,27 +2,31 @@
 var TileObject = me.ObjectEntity.extend({
     _x: 0, //column
     _y: 0, //row
+    size: [1, 1],
+    cannonTile: [0, 0], //image offset
+    init: function (x, y, settings) {
+        this.parent(x, y, settings);
+        this.x(x);
+        this.y(y);
+    },
     x: function (x) {//sets or gets the column at which it is located
         if (x === undefined) return this._x;
         if (x == this._x) return this;
         this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
         this._x = x;
+        this.onPositionChange();
         return this;
     },
     y: function (y) {//sets or gets the row
         if (y === undefined) return this._y;
         if (y == this._y) return this;
-        this.pos.y = (y - this.cannonTile[1])* TILE_SIZE;
+        this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
         this._y = y;
+        this.onPositionChange();
         return this;
     },
-
-    size: [1, 1],
-    cannonTile: [0, 0],//image offset
-    init: function (x, y, settings) {
-        this.parent(x, y, settings);
-        this.x(x);
-        this.y(y);
+    onPositionChange: function () {
+        //it's abstract; does nothing
     }
 });
 
@@ -34,7 +38,7 @@ var ItemObject = TileObject.extend({
     isDrag: false,
     preX: 0,
     preY: 0,
-    
+
     init: function (x, y, settings, iIndex) {
         if (iIndex >= 0) {
             settings.image = g_resources_size[iIndex].name;
@@ -105,10 +109,27 @@ var ItemObject = TileObject.extend({
         this.placementRules = new Array();
         this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared, this.size[0], this.size[1]));
     },
-    
+
     canBuildAt: function (x, y) {
         return _.every(this.placementRules, function (r) { return r.compliesAt(x, y, ship.map()); });
+    },
+    canBuildRotated: function (x, y) {
+        return false;
+    },
+    rotatedSize: function () {
+        return [this.size[1], this.size[0]];
     }
-
+    ,
+    _rotated: false,
+    rotated: function (rotated) {
+        if (rotated === undefined) return this._rotated;
+        if (rotated) {
+            this.angle = Math.PI / 2;
+        } else {
+            this.angle = 0;
+        }
+        this._rotated = rotated;
+        return this;
+    }
 
 });

@@ -111,7 +111,6 @@ var iComponentObject = ItemObject.extend({
 });
 // door object class 
 var iDoorObject = ItemObject.extend({
-    rotateFlag : false,
     // init function
     init : function(x, y, settings, mID){
         this.mResource = items.door.index;
@@ -120,6 +119,7 @@ var iDoorObject = ItemObject.extend({
         settings.spritewidth = 64;
         settings.spriteheight = 32;
         this.charCode = items.door.code;
+        this.size = [2, 1];
         this.parent(x, y, settings, this.mResource);
         // add animation
         this.addAnimation ("idle",  [2]);
@@ -127,58 +127,14 @@ var iDoorObject = ItemObject.extend({
         this.addAnimation ("v_open_close",  [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
         this.addAnimation ("h_open_close",  [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
         this.angle = 0;
-        this.rotateFlag  = false;
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 10;
-        this.angle = Math.PI / 2;
-        this.rotateFlag = true;
+        //this.rotated(true);
         this.mfix = false;
-    },
-    processRotate : function()
-    {
-        var dX = 0;
-        var dY = 0;
-        var dWidth = 0;
-        var dHeight = 0;
-        var mRes  = null;
-        var mOk = true;
-        if(!this.rotateFlag)
-        {
-            dX = 0;
-            dY = 0;
-            dWidth = this.width;
-            dHeight = this.height;
-        }
-        else {
-            dX = -16;
-            dY = 16;
-            dWidth = this.width;
-            dHeight = this.height;
-        }
-        // left and right
-        this.updateColRect(dX - checkCollision.TileWidth, checkCollision.TileWidth, dY, checkCollision.TileHeight);
-        mRes = me.game.collide(this);
-        if(!mRes || mRes.obj.mResource != 9)
-            mOk = false;
-        if(mOk)
-        {
-            this.updateColRect(dX + checkCollision.TileWidth + this.width, checkCollision.TileWidth, dY, checkCollision.TileHeight);
-            mRes = me.game.collide(this);
-            if(!mRes || mRes.obj.mResource != 9)
-                mOk = false;
-        }
-        if(mOk)
-        {
-            this.rotateFlag = false;
-            this.angle = 0;
-        }
-        else{
-            this.rotateFlag = true;
-            this.angle = Math.PI / 2;
-        }
-        this.updateColRect(0, this.width, 0, this.height);
-    },
+        window.changed = 0;
+    }
+    ,
     /* remove wall */
     removeWallinCollision : function() {
         var mRes = null;
@@ -208,66 +164,24 @@ var iDoorObject = ItemObject.extend({
             mWallGroup.addOtherObject(this);
         this.updateColRect(0, this.width, 0, this.height);
     },
-    checkObjectCollision: function() {
-        var res = me.game.collide(this);
-        var checkPoint = new me.Vector2d(0, 0);
-        var mflag = true;
-        var tileWidth = me.game.currentLevel.tilewidth;
-        var tileHeight = me.game.currentLevel.tileheight;
-        if(this.rotateFlag == false)
-        {
-            for( checkPoint.x = 0 ; checkPoint.x < this.width; checkPoint.x += tileWidth )
-            {
-                this.updateColRect( checkPoint.x, tileWidth, 0, tileHeight );
-                res = me.game.collide( this );
-                if(this.mfix == true)
-                {
-                    if(res)
-                    {
-                        checkCollision.printRedStyle( this.pos.x + checkPoint.x, this.pos.y );
-                        mflag = false;
-                    }
-                }
-                else{
-                    if(!res ||res.obj.mResource != 9){
-                        checkCollision.printRedStyle( this.pos.x + checkPoint.x, this.pos.y );
-                        mflag = false;
-                    }
-                }
-            }
-            this.updateColRect(0, this.width, 0, this.height);
-        }
-        else{
-            for( checkPoint.y = 0 ; checkPoint.y < this.width; checkPoint.y += tileHeight )
-            {
-                this.updateColRect( 16, tileWidth, checkPoint.y - 16, tileHeight );
-                res = me.game.collide( this );
-                if(this.mfix == true)
-                {
-                    if(res)
-                    {
-                        checkCollision.printRedStyle( this.pos.x + 16,  this.pos.y - 16 + checkPoint.y );
-                        mflag = false;
-                    }
-                }
-                else{
-                    if(!res ||res.obj.mResource != 9){
-                        checkCollision.printRedStyle( this.pos.x + 16,  this.pos.y - 16 + checkPoint.y );
-                        mflag = false;
-                    }
-                }
-            }
-            this.updateColRect(16, this.height, 0 - 16, this.width);
-        }
-        return mflag;
-        
-    },
     buildPlacementRules: function () {
-        //doesn't use inherited spaceRule
-        this.placementRules = new Array();
-        this.placementRules.push(pr.make.spaceRule(items.wall.code, this.size[0], this.size[1]));
-        this.rotatedPlacementRules = new Array();
+        //doesn't use inherited placementRules
+        this.placementRules = [pr.make.spaceRule(function (tile) {
+                                                     return _.isFunction(tile.isCurrentAnimation) 
+                                                         && tile.isCurrentAnimation("lrWall");
+                                                }, 2, 1)];
+        this.rotatedPlacementRules = [pr.make.spaceRule(function (tile) {
+                                                     return _.isFunction(tile.isCurrentAnimation)
+                                                         && tile.isCurrentAnimation("tbWall");
+                                                }, 1, 2)];
+    },
+    canBuildRotated: function(x,y){
+        return _.every(this.rotatedPlacementRules, function(r) {
+            return r.compliesAt(x, y, ship.map());
+        });
     }
+    
+    
 //    update : function(){
 //        this.processRotate();
 //    },
@@ -287,19 +201,20 @@ var iWallObject = ItemObject.extend({
         this.parent(x, y, settings, this.mResource);
         // add animation
         // add animation
-        this.addAnimation ("vWall", [0]);
-        this.addAnimation ("hWall", [1]);
-        this.addAnimation ("LL_Wall", [2]);
-        this.addAnimation ("E_Wall", [3]);
-        this.addAnimation ("PL_Wall", [4]);
-        this.addAnimation ("RL_Wall", [5]);
-        this.addAnimation ("I_LL_Wall", [6]);
-        this.addAnimation ("I_E_Wall", [7]);
-        this.addAnimation ("I_RL_Wall", [8]);
-        this.addAnimation ("LE_Wall", [9]);
-        this.addAnimation ("RE_Wall", [10]);
+        //Wall connects: t=top, l=left, b=bottom, r=right
+        this.addAnimation ("lrWall", [0]);
+        this.addAnimation ("tbWall", [1]);
+        this.addAnimation ("trWall", [2]);
+        this.addAnimation ("tlrWall", [3]);
+        this.addAnimation ("tlbrWall", [4]);
+        this.addAnimation ("tlWall", [5]);
+        this.addAnimation ("brWall", [6]);
+        this.addAnimation ("lbrWall", [7]);
+        this.addAnimation ("lbWall", [8]);
+        this.addAnimation ("tlbWall", [9]);
+        this.addAnimation ("tbrWall", [10]);
         // set animation
-        this.setCurrentAnimation("hWall");
+        this.setCurrentAnimation("lrWall");
         this.animationspeed = 6;
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
@@ -341,180 +256,50 @@ var iWallObject = ItemObject.extend({
             displayDefaultCursor();
        }
     },
-    checkTopAndBottomWall : function()
+    updateAnimation : function()
     {
-        var mRet = 0;
-        var mX = 0;
-        var mY = 0;
-        var mRes = 0;
-        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight, this.height + checkCollision.TileHeight * 2 );
-        mRes = me.game.collide(this);
-        if( !mRes )
-        {
-            this.updateColRect( 0, this.width, 0, this.height );
-            return 0;
+        if(window.ship === undefined) return;
+        var wallsAround = [];
+        var x = this._x;
+        var y = this._y;
+        var map = ship.map();
+        if(map[y-1] !== undefined && map[y-1][x] !== undefined && map[y-1][x].type == "wall")
+            wallsAround.push("t");//top
+        if(map[y] !== undefined && map[y][x-1] !== undefined && map[y][x-1].type == "wall")
+            wallsAround.push("l");//left
+        if(map[y+1] !== undefined && map[y+1][x] !== undefined && map[y+1][x].type == "wall")
+            wallsAround.push("b");//bottom
+        if(map[y] !== undefined && map[y][x+1] !== undefined && map[y][x+1].type == "wall")
+            wallsAround.push("r");//right
+        if(wallsAround.length == 0) {
+            this.setCurrentAnimation("lrWall");//default
+            return;
         }
-        mRet = 2;
-        /* top */
-        this.updateColRect( 0, this.width, 0 - checkCollision.TileHeight, this.height);
-        mRes = me.game.collide(this);
-        if( mRes && mRes.obj.mResource >= this.mResource - 1 )
-        {
-            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
-            {
+        if(wallsAround.length == 1) {//just one connection
+            if(wallsAround[0] == "t" || wallsAround[0] == "b") {
+                this.setCurrentAnimation("tbWall");
+                return;
             }
-            else
-                mRet += 1; //3
+            if(wallsAround[0] == "l" || wallsAround[0] == "r") {
+                this.setCurrentAnimation("lrWall");
+                return;
+            }
         }
-        /* bottom */
-        this.updateColRect( 0, this.width, 0 + checkCollision.TileHeight, this.height);
-        mRes = me.game.collide(this);
-        if( mRes && mRes.obj.mResource >= this.mResource - 1 )
-        {
-            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
-            {
-            }
-            else
-                mRet += 2; //4, 5
-        }
-        this.updateColRect( 0, this.width, 0, this.height );
-        if(mRet == 2)
-            return 1;
-            
-        return mRet;
-    },
-    checkLeftAndRightWall : function()
-    {
-        var mRet = 0;
-        var mX = 0;
-        var mY = 0;
-        var mRes = 0;
-        this.updateColRect( 0 - checkCollision.TileWidth , this.width + checkCollision.TileWidth * 2,
-                           0, this.height);
-        mRes = me.game.collide(this);
-        this.updateColRect( 0, this.width, 0, this.height );
-        if( !mRes )
-        {
-            this.updateColRect( 0, this.width, 0, this.height );
-            return 0;
-        }
-        mRet = 8;
-        /* left */
-        this.updateColRect( 0 - checkCollision.TileWidth , this.width, 0, this.height );
-        
-        mRes = me.game.collide(this);
-        if( mRes &&  mRes.obj.mResource >= this.mResource - 1)
-        {
-            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
-            {
-            }
-            else
-                mRet -= 1; //7 / left
-        }
-        /* right */
-        this.updateColRect(  0 + checkCollision.TileWidth, this.width , 0, this.height );
-        mRes = me.game.collide(this);
-        
-        if(mRes && mRes.obj.mResource >= this.mResource - 1)
-        {
-            if(mRes.obj.mResource == this.mResource - 1 && !mRes.obj.mfix)
-            {
-            }
-            else
-                mRet -= 2; //6, 5 right / both
-        }
-        this.updateColRect( 0, this.width, 0, this.height );
-        if(mRet == 8)
-            return 1;
-        return mRet;
-    },
-    /* check direction of wall (horizon / vertical / L-model / E - Model / Crosshair )*/
-    checkDirectWall : function()
-    {
-        var mX = 0;
-        var mY = 0;
-        var mDirect = 0;
-        var mTopBottom = mTopBottom = this.checkTopAndBottomWall();
-        var mLeftRight = this.checkLeftAndRightWall();
-        if(mLeftRight == 0 && mTopBottom == 0)
-            return ;
-        this.angle = 0;
-        switch(mLeftRight)
-        {
-        case 0://none
-        case 1:
-            switch(mTopBottom)
-            {
-            case 3://top
-            case 4://bottom
-            case 5://both
-                this.setCurrentAnimation("hWall");
-                break;
-            }
-            break;
-        case 5:
-            switch(mTopBottom)
-            {
-            case 0:
-            case 1:
-                this.setCurrentAnimation("vWall");
-                break;
-            case 3://top
-                this.setCurrentAnimation("E_Wall");
-                break;
-            case 4://bottom
-                this.setCurrentAnimation("I_E_Wall");
-                break;
-            case 5:
-                this.setCurrentAnimation("PL_Wall");
-                break;
-            }
-            break;
-        case 7://left
-            switch(mTopBottom)
-            {
-            case 0:
-            case 1:
-                this.setCurrentAnimation("vWall");
-                break;
-            case 3://top
-                this.setCurrentAnimation("RL_Wall");
-                break;
-            case 4://bottom
-                this.setCurrentAnimation("I_RL_Wall");
-                break;
-            case 5://both
-                this.setCurrentAnimation("LE_Wall");
-                break;
-            }
-            break;
-        case 6://right
-            switch(mTopBottom)
-            {
-            case 0:
-            case 1:
-                this.setCurrentAnimation("vWall");
-                break;
-            case 3://top
-                this.setCurrentAnimation("LL_Wall");
-                break;
-            case 4://bottom
-                this.setCurrentAnimation("I_LL_Wall");
-                break;
-            case 5:
-                this.setCurrentAnimation("RE_Wall");
-                break;
-            }
-            break;
-        }
+        wallsAround.push("Wall");
+        var animationName = wallsAround.join("");
+        this.setCurrentAnimation(animationName);
     },
     removeObject : function(){
         me.game.remove(this);
         delete this;
     },
     update : function(){
-        this.checkDirectWall();
+        this.updateAnimation();
     },
+    onPositionChange:function () {
+        this.parent();
+        //this.updateAnimation();
+    }
 });
 
 var WallGroupObject = ItemObject.extend({
