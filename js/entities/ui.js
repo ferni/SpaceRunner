@@ -10,5 +10,6 @@ var RedColorObject = TileObject.extend({
         this.gravity = 0;
         this.collidable = false;
         this.type = g_resources_size[2].name;
+        this.zIndex = 200;
     },
 });

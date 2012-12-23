@@ -160,7 +160,7 @@ var checkCollision = {
             mY = coor.y;
         }
         this.RedScreen[this.RedIndex] = new RedColorObject(mX, mY, {});
-        me.game.add(this.RedScreen[this.RedIndex], 101);
+        me.game.add(this.RedScreen[this.RedIndex], this.RedScreen[this.RedIndex].zIndex);
         this.RedIndex ++;
     },
     removeRedStyle : function(){
@@ -293,7 +293,7 @@ function Ship() {
                 self.removeAt(iX,iY);
             });
             this.buildings.push(building);
-            me.game.add(building, 100);
+            me.game.add(building, building.zIndex);
             this.buildingsMap.update();
             ui.updateGreenSpots();
             building.onBuilt();
@@ -388,7 +388,7 @@ var ui = {
               var newItem = new items[name].Constructor(0, 0, {  }, 123);
               this.ghostItems[name] = newItem;
               this.hide(newItem);
-              me.game.add(newItem, 100);
+              me.game.add(newItem, newItem.zIndex+1000);
           }
       }
         this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
@@ -425,7 +425,7 @@ var ui = {
    redIndex : 0,
    printRed : function(x, y){
         this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
-        me.game.add(this.redScreen[this.redIndex], 101);
+        me.game.add(this.redScreen[this.redIndex], this.redScreen[this.redIndex].zIndex +1000);
         this.redIndex ++;
    },
    clearRed : function(){
@@ -471,7 +471,7 @@ var ui = {
    //draws arbitrary stuff
    draw: function (x,y,type) {
        var item = utils.makeItem(x, y, type);
-       me.game.add(item, 120);
+       me.game.add(item, item.zIndex+ 1000);
        this.drawingScreen.push(item);
        me.game.sort();
        me.game.repaint();

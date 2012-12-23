@@ -126,10 +126,12 @@ var iDoorObject = ItemObject.extend({
 //        this.addAnimation ("v_open_close",  [10]);
         this.addAnimation ("v_open_close",  [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
         this.addAnimation ("h_open_close",  [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
-        this.angle = 0;
+        this.anchorPoint.x = 0.25;
+        this.anchorPoint.y = 0.5;
         // set animation
         this.setCurrentAnimation("idle");
         this.animationspeed = 10;
+        this.zIndex = 110;
         this.mfix = false;
         window.changed = 0;
     },

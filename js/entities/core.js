@@ -27,7 +27,8 @@ var TileObject = me.ObjectEntity.extend({
     },
     onPositionChange: function () {
         //it's abstract; does nothing
-    }
+    },
+    zIndex : 100
 });
 
 
@@ -38,6 +39,7 @@ var ItemObject = TileObject.extend({
     isDrag: false,
     preX: 0,
     preY: 0,
+    
     init: function (x, y, settings, iIndex) {
 
         if (iIndex >= 0) {
@@ -49,7 +51,7 @@ var ItemObject = TileObject.extend({
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1, g_resources_size[iIndex].height - 1);
             this.buildPlacementRules();
             this.name = "Building";
-
+            
         }
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
@@ -159,6 +161,6 @@ var ItemObject = TileObject.extend({
         //abstract method
     },
     temp: {}//for storing temporary stuff
-    
+
 
 });
