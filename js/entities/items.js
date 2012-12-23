@@ -88,16 +88,8 @@ var iComponentObject = ItemObject.extend({
         this.setCurrentAnimation("idle");
         this.animationspeed = 15;
     },
-    onMouseDown : function() {
-            this.parent();
-            this.setCurrentAnimation("idle");
-    },
-    onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            this.parent();
-            this.setCurrentAnimation("charge");
-        }
+    onBuilt: function(){
+        this.setCurrentAnimation("charge");
     }
 });
 // door object class 

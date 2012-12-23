@@ -60,3 +60,7 @@ test("PlayScreen", function() {
     equal(checkCollision.TileWidth, 0);
     equal(checkCollision.TileHeight, 0);
 });
+
+test("dragging", function () {
+    //utils.makeItem()
+});

@@ -67,12 +67,12 @@ var utils = {
         }
         return matrix;
     },
-    makeItem: function (x, y, type) {
+    makeItem: function (type) {
         var itemInfo = items[type];
         if (!itemInfo || itemInfo.Constructor === undefined) {
             console.error("No such item type '" + type + "' (utils.makeItem).");
             return null;
         }
-        return new itemInfo.Constructor(x, y, {});
+        return new itemInfo.Constructor(-100, -100, {});
     }
 };

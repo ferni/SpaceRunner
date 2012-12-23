@@ -207,7 +207,7 @@ function Ship() {
     this.buildings = new Array();
     this.buildAt = function(x, y, buildingType) {
         var self = this;
-        var building = utils.makeItem(x, y, buildingType);
+        var building = utils.makeItem(buildingType);
         var canBuild = building.canBuildAt(x, y);
         if(!canBuild) {
             var canBuildRotated = building.canBuildRotated(x, y);
@@ -331,8 +331,10 @@ function Ship() {
         this.update();
         var itemArray = JSON.parse(jsonString);
         for (var i = 0; i < itemArray.length; i++) {
-            var item = utils.makeItem(itemArray[i].x, itemArray[i].y, itemArray[i].type);
-            item.rotated(itemArray[i].rotated);
+            var item = utils.makeItem(itemArray[i].type);
+            item.x(itemArray[i].x)
+                .y(itemArray[i].y)
+                .rotated(itemArray[i].rotated);
             this.add(item);
         }
         this.update();
@@ -448,7 +450,7 @@ var ui = {
    drawingScreen: [],
    //draws arbitrary stuff
    draw: function (x,y,type) {
-       var item = utils.makeItem(x, y, type);
+       var item = utils.makeItem(type).x(x).y(y);
        me.game.add(item, item.zIndex+ 1000);
        this.drawingScreen.push(item);
        me.game.sort();
