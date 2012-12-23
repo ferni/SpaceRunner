@@ -84,12 +84,6 @@ var ItemObject = TileObject.extend({
     },
     lockedMouseDbClick: function (mouseTile) {
     },
-    setWalkable: function () {
-        MapMatrix.setWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
-    setUnWalkable: function () {
-        MapMatrix.setUnWalkable(this.pos.x, this.pos.y, this.width, this.height);
-    },
     placementRules: []
     ,
     buildPlacementRules: function () {

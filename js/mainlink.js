@@ -76,8 +76,6 @@ function onButtonLoadClick(jString){
 };
 
 
-
-//TODO: move to utils
 function displayMoveCursor()
 {
     document.getElementById("jsapp").style.cursor="move";
