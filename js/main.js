@@ -217,12 +217,20 @@ function Ship() {
             });
             this.buildings.push(building);
             me.game.add(building, building.zIndex);
+            
+            this.update();
+            building.onBuilt();
+        }
+    };
+    this.update = function() {
             this.buildingsMap.update();
             ui.updateGreenSpots();
-            building.onBuilt();
             me.game.sort();
             me.game.repaint();
-        }
+    };
+    this.add = function(item) {
+        me.game.add(item, item.zIndex);
+        this.buildings.push(item);
     };
     this.removeAt = function(x, y) {
         if(this.map()[y][x] == charMap.codes._cleared) return;
@@ -296,8 +304,42 @@ function Ship() {
         });
         return joint;
     };
+    this.toJsonString = function() {
+        return JSON.stringify(_.map(this.buildings, function (b) {
+            return {
+                type: b.type, 
+                x: b.x(), 
+                y: b.y(),
+                rotated: b.rotated()
+            };
+        }));
+    };
+    this.fromJsonString = function(jsonString) {
+        var buildingsArray = new Array();
+        for (var j = this.buildings.length - 1; j >= 0; j--) {
+            buildingsArray.push(this.buildings[j]);
+        }
+        for (var k = 0; k < buildingsArray.length; k++) {
+            this.remove(buildingsArray[k], false);
+        }
+        this.update();
+        var itemArray = JSON.parse(jsonString);
+        for (var i = 0; i < itemArray.length; i++) {
+            var item = utils.makeItem(itemArray[i].x, itemArray[i].y, itemArray[i].type);
+            item.rotated(itemArray[i].rotated);
+            this.add(item);
+        }
+        this.update();
+    };
     
 }
+
+
+
+
+
+
+
 
 /*Everything related to the graphics during the process of building */
 var ui = {

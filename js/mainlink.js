@@ -45,8 +45,7 @@ function onMouseClickItem(itemName){
     return 0;
 };
 function onButtonSaveClick(){
-    var JsonString = makeJsonString;
-    var strData = JsonString.makeString();
+    var strData = ship.toJsonString();
     var strName = 'ship_building.sav';
     window.open("php/download.php?data=" + strData + "&name=" + strName);
 };
@@ -71,101 +70,11 @@ $(function(){
 function onButtonLoadClick(jString){
     if(jString)
     {
-        jsApp.initLevel();
-        drawObjectfromJstring(jString);
+        ship.fromJsonString(jString);
+        ui.mouseLockedOn = null;
     }
 };
 
-function drawObjectfromJstring(JString){
-    var i = 0;
-    var j = 0;
-    var ParseStr = null;
-    var ParseItem = null;
-    var subParseItem = null;
-    var OneObject = null;
-    var SubObject = null;
-    ParseStr = JSON.parse(JString);
-    if(ParseStr == null || ParseStr.Objects == undefined)
-        return false;
-    for(i = 0; i < ParseStr.Objects.length; i ++){
-        ParseItem = ParseStr.Objects[i];
-        if(!ParseItem)
-            return false;
-        switch(ParseItem.Resource){
-        case 3://weapon
-            OneObject = new iWeaponObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 4://engine
-            OneObject = new iEngineObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 5://power
-            OneObject = new iPowerObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 6://console
-            OneObject = new iConsoleObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 7://component
-            OneObject = new iComponentObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.setCurrentAnimation(ParseItem.animation);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 8://door
-            OneObject = new iDoorObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.setCurrentAnimation(ParseItem.animation);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 9://wall
-            OneObject = new iWallObject(ParseItem.PosX, ParseItem.PosY, {}, ParseItem.id);
-            OneObject.angle = ParseItem.angle;
-            OneObject.mfix = ParseItem.Fix;
-            me.game.add( OneObject, 100 );
-            break;
-        case 101://Wall Group
-            OneObject = new WallGroupObject(ParseItem.id);
-            ObjectsMng.addObject(OneObject);
-            for(j = 0; j < ParseItem.Walls.length; j ++)
-            {
-                subParseItem = ParseItem.Walls[j];
-                if(!subParseItem)
-                    break;
-                switch(subParseItem.Resource){
-                case 8://door
-                    SubObject = new iDoorObject(subParseItem.PosX, subParseItem.PosY, {}, subParseItem.id);
-                    SubObject.setCurrentAnimation(subParseItem.animation);
-                    SubObject.angle = subParseItem.angle;
-                    SubObject.mfix = subParseItem.Fix;
-                    me.game.add( SubObject, 101 );
-                    OneObject.addOtherObject(SubObject);
-                    break;
-                case 9://wall
-                    SubObject = OneObject.addWallObject(subParseItem.PosX, subParseItem.PosY);
-                    SubObject.angle = subParseItem.angle;
-                    SubObject.mfix = subParseItem.Fix;
-                    break;
-                }
-            }
-        }
-    }
-    me.game.sort();
-    me.game.repaint();
-    return true;
-};
 
 
 //TODO: move to utils
