@@ -297,6 +297,9 @@ var iWallObject = ItemObject.extend({
         ui.mouseLockedOn = null;
     },
     lockedEscape: function(){
+        ui.clear();
 
+        ui.mouseLockedOn = null;
+        ship.remove(this);
     }
 });

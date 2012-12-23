@@ -132,12 +132,13 @@ var PlayScreen = me.ScreenObject.extend({
         this.addAsObject = true;
         if( me.input.isKeyPressed("escape"))
         {
-            if(ui.chosen)
-              ui.choose();
             if(ui.mouseLockedOn){
               ui.mouseLockedOn.lockedEscape();
               return;
             }
+            if(ui.chosen)
+              ui.choose();
+            
         }
     },
     mouseDbClick : function(e) {
@@ -454,21 +455,17 @@ var ui = {
        me.game.repaint();
        
    },
-   clear: function (amount) {
-        if(amount === undefined)
-        {
-          amount = this.drawingScreen.length;
-        }
-       for (var i = amount - 1; i >= 0; i--) {
-         me.game.remove(this.drawingScreen[i]);
-         this.drawingScreen.pop();
-       };
-
+   clear: function () {
+       _.each(this.drawingScreen, function(i) {
+           me.game.remove(i);
+       });
+       this.drawingScreen = new Array();
        this.clearRed();
        
        me.game.sort();
        me.game.repaint();
    },
+
    //combines the ship map with the drawing screen
    mapAt: function(x,y){
        for (var i = 0; i < this.drawingScreen.length; i++) {
