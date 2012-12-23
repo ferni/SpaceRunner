@@ -70,33 +70,10 @@ var ItemObject = TileObject.extend({
 
     //drag functionality
     onMouseDown: function () {
-        if (select_item == -1) {
-            this.isDrag = true;
-            SelectObject = this;
-            select_item = this.mResource;
-            isDragable = true;
-
-            this.preX = this.pos.x;
-            this.preY = this.pos.y;
-            this.setWalkable();
-            displayMoveCursor();
-        }
+        
     },
     onMouseUp: function () {
-        if (this.isDrag == true) {
-            DeleteObject = this;
-            this.isDrag = false;
-            SelectObject = null;
-            select_item = -1;
-            isDragable = false;
-            if (checkCollision.processCollision(this)) {
-                checkCollision.removeRedStyle();
-                this.pos.x = this.preX;
-                this.pos.y = this.preY;
-            }
-            this.setUnWalkable();
-            displayDefaultCursor();
-        }
+        
     },
     /*functions to do when mouse-locked (override in each item)*/
     lockedMouseUp: function (mouseTile) {

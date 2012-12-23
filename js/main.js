@@ -56,26 +56,6 @@ var items = {
 };
 items.addNames();
 
-//For loading different ships by adding ship=<name> in the query string.
-function getQueriedShip() {
-    var defaultShip = "area_01";
-    var ship = getParameterByName("ship");
-    if(ship === null) return defaultShip;
-    for (var i = 0; i < g_resources.length; i++) {
-        if(g_resources[i].name == ship && g_resources[i].type == "tmx") {
-            return ship;
-        }
-    }
-    alert("Ship \"" + ship + "\" doesn't exist. Loading \""+defaultShip+"\" instead.");
-    return defaultShip;
-}
-
-var select_item = -1;
-var isSelectObject = false;
-var SelectObject = null;
-var isDragable = false;
-var wallDrawing = false;
-var DeleteObject = null;
 
 var TILE_SIZE = 0;
 
@@ -110,79 +90,15 @@ var jsApp = {
         me.state.set(me.state.PLAY, new PlayScreen());
         // start the game
         me.state.change(me.state.PLAY);
-        
-        
-    },
-    // get tile row and col from pixels
-    getTilePosition: function(x, y) {
-        var pos = {};
-        pos.x = Math.floor(x / me.game.currentLevel.tilewidth);
-        pos.y = Math.floor(y / me.game.currentLevel.tileheight);
-        return pos;
-    },
-    // get tile position in pixels from pixels
-    getTilePosPixels: function(x, y) {
-        var tilePos = this.getTilePosition(x, y);
-        var pos = [];
-        pos.x = tilePos.x * me.game.currentLevel.tilewidth;
-        pos.y = tilePos.y * me.game.currentLevel.tileheight;
-        return pos;
-    },
-    // get tile position in pixels from row and col
-    getTileCoord: function(x, y) {
-        var pos = [];
-        pos.x = x * me.game.currentLevel.tilewidth;
-        pos.y = y * me.game.currentLevel.tileheight;
-        return pos;
     },
     initLevel : function(){
          me.game.reset();
-         me.levelDirector.loadLevel(getQueriedShip());
+         me.levelDirector.loadLevel(utils.getQueriedShip());
 //         me.state.set(me.state.PLAY, GameScreen);
     },
 };
 
 
-
-var checkCollision = {
-    RedScreen : [],
-    RedIndex : 0,
-    TileWidth : 0,
-    TileHeight : 0,
-    init : function(){
-        this.TileWidth = me.game.currentLevel.tilewidth;
-        this.TileHeight = me.game.currentLevel.tileheight;
-    },
-    printRedStyle : function(mX, mY, useTilePosition){
-        if(useTilePosition) {
-            var coor = jsApp.getTileCoord(mX, mY);
-            mX = coor.x;
-            mY = coor.y;
-        }
-        this.RedScreen[this.RedIndex] = new RedColorObject(mX, mY, {});
-        me.game.add(this.RedScreen[this.RedIndex], this.RedScreen[this.RedIndex].zIndex);
-        this.RedIndex ++;
-    },
-    removeRedStyle : function(){
-        var i = 0;
-        for(i = this.RedIndex; i > 0; i -- )
-        {
-            me.game.remove(this.RedScreen[i - 1]);
-            delete this.RedScreen[i - 1];
-        }
-        this.RedIndex = 0;
-    },
-    /**/
-    
-    /* check and process collision of obj*/
-    processCollision : function(CurObj){
-        //TODO: Replace calls to processCollision(obj) for obj.processCollision()
-        //and remove this function from "checkCollision" object.
-        return true;
-        return CurObj.processCollision();
-    },
-    
-};
 // jsApp
 /* the in game stuff*/
 var PlayScreen = me.ScreenObject.extend({
@@ -196,7 +112,7 @@ var PlayScreen = me.ScreenObject.extend({
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel(getQueriedShip());
+        me.levelDirector.loadLevel(utils.getQueriedShip());
         window.TILE_SIZE =  me.game.currentLevel.tilewidth;
        window.WIDTH = me.game.currentLevel.width;
        window.HEIGHT = me.game.currentLevel.height;
@@ -205,20 +121,18 @@ var PlayScreen = me.ScreenObject.extend({
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
         me.input.registerMouseEvent('mousemove', me.game.viewport, this.mouseMove.bind(this));
         me.input.registerMouseEvent('mouseup',   me.game.viewport, this.mouseUp.bind(this));
+        
         me.video.getScreenCanvas().addEventListener("dblclick", this.mouseDbClick, false);
         
-        checkCollision.init();
-        MapMatrix.init();
         ui.init();
        window.ship = new Ship();
     },
     
     update : function(){
         this.addAsObject = true;
-        if( me.input.isKeyPressed("escape") )
+        if( me.input.isKeyPressed("escape") && ui.chosen)
         {
-            if((SelectObject && select_item != -1) || DeleteObject)
-                onMouseClickItem();
+            ui.choose();
         }
     },
     mouseDbClick : function(e) {
@@ -237,6 +151,15 @@ var PlayScreen = me.ScreenObject.extend({
         if(ui.mouseLockedOn) {//the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseDown(mouseTile);//delegate handling to the object
             return;
+        }
+        
+        if(ship.map()[mouseTile.y] !== undefined && ship.map()[mouseTile.y][mouseTile.x] !== undefined) {
+            var item = ship.map()[mouseTile.y][mouseTile.x];
+            if(item.name == "Building") {
+                ui.selected = item;
+            }else {
+                ui.selected = null;
+            }
         }
     },
     mouseMove : function(e){
@@ -319,6 +242,8 @@ function Ship() {
         me.game.remove(item);
         if(updateBuildings)
             this.buildingsMap.update();
+
+        me.game.repaint();
     };
     this._map = null;
     this.map = function() {
@@ -380,7 +305,7 @@ var ui = {
    mouseLockedOn: null, //who the mouse actions pertain to. 
    ghostItems:{} ,//Items that exist for the sole purpose of...
                     // ...showing the position at which they will be built.
-   
+   selected: null,//selected item from the ship
     init: function () {
       this.ghostItems = new Object();//Items to be used when choosing building location
       for(var name in items) {
@@ -398,12 +323,16 @@ var ui = {
        if(this.chosen) {
            if(this.chosen.type == name) return;
            this.hide(this.chosen);
+           this.clearRed();
+           
+           me.game.repaint();
        }
        this.chosen = this.ghostItems[name];
        if(!this.chosen) return;
        this.show(this.chosen);
        this.updateGreenSpots();
        
+       me.game.repaint();
    },
     show:function (obj) {
         
@@ -448,6 +377,7 @@ var ui = {
    greenSpots: null,
    updateGreenSpots: function () {
        var self = this;
+       if(!this.chosen) return;
        self.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
        utils.levelTiles(function(x, y) {
            var i, j;
@@ -504,52 +434,6 @@ var ui = {
    
 };
 
-var utils = {
-    toTileVector: function(vector2D) {
-        var v = new me.Vector2d();
-        v.x = Math.floor(vector2D.x / me.game.currentLevel.tilewidth);
-        v.y = Math.floor(vector2D.y / me.game.currentLevel.tileheight);
-        return v;
-    },
-    //useful when wanting to do something at every coordinate of a matrix
-    matrixTiles : function (width, height, callback) {//the callback must have x and y
-        for (var x = 0; x < width; x++) {
-            for (var y = 0; y < height; y++) {
-                callback(x, y);
-            }
-        }
-    },
-    //useful when wanting to do something at every coordinate of the level
-    levelTiles: function (callback) {//the callback must have x and y
-        utils.matrixTiles(WIDTH, HEIGHT, callback);
-    },
-    //traverses every tile coordinate inside the level of an item
-    itemTiles: function(item, callback) {//the callback must have x and y
-        for (var x = item.x(); x < item.trueSize(0) + item.x() && x < WIDTH && x >=0; x++) {
-                for (var y = item.y(); y < item.trueSize(1) + item.y() && y < HEIGHT && y >=0; y++) {
-                    callback(x, y);
-                }
-            }
-    },
-    getEmptyMatrix: function (width, height, initialValue) {
-            var matrix = new Array();
-            for (var i = 0; i < height; i++) {
-                matrix.push(new Array());
-                for (var j = 0; j < width; j++) {
-                    matrix[i].push(initialValue);
-                }
-            }
-            return matrix;
-        },
-    makeItem: function (x,y,type) {
-        var itemInfo = items[type];
-        if(!itemInfo || itemInfo.Constructor === undefined) {
-            console.error("No such item type '" + type + "' (utils.makeItem).");
-            return null;
-        }
-       return new itemInfo.Constructor(x,y,{});
-    }
-};
 
 //bootstrap :)
 window.onReady(function() {

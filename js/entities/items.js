@@ -89,11 +89,8 @@ var iComponentObject = ItemObject.extend({
         this.animationspeed = 15;
     },
     onMouseDown : function() {
-        if(select_item == -1)
-        {
             this.parent();
             this.setCurrentAnimation("idle");
-        }
     },
     onMouseUp : function(){
         if(this.isDrag == true)
@@ -195,41 +192,10 @@ var iWallObject = ItemObject.extend({
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
     },
     onMouseDown : function() {
-        if(select_item == -1)
-        {
-            SelectObject = ObjectsMng.searchWallGroupfromWall(this);
-            if(SelectObject)
-            {
-                this.isDrag = true;
-                select_item = 101;
-                isDragable = true;
-                SelectObject.setPrePostoCurPos();
-                SelectObject.WallPosX = this.pos.x;
-                SelectObject.WallPosY = this.pos.y;
-                SelectObject.setWalkable();
-                displayMoveCursor();
-            }
-        }
+
     },
     onMouseUp : function(){
-        if(this.isDrag == true)
-        {
-            if(SelectObject)
-            {
-                DeleteObject = SelectObject;
-                if(SelectObject.checkCollissionGroup())
-                {
-                    checkCollision.removeRedStyle();
-                    SelectObject.setCurPostoPrePos();
-                }
-                SelectObject.setUnWalkable();
-                SelectObject = null;
-            }
-            this.isDrag = false;
-            select_item = -1;
-            isDragable = false;
-            displayDefaultCursor();
-       }
+
     },
     updateAnimation : function()
     {
@@ -301,7 +267,7 @@ var iWallObject = ItemObject.extend({
         this.temp.preMouseY = mouseTile.y;
         ui.clear();
         var finder = new PF.BestFirstFinder();
-        var cloneGrid = MapMatrix.MapGrid.clone();
+        var cloneGrid = this.grid.clone();
         var path = finder.findPath(this.x(), this.y(), mouseTile.x, mouseTile.y, cloneGrid);
         var i = 0;
         for(i = 1; i < path.length; i++)

@@ -2,24 +2,25 @@
  * JavaScript Code : 
 */
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-    $(".items").click(function(){
+    $(".items").click(function () {
         var idItem = $("img", this).attr("id");
         var itemName = idItem.substring(5, idItem.length);
         onMouseClickItem(itemName);
     });
 
-    $("#file_save").click(function(){
+    $("#file_save").click(function () {
         onButtonSaveClick();
     });
 
     $('#jsapp').contextMenu('myMenu1', {
         bindings: {
-          'delete': function(t) {
-              if(select_item == -1 && !SelectObject && DeleteObject)
-                  onMouseClickItem();
-          }
+            'delete': function (t) {
+                if (ui.selected) {
+                    ship.remove(ui.selected);
+                }
+            }
         }
     });
 });
@@ -40,65 +41,8 @@ function addClassItem(idxItem){
 
 //If it's called without parameteres, unselects the item (sets select_item to -1)
 function onMouseClickItem(itemName){
-
-    var new_item;
-
-    if(itemName === undefined)
-        new_item = -1;
-    else        
-        new_item = items[itemName].index;
-
-    if(new_item === undefined || new_item === null){
-        console.error("No such item '"+itemName+"'. (onMouseClickItem(itemName))");
-        return 0;
-    }
-
     ui.choose(itemName);
     return 0;
-//    if( select_item == new_item )
-//        return;
-
-    removeClassItem(select_item);
-    addClassItem(new_item);
-
-    if(select_item == -1 && new_item == -1 && !SelectObject && DeleteObject)
-    {
-        DeleteObject.setWalkable();
-        checkCollision.removeRedStyle();
-        if( DeleteObject.mResource != 101 )
-        {
-            if(DeleteObject.mfix == true)
-                DeleteObject.setWalkable();
-            me.game.remove(DeleteObject);
-            delete DeleteObject;
-        }
-        else{
-            DeleteObject.removeAll(0);
-            ObjectsMng.removeObject(DeleteObject);
-        }
-    }
-    else if(SelectObject && select_item != new_item){
-        checkCollision.removeRedStyle();
-        if( SelectObject.mResource != 101 )
-        {
-            if(SelectObject.mfix == true)
-                SelectObject.setWalkable();
-            me.game.remove(SelectObject);
-            delete SelectObject;
-        }
-        else{
-            SelectObject.setWalkable();
-            SelectObject.removeAll(0);
-            ObjectsMng.removeObject(SelectObject);
-        }
-    }
-    SelectObject = null;
-    DeleteObject = null;
-    me.game.sort();
-    me.game.repaint();
-    isDragable = false;
-    wallDrawing = false;
-    select_item = new_item;
 };
 function onButtonSaveClick(){
     var JsonString = makeJsonString;
