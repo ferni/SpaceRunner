@@ -130,9 +130,14 @@ var PlayScreen = me.ScreenObject.extend({
     
     update : function(){
         this.addAsObject = true;
-        if( me.input.isKeyPressed("escape") && ui.chosen)
+        if( me.input.isKeyPressed("escape"))
         {
-            ui.choose();
+            if(ui.chosen)
+              ui.choose();
+            if(ui.mouseLockedOn){
+              ui.mouseLockedOn.lockedEscape();
+              return;
+            }
         }
     },
     mouseDbClick : function(e) {
@@ -449,11 +454,16 @@ var ui = {
        me.game.repaint();
        
    },
-   clear: function () {
-       _.each(this.drawingScreen, function(i) {
-           me.game.remove(i);
-       });
-       this.drawingScreen = new Array();
+   clear: function (amount) {
+        if(amount === undefined)
+        {
+          amount = this.drawingScreen.length;
+        }
+       for (var i = amount - 1; i >= 0; i--) {
+         me.game.remove(this.drawingScreen[i]);
+         this.drawingScreen.pop();
+       };
+
        this.clearRed();
        
        me.game.sort();

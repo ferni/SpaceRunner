@@ -236,6 +236,8 @@ var iWallObject = ItemObject.extend({
     },
     onBuilt: function(){
         this.parent();
+        
+
         if(ui.mouseLockedOn == this) return;
 
         var pfMatrix = utils.getEmptyMatrix(WIDTH, HEIGHT, 1);
@@ -246,40 +248,55 @@ var iWallObject = ItemObject.extend({
         pfMatrix[this.y()][this.x()] = 0;//self tile will be walkable for pathfinding purposes
         this.grid = new PF.Grid(WIDTH, HEIGHT, pfMatrix);
         
-        this.temp.preMouseX = this.x();
-        this.temp.preMouseY = this.y();
-        
+        var t = this.temp;
+        t.preMouseX = this.x();
+        t.preMouseY = this.y();
+        t.pivotX = this.x();
+        t.pivotY = this.y();
+        t.paths = [];
+        t.lastPath = 0;
         ui.mouseLockedOn = this;
     },
     lockedMouseMove: function (mouseTile) {
         this.parent();
-        
-        if((mouseTile.x == this.x() && mouseTile.y == this.y())
-          || (mouseTile.x == this.temp.preMouseX && mouseTile.y == this.temp.preMouseY)) 
+        var t = this.temp;
+
+        if((mouseTile.x == t.pivotX && mouseTile.y == t.pivotY)
+          || (mouseTile.x == t.preMouseX && mouseTile.y == t.preMouseY)) 
             return;
-        this.temp.preMouseX = mouseTile.x;
-        this.temp.preMouseY = mouseTile.y;
+        t.preMouseX = mouseTile.x;
+        t.preMouseY = mouseTile.y;
         ui.clear();
         var finder = new PF.BestFirstFinder();
         var cloneGrid = this.grid.clone();
-        var path = finder.findPath(this.x(), this.y(), mouseTile.x, mouseTile.y, cloneGrid);
-        var i = 0;
-        for(i = 1; i < path.length; i++)
-            ui.draw(path[i][0], path[i][1], "wall");
-        this.temp.drawnWalls = ui.drawingScreen;
-
+        var path = finder.findPath(t.pivotX, t.pivotY, mouseTile.x, mouseTile.y, cloneGrid);
+        
+        t.paths[t.lastPath] = path;//replace last path
+        for (var i = t.paths.length - 1; i >= 0; i--) {
+            for(var f = 1; f < t.paths[i].length; f++){
+                ui.draw(t.paths[i][f][0], t.paths[i][f][1], "wall");
+            }
+        };
     },
     lockedMouseUp: function (mouseTile) {
         this.parent();
+        var t = this.temp;
+
+        t.pivotX = mouseTile.x;
+        t.pivotY = mouseTile.y;
+        t.lastPath++;
+
     },
     lockedMouseDbClick: function (mouseTile) {
         this.parent();
-        _.each(this.temp.drawnWalls, function(wall) {
+        _.each(ui.drawingScreen, function(wall) {
             ship.buildAt(wall.x(), wall.y(), "wall");
         });
-        this.temp.drawnWalls = null;
         ui.clear();
 
         ui.mouseLockedOn = null;
+    },
+    lockedEscape: function(){
+
     }
 });
