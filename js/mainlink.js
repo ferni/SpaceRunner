@@ -13,15 +13,8 @@ $(document).ready(function () {
     $("#file_save").click(function () {
         onButtonSaveClick();
     });
-
-    $('#jsapp').contextMenu('myMenu1', {
-        bindings: {
-            'delete': function (t) {
-                if (ui.selected) {
-                    ship.remove(ui.selected);
-                }
-            }
-        }
+    $(document).bind("contextmenu", function (e) {
+        return false;
     });
 });
 

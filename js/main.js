@@ -56,6 +56,11 @@ var items = {
 };
 items.addNames();
 
+var mouseButtons = {
+    left: 1,
+    wheel: 2,
+    right: 3
+};
 
 var TILE_SIZE = 0;
 
@@ -160,13 +165,19 @@ var PlayScreen = me.ScreenObject.extend({
         }
         
         var item = ship.mapAt(mouseTile.x,mouseTile.y);
+        
         if(item != null && item.name == "Building") {
-            ui.selected = item;
-            if (!ui.chosen) {
-                ui.beginDrag(item);
-                
-            } else {
-                ui.selected = null;
+            if(e.which == mouseButtons.right) {
+                ship.remove(item);
+            }
+            else {
+                ui.selected = item;
+                if (!ui.chosen) {
+                    ui.beginDrag(item);
+
+                } else {
+                    ui.selected = null;
+                }
             }
         }
     },
@@ -189,9 +200,12 @@ var PlayScreen = me.ScreenObject.extend({
             ui.mouseLockedOn.lockedMouseUp(mouseTile);//delegate handling to the object
             return;
         }
-        if(ui.chosen && !ui.dragging)
-            ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
-        else if(ui.dragging) {
+        
+        if(ui.chosen && !ui.dragging) {
+            if (e.which != mouseButtons.right) {
+                ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
+            }
+        } else if(ui.dragging) {
             ui.endDrag();
         }
 
@@ -255,6 +269,7 @@ function Ship() {
         this.buildingsMap.update();
     };
     this.remove = function(item, updateBuildings) {
+        if(!item) return;
         if(updateBuildings === undefined) 
             updateBuildings = true;//updates by default
         var index = _.indexOf(this.buildings, item);
@@ -262,7 +277,7 @@ function Ship() {
         me.game.remove(item);
         
         if(updateBuildings)
-            this.buildingsMap.update();
+            this.update();
 
         me.game.repaint();
     };
