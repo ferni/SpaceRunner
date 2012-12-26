@@ -12,7 +12,8 @@ var TileObject = me.ObjectEntity.extend({
     x: function (x) {//sets or gets the column at which it is located
         if (x === undefined) return this._x;
         if (x == this._x) return this;
-        this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
+        if (!this.hidden())
+            this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
         this._x = x;
         this.onPositionChange();
         return this;
@@ -20,15 +21,39 @@ var TileObject = me.ObjectEntity.extend({
     y: function (y) {//sets or gets the row
         if (y === undefined) return this._y;
         if (y == this._y) return this;
-        this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
+        if (!this.hidden())
+            this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
         this._y = y;
         this.onPositionChange();
         return this;
     },
+    _hidden: false,
+    hidden: function (hide) {
+        if (hide === undefined) return this._hidden;
+        if (hide) {
+            this.pos.x = -400;
+            this.pos.y = 0;
+        } else {
+            this.pos.x = this._x * TILE_SIZE;
+            this.pos.y = this._y * TILE_SIZE;
+        }
+        this._hidden = hide;
+        return this;
+    },
+    show: function () {
+        this.hidden(false);
+        return this;
+    },
+    hide: function () {
+        this.hidden(true);
+        return this;
+    },
+
+
     onPositionChange: function () {
         //it's abstract; does nothing
     },
-    zIndex : 100
+    zIndex: 100
 });
 
 

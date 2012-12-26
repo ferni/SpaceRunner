@@ -62,5 +62,8 @@ test("PlayScreen", function() {
 });
 
 test("dragging", function () {
-    //utils.makeItem()
+    /*
+    var item = utils.makeItem("power").x(5).y(5);
+    ship.add(item);
+    */
 });

@@ -13,7 +13,7 @@ if (!(window.console && console.log)) {
 
 
 var utils = {
-    getParameterByName: function(name) {
+    getParameterByName: function (name) {
         var match = RegExp('[?&]' + name + '=([^&]*)')
                         .exec(window.location.search);
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
@@ -22,13 +22,13 @@ var utils = {
     getQueriedShip: function () {
         var defaultShip = "area_01";
         var ship = utils.getParameterByName("ship");
-        if(ship === null) return defaultShip;
+        if (ship === null) return defaultShip;
         for (var i = 0; i < g_resources.length; i++) {
-            if(g_resources[i].name == ship && g_resources[i].type == "tmx") {
+            if (g_resources[i].name == ship && g_resources[i].type == "tmx") {
                 return ship;
             }
         }
-        alert("Ship \"" + ship + "\" doesn't exist. Loading \""+defaultShip+"\" instead.");
+        alert("Ship \"" + ship + "\" doesn't exist. Loading \"" + defaultShip + "\" instead.");
         return defaultShip;
     },
     toTileVector: function (vector2D) {
@@ -74,5 +74,9 @@ var utils = {
             return null;
         }
         return new itemInfo.Constructor(-100, -100, {});
+    },
+    //returns the tile position of the mouse
+    getMouse: function () {
+        return utils.toTileVector(me.input.mouse.pos);
     }
 };

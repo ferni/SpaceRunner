@@ -142,7 +142,7 @@ var PlayScreen = me.ScreenObject.extend({
         }
     },
     mouseDbClick : function(e) {
-        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        var mouseTile = utils.getMouse();
         if(ui.mouseLockedOn) {//the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseDbClick(mouseTile);//delegate handling to the object
             return;
@@ -153,29 +153,30 @@ var PlayScreen = me.ScreenObject.extend({
         
     },
     mouseDown: function(e) {
-        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        var mouseTile = utils.getMouse();
         if(ui.mouseLockedOn) {//the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseDown(mouseTile);//delegate handling to the object
             return;
         }
         
-        if(ship.map()[mouseTile.y] !== undefined && ship.map()[mouseTile.y][mouseTile.x] !== undefined) {
-            var item = ship.map()[mouseTile.y][mouseTile.x];
-            if(item.name == "Building") {
-                ui.selected = item;
-            }else {
+        var item = ship.mapAt(mouseTile.x,mouseTile.y);
+        if(item != null && item.name == "Building") {
+            ui.selected = item;
+            if (!ui.chosen) {
+                ui.beginDrag(item);
+                
+            } else {
                 ui.selected = null;
             }
         }
     },
     mouseMove : function(e){
-        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        var mouseTile =  utils.getMouse();
         if(ui.mouseLockedOn) {//the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseMove(mouseTile);//delegate handling to the object
             return;
         }
         if(!ui.chosen) return;
-        
         
         ui.moveGhost(mouseTile.x, mouseTile.y);
         me.game.sort();
@@ -183,14 +184,16 @@ var PlayScreen = me.ScreenObject.extend({
         
     },
     mouseUp : function(e){
-        var mouseTile = utils.toTileVector(me.input.mouse.pos);
+        var mouseTile =  utils.getMouse();
         if(ui.mouseLockedOn) {//the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseUp(mouseTile);//delegate handling to the object
             return;
         }
-        if(!ui.chosen) return;
-        
-        ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
+        if(ui.chosen && !ui.dragging)
+            ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
+        else if(ui.dragging) {
+            ui.endDrag();
+        }
 
         me.game.sort();
         me.game.repaint();
@@ -221,12 +224,13 @@ function Ship() {
             utils.itemTiles(building, function(iX, iY) {
                 self.removeAt(iX,iY);
             });
-            this.buildings.push(building);
-            me.game.add(building, building.zIndex);
+            this.add(building);
             
             this.update();
             building.onBuilt();
+            return true;//building successful
         }
+        return false;//building failed
     };
     this.update = function() {
             this.buildingsMap.update();
@@ -267,6 +271,11 @@ function Ship() {
             this.hullMap.changed = false;
         }
         return this._map;
+    };
+    this.mapAt = function(x,y){
+       if(ship.map()[y] !== undefined && ship.map()[y][x] !== undefined)
+           return ship.map()[y][x];
+        return null;
     };
     this.buildingsMap = {
         changed: true,
@@ -345,10 +354,6 @@ function Ship() {
 
 
 
-
-
-
-
 /*Everything related to the graphics during the process of building */
 var ui = {
    chosen: null,//the chosen object from the panel (an ItemObject)
@@ -362,7 +367,7 @@ var ui = {
           if(items[name].Constructor !== undefined) {
               var newItem = new items[name].Constructor(0, 0, {  }, 123);
               this.ghostItems[name] = newItem;
-              this.hide(newItem);
+              newItem.hide();
               me.game.add(newItem, newItem.zIndex+1000);
           }
       }
@@ -372,24 +377,23 @@ var ui = {
    {
        if(this.chosen) {
            if(this.chosen.type == name) return;
-           this.hide(this.chosen);
+           this.chosen.hide();
            this.clearRed();
            
            me.game.repaint();
        }
        this.chosen = this.ghostItems[name];
        if(!this.chosen) return;
-       this.show(this.chosen);
+       var mouse = utils.getMouse();
+       this.chosen
+           .x(mouse.x)
+           .y(mouse.y)
+           .show();
        this.updateGreenSpots();
-       
+
+       me.game.sort();
        me.game.repaint();
    },
-    show:function (obj) {
-        
-    },
-    hide:function (obj) {
-        obj.x(-100).y(-100);
-    },
    moveGhost: function(x,y) {
        this.chosen.x(x).y(y);
        //Rotate if it fits somewhere
@@ -399,7 +403,28 @@ var ui = {
            this.chosen.rotated(false);
        this.updateRed();
    },
-   
+   //Dragging
+   dragging: null,
+   beginDrag: function (building) {
+       if(this.chosen) {
+           console.log("There should be nothing chosen when drag begins. (ui.beginDrag)");
+       }
+       building.hide();
+       this.choose(building.type);
+       this.dragging = building;
+   },
+   endDrag: function () {
+       if(!this.dragging) return;
+       var mouse = utils.getMouse();
+       if(this.dragging.canBuildAt(mouse.x,mouse.y)) {
+           this.dragging.x(mouse.x).y(mouse.y);
+           ship.update();
+       }
+       this.choose();
+       this.dragging.show();
+       this.dragging = null;
+   },
+   //Red overlay
    redScreen : [],
    redIndex : 0,
    printRed : function(x, y){
