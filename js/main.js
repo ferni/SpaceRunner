@@ -4,6 +4,7 @@
  */
 
 // game resources
+// in the case of the items, set their image name equal to their type.
 var g_resources = [
     {name: "outline",   type: "image", src: "data/img/render/outline.png"},
     {name: "selector",  type: "image", src: "data/img/render/selector.png"},

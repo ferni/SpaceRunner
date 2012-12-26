@@ -94,7 +94,7 @@ test("pr.utils.checkIsInAll", function () {
     equal(pr.utils.checkIsInAll(tileMap, "3", [], current), true);
 });
 
-test("pr.utils.getZeroMatrix", function () {
+test("pr.utils.getEmptyMatrix", function () {
     var matrix = utils.getEmptyMatrix(2, 3, 0);
     equal(matrix[0][0], 0);
     equal(matrix[0][1], 0);

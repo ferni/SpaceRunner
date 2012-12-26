@@ -48,8 +48,6 @@ var TileObject = me.ObjectEntity.extend({
         this.hidden(true);
         return this;
     },
-
-
     onPositionChange: function () {
         //it's abstract; does nothing
     },
@@ -59,46 +57,22 @@ var TileObject = me.ObjectEntity.extend({
 
 /* individual object class */
 var ItemObject = TileObject.extend({
-    mfix: false,
-    mid: 0,
-    isDrag: false,
-    preX: 0,
-    preY: 0,
 
-    init: function (x, y, settings, iIndex) {
-
-        if (iIndex >= 0) {
-            settings.image = g_resources_size[iIndex].name;
-            this.parent(x, y, settings);
-            this.gravity = 0;
-            this.collidable = true;
-            this.type = g_resources_size[iIndex].name;
-            this.updateColRect(1, g_resources_size[iIndex].width - 1, 1, g_resources_size[iIndex].height - 1);
-            this.buildPlacementRules();
-            this.name = "Building";
-
-        }
-        me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
-        me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
+    init: function (x, y, settings) {
+        settings.image = this.type;
+        if (!this.totalSize)
+            this.totalSize = [this.size[0], this.size[1]];
+        settings.spritewidth = this.totalSize[0] * TILE_SIZE;
+        settings.spriteheight = this.totalSize[1] * TILE_SIZE;
+        this.parent(x, y, settings);
+        //restore type reset on this.parent()
+        this.type = settings.image;
+        this.buildPlacementRules();
+        this.name = "Building";
     },
-    /* check if obj contains the specified line 
-    sPos : start position
-    ePos : end position
+    /*functions to do when mouse-locked (override in each item)
+    mouseTile : Vector2D
     */
-    containLine: function (obj, sPos, ePos) {
-        if (obj.containsPoint(sPos) && obj.containsPoint(ePos))
-            return true;
-        return false;
-    },
-    onCollision: function (res, obj) {
-    },
-
-    //drag functionality
-    onMouseDown: function () {
-    },
-    onMouseUp: function () {
-    },
-    /*functions to do when mouse-locked (override in each item)*/
     lockedMouseUp: function (mouseTile) {
     },
     lockedMouseDown: function (mouseTile) {
@@ -185,7 +159,7 @@ var ItemObject = TileObject.extend({
         else {
             anim = this.offShipAnimations[0];
         }
-        if(anim)
+        if (anim)
             this.setCurrentAnimation(anim);
     },
     onShipAnimations: [], //0: not rotated, 1: rotated
