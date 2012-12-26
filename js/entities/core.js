@@ -64,7 +64,7 @@ var ItemObject = TileObject.extend({
     isDrag: false,
     preX: 0,
     preY: 0,
-    
+
     init: function (x, y, settings, iIndex) {
 
         if (iIndex >= 0) {
@@ -76,7 +76,7 @@ var ItemObject = TileObject.extend({
             this.updateColRect(1, g_resources_size[iIndex].width - 1, 1, g_resources_size[iIndex].height - 1);
             this.buildPlacementRules();
             this.name = "Building";
-            
+
         }
         me.input.registerMouseEvent("mousedown", this, this.onMouseDown.bind(this));
         me.input.registerMouseEvent("mouseup", this, this.onMouseUp.bind(this));
@@ -95,10 +95,8 @@ var ItemObject = TileObject.extend({
 
     //drag functionality
     onMouseDown: function () {
-        
     },
     onMouseUp: function () {
-        
     },
     /*functions to do when mouse-locked (override in each item)*/
     lockedMouseUp: function (mouseTile) {
@@ -153,10 +151,44 @@ var ItemObject = TileObject.extend({
         });
         return occupies;
     },
+
     onBuilt: function () {
         //abstract method
     },
     temp: {}//for storing temporary stuff
-
+    ,
+    _onShip: false,
+    onShip: function (onShip) {
+        if (onShip === undefined) return this._onShip;
+        if (onShip) {
+            this.whenOnShip();
+        } else {
+            this.whenOffShip();
+        }
+        this._onShip = onShip;
+        return this;
+    },
+    whenOnShip: function () {
+        var anim;
+        if (this.rotated())
+            anim = this.onShipAnimations[1] !== undefined ? this.onShipAnimations[1] : this.onShipAnimations[0];
+        else {
+            anim = this.onShipAnimations[0];
+        }
+        if (anim)
+            this.setCurrentAnimation(anim);
+    },
+    whenOffShip: function () {
+        var anim;
+        if (this.rotated())
+            anim = this.offShipAnimations[1] !== undefined ? this.offShipAnimations[1] : this.offShipAnimations[0];
+        else {
+            anim = this.offShipAnimations[0];
+        }
+        if(anim)
+            this.setCurrentAnimation(anim);
+    },
+    onShipAnimations: [], //0: not rotated, 1: rotated
+    offShipAnimations: [] //idem
 
 });

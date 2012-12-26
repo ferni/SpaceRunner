@@ -72,7 +72,7 @@ var iConsoleObject = ItemObject.extend({
 // component object class
 var iComponentObject = ItemObject.extend({
     // init function
-    init : function(x, y, settings, mID){
+    init: function (x, y, settings, mID) {
         this.mResource = items.component.index;
         this.mid = mID;
         this.size = [2, 2];
@@ -82,14 +82,12 @@ var iComponentObject = ItemObject.extend({
         this.charCode = items.component.code;
         this.parent(x, y, settings, this.mResource);
         // add animation
-        this.addAnimation ("idle", [3]);
-        this.addAnimation ("charge", [0, 1, 2, 3, 4, 5, 5]);
+        this.addAnimation("idle", [3]);
+        this.addAnimation("charge", [0, 1, 2, 3, 4, 5, 5]);
         // set animation
-        this.setCurrentAnimation("idle");
+        this.offShipAnimations = ["idle"];
+        this.onShipAnimations = ["charge"];
         this.animationspeed = 15;
-    },
-    onBuilt: function(){
-        this.setCurrentAnimation("charge");
     }
 });
 // door object class 
@@ -107,12 +105,13 @@ var iDoorObject = ItemObject.extend({
         // add animation
         this.addAnimation ("idle",  [2]);
 //        this.addAnimation ("v_open_close",  [10]);
-        this.addAnimation ("v_open_close",  [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
-        this.addAnimation ("h_open_close",  [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
+        this.addAnimation ("h_open_close",  [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
+        this.addAnimation ("v_open_close",  [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
         this.anchorPoint.x = 0.25;
         this.anchorPoint.y = 0.5;
         // set animation
-        this.setCurrentAnimation("idle");
+        this.offShipAnimations = ["idle"];
+        this.onShipAnimations = ["h_open_close", "v_open_close"];
         this.animationspeed = 10;
         this.zIndex = 110;
         this.mfix = false;
@@ -133,13 +132,6 @@ var iDoorObject = ItemObject.extend({
         return _.every(this.rotatedPlacementRules, function(r) {
             return r.compliesAt(x, y, ship.map());
         });
-    },
-    onBuilt: function () {
-        if(this.rotated()) {
-            this.setCurrentAnimation("h_open_close");
-        }else {
-            this.setCurrentAnimation("v_open_close");
-        }
     }
     
 });

@@ -208,6 +208,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 function Ship() {
     this.buildings = new Array();
+    //this should be called when the user builds something
     this.buildAt = function(x, y, buildingType) {
         var self = this;
         var building = utils.makeItem(buildingType);
@@ -241,6 +242,7 @@ function Ship() {
     this.add = function(item) {
         me.game.add(item, item.zIndex);
         this.buildings.push(item);
+        item.onShip(true);
     };
     this.removeAt = function(x, y) {
         if(this.map()[y][x] == charMap.codes._cleared) return;
@@ -258,6 +260,7 @@ function Ship() {
         var index = _.indexOf(this.buildings, item);
         this.buildings.splice(index, 1);
         me.game.remove(item);
+        
         if(updateBuildings)
             this.buildingsMap.update();
 
@@ -369,6 +372,7 @@ var ui = {
               this.ghostItems[name] = newItem;
               newItem.hide();
               me.game.add(newItem, newItem.zIndex+1000);
+              newItem.onShip(false);
           }
       }
         this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
