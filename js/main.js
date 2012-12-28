@@ -293,9 +293,11 @@ function Ship() {
             var self = this;
             self._buildingsMap = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
             _.each(ship.buildings, function (b) {
-                utils.itemTiles(b, function(x,y) {
-                    self._buildingsMap[y][x] = b;
-                });
+                if(!b.hidden()) {
+                    utils.itemTiles(b, function(x, y) {
+                        self._buildingsMap[y][x] = b;
+                    });
+                }
             });
             
             this.changed = true;
@@ -420,6 +422,7 @@ var ui = {
            console.log("There should be nothing chosen when drag begins. (ui.beginDrag)");
        }
        building.hide();
+       ship.buildingsMap.update();
        this.choose(building.type);
        this.dragging = building;
    },
@@ -428,10 +431,10 @@ var ui = {
        var mouse = utils.getMouse();
        if(this.dragging.canBuildAt(mouse.x,mouse.y)) {
            this.dragging.x(mouse.x).y(mouse.y);
-           ship.update();
        }
-       this.choose();
        this.dragging.show();
+       ship.buildingsMap.update();
+       this.choose();
        this.dragging = null;
    },
    //Red overlay
