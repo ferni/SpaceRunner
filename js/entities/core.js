@@ -5,7 +5,14 @@ var TileObject = me.ObjectEntity.extend({
     size: [1, 1],
     cannonTile: [0, 0], //image offset
     init: function (x, y, settings) {
+        settings.image = this.type;
+        if (!this.totalSize)
+            this.totalSize = [this.size[0], this.size[1]];
+        settings.spritewidth = this.totalSize[0] * TILE_SIZE;
+        settings.spriteheight = this.totalSize[1] * TILE_SIZE;
         this.parent(x, y, settings);
+        //restore type reset on this.parent()
+        this.type = settings.image;
         this.x(x);
         this.y(y);
     },
@@ -59,14 +66,7 @@ var TileObject = me.ObjectEntity.extend({
 var ItemObject = TileObject.extend({
 
     init: function (x, y, settings) {
-        settings.image = this.type;
-        if (!this.totalSize)
-            this.totalSize = [this.size[0], this.size[1]];
-        settings.spritewidth = this.totalSize[0] * TILE_SIZE;
-        settings.spriteheight = this.totalSize[1] * TILE_SIZE;
         this.parent(x, y, settings);
-        //restore type reset on this.parent()
-        this.type = settings.image;
         this.buildPlacementRules();
         this.name = "Building";
     },

@@ -22,17 +22,8 @@ var g_resources = [
     
 var g_resources_size = [
     {name: "outline",   width: 192, height: 256},
-    {name: "small",     width: 576, height: 384},
-    {name: "selector",  width:  32, height:  32},
-    {name: "weapon",    width:  96, height:  64},
-    {name: "engine",    width:  96, height:  64},
-    {name: "power",     width:  64, height:  64},
-    {name: "console",   width:  32, height:  32},
-    {name: "component", width:  64, height:  64},
-    {name: "door",      width:  64, height:  32},
-    {name: "wall",      width:  32, height:  32},
-    {name: "colTile",   width: 160, height:  32},
-    ];
+    {name: "small",     width: 576, height: 384}
+];
 
 
 var items = {
@@ -47,13 +38,13 @@ var items = {
             this[p].name = p;
         }
     },
-    weapon: {index:3, Constructor: iWeaponObject, code: "W"},
-    engine: {index:4, Constructor: iEngineObject, code: "E"},
-    power: {index:5, Constructor: iPowerObject, code: "P"},
-    console: {index: 6 ,Constructor: iConsoleObject, code:"C"},
-    component: {index: 7 ,Constructor: iComponentObject, code:"O"},
-    door: {index: 8 ,Constructor: iDoorObject, code:"D"},
-    wall: {index: 9 ,Constructor: iWallObject, code:"+"}
+    weapon: {Constructor: iWeaponObject},
+    engine: {Constructor: iEngineObject},
+    power: {Constructor: iPowerObject},
+    console: {Constructor: iConsoleObject},
+    component: {Constructor: iComponentObject},
+    door: {Constructor: iDoorObject},
+    wall: {Constructor: iWallObject}
 };
 items.addNames();
 
@@ -75,7 +66,7 @@ var jsApp = {
      --- */
     onload: function() {
         // init the video
-        if (!me.video.init('jsapp', g_resources_size[1].width, g_resources_size[1].height)) {
+        if (!me.video.init('jsapp', 576, 384)) {
             alert("Sorry but your browser does not support html 5 canvas.");
             return;
         }
@@ -111,7 +102,6 @@ var PlayScreen = me.ScreenObject.extend({
     iItemID : 0,
     init : function(){
         this.parent(true);
-        this.cartel = "asdf";
     },
    onResetEvent: function()
     {
@@ -120,8 +110,8 @@ var PlayScreen = me.ScreenObject.extend({
         // stuff to reset on state change
         me.levelDirector.loadLevel(utils.getQueriedShip());
         window.TILE_SIZE =  me.game.currentLevel.tilewidth;
-       window.WIDTH = me.game.currentLevel.width;
-       window.HEIGHT = me.game.currentLevel.height;
+        window.WIDTH = me.game.currentLevel.width;
+        window.HEIGHT = me.game.currentLevel.height;
         me.game.sort();
         me.input.bindKey(me.input.KEY.ESC,  "escape");
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
@@ -131,7 +121,7 @@ var PlayScreen = me.ScreenObject.extend({
         me.video.getScreenCanvas().addEventListener("dblclick", this.mouseDbClick, false);
         
         ui.init();
-       window.ship = new Ship();
+        window.ship = new Ship();
     },
     
     update : function(){

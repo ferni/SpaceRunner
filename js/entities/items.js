@@ -194,15 +194,16 @@ var iWallObject = ItemObject.extend({
                 pfMatrix[y][x] = 0; //cleared tiles are walkable
         });
         pfMatrix[this.y()][this.x()] = 0; //self tile will be walkable for pathfinding purposes
-        this.grid = new PF.Grid(WIDTH, HEIGHT, pfMatrix);
+
 
         var t = this.temp;
+        t.grid = new PF.Grid(WIDTH, HEIGHT, pfMatrix);
         t.preMouseX = this.x();
         t.preMouseY = this.y();
         t.pivotX = this.x();
         t.pivotY = this.y();
         t.paths = [];
-        t.lastPath = 0;
+        t.lastPathIndex = 0;
         ui.mouseLockedOn = this;
     },
     lockedMouseMove: function (mouseTile) {
@@ -216,10 +217,10 @@ var iWallObject = ItemObject.extend({
         t.preMouseY = mouseTile.y;
         ui.clear();
         var finder = new PF.BestFirstFinder();
-        var cloneGrid = this.grid.clone();
+        var cloneGrid = t.grid.clone();
         var path = finder.findPath(t.pivotX, t.pivotY, mouseTile.x, mouseTile.y, cloneGrid);
 
-        t.paths[t.lastPath] = path; //replace last path
+        t.paths[t.lastPathIndex] = path; //replace last path
         for (var i = t.paths.length - 1; i >= 0; i--) {
             for (var f = 1; f < t.paths[i].length; f++) {
                 ui.draw(t.paths[i][f][0], t.paths[i][f][1], "wall");
@@ -228,11 +229,16 @@ var iWallObject = ItemObject.extend({
     },
     lockedMouseUp: function (mouseTile) {
         this.parent();
+        if (!this.canBuildAt(mouseTile.x, mouseTile.y)) return;
         var t = this.temp;
-
+        var lastPath = t.paths[t.lastPathIndex];
+        if (lastPath)
+            for (var i = 0; i < lastPath.length; i++) {
+                t.grid.setWalkableAt(lastPath[i][0], lastPath[i][1], false);
+            }
         t.pivotX = mouseTile.x;
         t.pivotY = mouseTile.y;
-        t.lastPath++;
+        t.lastPathIndex++;
 
     },
     lockedMouseDbClick: function (mouseTile) {
