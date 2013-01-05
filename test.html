@@ -6,37 +6,54 @@
   	<link rel="stylesheet" href="test/qunit/qunit.css">
 
   	<script type="text/javascript" src="js/vendor/ajaxupload.3.5.js" ></script>
-	<script type="text/javascript" src="js/vendor/jquery-1.3.2.js"></script>
-	<script type="text/javascript" src="js/vendor/jquery.contextmenu.r2.js"></script>
-	<script type="text/javascript" src="js/vendor/melonJS-0.9.4.js"></script>
-	<script type="text/javascript" src="js/vendor/pathfinding-browser.js"></script>
-    <script src="js/vendor/underscore.js" type="text/javascript"></script>
-	<script type="text/javascript" src="js/finding_matrix.js"></script>
-
-	<script type="text/javascript" src="js/utils.js"></script>
-	<script type="text/javascript" src="js/char-map.js"></script>
-	<script type="text/javascript" src="js/placement-rules.js" ></script>
-	<script type="text/javascript" src="js/plugins.js"></script>
-	<script type="text/javascript" src="js/mainlink.js"></script>
-	<script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery-1.3.2.js"></script>
+    <script type="text/javascript" src="js/vendor/melonJS-0.9.4.js"></script>
+    <script type="text/javascript" src="js/vendor/pathfinding-browser.js"></script>
+    <script type="text/javascript" src="js/vendor/underscore.js" ></script>
+        
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/char-map.js"></script>
+    <script type="text/javascript" src="js/placement-rules.js" ></script>
+    <script type="text/javascript" src="js/entities/core.js" ></script>
+    <script type="text/javascript" src="js/entities/items.js" ></script>
+    <script type="text/javascript" src="js/entities/ui.js"></script>
+    <script type="text/javascript" src="js/mainlink.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
 
-	<!-- DOM that some libraries require-->
-	<div style="display:none">
-		<!-- melonJS -->
-		<div id="jsapp"></div>
-		<!-- ajaxupload -->
-		<button class = "globalbutton" id="file_save">Save</button>
+	
+    <div style="display:none">
+        <!-- DOM that some libraries require-->
+        <!-- melonJS -->
+        <div id="jsapp"></div>
+        <!-- ajaxupload -->
+        <button class = "globalbutton" id="file_save">Save</button>
         <button class = "globalbutton" id="file_load">Load</button>
-	</div>
+        
+        <!-- DOM that some tests require-->
+        <!-- mainlink_test.js -->
+        <div id="itemboard">
+            <div class="empty">&nbsp;</div>
+            <div id="item_main">
+                <div class="items">
+                    <img id="item_weapon" src="data/img/render/weapon_01.png" width="64px" height="43px" style="background-color:#000000" />
+                    <span>&nbsp;Weapon</span>
+                </div>
+
+                <div class="items" >
+                    <img id="item_engine" src="data/img/render/engine_01.png" width="64px" height="43px" style="background-color:#000000" />
+                    <span>&nbsp;Engine</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	<!-- QUnit -->
 	<div id="qunit"></div>
 	<script type="text/javascript" src="test/qunit/qunit.js"></script>
 
 	<!-- Actual tests -->
-	<script type="text/javascript" src="test/finding_matrix_test.js"></script>
 	<script type="text/javascript" src="test/mainlink_test.js"></script>
 	<script type="text/javascript" src="test/main_test.js"></script>
 	<script type="text/javascript" src="test/plugins_test.js"></script>
