@@ -56,8 +56,6 @@ var mouseButtons = {
 
 var TILE_SIZE = 0;
 
-//var weaponmng = new WeaponMng();
-
 var jsApp = {
     /* ---
 
@@ -84,15 +82,10 @@ var jsApp = {
      --- */
     loaded: function() {
         // set the "Play/Ingame" Screen Object
-        me.state.set(me.state.PLAY, new PlayScreen());
+        me.state.set(me.state.PLAY, new PlayScreen(utils.getQueriedShip()));
         // start the game
         me.state.change(me.state.PLAY);
-    },
-    initLevel : function(){
-         me.game.reset();
-         me.levelDirector.loadLevel(utils.getQueriedShip());
-//         me.state.set(me.state.PLAY, GameScreen);
-    },
+    }
 };
 
 
@@ -100,15 +93,17 @@ var jsApp = {
 /* the in game stuff*/
 var PlayScreen = me.ScreenObject.extend({
     iItemID : 0,
-    init : function(){
+
+    init : function(shipName){
         this.parent(true);
+        this.shipName = shipName;
     },
-   onResetEvent: function()
+   onResetEvent: function(finishedResetCallback)
     {
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel(utils.getQueriedShip());
+        me.levelDirector.loadLevel(this.shipName);
         window.TILE_SIZE =  me.game.currentLevel.tilewidth;
         window.WIDTH = me.game.currentLevel.width;
         window.HEIGHT = me.game.currentLevel.height;
@@ -122,6 +117,8 @@ var PlayScreen = me.ScreenObject.extend({
         
         ui.init();
         window.ship = new Ship();
+        if(finishedResetCallback !== undefined)
+          finishedResetCallback();
     },
     
     update : function(){
