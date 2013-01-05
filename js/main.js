@@ -388,7 +388,8 @@ var ui = {
            if(this.chosen.type == name) return;
            this.chosen.hide();
            this.clearRed();
-           
+           $("#item_"+ ui.chosen.type).removeClass("chosen");
+
            me.game.repaint();
        }
        this.chosen = this.ghostItems[name];
@@ -400,6 +401,7 @@ var ui = {
            .show();
        this.updateGreenSpots();
 
+       $("#item_"+ ui.chosen.type).addClass("chosen");
        me.game.sort();
        me.game.repaint();
    },
