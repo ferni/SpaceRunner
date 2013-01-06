@@ -1,4 +1,4 @@
-module("tests_utils.js");
+/*module("tests_utils.js");
 asyncTest("tests.onLevelLoaded", function(){
 	expect(1);
 	tests.onLevelLoaded(function(){
@@ -9,4 +9,4 @@ asyncTest("tests.onLevelLoaded", function(){
 
 shipTest("shipTest", function(){
 	equal(me.levelDirector.getCurrentLevelId(), "test");
-});
+});*/
