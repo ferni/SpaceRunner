@@ -23,7 +23,12 @@
         <script type="text/javascript" src="js/entities/ui.js"></script>
         <script type="text/javascript" src="js/mainlink.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
-
+        <script type="text/javascript">
+            //bootstrap :)
+            window.onReady(function() {
+                jsApp.onload(utils.getQueriedShip());
+            });
+        </script>
     </head>
 
     <body bgcolor="black">

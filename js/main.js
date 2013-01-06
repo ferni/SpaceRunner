@@ -62,7 +62,7 @@ var jsApp = {
      Initialize the jsApp
 
      --- */
-    onload: function() {
+    onload: function(shipName) {
         // init the video
         if (!me.video.init('jsapp', 576, 384)) {
             alert("Sorry but your browser does not support html 5 canvas.");
@@ -71,7 +71,7 @@ var jsApp = {
         // initialize the "audio"
 //        me.audio.init("mp3,ogg");
         // set all resources to be loaded
-        me.loader.onload = this.loaded.bind(this);
+        me.loader.onload = this.loaded.bind(this, shipName);
         // set all resources to be loaded
         me.loader.preload(g_resources);
         // load everything & display a loading screen
@@ -80,9 +80,9 @@ var jsApp = {
     /* ---
      callback when everything is loaded
      --- */
-    loaded: function() {
+    loaded: function(shipName) {
         // set the "Play/Ingame" Screen Object
-        me.state.set(me.state.PLAY, new PlayScreen(utils.getQueriedShip()));
+        me.state.set(me.state.PLAY, new PlayScreen(shipName));
         // start the game
         me.state.change(me.state.PLAY);
     }
@@ -522,8 +522,3 @@ var ui = {
    
 };
 
-
-//bootstrap :)
-window.onReady(function() {
-    jsApp.onload();
-});
