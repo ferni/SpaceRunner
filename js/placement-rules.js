@@ -9,8 +9,8 @@
             this.tileCondition = function (tile) { return tile == wantedTile; };
         }
         this.compliesAt = function (x, y, map) {
-            return pr.utils.checkIsInAny(map, this.tileCondition, this.inAny, { x: x, y: y })
-                && pr.utils.checkIsInAll(map, this.tileCondition, this.inAll, { x: x, y: y });
+            return pr.utils.checkAny(map, this.tileCondition, this.inAny, { x: x, y: y })
+                && pr.utils.checkAll(map, this.tileCondition, this.inAll, { x: x, y: y });
         };
     },
     make: {
@@ -56,14 +56,14 @@
     },
     utils: {
         //check if a tile is at any of the positions in the "relativeCoordinates" parameter
-        checkIsInAny: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate, areEqual) {
-            return pr.utils.checkIsInAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, true);
+        checkAny: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate, areEqual) {
+            return pr.utils.checkAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, true);
         },
         //check if a tile is at all of the positions in the "relativeCoordinates" parameter
-        checkIsInAll: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate) {
-            return pr.utils.checkIsInAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, false);
+        checkAll: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate) {
+            return pr.utils.checkAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, false);
         },
-        checkIsInAnyOrAll: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate, inAny) {
+        checkAnyOrAll: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate, inAny) {
             if (!relativeCoordinates || relativeCoordinates.length == 0) return true;
             for (var coor = 0; coor < relativeCoordinates.length; coor++) {
                 var wantedTileCoordinate = relativeCoordinates[coor];
