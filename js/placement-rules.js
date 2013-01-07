@@ -56,7 +56,7 @@
     },
     utils: {
         //check if a tile is at any of the positions in the "relativeCoordinates" parameter
-        checkAny: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate, areEqual) {
+        checkAny: function (tileMap, tileCondition, relativeCoordinates, currentCoordinate) {
             return pr.utils.checkAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, true);
         },
         //check if a tile is at all of the positions in the "relativeCoordinates" parameter

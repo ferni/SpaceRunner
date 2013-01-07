@@ -82,7 +82,7 @@ onLevelReady(function () {
 
         ship.buildAt(x, y, "wall");
         ship.buildAt(x, y + 1, "wall");
-        me.game.update();//update wall animations, important for door placement rules
+        me.game.update(); //update wall animations, important for door placement rules
         ok(!door.canBuildAt(x, y), "After building vertical wall, door still cannot be built at x,y...");
         ok(door.canBuildRotated(x, y), "... but it can rotated.");
 
@@ -90,5 +90,59 @@ onLevelReady(function () {
         equal(ship.mapAt(x, y + 1).type, "door", "mapAt(x, y+1) is door (it should be rotated, that is, vertical)");
         notEqual(ship.mapAt(x + 1, y).type, "door", "mapAt(x+1,y) is not door");
         ok(ship.mapAt(x, y + 1).rotated(), "Door has 'rotated' status");
+    });
+
+    shipTest("mapAt out of bounds", function () {
+        strictEqual(ship.mapAt(-1, 0), null, "mapAt(-1,0) is null");
+        strictEqual(ship.mapAt(WIDTH, 0), null, "mapAt(WIDTH,0) is null");
+        strictEqual(ship.mapAt(0, HEIGHT), null, "mapAt(0,HEIGHT) is null");
+    });
+
+    shipTest("fromJsonString", function () {
+        ship.fromJsonString('[{"type":"power", "x":0, "y":0}, {"type":"door", "x":2, "y":3, "rotated":true}]');
+
+        var power = ship.mapAt(0, 0);
+        equal(power.type, "power", "power successfully added to the ship");
+        equal(power.x(), 0, "it has correct x position");
+        equal(power.y(), 0, "it has correct y position");
+        ok(!power.rotated(), "power is not rotated");
+
+        var door = ship.mapAt(2, 3);
+        equal(door.type, "door", "door successfully added to the ship");
+        equal(door.x(), 2, "it has correct x position");
+        equal(door.y(), 3, "it has correct y position");
+        ok(door.rotated(), "door is rotated");
+
+        equal(ship.buildings.length, 2, "ship has 2 buildings added");
+    });
+
+    shipTest("fromJsonString clears buildings", function () {
+        ok(ship.buildAt(testShipPositions.free.x, testShipPositions.free.y, "power"), "power successfully built");
+        ok(ship.buildAt(testShipPositions.engine.x, testShipPositions.engine.y, "engine"), "engine succesfully built");
+        ship.fromJsonString('[{"type":"wall", "x":0, "y":0}]');
+        equal(ship.buildings.length, 1, "ship has only one building after loading");
+        equal(ship.buildings[0].type, "wall", "that only building is a wall (loaded through json)");
+
+        ship.fromJsonString('[]');
+        equal(ship.buildings.length, 0, "ship has 0 buildings after loading empty array");
+    });
+
+    shipTest("toJsonString", function () {
+        ok(ship.buildAt(testShipPositions.free.x, testShipPositions.free.y, "power"), "power successfully built");
+        ok(ship.buildAt(testShipPositions.engine.x, testShipPositions.engine.y, "engine"), "engine succesfully built");
+        ship.mapAt(testShipPositions.engine.x, testShipPositions.engine.y).rotated(true);
+
+        var jsonObject = JSON.parse(ship.toJsonString());
+        equal(jsonObject.length, 2, "JSON object (array) has 2 objects");
+
+        var power = _.find(jsonObject, function (i) { return i.type == "power"; });
+        equal(power.x, testShipPositions.free.x, "power saved with correct x position");
+        equal(power.y, testShipPositions.free.y, "power saved with correct y position");
+        ok(!power.rotated, "power saved as not rotated");
+
+        var engine = _.find(jsonObject, function (i) { return i.type == "engine"; });
+        equal(engine.x, testShipPositions.engine.x, "engine saved with correct x position");
+        equal(engine.y, testShipPositions.engine.y, "engine saved with correct y position");
+        ok(engine.rotated, "engine saved as rotated");
     });
 });
