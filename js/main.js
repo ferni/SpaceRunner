@@ -152,7 +152,7 @@ var PlayScreen = me.ScreenObject.extend({
             return;
         }
         
-        var item = ship.mapAt(mouseTile.x,mouseTile.y);
+        var item = ship.mapAt(mouseTile.x, mouseTile.y);
         
         if(item != null && item.name == "Building") {
             if(e.which == mouseButtons.right) {
@@ -240,7 +240,8 @@ function Ship() {
             ui.updateGreenSpots();
             me.game.sort();
             me.game.repaint();
-    };
+        };
+    //Adds an item to the ship ignoring its placement rules
     this.add = function(item) {
         me.game.add(item, item.zIndex);
         this.buildings.push(item);

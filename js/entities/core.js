@@ -5,6 +5,8 @@ var TileObject = me.ObjectEntity.extend({
     size: [1, 1],
     cannonTile: [0, 0], //image offset
     init: function (x, y, settings) {
+        if(settings === undefined)
+            settings = {};
         settings.image = this.type;
         if (!this.totalSize)
             this.totalSize = [this.size[0], this.size[1]];
