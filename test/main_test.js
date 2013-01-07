@@ -76,7 +76,7 @@ onLevelReady(function () {
     shipTest("buildAt rotates item when it can only be built rotated", function () {
         var x = testShipPositions.free.x;
         var y = testShipPositions.free.y;
-        var door = new iDoorObject(0, 0);
+        var door = new iDoorObject();
         ok(!door.canBuildAt(x, y), "Cannot build at x,y (there's no wall)");
         ok(!door.canBuildRotated(x, y), "It cannot be built rotated either");
 
