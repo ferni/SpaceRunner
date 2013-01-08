@@ -17,7 +17,7 @@ onLevelReady(function () {
 
     shipTest("buildAt", function () {
         ok(ship.buildAt(testShipPositions.free.x, testShipPositions.free.y, "power"), "could build power");
-        equal(ship.buildings[0].type, "power", "first building is power");
+        equal(ship.buildings()[0].type, "power", "first building is power");
     });
 
     shipTest("engine proper placement", function () {
@@ -42,7 +42,7 @@ onLevelReady(function () {
         var engine = new iEngineObject(x, y);
         //(ignores placement rules)
         ship.add(engine);
-        equal(ship.buildings[0].type, "engine", "First building is engine after adding");
+        equal(ship.buildings()[0].type, "engine", "First building is engine after adding");
 
         //mapAt
         equal(ship.mapAt(x, y).type, "engine", "mapAt(x, y) is engine");
@@ -54,7 +54,7 @@ onLevelReady(function () {
 
         //removeAt
         ship.removeAt(x + 1, y); //random engine tile
-        equal(ship.buildings.length, 0, "Ship has 0 buildings after removing");
+        equal(ship.buildings().length, 0, "Ship has 0 buildings after removing");
         notEqual(ship.mapAt(x, y), "engine", "mapAt(x, y) no longer engine");
         notEqual(ship.mapAt(x, y + 1), "engine", "mapAt(x, y + 1) no longer engine");
         notEqual(ship.mapAt(x + 1, y), "engine", "mapAt(x+1, y) no longer engine");
@@ -65,12 +65,12 @@ onLevelReady(function () {
         var x = testShipPositions.free.x;
         var y = testShipPositions.free.y;
         ship.buildAt(x, y, "component");
-        equal(ship.buildings[0].type, "component", "Ship has component built");
+        equal(ship.buildings()[0].type, "component", "Ship has component built");
         equal(ship.mapAt(x, y).type, "component", "mapAt(x,y) is component");
-        var item = ship.buildings[0];
+        var item = ship.buildings()[0];
         ship.remove(item);
         notEqual(ship.mapAt(x, y).type, "component", "mapAt(x,y) is no longer component after removing");
-        equal(ship.buildings.length, 0, "ship has no buildings");
+        equal(ship.buildings().length, 0, "ship has no buildings");
     });
 
     shipTest("buildAt rotates item when it can only be built rotated", function () {
@@ -113,18 +113,18 @@ onLevelReady(function () {
         equal(door.y(), 3, "it has correct y position");
         ok(door.rotated(), "door is rotated");
 
-        equal(ship.buildings.length, 2, "ship has 2 buildings added");
+        equal(ship.buildings().length, 2, "ship has 2 buildings added");
     });
 
     shipTest("fromJsonString clears buildings", function () {
         ok(ship.buildAt(testShipPositions.free.x, testShipPositions.free.y, "power"), "power successfully built");
         ok(ship.buildAt(testShipPositions.engine.x, testShipPositions.engine.y, "engine"), "engine succesfully built");
         ship.fromJsonString('[{"type":"wall", "x":0, "y":0}]');
-        equal(ship.buildings.length, 1, "ship has only one building after loading");
-        equal(ship.buildings[0].type, "wall", "that only building is a wall (loaded through json)");
+        equal(ship.buildings().length, 1, "ship has only one building after loading");
+        equal(ship.buildings()[0].type, "wall", "that only building is a wall (loaded through json)");
 
         ship.fromJsonString('[]');
-        equal(ship.buildings.length, 0, "ship has 0 buildings after loading empty array");
+        equal(ship.buildings().length, 0, "ship has 0 buildings after loading empty array");
     });
 
     shipTest("toJsonString", function () {
@@ -145,4 +145,8 @@ onLevelReady(function () {
         equal(engine.y, testShipPositions.engine.y, "engine saved with correct y position");
         ok(engine.rotated, "engine saved as rotated");
     });
+
+    module("main.js/ui");
+    
+
 });

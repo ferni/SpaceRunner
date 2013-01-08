@@ -9,7 +9,7 @@ function onLevelReady(callback){
 
 function shipTest(testName, testFunction){
     //reset ship
-    ship = new Ship();
+    ship.removeAll();
     test(testName, testFunction);
 }
 

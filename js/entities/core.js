@@ -66,11 +66,11 @@ var TileObject = me.ObjectEntity.extend({
 
 /* individual object class */
 var ItemObject = TileObject.extend({
-
     init: function (x, y, settings) {
+        if (settings === undefined) settings = { };
+        settings.name = "item";
         this.parent(x, y, settings);
         this.buildPlacementRules();
-        this.name = "Building";
     },
     /*functions to do when mouse-locked (override in each item)
     mouseTile : Vector2D
@@ -127,7 +127,7 @@ var ItemObject = TileObject.extend({
         });
         return occupies;
     },
-
+    //onBuilt is called only when the user himself builds it
     onBuilt: function () {
         //abstract method
     },
