@@ -27,26 +27,14 @@ var g_resources_size = [
 
 
 var items = {
-    getBy: function (property, value) {
-        for(var p in this) {
-            if(this[p][property] == value) return this[p];
-        }
-        return null;
-    },
-    addNames: function () {
-        for(var p in this) {
-            this[p].name = p;
-        }
-    },
-    weapon: {Constructor: iWeaponObject},
-    engine: {Constructor: iEngineObject},
-    power: {Constructor: iPowerObject},
-    console: {Constructor: iConsoleObject},
-    component: {Constructor: iComponentObject},
-    door: {Constructor: iDoorObject},
-    wall: {Constructor: iWallObject}
+    weapon:  iWeaponObject,
+    engine:  iEngineObject,
+    power:  iPowerObject,
+    console:  iConsoleObject,
+    component:  iComponentObject,
+    door:  iDoorObject,
+    wall:  iWallObject
 };
-items.addNames();
 
 var mouseButtons = {
     left: 1,
@@ -347,6 +335,7 @@ function Ship() {
 }
 
 
+//TODO: ship.getForbiddenMatrixFor(item) , el ui usa esto para graficar lo rojo
 
 
 /*Everything related to the graphics during the process of building */
@@ -358,14 +347,12 @@ var ui = {
     selected: null, //selected item from the ship
     init: function () {
         this.ghostItems = new Object(); //Items to be used when choosing building location
-        for (var name in items) {
-            if (items[name].Constructor !== undefined) {
-                var newItem = new items[name].Constructor(0, 0, {}, 123);
-                this.ghostItems[name] = newItem;
-                newItem.hide();
-                me.game.add(newItem, newItem.zIndex + 1000);
-                newItem.onShip(false);
-            }
+        for (var type in items) {
+            var newItem = utils.makeItem(type);
+            this.ghostItems[type] = newItem;
+            newItem.hide();
+            me.game.add(newItem, newItem.zIndex + 1000);
+            newItem.onShip(false);
         }
         this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
     },

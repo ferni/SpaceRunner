@@ -51,6 +51,7 @@ var utils = {
     },
     //traverses every tile coordinate inside the level of an item
     itemTiles: function (item, callback) {//the callback must have x and y
+        if (!item) return;
         for (var x = item.x(); x < item.trueSize(0) + item.x() && x < WIDTH && x >= 0; x++) {
             for (var y = item.y(); y < item.trueSize(1) + item.y() && y < HEIGHT && y >= 0; y++) {
                 callback(x, y);
@@ -68,12 +69,12 @@ var utils = {
         return matrix;
     },
     makeItem: function (type) {
-        var itemInfo = items[type];
-        if (!itemInfo || itemInfo.Constructor === undefined) {
+        var itemConstructor = items[type];
+        if (!itemConstructor) {
             console.error("No such item type '" + type + "' (utils.makeItem).");
             return null;
         }
-        return new itemInfo.Constructor(-100, -100, {});
+        return new itemConstructor(-100, -100, {});
     },
     //returns the tile position of the mouse
     getMouse: function () {
