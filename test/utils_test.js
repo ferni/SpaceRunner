@@ -1,4 +1,4 @@
-onLevelReady(function(){
+th.onLevelReady(function(){
     module("utils.js");
     test("toTileVector", function(){
         var tileVector = utils.toTileVector(new me.Vector2d(7,7));

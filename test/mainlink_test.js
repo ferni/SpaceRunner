@@ -1,4 +1,4 @@
-onLevelReady(function(){
+th.onLevelReady(function(){
 	module("mainlink.js");
 
 	test("Item click", function () {

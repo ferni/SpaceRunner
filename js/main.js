@@ -42,8 +42,6 @@ var mouseButtons = {
     right: 3
 };
 
-var TILE_SIZE = 0;
-
 var jsApp = {
     /* ---
 
@@ -70,7 +68,8 @@ var jsApp = {
      --- */
     loaded: function(shipName) {
         // set the "Play/Ingame" Screen Object
-        me.state.set(me.state.PLAY, new PlayScreen(shipName));
+        window.screen = new PlayScreen(shipName);
+        me.state.set(me.state.PLAY, screen);
         // start the game
         me.state.change(me.state.PLAY);
     }
@@ -86,7 +85,7 @@ var PlayScreen = me.ScreenObject.extend({
         this.parent(true);
         this.shipName = shipName;
     },
-    onResetEvent: function (finishedResetCallback) {
+    onResetEvent: function () {
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
@@ -104,8 +103,6 @@ var PlayScreen = me.ScreenObject.extend({
 
         ui.init();
         window.ship = new Ship();
-        if (finishedResetCallback !== undefined)
-            finishedResetCallback();
     },
 
     update: function () {
@@ -371,7 +368,10 @@ var ui = {
             me.game.repaint();
         }
         this.chosen = this.ghostItems[name];
-        if (!this.chosen) return;
+        if (!this.chosen) {
+            this.chosen = null;
+            return;
+        }
         var mouse = utils.getMouse();
         this.chosen
            .x(mouse.x)
