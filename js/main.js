@@ -127,7 +127,8 @@ var PlayScreen = me.ScreenObject.extend({
             return;
         }
 
-        ui.update();
+        me.game.sort();
+        me.game.repaint();
     },
     mouseDown: function (e) {
         var mouseTile = utils.getMouse();
@@ -151,7 +152,8 @@ var PlayScreen = me.ScreenObject.extend({
                 }
             }
         }
-        ui.update();
+        me.game.sort();
+        me.game.repaint();
     },
     mouseMove: function (e) {
         var mouseTile = utils.getMouse();
@@ -162,7 +164,8 @@ var PlayScreen = me.ScreenObject.extend({
         if (!ui.chosen) return;
 
         ui.moveGhost(mouseTile.x, mouseTile.y);
-        ui.update();
+        me.game.sort();
+        me.game.repaint();
 
     },
     mouseUp: function (e) {
@@ -180,7 +183,8 @@ var PlayScreen = me.ScreenObject.extend({
             ui.endDrag();
         }
 
-        ui.update();
+        me.game.sort();
+        me.game.repaint();
 
     },
     /* ---
@@ -215,8 +219,6 @@ function Ship() {
                 self.removeAt(iX,iY);
             });
             this.add(building);
-            
-            this.buildingsMap.update();
             building.onBuilt();
             return building;//building successful
         }
@@ -227,7 +229,7 @@ function Ship() {
     this.add = function (item) {
         me.game.add(item, item.zIndex);
         item.onShip(true);
-        this.buildingsMap.update();
+        this.buildingsChanged();
     };
     this.removeAt = function (x, y) {
         while (this.mapAt(x, y).name == "item") {
@@ -241,15 +243,19 @@ function Ship() {
         me.game.remove(item, true);
 
         if (updateBuildings)
-            this.buildingsMap.update();
+            this.buildingsChanged();
     };
-    
+
     this.removeAll = function () {
         var self = this;
         _.each(this.buildings(), function (building) {
             self.remove(building, false);
         });
+        this.buildingsChanged();
+    };
+    this.buildingsChanged = function () {
         this.buildingsMap.update();
+        ui.updateGreenSpots();
     };
     this._map = null;
     this.map = function() {
@@ -329,13 +335,12 @@ function Ship() {
                 .rotated(itemArray[i].rotated);
             this.add(item);
         }
-        this.buildingsMap.update();
+        this.buildingsChanged();
     };
 
 }
 
 
-//TODO: ship.getForbiddenMatrixFor(item) , el ui usa esto para graficar lo rojo
 
 
 /*Everything related to the graphics during the process of building */
@@ -355,12 +360,6 @@ var ui = {
             newItem.onShip(false);
         }
         this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
-    },
-    update: function () {
-        this.updateGreenSpots();
-        this.updateRed();
-        me.game.sort();
-        me.game.repaint();
     },
     choose: function (name) {
         if (this.chosen) {
