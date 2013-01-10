@@ -193,10 +193,9 @@ var PlayScreen = me.ScreenObject.extend({
 
 
 function Ship() {
+    this._buildings = [];
     this.buildings = function () {
-        return _.filter(me.game.getEntityByName("item"), function (item) {
-            return item.onShip();
-        });
+        return this._buildings;
     };
     //this should be called when the user builds something
     this.buildAt = function(x, y, buildingType) {
@@ -250,7 +249,11 @@ function Ship() {
         });
         this.buildingsChanged();
     };
+    //to call whenever buildings change
     this.buildingsChanged = function () {
+        this._buildings = _.filter(me.game.getEntityByName("item"), function (item) {
+            return item.onShip();
+        });
         this.buildingsMap.update();
         ui.updateGreenSpots();
     };
