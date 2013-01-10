@@ -186,4 +186,62 @@ th.onLevelReady(function () {
         equal(power.x(), x + 1, "x after dragging");
         equal(power.y(), y, "y after dragging");
     });
+
+    asyncTest("printRed/clearRed", function () {
+        ui.clear();
+        ui.printRed(4, 5);
+        var reds = me.game.getEntityByName("red");
+        var redsInX4Y5 = _.filter(reds, function (r) {
+            return r.x() == 4 && r.y() == 5;
+        }).length;
+        ok(redsInX4Y5 > 0, "There are red objects in the printed position");
+        ui.clearRed();
+        setTimeout(function () {//allow the game to refresh
+            equal(me.game.getEntityByName("red").length, 0, "Red objects cleared");
+            start();
+        }, 100);
+    });
+
+    th.shipTest("rotate ghost when it could be built rotated", function () {
+        ui.clear();
+        var hX = th.shipPositions.engine.x;
+        var hY = th.shipPositions.engine.y;
+        var hWall1 = ship.buildAt(hX, hY, "wall");
+        var hWall2 = ship.buildAt(hX + 1, hY, "wall");
+        hWall1.update();
+        hWall2.update(); //(for animations)
+        var door = new items.door();
+        ok(door.canBuildAt(hX, hY), "door can be built without rotation at horizontal wall");
+
+        var vX = th.shipPositions.free.x;
+        var vY = th.shipPositions.free.y;
+        var vWall1 = ship.buildAt(vX, vY, "wall");
+        var vWall2 = ship.buildAt(vX, vY + 1, "wall");
+        vWall1.update();
+        vWall2.update(); //(for animations)
+        ok(door.canBuildRotated(vX, vY), "door can be built rotated at vertical wall");
+
+        ui.choose("door");
+        ok(!ui.chosen.rotated(), "Door ghost is not rotated when first chosen");
+
+        ui.moveGhost(vX, vY);
+        screen.mouseMove({});
+        ok(ui.chosen.rotated(), "Door ghost has rotated when hovered over vertical wall");
+
+        ui.moveGhost(hX, hY);
+        screen.mouseMove({});
+        ok(!ui.chosen.rotated(), "Door ghost back to not rotated when hovered over horizontal wall");
+
+    });
+    
+    test("draw/mapAt", function () {
+    ui.clear();
+    ui.draw(4, 5, "engine");
+    var items = me.game.getEntityByName("item");
+    ok(_.some(items, function (item) {
+    return item.type == "engine" && item.x() == 4 && item.y() == 5;
+    }), "Engine drawn at correct position");
+
+    equal(ui.mapAt(4, 5).type, "engine", "mapAt(4,5) is engine");
+    });
 });
