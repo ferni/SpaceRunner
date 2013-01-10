@@ -7,7 +7,8 @@ var TileObject = me.ObjectEntity.extend({
     init: function (x, y, settings) {
         if(settings === undefined)
             settings = {};
-        settings.image = this.type;
+        if(this.type != 0)
+            settings.image = this.type;
         if (!this.totalSize)
             this.totalSize = [this.size[0], this.size[1]];
         settings.spritewidth = this.totalSize[0] * TILE_SIZE;
