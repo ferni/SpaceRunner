@@ -5,8 +5,6 @@ var TileObject = me.ObjectEntity.extend({
     size: [1, 1],
     cannonTile: [0, 0], //image offset
     init: function (x, y, settings) {
-        if(settings === undefined)
-            settings = {};
         if(this.type != 0)
             settings.image = this.type;
         if (!this.totalSize)
@@ -68,7 +66,7 @@ var TileObject = me.ObjectEntity.extend({
 /* individual object class */
 var ItemObject = TileObject.extend({
     init: function (x, y, settings) {
-        if (settings === undefined) settings = { };
+        if (settings === undefined) settings = {};
         settings.name = "item";
         this.parent(x, y, settings);
         this.buildPlacementRules();

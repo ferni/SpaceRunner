@@ -235,13 +235,13 @@ th.onLevelReady(function () {
     });
     
     test("draw/mapAt", function () {
-    ui.clear();
-    ui.draw(4, 5, "engine");
-    var items = me.game.getEntityByName("item");
-    ok(_.some(items, function (item) {
-    return item.type == "engine" && item.x() == 4 && item.y() == 5;
-    }), "Engine drawn at correct position");
+        ui.clear();
+        ui.draw(4, 5, "engine");
+        var items = me.game.getEntityByName("item");
+        ok(_.some(items, function (item) {
+        return item.type == "engine" && item.x() == 4 && item.y() == 5;
+        }), "Engine drawn at correct position");
 
-    equal(ui.mapAt(4, 5).type, "engine", "mapAt(4,5) is engine");
+        equal(ui.mapAt(4, 5).type, "engine", "mapAt(4,5) is engine");
     });
 });
