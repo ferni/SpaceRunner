@@ -5,11 +5,6 @@ var th = {
         weapon: { x: 5, y: 2 },
         solid: { x: 13, y: 1 }
     },
-    shipTest: function (testName, testFunction) {
-        //reset ship
-        ship.removeAll();
-        test(testName, testFunction);
-    },
     onLevelReady: function (callback) {
         var interval = setInterval(function () {
             if (me.state.isCurrent(me.state.PLAY)) {

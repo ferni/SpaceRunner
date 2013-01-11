@@ -15,28 +15,14 @@ th.onLevelReady(function () {
 
     module("main.js/ship");
 
-    th.shipTest("buildAt", function () {
+    test("buildAt", function () {
+        ship.removeAll();
         ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "power"), "could build power");
         equal(ship.buildings()[0].type, "power", "first building is power");
     });
 
-    th.shipTest("engine proper placement", function () {
-        ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y, "engine"), "building succeeds");
-    });
-
-    th.shipTest("engine invalid placement", function () {
-        ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "engine"), "building fails");
-    });
-
-    th.shipTest("weapon proper placement", function () {
-        ok(ship.buildAt(th.shipPositions.weapon.x, th.shipPositions.weapon.y, "weapon"), "building succeeds");
-    });
-
-    th.shipTest("weapon invalid placement", function () {
-        ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "weapon"), "building fails");
-    });
-
-    th.shipTest("add/mapAt/removeAt", function () {
+    test("add/mapAt/removeAt", function () {
+        ship.removeAll();
         var x = th.shipPositions.free.x;
         var y = th.shipPositions.free.y;
         var engine = new iEngineObject(x, y);
@@ -61,7 +47,8 @@ th.onLevelReady(function () {
         notEqual(ship.mapAt(x + 1, y + 1), "engine", "mapAt(x+1, y + 1) no longer engine");
     });
 
-    th.shipTest("remove", function () {
+    test("remove", function () {
+        ship.removeAll();
         var x = th.shipPositions.free.x;
         var y = th.shipPositions.free.y;
         ship.buildAt(x, y, "component");
@@ -73,7 +60,8 @@ th.onLevelReady(function () {
         equal(ship.buildings().length, 0, "ship has no buildings");
     });
 
-    th.shipTest("buildAt rotates item when it can only be built rotated", function () {
+    test("buildAt rotates item when it can only be built rotated", function () {
+        ship.removeAll();
         var x = th.shipPositions.free.x;
         var y = th.shipPositions.free.y;
         var door = new iDoorObject();
@@ -92,13 +80,15 @@ th.onLevelReady(function () {
         ok(ship.mapAt(x, y + 1).rotated(), "Door has 'rotated' status");
     });
 
-    th.shipTest("mapAt out of bounds", function () {
+    test("mapAt out of bounds", function () {
+        ship.removeAll();
         strictEqual(ship.mapAt(-1, 0), null, "mapAt(-1,0) is null");
         strictEqual(ship.mapAt(WIDTH, 0), null, "mapAt(WIDTH,0) is null");
         strictEqual(ship.mapAt(0, HEIGHT), null, "mapAt(0,HEIGHT) is null");
     });
 
-    th.shipTest("fromJsonString", function () {
+    test("fromJsonString", function () {
+        ship.removeAll();
         ship.fromJsonString('[{"type":"power", "x":0, "y":0}, {"type":"door", "x":2, "y":3, "rotated":true}]');
 
         var power = ship.mapAt(0, 0);
@@ -116,7 +106,8 @@ th.onLevelReady(function () {
         equal(ship.buildings().length, 2, "ship has 2 buildings added");
     });
 
-    th.shipTest("fromJsonString clears buildings", function () {
+    test("fromJsonString clears buildings", function () {
+        ship.removeAll();
         ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "power"), "power successfully built");
         ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y, "engine"), "engine succesfully built");
         ship.fromJsonString('[{"type":"wall", "x":0, "y":0}]');
@@ -127,7 +118,8 @@ th.onLevelReady(function () {
         equal(ship.buildings().length, 0, "ship has 0 buildings after loading empty array");
     });
 
-    th.shipTest("toJsonString", function () {
+    test("toJsonString", function () {
+        ship.removeAll();
         ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "power"), "power successfully built");
         ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y, "engine"), "engine succesfully built");
         ship.mapAt(th.shipPositions.engine.x, th.shipPositions.engine.y).rotated(true);
@@ -166,7 +158,8 @@ th.onLevelReady(function () {
         equal(ui.chosen.y(), 3);
     });
 
-    th.shipTest("beginDrag/endDrag", function () {
+    test("beginDrag/endDrag", function () {
+        ship.removeAll();
         var x = th.shipPositions.free.x;
         var y = th.shipPositions.free.y;
         var power = ship.buildAt(x, y, "power");
@@ -202,15 +195,16 @@ th.onLevelReady(function () {
         }, 100);
     });
 
-    th.shipTest("rotate ghost when it could be built rotated", function () {
+    test("rotate ghost when it could be built rotated", function () {
         ui.clear();
+        ship.removeAll();
         var hX = th.shipPositions.engine.x;
         var hY = th.shipPositions.engine.y;
         var hWall1 = ship.buildAt(hX, hY, "wall");
         var hWall2 = ship.buildAt(hX + 1, hY, "wall");
         hWall1.update();
         hWall2.update(); //(for animations)
-        var door = new items.door();
+        var door = utils.makeItem("door");
         ok(door.canBuildAt(hX, hY), "door can be built without rotation at horizontal wall");
 
         var vX = th.shipPositions.free.x;
@@ -233,13 +227,13 @@ th.onLevelReady(function () {
         ok(!ui.chosen.rotated(), "Door ghost back to not rotated when hovered over horizontal wall");
 
     });
-    
+
     test("draw/mapAt", function () {
         ui.clear();
         ui.draw(4, 5, "engine");
         var items = me.game.getEntityByName("item");
         ok(_.some(items, function (item) {
-        return item.type == "engine" && item.x() == 4 && item.y() == 5;
+            return item.type == "engine" && item.x() == 4 && item.y() == 5;
         }), "Engine drawn at correct position");
 
         equal(ui.mapAt(4, 5).type, "engine", "mapAt(4,5) is engine");
