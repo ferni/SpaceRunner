@@ -51,3 +51,15 @@ var th = {
         this.clickMouse(me.input.mouse.RIGHT, x, y);
     }
 };
+
+/*
+ --- Clean test template ---
+
+    asyncTest("", function () {
+        th.resetEverything(function () {
+            //test here
+            start();
+        });
+    });
+
+*/

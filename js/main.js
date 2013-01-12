@@ -141,9 +141,6 @@ var PlayScreen = me.ScreenObject.extend({
                 ui.selected = item;
                 if (!ui.chosen) {
                     ui.beginDrag(item);
-
-                } else {
-                    ui.selected = null;
                 }
             }
         }
@@ -345,7 +342,6 @@ function UserInterface() {
     this.mouseLockedOn= null; //who the mouse actions pertain to. 
     this.ghostItems = {}; //Items that exist for the sole purpose of...
     // ...showing the position at which they will be built.
-    this.selected = null; //selected item from the ship
     this.init = function () {
         this.ghostItems = new Object(); //Items to be used when choosing building location
         for (var type in items) {

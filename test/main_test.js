@@ -3,7 +3,8 @@
  vim: set ts=4 sw=4 et sts=4 ai:
  */
 th.onLevelReady(function () {
-    module("main.js");
+
+    module("main.js/PlayScreen");
 
     test("Globals are set", function () {
         ok(TILE_SIZE, "TILE_SIZE");
@@ -13,6 +14,51 @@ th.onLevelReady(function () {
         ok(ui, "ui");
     });
 
+    test("ESC key un-chooses the item", function () {
+        ui.choose("power");
+        ok(ui.chosen, "something chosen");
+        me.input.triggerKeyEvent(me.input.KEY.ESC, true);
+        screen.update();
+        me.input.triggerKeyEvent(me.input.KEY.ESC, false);
+        ok(!ui.chosen, "Nothing is chosen after hitting escape");
+    });
+
+    test("mouseDbClick does not give an error when mouse is not locked", function () {
+        equal(ui.mouseLockedOn, null, "Mouse is not locked");
+        screen.mouseDbClick({ which: me.input.mouse.LEFT });
+    });
+
+    asyncTest("right click removes item", function () {
+        th.resetEverything(function () {
+            var x = th.shipPositions.free.x;
+            var y = th.shipPositions.free.y;
+            ship.buildAt(x, y, "component");
+            equal(ship.mapAt(x, y).type, "component", "Component built");
+            th.rightClick(x + 1, y + 1); //botton right of component (arbitrary position)
+            notEqual(ship.mapAt(x, y).type, "component", "Component removed");
+            start();
+        });
+    });
+
+    asyncTest("drag and drop", function () {
+        th.resetEverything(function () {
+            ok(ship.buildAt(3, 4, "power"), "power succesfully built");
+            th.moveMouse(3, 4);
+            screen.mouseDown({ which: me.input.mouse.LEFT });
+            equal(ui.dragging.type, "power", "power being dragged");
+
+            th.moveMouse(5, 4);
+            screen.mouseUp({ which: me.input.mouse.LEFT });
+            ok(!ui.dragging, "not dragging after mouse up");
+            notEqual(ship.mapAt(3, 4).type, "power", "power is not on original position");
+            
+            var power = ship.mapAt(5, 4);
+            equal(power.x(), 5, "power is at new position");
+            start();
+        });
+    });
+
+
     module("main.js/ship");
 
     test("buildAt", function () {
@@ -20,7 +66,6 @@ th.onLevelReady(function () {
         ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "power"), "could build power");
         equal(ship.buildings()[0].type, "power", "first building is power");
     });
-
     test("add/mapAt/removeAt", function () {
         ship.removeAll();
         var x = th.shipPositions.free.x;
@@ -60,24 +105,26 @@ th.onLevelReady(function () {
         equal(ship.buildings().length, 0, "ship has no buildings");
     });
 
-    test("buildAt rotates item when it can only be built rotated", function () {
-        ship.removeAll();
-        var x = th.shipPositions.free.x;
-        var y = th.shipPositions.free.y;
-        var door = new iDoorObject();
-        ok(!door.canBuildAt(x, y), "Cannot build at x,y (there's no wall)");
-        ok(!door.canBuildRotated(x, y), "It cannot be built rotated either");
+    asyncTest("buildAt rotates item when it can only be built rotated", function () {
+        th.resetEverything(function () {
+            var x = th.shipPositions.free.x;
+            var y = th.shipPositions.free.y;
+            var door = new iDoorObject();
+            ok(!door.canBuildAt(x, y), "Cannot build at x,y (there's no wall)");
+            ok(!door.canBuildRotated(x, y), "It cannot be built rotated either");
 
-        ship.buildAt(x, y, "wall");
-        ship.buildAt(x, y + 1, "wall");
-        me.game.update(); //update wall animations, important for door placement rules
-        ok(!door.canBuildAt(x, y), "After building vertical wall, door still cannot be built at x,y...");
-        ok(door.canBuildRotated(x, y), "... but it can rotated.");
+            ship.buildAt(x, y, "wall");
+            ship.buildAt(x, y + 1, "wall");
+            me.game.update(); //update wall animations, important for door placement rules
+            ok(!door.canBuildAt(x, y), "After building vertical wall, door still cannot be built at x,y...");
+            ok(door.canBuildRotated(x, y), "... but it can rotated.");
 
-        ship.buildAt(x, y, "door");
-        equal(ship.mapAt(x, y + 1).type, "door", "mapAt(x, y+1) is door (it should be rotated, that is, vertical)");
-        notEqual(ship.mapAt(x + 1, y).type, "door", "mapAt(x+1,y) is not door");
-        ok(ship.mapAt(x, y + 1).rotated(), "Door has 'rotated' status");
+            ship.buildAt(x, y, "door");
+            equal(ship.mapAt(x, y + 1).type, "door", "mapAt(x, y+1) is door (it should be rotated, that is, vertical)");
+            notEqual(ship.mapAt(x + 1, y).type, "door", "mapAt(x+1,y) is not door");
+            ok(ship.mapAt(x, y + 1).rotated(), "Door has 'rotated' status");
+            start();
+        });
     });
 
     test("mapAt out of bounds", function () {
@@ -137,6 +184,8 @@ th.onLevelReady(function () {
         equal(engine.y, th.shipPositions.engine.y, "engine saved with correct y position");
         ok(engine.rotated, "engine saved as rotated");
     });
+
+
 
     module("main.js/ui");
 
