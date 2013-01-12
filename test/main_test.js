@@ -195,37 +195,37 @@ th.onLevelReady(function () {
         }, 100);
     });
 
-    test("rotate ghost when it could be built rotated", function () {
-        ui.clear();
-        ship.removeAll();
-        var hX = th.shipPositions.engine.x;
-        var hY = th.shipPositions.engine.y;
-        var hWall1 = ship.buildAt(hX, hY, "wall");
-        var hWall2 = ship.buildAt(hX + 1, hY, "wall");
-        hWall1.update();
-        hWall2.update(); //(for animations)
-        var door = utils.makeItem("door");
-        ok(door.canBuildAt(hX, hY), "door can be built without rotation at horizontal wall");
+    asyncTest("rotate ghost when it could be built rotated", function () {
+        th.resetEverything(function () {
+            var hX = th.shipPositions.engine.x;
+            var hY = th.shipPositions.engine.y;
+            var hWall1 = ship.buildAt(hX, hY, "wall");
+            var hWall2 = ship.buildAt(hX + 1, hY, "wall");
+            hWall1.update();
+            hWall2.update(); //(for animations)
+            var door = utils.makeItem("door");
+            ok(door.canBuildAt(hX, hY), "door can be built without rotation at horizontal wall");
 
-        var vX = th.shipPositions.free.x;
-        var vY = th.shipPositions.free.y;
-        var vWall1 = ship.buildAt(vX, vY, "wall");
-        var vWall2 = ship.buildAt(vX, vY + 1, "wall");
-        vWall1.update();
-        vWall2.update(); //(for animations)
-        ok(door.canBuildRotated(vX, vY), "door can be built rotated at vertical wall");
+            var vX = th.shipPositions.free.x;
+            var vY = th.shipPositions.free.y;
+            var vWall1 = ship.buildAt(vX, vY, "wall");
+            var vWall2 = ship.buildAt(vX, vY + 1, "wall");
+            vWall1.update();
+            vWall2.update(); //(for animations)
+            ok(door.canBuildRotated(vX, vY), "door can be built rotated at vertical wall");
 
-        ui.choose("door");
-        ok(!ui.chosen.rotated(), "Door ghost is not rotated when first chosen");
+            ui.choose("door");
+            ok(!ui.chosen.rotated(), "Door ghost is not rotated when first chosen");
 
-        ui.moveGhost(vX, vY);
-        screen.mouseMove({});
-        ok(ui.chosen.rotated(), "Door ghost has rotated when hovered over vertical wall");
+            ui.moveGhost(vX, vY);
+            screen.mouseMove({});
+            ok(ui.chosen.rotated(), "Door ghost has rotated when hovered over vertical wall");
 
-        ui.moveGhost(hX, hY);
-        screen.mouseMove({});
-        ok(!ui.chosen.rotated(), "Door ghost back to not rotated when hovered over horizontal wall");
-
+            ui.moveGhost(hX, hY);
+            screen.mouseMove({});
+            ok(!ui.chosen.rotated(), "Door ghost back to not rotated when hovered over horizontal wall");
+            start();
+        });
     });
 
     test("draw/mapAt", function () {

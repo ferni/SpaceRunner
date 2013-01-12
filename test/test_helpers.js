@@ -13,6 +13,11 @@ var th = {
             }
         }, 100);
     },
+    resetEverything: function (callback) {
+        me.state.change(me.state.GAMEOVER);
+        jsApp.loaded("test");
+        th.onLevelReady(callback);
+    },
     //fakes the mouse position (x: tile column, y: tile row)
     setMouse: function (x, y) {
         if (!this._mousePosition) {
@@ -27,5 +32,22 @@ var th = {
         }
         this._mousePosition.x = x;
         this._mousePosition.y = y;
+    },
+    moveMouse: function (x, y) {
+        this.setMouse(x, y);
+        screen.mouseMove({});
+    },
+    clickMouse: function (which, x, y) {
+        if (x != undefined && y != undefined) {
+            this.moveMouse(x, y);
+        }
+        screen.mouseDown({ which: which });
+        screen.mouseUp({ which: which });
+    },
+    leftClick: function (x, y) {
+        this.clickMouse(me.input.mouse.LEFT, x, y);
+    },
+    rightClick: function (x, y) {
+        this.clickMouse(me.input.mouse.RIGHT, x, y);
     }
 };
