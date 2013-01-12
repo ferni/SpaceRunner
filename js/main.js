@@ -35,6 +35,11 @@ var items = {
     wall:  iWallObject
 };
 
+//fix mouse constants
+me.input.mouse.LEFT = 1;
+me.input.mouse.MIDDLE = 2;
+me.input.mouse.RIGHT = 3;
+
 var jsApp = {
     /* ---
 
@@ -94,7 +99,7 @@ var PlayScreen = me.ScreenObject.extend({
 
         me.video.getScreenCanvas().addEventListener("dblclick", this.mouseDbClick, false);
 
-        ui.init();
+        window.ui = new UserInterface();
         window.ship = new Ship();
     },
 
@@ -334,16 +339,14 @@ function Ship() {
 }
 
 
-
-
 /*Everything related to the graphics during the process of building */
-var ui = {
-    chosen: null, //the chosen object from the panel (an ItemObject)
-    mouseLockedOn: null, //who the mouse actions pertain to. 
-    ghostItems: {}, //Items that exist for the sole purpose of...
+function UserInterface() {
+    this.chosen = null; //the chosen object from the panel (an ItemObject)
+    this.mouseLockedOn= null; //who the mouse actions pertain to. 
+    this.ghostItems = {}; //Items that exist for the sole purpose of...
     // ...showing the position at which they will be built.
-    selected: null, //selected item from the ship
-    init: function () {
+    this.selected = null; //selected item from the ship
+    this.init = function () {
         this.ghostItems = new Object(); //Items to be used when choosing building location
         for (var type in items) {
             var newItem = utils.makeItem(type);
@@ -353,8 +356,8 @@ var ui = {
             newItem.onShip(false);
         }
         this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
-    },
-    choose: function (name) {
+    };
+    this.choose = function (name) {
         if (this.chosen) {
             if (this.chosen.type == name) return;
             this.chosen.hide();
@@ -378,8 +381,8 @@ var ui = {
         $("#item_" + ui.chosen.type).addClass("chosen");
         me.game.sort();
         me.game.repaint();
-    },
-    moveGhost: function (x, y) {
+    };
+    this.moveGhost = function (x, y) {
         this.chosen.x(x).y(y);
         //Rotate if it fits somewhere
         if (!this.chosen.rotated() && this.chosen.canBuildRotated(x, y))
@@ -389,8 +392,8 @@ var ui = {
         this.updateRed();
     },
     //Dragging
-    dragging: null,
-    beginDrag: function (building) {
+    this.dragging = null;
+    this.beginDrag = function (building) {
         if (this.chosen) {
             console.log("There should be nothing chosen when drag begins. (ui.beginDrag)");
         }
@@ -398,8 +401,8 @@ var ui = {
         ship.buildingsMap.update();
         this.choose(building.type);
         this.dragging = building;
-    },
-    endDrag: function () {
+    };
+    this.endDrag = function () {
         if (!this.dragging) return;
         var mouse = utils.getMouse();
         if (this.dragging.canBuildAt(mouse.x, mouse.y)) {
@@ -409,33 +412,33 @@ var ui = {
         ship.buildingsMap.update();
         this.choose();
         this.dragging = null;
-    },
+    };
     //Red overlay
-    redScreen: [],
-    redIndex: 0,
-    printRed: function (x, y) {
+    this.redScreen = [];
+    this.redIndex = 0;
+    this.printRed = function (x, y) {
         this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
         me.game.add(this.redScreen[this.redIndex], this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;
-    },
-    clearRed: function () {
+    };
+    this.clearRed = function () {
         var i = 0;
         for (i = this.redIndex; i > 0; i--) {
             me.game.remove(this.redScreen[i - 1]);
             delete this.redScreen[i - 1];
         }
         this.redIndex = 0;
-    },
-    updateRed: function () {
+    };
+    this.updateRed = function () {
         this.clearRed();
         var self = this;
         utils.itemTiles(this.chosen, function (iX, iY) {
             if (self.greenSpots[iY][iX] == 0) self.printRed(iX, iY);
         });
-    },
+    };
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
-    greenSpots: null,
-    updateGreenSpots: function () {
+    this.greenSpots = null;
+    this.updateGreenSpots = function () {
         var self = this;
         if (!this.chosen) return;
         self.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
@@ -456,18 +459,18 @@ var ui = {
                 }
             }
         });
-    },
-    drawingScreen: [],
+    };
+    this.drawingScreen = [];
     //draws arbitrary stuff
-    draw: function (x, y, type) {
+    this.draw = function (x, y, type) {
         var item = utils.makeItem(type).x(x).y(y);
         me.game.add(item, item.zIndex + 1000);
         this.drawingScreen.push(item);
         me.game.sort();
         me.game.repaint();
 
-    },
-    clear: function () {
+    };
+    this.clear = function () {
         _.each(this.drawingScreen, function (i) {
             me.game.remove(i, true);
         });
@@ -476,10 +479,10 @@ var ui = {
 
         me.game.sort();
         me.game.repaint();
-    },
+    };
 
     //combines the ship map with the drawing screen
-    mapAt: function (x, y) {
+    this.mapAt = function (x, y) {
         for (var i = 0; i < this.drawingScreen.length; i++) {
             if (this.drawingScreen[i].occupies(x, y))
                 return this.drawingScreen[i];
@@ -491,7 +494,7 @@ var ui = {
         if (shipTile == charMap.codes._cleared && this.chosen && this.chosen.occupies(x, y))
             return this.chosen;
         return shipTile;
-    }
-
+    };
+    this.init();
 };
 
