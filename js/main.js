@@ -25,7 +25,6 @@ var g_resources_size = [
     {name: "small",     width: 576, height: 384}
 ];
 
-
 var items = {
     weapon:  iWeaponObject,
     engine:  iEngineObject,
@@ -34,12 +33,6 @@ var items = {
     component:  iComponentObject,
     door:  iDoorObject,
     wall:  iWallObject
-};
-
-var mouseButtons = {
-    left: 1,
-    wheel: 2,
-    right: 3
 };
 
 var jsApp = {
@@ -137,7 +130,7 @@ var PlayScreen = me.ScreenObject.extend({
         var item = ship.mapAt(mouseTile.x, mouseTile.y);
 
         if (item != null && item.name == "item") {
-            if (e.which == mouseButtons.right) {
+            if (e.which == me.input.mouse.RIGHT) {
                 ship.remove(item);
             } else {
                 ui.selected = item;
@@ -173,7 +166,7 @@ var PlayScreen = me.ScreenObject.extend({
         }
 
         if (ui.chosen && !ui.dragging) {
-            if (e.which != mouseButtons.right) {
+            if (e.which != me.input.mouse.RIGHT) {
                 ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
             }
         } else if (ui.dragging) {
@@ -476,7 +469,7 @@ var ui = {
     },
     clear: function () {
         _.each(this.drawingScreen, function (i) {
-            me.game.remove(i);
+            me.game.remove(i, true);
         });
         this.drawingScreen = new Array();
         this.clearRed();

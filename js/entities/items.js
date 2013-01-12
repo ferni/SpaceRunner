@@ -87,6 +87,7 @@ var iDoorObject = ItemObject.extend({
         this.type = "door";
         this.size = [2, 1];
         this.parent(x, y, settings);
+        
         // add animation
         this.addAnimation("idle", [2]);
         this.addAnimation("h_open_close", [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
@@ -102,12 +103,10 @@ var iDoorObject = ItemObject.extend({
     buildPlacementRules: function () {
         //doesn't use inherited placementRules
         this.placementRules = [pr.make.spaceRule(function (tile) {
-            return _.isFunction(tile.isCurrentAnimation)
-                                                         && tile.isCurrentAnimation("lrWall");
+            return tile.type == "wall" && tile.isCurrentAnimation("lrWall");
         }, 2, 1)];
         this.rotatedPlacementRules = [pr.make.spaceRule(function (tile) {
-            return _.isFunction(tile.isCurrentAnimation)
-                                                         && tile.isCurrentAnimation("tbWall");
+            return tile.type == "wall" && tile.isCurrentAnimation("tbWall");
         }, 1, 2)];
     },
     canBuildRotated: function (x, y) {
@@ -175,10 +174,6 @@ var iWallObject = ItemObject.extend({
         wallsAround.push("Wall");
         var animationName = wallsAround.join("");
         this.setCurrentAnimation(animationName);
-    },
-    removeObject: function () {
-        me.game.remove(this);
-        delete this;
     },
     update: function () {
         this.updateAnimation();

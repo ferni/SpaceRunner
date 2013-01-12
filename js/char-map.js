@@ -8,14 +8,10 @@
     },
     getCollisionTileChar: function (x, y) {
         var tileLayer = me.game.currentLevel.getLayerByName("collision");
-        if (tileLayer == null)
-            return charMap.codes._cleared;
         var tileId = tileLayer.getTileId(x + 1, y + 1);
         if (tileId == null)
             return charMap.codes._cleared;
         var tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
-        if (tileSet == null)
-            return charMap.codes._cleared;
         var tilePro = tileSet.getTileProperties(tileId);
         if (tilePro.isSolid)
             return charMap.codes._solid;
@@ -25,7 +21,6 @@
             return charMap.codes._front;
         else if (tilePro.isRightSlope)
             return charMap.codes._front;
-        return charMap.codes._cleared;
     },
     get: function () {
         if (this._current !== null) return this._current;
