@@ -18,18 +18,22 @@ var th = {
         jsApp.loaded("test");
         th.onLevelReady(callback);
     },
+    _originalGetMouseFunction: utils.getMouse,
+    _mousePosition: {x:1,y:1},
+    mouseBegin: function() {
+        //replace utils.getMouse function
+        utils.getMouse = function () {
+            var vector = new me.Vector2d();
+            vector.x = th._mousePosition.x;
+            vector.y = th._mousePosition.y;
+            return vector;
+        };
+    },
+    mouseEnd : function() {
+        utils.getMouse = this._originalGetMouseFunction;
+    },
     //fakes the mouse position (x: tile column, y: tile row)
     setMouse: function (x, y) {
-        if (!this._mousePosition) {
-            this._mousePosition = {};
-            //replace utils.getMouse function
-            utils.getMouse = function () {
-                var vector = new me.Vector2d();
-                vector.x = th._mousePosition.x;
-                vector.y = th._mousePosition.y;
-                return vector;
-            };
-        }
         this._mousePosition.x = x;
         this._mousePosition.y = y;
     },

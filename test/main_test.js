@@ -34,7 +34,9 @@ th.onLevelReady(function () {
             var y = th.shipPositions.free.y;
             ship.buildAt(x, y, "component");
             equal(ship.mapAt(x, y).type, "component", "Component built");
+            th.mouseBegin();
             th.rightClick(x + 1, y + 1); //botton right of component (arbitrary position)
+            th.mouseEnd();
             notEqual(ship.mapAt(x, y).type, "component", "Component removed");
             start();
         });
@@ -43,6 +45,7 @@ th.onLevelReady(function () {
     asyncTest("drag and drop", function () {
         th.resetEverything(function () {
             ok(ship.buildAt(3, 4, "power"), "power succesfully built");
+            th.mouseBegin();
             th.moveMouse(3, 4);
             screen.mouseDown({ which: me.input.mouse.LEFT });
             equal(ui.dragging.type, "power", "power being dragged");
@@ -51,9 +54,10 @@ th.onLevelReady(function () {
             screen.mouseUp({ which: me.input.mouse.LEFT });
             ok(!ui.dragging, "not dragging after mouse up");
             notEqual(ship.mapAt(3, 4).type, "power", "power is not on original position");
-            
+
             var power = ship.mapAt(5, 4);
             equal(power.x(), 5, "power is at new position");
+            th.mouseEnd();
             start();
         });
     });
@@ -66,6 +70,7 @@ th.onLevelReady(function () {
         ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, "power"), "could build power");
         equal(ship.buildings()[0].type, "power", "first building is power");
     });
+    
     test("add/mapAt/removeAt", function () {
         ship.removeAll();
         var x = th.shipPositions.free.x;
@@ -219,7 +224,7 @@ th.onLevelReady(function () {
         ui.beginDrag(power);
         equal(ui.chosen.type, "power");
         equal(ui.dragging, power);
-
+        th.mouseBegin();
         th.setMouse(x + 1, y);
         screen.mouseMove({});
         ui.endDrag();
@@ -227,6 +232,7 @@ th.onLevelReady(function () {
         strictEqual(ui.chosen, null);
         equal(power.x(), x + 1, "x after dragging");
         equal(power.y(), y, "y after dragging");
+        th.mouseEnd();
     });
 
     asyncTest("printRed/clearRed", function () {

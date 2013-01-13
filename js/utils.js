@@ -28,7 +28,7 @@ var utils = {
                 return ship;
             }
         }
-        alert("Ship \"" + ship + "\" doesn't exist. Loading \"" + defaultShip + "\" instead.");
+        console.log("Ship \"" + ship + "\" doesn't exist. Loading \"" + defaultShip + "\" instead.");
         return defaultShip;
     },
     toTileVector: function (vector2D) {

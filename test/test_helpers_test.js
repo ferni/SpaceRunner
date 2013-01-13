@@ -5,8 +5,10 @@ th.onLevelReady(function () {
     });
 
     test("setMouse", function () {
+        th.mouseBegin();
         th.setMouse(4, 6);
         equal(utils.getMouse().x, 4, "x");
         equal(utils.getMouse().y, 6, "y");
+        th.mouseEnd();
     });
 });

@@ -68,6 +68,7 @@ th.onLevelReady(function () {
         ship.buildAt(x, y, "wall");
         equal(ui.mouseLockedOn.type, "wall", "Mouse locked on wall");
 
+        th.mouseBegin();
         th.setMouse(x + 2, y);
         screen.mouseMove();
         screen.mouseDown({ which: me.input.mouse.LEFT });
@@ -82,6 +83,8 @@ th.onLevelReady(function () {
         equal(ship.mapAt(x + 2, y + 1).type, "wall");
         equal(ship.mapAt(x + 2, y + 2).type, "wall");
 
+        th.mouseEnd();
+
     });
 
     asyncTest("Wall building canceled by escape key", function () {
@@ -89,12 +92,13 @@ th.onLevelReady(function () {
             var x = th.shipPositions.free.x;
             var y = th.shipPositions.free.y;
             ui.choose("wall");
+            th.mouseBegin();
             th.leftClick(x, y);
             equal(ui.mouseLockedOn.type, "wall", "Mouse locked on wall");
 
             th.leftClick(x + 2, y);
             th.leftClick(x + 2, y + 2);
-            
+            th.mouseEnd();
             //entire wall is seen on the screen...
             equal(ui.mapAt(x, y).type, "wall", "wall appears at x,y");
             equal(ui.mapAt(x + 1, y).type, "wall");
