@@ -1,10 +1,13 @@
-th.onLevelReady(function () {
+
     module("test_helpers.js");
-    test("onLevelReady", function () {
+    asyncTest("onLevelReady", function () {
+    th.onLevelReady(function () {
         ok(me.state.isCurrent(me.state.PLAY), "Level is indeed ready");
+        start();
+        });
     });
 
-    test("setMouse", function () {
+    asyncTest("setMouse", function () {
         th.mouseBegin();
         th.setMouse(4, 6);
         equal(utils.getMouse().x, 4, "x");

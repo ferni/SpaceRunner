@@ -1,7 +1,7 @@
 
 module("mainlink.js");
 
-asyncTest("Item click", function () {
+test("Item click", function () {
     th.onLevelReady(function () {
         $(".items #item_weapon").trigger("click");
 	    equal(ui.chosen.type, "weapon", "choose weapon");

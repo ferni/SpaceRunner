@@ -64,8 +64,8 @@
     <script type="text/javascript" src="js/test/test-helpers_test.js"></script>
 	<script type="text/javascript" src="js/test/mainlink_test.js"></script>
 	<script type="text/javascript" src="js/test/main_test.js"></script>
-    <script type="text/javascript" src="js/test/entities_test.js"></script>
-    <script type="text/javascript" src="js/test/utils_test.js"></script>
+<!--	<script type="text/javascript" src="js/test/entities_test.js"></script>-->
+<!--    <script type="text/javascript" src="js/test/utils_test.js"></script>-->
 	<script type="text/javascript" src="js/test/placement-rules_test.js"></script>
 </body>
 </html>

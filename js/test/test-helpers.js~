@@ -5,6 +5,7 @@ var th = {
         weapon: { x: 5, y: 2 },
         solid: { x: 13, y: 1 }
     },
+    //Calls the callback when the state is "PLAY"
     onLevelReady: function (callback) {
         var interval = setInterval(function () {
             if (me.state.isCurrent(me.state.PLAY)) {
@@ -13,10 +14,16 @@ var th = {
             }
         }, 100);
     },
-    resetEverything: function (callback) {
-        me.state.change(me.state.GAMEOVER);
-        jsApp.loaded("test");
-        th.onLevelReady(callback);
+    restartGame: function (callback) {
+        try{
+            me.state.change(me.state.PLAY);
+        }catch(e){
+        }
+	    th.onLevelReady(function(){
+		    me.state.change(me.state.GAMEOVER);
+		    jsApp.loaded("test");
+		    th.onLevelReady(callback);
+	    });
     },
     _originalGetMouseFunction: utils.getMouse,
     _mousePosition: {x:1,y:1},

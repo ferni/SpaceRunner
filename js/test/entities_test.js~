@@ -66,7 +66,7 @@
         	start();
 	    });
 	});
-
+/*
     asyncTest("Console placement", function () {
 	    th.onLevelReady(function(){
             ship.removeAll();
@@ -79,7 +79,7 @@
         	start();
 	    });
     });
-
+/*
     asyncTest("Wall building", function () {
 	    th.restartGame(function(){
             var x = th.shipPositions.free.x;
@@ -148,4 +148,4 @@
             notEqual(ship.mapAt(x, y).type, "wall");
             start();
         });
-    });
+    });*/
