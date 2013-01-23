@@ -78,3 +78,8 @@ asyncTest("getMouse", function () {
         start();
     });
 });
+
+test("setCursor", function(){
+    utils.setCursor("move");
+    equal(document.getElementById("jsapp").style.cursor, "move", "Cursor set to 'move' in jsapp div");
+});

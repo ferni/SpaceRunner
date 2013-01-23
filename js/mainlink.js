@@ -42,13 +42,3 @@ function onButtonLoadClick(jString){
         ui.mouseLockedOn = null;
     }
 };
-
-function displayMoveCursor()
-{
-    document.getElementById("jsapp").style.cursor="move";
-}
-
-function displayDefaultCursor()
-{
-    document.getElementById("jsapp").style.cursor="default";
-}

@@ -79,5 +79,8 @@ var utils = {
     //returns the tile position of the mouse
     getMouse: function () {
         return utils.toTileVector(me.input.mouse.pos);
+    },
+    setCursor: function(cursor){
+        document.getElementById("jsapp").style.cursor=cursor;
     }
 };
