@@ -1,0 +1,38 @@
+<project name="SpaceRunner" default="build">
+	<target name="build" description="Makes everything necessary to build the test reports.">
+		<antcall target="instrument"/>
+		<antcall target="report"/>
+	</target>
+	<target name="instrument" description="Runs jscoverage to instrument code">
+	  	<echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
+	  	<exec executable="jscoverage" >
+	    		<arg line="src build/instrumented --encoding=UTF-8"/>
+	  	</exec>
+	</target>
+	<target name="report" description="Runs the instrumented tests, gets the coverage report and makes a report file">
+		<echo message="Running phantomjs..."/>
+		<delete file="build/report.html"/>
+		<exec executable="tools/phantomjs" >
+	    		<arg line="build-test-report.js build/instrumented"/>
+	  	</exec>
+		<exec executable="xdg-open" >
+	    		<arg line="build/report.html"/>
+	  	</exec>
+	</target>
+	<target name="tools/phantomjs" description="Downloads and extract phantomjs">
+                <property name="version" value="phantomjs-1.8.1-linux-x86_64"/>
+                <property name="tarball" value="${version}.tar.bz2"/>
+		<delete file="tools/phantomjs"/>
+		<delete file="tools/${tarball}"/>
+		<delete dir="tools/${version}"/>
+		<echo message="Downloading phantomjs..."/>
+		<exec executable="wget" dir="tools">
+			<arg line="-c http://phantomjs.googlecode.com/files/${tarball}"/>
+	  	</exec>
+		<echo message="Extract phantomjs..."/>
+		<exec executable="tar" dir="tools">
+	    		<arg line="-jxvf ${tarball}"/>
+	  	</exec>
+                <symlink link="tools/phantomjs" resource="${version}/bin/phantomjs"/>
+	</target>
+</project>
