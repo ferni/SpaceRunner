@@ -1,4 +1,5 @@
 build
+tools
 
 # Vim .gitignore
 .*.s[a-w][a-z]
