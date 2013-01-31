@@ -1,4 +1,3 @@
-QUnit.done(function(e){
-		//alert("Done");
+QUnit.done(function(e) {
+    //alert("Done");
 });
-

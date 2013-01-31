@@ -17,7 +17,7 @@ var files = getFiles("src",{
 for(var i = 0; i < files.length; i++){
     console.log("Beautifying "+files[i]+" ...");
     var beautified = js_beautify(fs.read(files[i]),{
-        jslint_happy: true
+        jslint_happy: false
     });
     fs.write(files[i], beautified, "w");
 }

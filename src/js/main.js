@@ -5,34 +5,74 @@
 
 // game resources
 // in the case of the items, set their image name equal to their type.
-var g_resources = [
-    {name: "outline",   type: "image", src: "data/img/render/outline.png"},
-    {name: "selector",  type: "image", src: "data/img/render/selector.png"},
-    {name: "weapon",    type: "image", src: "data/img/render/weapon_01.png"},
-    {name: "engine",    type: "image", src: "data/img/render/engine_01.png"},
-    {name: "power",     type: "image", src: "data/img/render/power_01.png"},
-    {name: "console",   type: "image", src: "data/img/render/console_02.png"},
-    {name: "component", type: "image", src: "data/img/render/components_01.png"},
-    {name: "door",      type: "image", src: "data/img/render/door_01.png"},
-    {name: "wall",      type: "image", src: "data/img/render/wall_001.png"},
-    {name: "colTile",   type: "image", src: "data/img/render/metatiles32x32.png"},
-    {name: "area_01",   type: "tmx",   src: "data/outlines/small.tmx"},
-    {name: "test",      type: "tmx",   src: "data/outlines/test.tmx"}
-    ];
-    
-var g_resources_size = [
-    {name: "outline",   width: 192, height: 256},
-    {name: "small",     width: 576, height: 384}
-];
+var g_resources = [{
+    name: 'outline',
+    type: 'image',
+    src: 'data/img/render/outline.png'
+}, {
+    name: 'selector',
+    type: 'image',
+    src: 'data/img/render/selector.png'
+}, {
+    name: 'weapon',
+    type: 'image',
+    src: 'data/img/render/weapon_01.png'
+}, {
+    name: 'engine',
+    type: 'image',
+    src: 'data/img/render/engine_01.png'
+}, {
+    name: 'power',
+    type: 'image',
+    src: 'data/img/render/power_01.png'
+}, {
+    name: 'console',
+    type: 'image',
+    src: 'data/img/render/console_02.png'
+}, {
+    name: 'component',
+    type: 'image',
+    src: 'data/img/render/components_01.png'
+}, {
+    name: 'door',
+    type: 'image',
+    src: 'data/img/render/door_01.png'
+}, {
+    name: 'wall',
+    type: 'image',
+    src: 'data/img/render/wall_001.png'
+}, {
+    name: 'colTile',
+    type: 'image',
+    src: 'data/img/render/metatiles32x32.png'
+}, {
+    name: 'area_01',
+    type: 'tmx',
+    src: 'data/outlines/small.tmx'
+}, {
+    name: 'test',
+    type: 'tmx',
+    src: 'data/outlines/test.tmx'
+}];
+
+var g_resources_size = [{
+    name: 'outline',
+    width: 192,
+    height: 256
+}, {
+    name: 'small',
+    width: 576,
+    height: 384
+}];
 
 var items = {
-    weapon:  iWeaponObject,
-    engine:  iEngineObject,
-    power:  iPowerObject,
-    console:  iConsoleObject,
-    component:  iComponentObject,
-    door:  iDoorObject,
-    wall:  iWallObject
+    weapon: iWeaponObject,
+    engine: iEngineObject,
+    power: iPowerObject,
+    console: iConsoleObject,
+    component: iComponentObject,
+    door: iDoorObject,
+    wall: iWallObject
 };
 
 //fix mouse constants
@@ -49,11 +89,11 @@ var jsApp = {
     onload: function(shipName) {
         // init the video
         if (!me.video.init('jsapp', 576, 384)) {
-            alert("Sorry but your browser does not support html 5 canvas.");
+            alert('Sorry but your browser does not support html 5 canvas.');
             return;
         }
         // initialize the "audio"
-//        me.audio.init("mp3,ogg");
+        //        me.audio.init("mp3,ogg");
         // set all resources to be loaded
         me.loader.onload = this.loaded.bind(this, shipName);
         // set all resources to be loaded
@@ -79,11 +119,11 @@ var jsApp = {
 var PlayScreen = me.ScreenObject.extend({
     iItemID: 0,
 
-    init: function (shipName) {
+    init: function(shipName) {
         this.parent(true);
         this.shipName = shipName;
     },
-    onResetEvent: function () {
+    onResetEvent: function() {
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
@@ -92,32 +132,31 @@ var PlayScreen = me.ScreenObject.extend({
         window.WIDTH = me.game.currentLevel.width;
         window.HEIGHT = me.game.currentLevel.height;
         me.game.sort();
-        me.input.bindKey(me.input.KEY.ESC, "escape");
+        me.input.bindKey(me.input.KEY.ESC, 'escape');
         me.input.registerMouseEvent('mousedown', me.game.viewport, this.mouseDown.bind(this));
         me.input.registerMouseEvent('mousemove', me.game.viewport, this.mouseMove.bind(this));
         me.input.registerMouseEvent('mouseup', me.game.viewport, this.mouseUp.bind(this));
 
-        me.video.getScreenCanvas().addEventListener("dblclick", this.mouseDbClick, false);
+        me.video.getScreenCanvas().addEventListener('dblclick', this.mouseDbClick, false);
 
         window.ui = new UserInterface();
         window.ship = new Ship();
     },
 
-    update: function () {
+    update: function() {
         this.addAsObject = true;
-        if (me.input.isKeyPressed("escape")) {
+        if (me.input.isKeyPressed('escape')) {
             if (ui.mouseLockedOn) {
                 ui.mouseLockedOn.lockedEscape();
                 return;
             }
-            if (ui.chosen)
-                ui.choose();
+            if (ui.chosen) ui.choose();
 
         }
     },
-    mouseDbClick: function (e) {
+    mouseDbClick: function(e) {
         var mouseTile = utils.getMouse();
-        if (ui.mouseLockedOn) {//the mouse is involved in a specific object
+        if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseDbClick(mouseTile); //delegate handling to the object
             return;
         }
@@ -125,16 +164,16 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.sort();
         me.game.repaint();
     },
-    mouseDown: function (e) {
+    mouseDown: function(e) {
         var mouseTile = utils.getMouse();
-        if (ui.mouseLockedOn) {//the mouse is involved in a specific object
+        if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseDown(mouseTile); //delegate handling to the object
             return;
         }
 
         var item = ship.mapAt(mouseTile.x, mouseTile.y);
 
-        if (item != null && item.name == "item") {
+        if (item != null && item.name == 'item') {
             if (e.which == me.input.mouse.RIGHT) {
                 ship.remove(item);
             } else {
@@ -147,9 +186,9 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.sort();
         me.game.repaint();
     },
-    mouseMove: function (e) {
+    mouseMove: function(e) {
         var mouseTile = utils.getMouse();
-        if (ui.mouseLockedOn) {//the mouse is involved in a specific object
+        if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseMove(mouseTile); //delegate handling to the object
             return;
         }
@@ -160,9 +199,9 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.repaint();
 
     },
-    mouseUp: function (e) {
+    mouseUp: function(e) {
         var mouseTile = utils.getMouse();
-        if (ui.mouseLockedOn) {//the mouse is involved in a specific object
+        if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             ui.mouseLockedOn.lockedMouseUp(mouseTile); //delegate handling to the object
             return;
         }
@@ -182,14 +221,13 @@ var PlayScreen = me.ScreenObject.extend({
     /* ---
     action to perform when game is finished (state change)
     --- */
-    onDestroyEvent: function () {
-    }
+    onDestroyEvent: function() {}
 });
 
 
 function Ship() {
     this._buildings = [];
-    this.buildings = function () {
+    this.buildings = function() {
         return this._buildings;
     };
     //this should be called when the user builds something
@@ -197,56 +235,54 @@ function Ship() {
         var self = this;
         var building = utils.makeItem(buildingType);
         var canBuild = building.canBuildAt(x, y);
-        if(!canBuild) {
+        if (!canBuild) {
             var canBuildRotated = building.canBuildRotated(x, y);
             if (canBuildRotated) {
                 building.rotated(true);
             }
         }
-        if(canBuild || canBuildRotated) {
+        if (canBuild || canBuildRotated) {
             building.x(x).y(y);
             //remove anything in its way
             utils.itemTiles(building, function(iX, iY) {
-                self.removeAt(iX,iY);
+                self.removeAt(iX, iY);
             });
             this.add(building);
             building.onBuilt();
-            return building;//building successful
+            return building; //building successful
         }
-        return null;//building failed
+        return null; //building failed
     };
-    
+
     //Adds an item to the ship ignoring its placement rules
-    this.add = function (item) {
+    this.add = function(item) {
         me.game.add(item, item.zIndex);
         item.onShip(true);
         this.buildingsChanged();
     };
-    this.removeAt = function (x, y) {
-        while (this.mapAt(x, y).name == "item") {
+    this.removeAt = function(x, y) {
+        while (this.mapAt(x, y).name == 'item') {
             this.remove(this.mapAt(x, y), true);
         }
     };
-    this.remove = function (item, updateBuildings) {
+    this.remove = function(item, updateBuildings) {
         if (!item) return;
-        if (updateBuildings === undefined)
-            updateBuildings = true; //updates by default
+        if (updateBuildings === undefined) updateBuildings = true; //updates by default
         me.game.remove(item, true);
 
-        if (updateBuildings)
-            this.buildingsChanged();
+        if (updateBuildings) this.buildingsChanged();
     };
 
-    this.removeAll = function () {
+    this.removeAll = function() {
         var self = this;
-        _.each(this.buildings(), function (building) {
+        _.each(this.buildings(), function(building) {
             self.remove(building, false);
         });
         this.buildingsChanged();
     };
     //to call whenever buildings change
-    this.buildingsChanged = function () {
-        this._buildings = _.filter(me.game.getEntityByName("item"), function (item) {
+    this.buildingsChanged = function() {
+        this._buildings = _.filter(me.game.getEntityByName('item'), function(item) {
             return item.onShip();
         });
         this.buildingsMap.update();
@@ -254,48 +290,47 @@ function Ship() {
     };
     this._map = null;
     this.map = function() {
-        if(this.buildingsMap.changed || this.hullMap.changed || this._map == null) {
+        if (this.buildingsMap.changed || this.hullMap.changed || this._map == null) {
             this._map = this._getJointMap();
             this.buildingsMap.changed = false;
             this.hullMap.changed = false;
         }
         return this._map;
     };
-    this.mapAt = function(x,y){
-       if(ship.map()[y] !== undefined && ship.map()[y][x] !== undefined)
-           return ship.map()[y][x];
+    this.mapAt = function(x, y) {
+        if (ship.map()[y] !== undefined && ship.map()[y][x] !== undefined) return ship.map()[y][x];
         return null;
     };
     this.buildingsMap = {
         changed: true,
         _buildingsMap: null,
-        update: function () {
+        update: function() {
             var self = this;
             self._buildingsMap = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
-            _.each(ship.buildings(), function (b) {
-                if(!b.hidden()) {
+            _.each(ship.buildings(), function(b) {
+                if (!b.hidden()) {
                     utils.itemTiles(b, function(x, y) {
                         self._buildingsMap[y][x] = b;
                     });
                 }
             });
-            
+
             this.changed = true;
         },
-        get : function () {
-            if(this._buildingsMap === null) this.update();
+        get: function() {
+            if (this._buildingsMap === null) this.update();
             return this._buildingsMap;
         }
     },
     this.hullMap = {
         changed: true,
         _hullMap: null,
-        update: function () {;
-            this._hullMap = charMap.get();//todo: move the charMap logic to here
+        update: function() {;
+            this._hullMap = charMap.get(); //todo: move the charMap logic to here
             this._changed = true;
         },
-        get : function () {
-            if(this._hullMap === null) this.update();
+        get: function() {
+            if (this._hullMap === null) this.update();
             return this._hullMap;
         }
     };
@@ -303,24 +338,23 @@ function Ship() {
     this._getJointMap = function() {
         var self = this;
         var joint = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
-        utils.levelTiles(function(x,y) {
+        utils.levelTiles(function(x, y) {
             joint[y][x] = self.hullMap.get()[y][x];
-            if(self.buildingsMap.get()[y][x] != charMap.codes._cleared)
-                joint[y][x] = self.buildingsMap.get()[y][x];
+            if (self.buildingsMap.get()[y][x] != charMap.codes._cleared) joint[y][x] = self.buildingsMap.get()[y][x];
         });
         return joint;
     };
     this.toJsonString = function() {
-        return JSON.stringify(_.map(this.buildings(), function (b) {
+        return JSON.stringify(_.map(this.buildings(), function(b) {
             return {
-                type: b.type, 
-                x: b.x(), 
+                type: b.type,
+                x: b.x(),
                 y: b.y(),
                 rotated: b.rotated()
             };
         }));
     };
-    this.fromJsonString = function (jsonString) {
+    this.fromJsonString = function(jsonString) {
         this.removeAll();
         var itemArray = JSON.parse(jsonString);
         for (var i = 0; i < itemArray.length; i++) {
@@ -339,10 +373,10 @@ function Ship() {
 /*Everything related to the graphics during the process of building */
 function UserInterface() {
     this.chosen = null; //the chosen object from the panel (an ItemObject)
-    this.mouseLockedOn= null; //who the mouse actions pertain to. 
+    this.mouseLockedOn = null; //who the mouse actions pertain to.
     this.ghostItems = {}; //Items that exist for the sole purpose of...
     // ...showing the position at which they will be built.
-    this.init = function () {
+    this.init = function() {
         this.ghostItems = new Object(); //Items to be used when choosing building location
         for (var type in items) {
             var newItem = utils.makeItem(type);
@@ -353,12 +387,12 @@ function UserInterface() {
         }
         this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
     };
-    this.choose = function (name) {
+    this.choose = function(name) {
         if (this.chosen) {
             if (this.chosen.type == name) return;
             this.chosen.hide();
             this.clearRed();
-            $("#item_" + ui.chosen.type).removeClass("chosen");
+            $('#item_' + ui.chosen.type).removeClass('chosen');
 
             me.game.repaint();
         }
@@ -368,37 +402,34 @@ function UserInterface() {
             return;
         }
         var mouse = utils.getMouse();
-        this.chosen
-           .x(mouse.x)
-           .y(mouse.y)
-           .show();
+        this.chosen.x(mouse.x)
+            .y(mouse.y)
+            .show();
         this.updateGreenSpots();
 
-        $("#item_" + ui.chosen.type).addClass("chosen");
+        $('#item_' + ui.chosen.type).addClass('chosen');
         me.game.sort();
         me.game.repaint();
     };
-    this.moveGhost = function (x, y) {
+    this.moveGhost = function(x, y) {
         this.chosen.x(x).y(y);
         //Rotate if it fits somewhere
-        if (!this.chosen.rotated() && this.chosen.canBuildRotated(x, y))
-            this.chosen.rotated(true);
-        if (this.chosen.rotated() && this.chosen.canBuildAt(x, y))
-            this.chosen.rotated(false);
+        if (!this.chosen.rotated() && this.chosen.canBuildRotated(x, y)) this.chosen.rotated(true);
+        if (this.chosen.rotated() && this.chosen.canBuildAt(x, y)) this.chosen.rotated(false);
         this.updateRed();
-    },
+    };
     //Dragging
     this.dragging = null;
-    this.beginDrag = function (building) {
+    this.beginDrag = function(building) {
         if (this.chosen) {
-            console.log("There should be nothing chosen when drag begins. (ui.beginDrag)");
+            console.log('There should be nothing chosen when drag begins. (ui.beginDrag)');
         }
         building.hide();
         ship.buildingsMap.update();
         this.choose(building.type);
         this.dragging = building;
     };
-    this.endDrag = function () {
+    this.endDrag = function() {
         if (!this.dragging) return;
         var mouse = utils.getMouse();
         if (this.dragging.canBuildAt(mouse.x, mouse.y)) {
@@ -412,12 +443,12 @@ function UserInterface() {
     //Red overlay
     this.redScreen = [];
     this.redIndex = 0;
-    this.printRed = function (x, y) {
+    this.printRed = function(x, y) {
         this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
         me.game.add(this.redScreen[this.redIndex], this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;
     };
-    this.clearRed = function () {
+    this.clearRed = function() {
         var i = 0;
         for (i = this.redIndex; i > 0; i--) {
             me.game.remove(this.redScreen[i - 1]);
@@ -425,20 +456,20 @@ function UserInterface() {
         }
         this.redIndex = 0;
     };
-    this.updateRed = function () {
+    this.updateRed = function() {
         this.clearRed();
         var self = this;
-        utils.itemTiles(this.chosen, function (iX, iY) {
+        utils.itemTiles(this.chosen, function(iX, iY) {
             if (self.greenSpots[iY][iX] == 0) self.printRed(iX, iY);
         });
     };
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
     this.greenSpots = null;
-    this.updateGreenSpots = function () {
+    this.updateGreenSpots = function() {
         var self = this;
         if (!this.chosen) return;
         self.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
-        utils.levelTiles(function (x, y) {
+        utils.levelTiles(function(x, y) {
             var i, j;
             if (self.chosen.canBuildAt(x, y)) {
                 for (i = x; i < self.chosen.size[0] + x && i < WIDTH; i++) {
@@ -458,7 +489,7 @@ function UserInterface() {
     };
     this.drawingScreen = [];
     //draws arbitrary stuff
-    this.draw = function (x, y, type) {
+    this.draw = function(x, y, type) {
         var item = utils.makeItem(type).x(x).y(y);
         me.game.add(item, item.zIndex + 1000);
         this.drawingScreen.push(item);
@@ -466,8 +497,8 @@ function UserInterface() {
         me.game.repaint();
 
     };
-    this.clear = function () {
-        _.each(this.drawingScreen, function (i) {
+    this.clear = function() {
+        _.each(this.drawingScreen, function(i) {
             me.game.remove(i, true);
         });
         this.drawingScreen = new Array();
@@ -478,19 +509,15 @@ function UserInterface() {
     };
 
     //combines the ship map with the drawing screen
-    this.mapAt = function (x, y) {
+    this.mapAt = function(x, y) {
         for (var i = 0; i < this.drawingScreen.length; i++) {
-            if (this.drawingScreen[i].occupies(x, y))
-                return this.drawingScreen[i];
+            if (this.drawingScreen[i].occupies(x, y)) return this.drawingScreen[i];
         }
         var shipTile = null;
-        if (ship.map()[y] !== undefined && ship.map()[y][x] !== undefined)
-            shipTile = ship.map()[y][x];
+        if (ship.map()[y] !== undefined && ship.map()[y][x] !== undefined) shipTile = ship.map()[y][x];
 
-        if (shipTile == charMap.codes._cleared && this.chosen && this.chosen.occupies(x, y))
-            return this.chosen;
+        if (shipTile == charMap.codes._cleared && this.chosen && this.chosen.occupies(x, y)) return this.chosen;
         return shipTile;
     };
     this.init();
-};
-
+}

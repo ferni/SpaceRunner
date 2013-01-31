@@ -30,7 +30,10 @@ function reportForFile(path){
         console.log(path+" is not a file.");
         return;
     }
-    var allOk = JSLINT(fs.read(path));
+    var allOk = JSLINT(fs.read(path), {
+		nomen: true,
+		white: true
+	});
     if(allOk){
         console.log("JSLint found no problems.");
     }else{
