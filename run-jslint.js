@@ -21,7 +21,7 @@ function getFilesForLint(){
 }
 
 function reportForFile(path){
-    console.log("--- (JSLint) FILE : "+path+"   ---");
+    console.log("----- (JSLint) FILE  :  "+path+"   -----");
     if(!fs.exists(path)){ 
         console.log(path+" does not exist!");
         return;
@@ -32,7 +32,9 @@ function reportForFile(path){
     }
     var allOk = JSLINT(fs.read(path), {
 		nomen: true,
-		white: true
+		white: true,
+		browser: true,
+		devel: true
 	});
     if(allOk){
         console.log("JSLint found no problems.");
