@@ -1,25 +1,39 @@
-/*
- * JavaScript Code :
- */
+/*global $, me, jsApp, ship, ui, AjaxUpload*/
+
+function onButtonSaveClick() {
+    'use strict';
+    var strData = ship.toJsonString(),
+    strName = 'ship_building.sav';
+    window.open('php/download.php?data=' + strData + '&name=' + strName);
+}
+
+function onButtonLoadClick(jString) {
+    'use strict';
+    if (jString) {
+        ship.fromJsonString(jString);
+        ui.mouseLockedOn = null;
+    }
+}
 
 $(document).ready(function() {
-
+    'use strict';
+    var ajax;
     $('.items').click(function() {
-        if (me.state.isCurrent(me.state.LOADING)) return;
-        var idItem = $('img', this).attr('id');
-        var itemName = idItem.substring(5, idItem.length);
+        var idItem, itemName;
+        if (me.state.isCurrent(me.state.LOADING)) {
+            return;
+        }
+        idItem = $('img', this).attr('id');
+        itemName = idItem.substring(5, idItem.length);
         ui.choose(itemName);
     });
-
     $('#file_save').click(function() {
         onButtonSaveClick();
     });
     $(document).bind('contextmenu', function(e) {
         return false;
     });
-
-    var btnUpload = $('#file_load');
-    new AjaxUpload(btnUpload, {
+    ajax = new AjaxUpload($('#file_load'), {
         action: 'php/upload.php',
         name: 'uploadfile',
         onSubmit: function(file, ext) {},
@@ -29,15 +43,4 @@ $(document).ready(function() {
     });
 });
 
-function onButtonSaveClick() {
-    var strData = ship.toJsonString();
-    var strName = 'ship_building.sav';
-    window.open('php/download.php?data=' + strData + '&name=' + strName);
-}
 
-function onButtonLoadClick(jString) {
-    if (jString) {
-        ship.fromJsonString(jString);
-        ui.mouseLockedOn = null;
-    }
-}
