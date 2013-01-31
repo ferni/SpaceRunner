@@ -34,7 +34,8 @@ function reportForFile(path){
 		nomen: true,
 		white: true,
 		browser: true,
-		devel: true
+		devel: true,
+		plusplus: true
 	});
     if(allOk){
         console.log("JSLint found no problems.");
