@@ -36,10 +36,19 @@
 	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
 	  	<echo message="**********************************************"/>
 	  	<exec executable="gjslint">
-	  	    <arg line="-r src -e src/js/test/qunit,src/js/vendor"/>
+	  	    <arg line="-r src -e src/js/vendor"/>
 	  	</exec>
 	</target>
-	
+	<target name="beautify">
+	    <exec executable="tools/phantomjs" >
+	    		<arg line="run-jsbeautifier.js"/>
+	  	</exec>
+	</target>
+	<target name="fixlint">
+	    <exec executable="fixjsstyle">
+	  	    <arg line="-r src -e src/js/vendor"/>
+	  	</exec>
+	</target>
 	<!-- Other -->
 	
 	<target name="tools/phantomjs" description="Downloads and extract phantomjs">
