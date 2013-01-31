@@ -1,13 +1,17 @@
-window.pr = {
+/*global _*/
+var pr = {
     PlacementRule: function(settings) { //settings: tile, inAny, inAll
-        this.tile = settings.tile; //sugar for tileSatisfies = function(tile){return tile == <tile>;}
-        this.inAny = settings.inAny; //coordenadas relativas al cuadro superior izquierdo del objeto, son objetos {x, y}
-        this.inAll = settings.inAll; //igual
-        this.tileCondition = settings.tileCondition; // function(tile) , returns bool
+        'use strict';
+        var wantedTile;
+        //sugar for tileSatisfies = function(tile){return tile == <tile>;}
+        this.tile = settings.tile;
+        this.inAny = settings.inAny;// Array of {x,y} (relative coordinates)
+        this.inAll = settings.inAll;// Array of {x,y} (relative coordinates)
+        this.tileCondition = settings.tileCondition; // function(tile)
         if (this.tileCondition === undefined && this.tile !== undefined) {
-            var wantedTile = this.tile;
+            wantedTile = this.tile;
             this.tileCondition = function(tile) {
-                return tile == wantedTile;
+                return tile === wantedTile;
             };
         }
         this.compliesAt = function(x, y, map) {
@@ -23,27 +27,32 @@ window.pr = {
     make: {
         //has to have enough space
         spaceRule: function(tileCondition, width, height) {
-            var coordArray = [];
-            for (var y = 0; y < height; y++) {
-                for (var x = 0; x < width; x++) {
+           'use strict';
+            var coordArray = [], x, y, settings;
+            for (y = 0; y < height; y++) {
+                for (x = 0; x < width; x++) {
                     coordArray.push({
                         x: x,
                         y: y
                     });
                 }
             }
-            var settings = {
+            settings = {
                 inAll: coordArray
             };
-            if (_.isFunction(tileCondition)) settings.tileCondition = tileCondition;
-            else settings.tile = tileCondition; //tileCondition is just a tile
-
+            if (_.isFunction(tileCondition)) {
+                settings.tileCondition = tileCondition;
+            }
+            else {
+                settings.tile = tileCondition; //tileCondition is just a tile
+            }
             return new pr.PlacementRule(settings);
         },
         //has to be next to something
         nextToRule: function(tileCondition, width, height) {
-            var coordArray = [];
-            for (var x = 0; x < width; x++) {
+            'use strict';
+            var coordArray = [], x, y, settings;
+            for (x = 0; x < width; x++) {
                 coordArray.push({
                     x: x,
                     y: -1
@@ -53,7 +62,7 @@ window.pr = {
                     y: height
                 }); //bottom
             }
-            for (var y = 0; y < height; y++) {
+            for (y = 0; y < height; y++) {
                 coordArray.push({
                     x: -1,
                     y: y
@@ -63,35 +72,52 @@ window.pr = {
                     y: y
                 }); //right
             }
-            var settings = {
+            settings = {
                 inAny: coordArray
             };
-            if (_.isFunction(tileCondition)) settings.tileCondition = tileCondition;
-            else settings.tile = tileCondition; //tileCondition is just a tile
-
+            if (_.isFunction(tileCondition)) {
+                settings.tileCondition = tileCondition;
+            }
+            else {
+                settings.tile = tileCondition; //tileCondition is just a tile
+            }
             return new pr.PlacementRule(settings);
         }
     },
     utils: {
-        //check if a tile is at any of the positions in the "relativeCoordinates" parameter
-        checkAny: function(tileMap, tileCondition, relativeCoordinates, currentCoordinate) {
-            return pr.utils.checkAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, true);
+        //check if a tile is at any of the positions in "relativeCoords"
+        checkAny: function(tileMap, condition, relativeCoords, currentCoord) {
+            'use strict';
+            return pr.utils.checkAnyOrAll(tileMap, condition, relativeCoords,
+                currentCoord, true);
         },
-        //check if a tile is at all of the positions in the "relativeCoordinates" parameter
-        checkAll: function(tileMap, tileCondition, relativeCoordinates, currentCoordinate) {
-            return pr.utils.checkAnyOrAll(tileMap, tileCondition, relativeCoordinates, currentCoordinate, false);
+        //check if a tile is at all of the positions in "relativeCoords"
+        checkAll: function(tileMap, condition, relativeCoords, currentCoord) {
+            'use strict';
+            return pr.utils.checkAnyOrAll(tileMap, condition, relativeCoords,
+                currentCoord, false);
         },
-        checkAnyOrAll: function(tileMap, tileCondition, relativeCoordinates, currentCoordinate, inAny) {
-            if (!relativeCoordinates || relativeCoordinates.length == 0) return true;
-            for (var coor = 0; coor < relativeCoordinates.length; coor++) {
-                var wantedTileCoordinate = relativeCoordinates[coor];
-                var row = tileMap[currentCoordinate.y + wantedTileCoordinate.y];
-                var tileAtCoordinate = null;
-                if (row) tileAtCoordinate = row[currentCoordinate.x + wantedTileCoordinate.x];
-                if (inAny && tileAtCoordinate && tileCondition(tileAtCoordinate)) {
+        checkAnyOrAll: function(tileMap, tileCondition, relativeCoordinates,
+                currentCoordinate, inAny) {
+            'use strict';
+            var coor, wantedTileCoordinate, row, tileAtCoordinate;
+            if (!relativeCoordinates || relativeCoordinates.length === 0) {
+                return true;
+            }
+            for (coor = 0; coor < relativeCoordinates.length; coor++) {
+                wantedTileCoordinate = relativeCoordinates[coor];
+                row = tileMap[currentCoordinate.y + wantedTileCoordinate.y];
+                tileAtCoordinate = null;
+                if (row) {
+                    tileAtCoordinate =
+                        row[currentCoordinate.x + wantedTileCoordinate.x];
+                }
+                if (inAny && tileAtCoordinate &&
+                    tileCondition(tileAtCoordinate)) {
                     return true;
                 }
-                if (!inAny && (!tileAtCoordinate || !tileCondition(tileAtCoordinate))) {
+                if (!inAny && (!tileAtCoordinate ||
+                    !tileCondition(tileAtCoordinate))) {
                     return false;
                 }
             }
@@ -100,3 +126,4 @@ window.pr = {
 
     }
 };
+
