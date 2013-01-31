@@ -1,4 +1,12 @@
-;
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+/*global me, _, pr, ItemObject, PF, ui, charMap, ship, utils, WIDTH, HEIGHT*/
+
 /*
     In each item, set size and type before calling parent()
 */
@@ -6,12 +14,14 @@
 var iWeaponObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'weapon';
         this.size = [2, 2];
         this.totalSize = [3, 2];
         this.parent(x, y, settings, true);
     },
     buildPlacementRules: function() {
+        'use strict';
         this.parent();
         this.placementRules.push(new pr.PlacementRule({
             tile: charMap.codes._front,
@@ -30,6 +40,7 @@ var iWeaponObject = ItemObject.extend({
 var iEngineObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'engine';
         this.size = [2, 2];
         this.totalSize = [3, 2];
@@ -37,6 +48,7 @@ var iEngineObject = ItemObject.extend({
         this.parent(x, y, settings);
     },
     buildPlacementRules: function() {
+        'use strict';
         this.parent();
         this.placementRules.push(new pr.PlacementRule({
             tile: charMap.codes._back,
@@ -56,6 +68,7 @@ var iEngineObject = ItemObject.extend({
 var iPowerObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'power';
         this.size = [2, 2];
         this.parent(x, y, settings);
@@ -66,14 +79,17 @@ var iPowerObject = ItemObject.extend({
 var iConsoleObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'console';
         this.size = [1, 1];
         this.parent(x, y, settings);
     },
     buildPlacementRules: function() {
+        'use strict';
         this.parent();
         this.placementRules.push(pr.make.nextToRule(function(tile) {
-            return tile.type == 'weapon' || tile.type == 'engine' || tile.type == 'power';
+            return tile.type === 'weapon' || tile.type === 'engine' ||
+            tile.type === 'power';
         }, this.size[0], this.size[1]));
     }
 });
@@ -82,6 +98,7 @@ var iConsoleObject = ItemObject.extend({
 var iComponentObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'component';
         this.size = [2, 2];
         this.parent(x, y, settings, this.mResource);
@@ -99,14 +116,17 @@ var iComponentObject = ItemObject.extend({
 var iDoorObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'door';
         this.size = [2, 1];
         this.parent(x, y, settings);
 
         // add animation
         this.addAnimation('idle', [2]);
-        this.addAnimation('h_open_close', [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
-        this.addAnimation('v_open_close', [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
+        this.addAnimation('h_open_close',
+            [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
+        this.addAnimation('v_open_close',
+            [1, 3, 5, 7, 9, 11, 11, 9, 7, 5, 3, 1]);
         this.anchorPoint.x = 0.25;
         this.anchorPoint.y = 0.5;
         // set animation
@@ -116,15 +136,17 @@ var iDoorObject = ItemObject.extend({
         this.zIndex = 110;
     },
     buildPlacementRules: function() {
+        'use strict';
         //doesn't use inherited placementRules
         this.placementRules = [pr.make.spaceRule(function(tile) {
-            return tile.type == 'wall' && tile.isCurrentAnimation('lrWall');
+            return tile.type === 'wall' && tile.isCurrentAnimation('lrWall');
         }, 2, 1)];
         this.rotatedPlacementRules = [pr.make.spaceRule(function(tile) {
-            return tile.type == 'wall' && tile.isCurrentAnimation('tbWall');
+            return tile.type === 'wall' && tile.isCurrentAnimation('tbWall');
         }, 1, 2)];
     },
     canBuildRotated: function(x, y) {
+        'use strict';
         return _.every(this.rotatedPlacementRules, function(r) {
             return r.compliesAt(x, y, ship.map());
         });
@@ -135,6 +157,7 @@ var iDoorObject = ItemObject.extend({
 var iWallObject = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
+        'use strict';
         this.type = 'wall';
         this.size = [1, 1];
         this.parent(x, y, settings);
@@ -156,52 +179,74 @@ var iWallObject = ItemObject.extend({
         this.animationspeed = 6;
     },
     updateAnimation: function() {
-        if (window.ship === undefined) return;
-        var wallsAround = [];
-        var x = this._x;
-        var y = this._y;
-        var top = ui.mapAt(x, y - 1);
-        var left = ui.mapAt(x - 1, y);
-        var bottom = ui.mapAt(x, y + 1);
-        var right = ui.mapAt(x + 1, y);
-        if (top != null && (top.type == 'wall' || (top.type == 'door' && top.rotated() && top.y() == y - 2))) wallsAround.push('t');
-        if (left != null && (left.type == 'wall' || (left.type == 'door' && !left.rotated() && left.x() == x - 2))) wallsAround.push('l');
-        if (bottom != null && (bottom.type == 'wall' || (bottom.type == 'door' && bottom.rotated() && bottom.y() == y + 1))) wallsAround.push('b');
-        if (right != null && (right.type == 'wall' || (right.type == 'door' && !right.rotated() && right.x() == x + 1))) wallsAround.push('r');
-        if (wallsAround.length == 0) {
+        'use strict';
+        var wallsAround, x, y, top, left, bot, right, animationName;
+        if (window.ship === undefined) {
+            return;
+        }
+        wallsAround = [];
+        x = this._x;
+        y = this._y;
+        top = ui.mapAt(x, y - 1);
+        left = ui.mapAt(x - 1, y);
+        bot = ui.mapAt(x, y + 1);
+        right = ui.mapAt(x + 1, y);
+        if (top !== null && (top.type === 'wall' ||
+            (top.type === 'door' && top.rotated() && top.y() === y - 2))) {
+            wallsAround.push('t');
+        }
+        if (left !== null && (left.type === 'wall' ||
+            (left.type === 'door' && !left.rotated() && left.x() === x - 2))) {
+            wallsAround.push('l');
+        }
+        if (bot !== null && (bot.type === 'wall' ||
+            (bot.type === 'door' && bot.rotated() && bot.y() === y + 1))) {
+            wallsAround.push('b');
+        }
+        if (right !== null && (right.type === 'wall' ||
+            (right.type === 'door' && !right.rotated() &&
+            right.x() === x + 1))) {
+            wallsAround.push('r');
+        }
+        if (wallsAround.length === 0) {
             this.setCurrentAnimation('lrWall'); //default
             return;
         }
-        if (wallsAround.length == 1) { //just one connection
-            if (wallsAround[0] == 't' || wallsAround[0] == 'b') {
+        if (wallsAround.length === 1) { //just one connection
+            if (wallsAround[0] === 't' || wallsAround[0] === 'b') {
                 this.setCurrentAnimation('tbWall');
                 return;
             }
-            if (wallsAround[0] == 'l' || wallsAround[0] == 'r') {
+            if (wallsAround[0] === 'l' || wallsAround[0] === 'r') {
                 this.setCurrentAnimation('lrWall');
                 return;
             }
         }
         wallsAround.push('Wall');
-        var animationName = wallsAround.join('');
+        animationName = wallsAround.join('');
         this.setCurrentAnimation(animationName);
     },
     update: function() {
+        'use strict';
         this.updateAnimation();
     },
     onBuilt: function() {
+        'use strict';
+        var pfMatrix, t;
         this.parent();
-
-        if (ui.mouseLockedOn == this) return;
-
-        var pfMatrix = utils.getEmptyMatrix(WIDTH, HEIGHT, 1);
+        if (ui.mouseLockedOn === this) {
+            return;
+        }
+        pfMatrix = utils.getEmptyMatrix(WIDTH, HEIGHT, 1);
         utils.levelTiles(function(x, y) {
-            if (ship.map()[y][x] == charMap.codes._cleared) pfMatrix[y][x] = 0; //cleared tiles are walkable
+            if (ship.map()[y][x] === charMap.codes._cleared) {
+                pfMatrix[y][x] = 0; //cleared tiles are walkable
+            }
         });
-        pfMatrix[this.y()][this.x()] = 0; //self tile will be walkable for pathfinding purposes
+        //self tile will be walkable for pathfinding purposes
+        pfMatrix[this.y()][this.x()] = 0;
 
-
-        var t = this.temp;
+        t = this.temp;
         t.grid = new PF.Grid(WIDTH, HEIGHT, pfMatrix);
         t.preMouseX = this.x();
         t.preMouseY = this.y();
@@ -212,31 +257,43 @@ var iWallObject = ItemObject.extend({
         ui.mouseLockedOn = this;
     },
     lockedMouseMove: function(mouseTile) {
+        'use strict';
+        var t, finder, cloneGrid, path, i, f;
         this.parent();
-        var t = this.temp;
+        t = this.temp;
 
-        if ((mouseTile.x == t.pivotX && mouseTile.y == t.pivotY) || (mouseTile.x == t.preMouseX && mouseTile.y == t.preMouseY)) return;
+        if ((mouseTile.x === t.pivotX && mouseTile.y === t.pivotY) ||
+            (mouseTile.x === t.preMouseX && mouseTile.y === t.preMouseY)) {
+            return;
+        }
         t.preMouseX = mouseTile.x;
         t.preMouseY = mouseTile.y;
         ui.clear();
-        var finder = new PF.BestFirstFinder();
-        var cloneGrid = t.grid.clone();
-        var path = finder.findPath(t.pivotX, t.pivotY, mouseTile.x, mouseTile.y, cloneGrid);
+        finder = new PF.BestFirstFinder();
+        cloneGrid = t.grid.clone();
+        path = finder.findPath(t.pivotX, t.pivotY,
+            mouseTile.x, mouseTile.y, cloneGrid);
 
         t.paths[t.lastPathIndex] = path; //replace last path
-        for (var i = t.paths.length - 1; i >= 0; i--) {
-            for (var f = 1; f < t.paths[i].length; f++) {
+        for (i = t.paths.length - 1; i >= 0; i--) {
+            for (f = 1; f < t.paths[i].length; f++) {
                 ui.draw(t.paths[i][f][0], t.paths[i][f][1], 'wall');
             }
         }
     },
     lockedMouseUp: function(mouseTile) {
+        'use strict';
+        var t, lastPath, i;
         this.parent();
-        if (!this.canBuildAt(mouseTile.x, mouseTile.y)) return;
-        var t = this.temp;
-        var lastPath = t.paths[t.lastPathIndex];
-        if (lastPath) for (var i = 0; i < lastPath.length; i++) {
-            t.grid.setWalkableAt(lastPath[i][0], lastPath[i][1], false);
+        if (!this.canBuildAt(mouseTile.x, mouseTile.y)) {
+            return;
+        }
+        t = this.temp;
+        lastPath = t.paths[t.lastPathIndex];
+        if (lastPath) {
+            for (i = 0; i < lastPath.length; i++) {
+                t.grid.setWalkableAt(lastPath[i][0], lastPath[i][1], false);
+            }
         }
         t.pivotX = mouseTile.x;
         t.pivotY = mouseTile.y;
@@ -244,6 +301,7 @@ var iWallObject = ItemObject.extend({
 
     },
     lockedMouseDbClick: function(mouseTile) {
+        'use strict';
         this.parent();
         _.each(ui.drawingScreen, function(wall) {
             ship.buildAt(wall.x(), wall.y(), 'wall');
@@ -253,9 +311,11 @@ var iWallObject = ItemObject.extend({
         ui.mouseLockedOn = null;
     },
     lockedEscape: function() {
+        'use strict';
         ui.clear();
 
         ui.mouseLockedOn = null;
         ship.remove(this);
     }
 });
+
