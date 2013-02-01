@@ -83,11 +83,6 @@ var items = {
     wall: WallItem
 };
 
-//fix mouse constants
-me.input.mouse.LEFT = 1;
-me.input.mouse.MIDDLE = 2;
-me.input.mouse.RIGHT = 3;
-
 /*Everything related to the graphics during the process of building */
 function UserInterface() {
     'use strict';
@@ -477,7 +472,9 @@ var PlayScreen = me.ScreenObject.extend({
     },
     mouseDbClick: function(e) {
         'use strict';
-        var mouseTile = utils.getMouse();
+        var mouseTile;
+        //e.which--;//A fix.
+        mouseTile = utils.getMouse();
         if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object
             ui.mouseLockedOn.lockedMouseDbClick(mouseTile);
@@ -489,7 +486,9 @@ var PlayScreen = me.ScreenObject.extend({
     },
     mouseDown: function(e) {
         'use strict';
-        var mouseTile = utils.getMouse(), item;
+        var mouseTile, item, which;
+        which = e.which - 1;
+        mouseTile = utils.getMouse();
         if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object
             ui.mouseLockedOn.lockedMouseDown(mouseTile);
@@ -498,8 +497,9 @@ var PlayScreen = me.ScreenObject.extend({
 
         item = ship.mapAt(mouseTile.x, mouseTile.y);
         if (item !== null && item.name === 'item') {
-            if (e.which === me.input.mouse.RIGHT) {
+            if (which === me.input.mouse.RIGHT) {
                 ship.remove(item);
+                ui.updateRed();
             } else {
                 ui.selected = item;
                 if (!ui.chosen) {
@@ -510,7 +510,7 @@ var PlayScreen = me.ScreenObject.extend({
         me.game.sort();
         me.game.repaint();
     },
-    mouseMove: function(e) {
+    mouseMove: function() {
         'use strict';
         var mouseTile = utils.getMouse();
         if (ui.mouseLockedOn) { //the mouse is involved in a specific object
@@ -528,7 +528,9 @@ var PlayScreen = me.ScreenObject.extend({
     },
     mouseUp: function(e) {
         'use strict';
-        var mouseTile = utils.getMouse();
+        var mouseTile, which;
+        which = e.which - 1;
+        mouseTile = utils.getMouse();
         if (ui.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object
             ui.mouseLockedOn.lockedMouseUp(mouseTile);
@@ -536,7 +538,7 @@ var PlayScreen = me.ScreenObject.extend({
         }
 
         if (ui.chosen && !ui.dragging) {
-            if (e.which !== me.input.mouse.RIGHT) {
+            if (which !== me.input.mouse.RIGHT) {
                 ship.buildAt(mouseTile.x, mouseTile.y, ui.chosen.type);
             }
         } else if (ui.dragging) {
