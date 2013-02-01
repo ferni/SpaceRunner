@@ -1,11 +1,16 @@
 /*
 -*- coding: utf-8 -*-
- vim: set ts=4 sw=4 et sts=4 ai:
- */
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+/*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
+me, utils, ui, ship, screen, WIDTH, HEIGHT, TILE_SIZE*/
 
 module('main.js/PlayScreen');
-
 asyncTest('Globals are set', function() {
+    'use strict';
     th.onLevelReady(function() {
         ok(TILE_SIZE, 'TILE_SIZE');
         ok(WIDTH, 'WIDTH');
@@ -17,6 +22,7 @@ asyncTest('Globals are set', function() {
 });
 
 asyncTest('ESC key un-chooses the item', function() {
+    'use strict';
     th.restartGame(function() {
         ui.choose('power');
         ok(ui.chosen, 'something chosen');
@@ -28,7 +34,9 @@ asyncTest('ESC key un-chooses the item', function() {
     });
 });
 
-asyncTest('mouseDbClick does not give an error when mouse is not locked', function() {
+asyncTest('mouseDbClick does not give an error when mouse is not locked',
+    function() {
+    'use strict';
     th.onLevelReady(function() {
         equal(ui.mouseLockedOn, null, 'Mouse is not locked');
         screen.mouseDbClick({
@@ -39,13 +47,14 @@ asyncTest('mouseDbClick does not give an error when mouse is not locked', functi
 });
 
 asyncTest('right click removes item', function() {
+    'use strict';
     th.restartGame(function() {
-        var x = th.shipPositions.free.x;
-        var y = th.shipPositions.free.y;
+        var x = th.shipPositions.free.x,
+        y = th.shipPositions.free.y;
         ship.buildAt(x, y, 'component');
         equal(ship.mapAt(x, y).type, 'component', 'Component built');
         th.mouseBegin();
-        th.rightClick(x + 1, y + 1); //botton right of component (arbitrary position)
+        th.rightClick(x + 1, y + 1); //botton right of component
         th.mouseEnd();
         notEqual(ship.mapAt(x, y).type, 'component', 'Component removed');
         start();
@@ -53,7 +62,9 @@ asyncTest('right click removes item', function() {
 });
 
 asyncTest('drag and drop', function() {
+    'use strict';
     th.restartGame(function() {
+        var power;
         ok(ship.buildAt(3, 4, 'power'), 'power succesfully built');
         th.mouseBegin();
         th.moveMouse(3, 4);
@@ -67,9 +78,9 @@ asyncTest('drag and drop', function() {
             which: me.input.mouse.LEFT
         });
         ok(!ui.dragging, 'not dragging after mouse up');
-        notEqual(ship.mapAt(3, 4).type, 'power', 'power is not on original position');
-
-        var power = ship.mapAt(5, 4);
+        notEqual(ship.mapAt(3, 4).type, 'power',
+            'power is not on original position');
+        power = ship.mapAt(5, 4);
         equal(power.x(), 5, 'power is at new position');
         th.mouseEnd();
         start();
@@ -80,23 +91,27 @@ asyncTest('drag and drop', function() {
 module('main.js/ship');
 
 asyncTest('buildAt', function() {
+    'use strict';
     th.onLevelReady(function() {
         ship.removeAll();
-        ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y, 'power'), 'could build power');
+        ok(ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
+            'power'), 'could build power');
         equal(ship.buildings()[0].type, 'power', 'first building is power');
         start();
     });
 });
 
 asyncTest('add/mapAt/removeAt', function() {
+    'use strict';
     th.onLevelReady(function() {
         ship.removeAll();
-        var x = th.shipPositions.free.x;
-        var y = th.shipPositions.free.y;
-        var engine = new iEngineObject(x, y);
+        var x = th.shipPositions.free.x,
+        y = th.shipPositions.free.y,
+        engine = new EngineItem(x, y);
         //(ignores placement rules)
         ship.add(engine);
-        equal(ship.buildings()[0].type, 'engine', 'First building is engine after adding');
+        equal(ship.buildings()[0].type, 'engine',
+            'First building is engine after adding');
 
         //mapAt
         equal(ship.mapAt(x, y).type, 'engine', 'mapAt(x, y) is engine');
@@ -137,7 +152,7 @@ asyncTest('buildAt rotates item when it can only be built rotated', function() {
     th.restartGame(function() {
         var x = th.shipPositions.free.x;
         var y = th.shipPositions.free.y;
-        var door = new iDoorObject();
+        var door = new DoorItem();
         ok(!door.canBuildAt(x, y), "Cannot build at x,y (there's no wall)");
         ok(!door.canBuildRotated(x, y), 'It cannot be built rotated either');
 

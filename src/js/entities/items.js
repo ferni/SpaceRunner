@@ -11,7 +11,7 @@
     In each item, set size and type before calling parent()
 */
 // weapon object
-var iWeaponObject = ItemObject.extend({
+var WeaponItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -37,7 +37,7 @@ var iWeaponObject = ItemObject.extend({
 });
 
 // engine object
-var iEngineObject = ItemObject.extend({
+var EngineItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -65,7 +65,7 @@ var iEngineObject = ItemObject.extend({
 
 
 // power object
-var iPowerObject = ItemObject.extend({
+var PowerItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -76,7 +76,7 @@ var iPowerObject = ItemObject.extend({
 });
 
 // console object class
-var iConsoleObject = ItemObject.extend({
+var ConsoleItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -95,7 +95,7 @@ var iConsoleObject = ItemObject.extend({
 });
 
 // component object class
-var iComponentObject = ItemObject.extend({
+var ComponentItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -113,7 +113,7 @@ var iComponentObject = ItemObject.extend({
 });
 
 // door object class
-var iDoorObject = ItemObject.extend({
+var DoorItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -154,7 +154,7 @@ var iDoorObject = ItemObject.extend({
 
 });
 // wall object class
-var iWallObject = ItemObject.extend({
+var WallItem = ItemObject.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';

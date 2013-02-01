@@ -1,3 +1,12 @@
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+/*global me, utils*/
+
 var th = {
     shipPositions: {
         free: {
@@ -85,7 +94,7 @@ var th = {
  --- Clean test template ---
 
     asyncTest("", function () {
-        th.resetEverything(function () {
+        th.restartGame(function () {
             //test here
             start();
         });

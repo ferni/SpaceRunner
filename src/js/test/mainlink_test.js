@@ -1,6 +1,16 @@
-module('mainlink.js');
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
 
+/*global module, asyncTest, test, ok, equal, start, th,
+me, utils, ui, ship, screen*/
+
+module('mainlink.js');
 asyncTest('Item click', function() {
+   'use strict';
     th.onLevelReady(function() {
         $('.items #item_weapon').trigger('click');
         equal(ui.chosen.type, 'weapon', 'choose weapon');

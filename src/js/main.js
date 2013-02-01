@@ -74,13 +74,13 @@ var g_resources_size = [{
 }];
 
 var items = {
-    weapon: iWeaponObject,
-    engine: iEngineObject,
-    power: iPowerObject,
-    console: iConsoleObject,
-    component: iComponentObject,
-    door: iDoorObject,
-    wall: iWallObject
+    weapon: WeaponItem,
+    engine: EngineItem,
+    power: PowerItem,
+    console: ConsoleItem,
+    component: ComponentItem,
+    door: DoorItem,
+    wall: WallItem
 };
 
 //fix mouse constants
