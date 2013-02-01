@@ -5,8 +5,8 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, $, iWeaponObject, iEngineObject, iConsoleObject,
-iComponentObject, iWallObject, iDoorObject, iPowerObject,
+/*global me, _, utils, $, WeaponItem, EngineItem, ConsoleItem,
+ComponentItem, WallItem, DoorItem, PowerItem,
 RedColorObject, charMap*/
 
 
