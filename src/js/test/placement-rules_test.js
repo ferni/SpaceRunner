@@ -6,25 +6,28 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-me, utils, ui, ship, screen*/
+pr, _, me, utils, ui, ship, screen*/
 
 module('placement-rules.js');
 
 test('Empty PlacementRule always complies', function() {
-    var tileMap = ['112o', 'o#oo', '3o3o'];
-
-    var rule0 = new pr.PlacementRule({});
+    'use strict';
+    var tileMap, rule0;
+    tileMap = ['112o', 'o#oo', '3o3o'];
+    rule0 = new pr.PlacementRule({});
     ok(rule0.compliesAt(1, 1, tileMap));
 });
 
 test('pr.PlacementRule', function() {
-    var tileMap = ['112o', 'o#oo', '3o3o'];
-    var current = {
+    'use strict';
+    var tileMap, current, rule1;
+    tileMap = ['112o', 'o#oo', '3o3o'];
+    current = {
         x: 1,
         y: 1
     };
 
-    var rule1 = new pr.PlacementRule({
+    rule1 = new pr.PlacementRule({
         tile: '2',
         inAny: [{
             x: 123,
@@ -38,9 +41,11 @@ test('pr.PlacementRule', function() {
 });
 
 test('pr.make.spaceRule', function() {
-    var tileMap = ['112o', 'o#oo', '3o3o'];
+    'use strict';
+    var tileMap, spaceRule;
+    tileMap = ['112o', 'o#oo', '3o3o'];
 
-    var spaceRule = pr.make.spaceRule('o', 1, 3);
+    spaceRule = pr.make.spaceRule('o', 1, 3);
     equal(spaceRule.compliesAt(3, 0, tileMap), true);
     spaceRule = pr.make.spaceRule('o', 2, 3);
     equal(spaceRule.compliesAt(3, 0, tileMap), false);
@@ -49,40 +54,43 @@ test('pr.make.spaceRule', function() {
 });
 
 test('pr.make.nextToRule', function() {
-    var tileMap = ['112o', 'o#oo', '3o3o'];
-
-    var nextToRule = pr.make.nextToRule('3', 1, 2);
+    'use strict';
+    var tileMap, nextToRule;
+    tileMap = ['112o', 'o#oo', '3o3o'];
+    nextToRule = pr.make.nextToRule('3', 1, 2);
     ok(_.some(nextToRule.inAny, function(c) { //left
-        return c.x == -1 && c.y == 0;
+        return c.x === -1 && c.y === 0;
     }));
     ok(_.some(nextToRule.inAny, function(c) {
-        return c.x == -1 && c.y == 1;
+        return c.x === -1 && c.y === 1;
     }));
     ok(_.some(nextToRule.inAny, function(c) { //bottom
-        return c.x == 0 && c.y == 2;
+        return c.x === 0 && c.y === 2;
     }));
     ok(_.some(nextToRule.inAny, function(c) { //top
-        return c.x == 0 && c.y == -1;
+        return c.x === 0 && c.y === -1;
     }));
     ok(_.some(nextToRule.inAny, function(c) { //right
-        return c.x == 1 && c.y == 0;
+        return c.x === 1 && c.y === 0;
     }));
     ok(_.some(nextToRule.inAny, function(c) {
-        return c.x == 1 && c.y == 1;
+        return c.x === 1 && c.y === 1;
     }));
     equal(nextToRule.compliesAt(3, 0, tileMap), false);
     equal(nextToRule.compliesAt(3, 1, tileMap), true);
 });
 
 test('pr.utils.checkAny', function() {
-    var tileMap = ['112o', 'o#oo', '3o3o'];
-    var current = {
+    'use strict';
+    var tileMap, current, condition;
+    tileMap = ['112o', 'o#oo', '3o3o'];
+    current = {
         x: 1,
         y: 1
     };
 
-    var condition = function(t) {
-        return t == '2';
+    condition = function(t) {
+        return t === '2';
     };
 
     equal(pr.utils.checkAny(tileMap, condition, [{
@@ -100,14 +108,16 @@ test('pr.utils.checkAny', function() {
 });
 
 test('pr.utils.checkAll', function() {
-    var tileMap = ['112o', 'o#oo', '3o3o'];
-    var current = {
+    'use strict';
+    var tileMap, current, condition;
+    tileMap = ['112o', 'o#oo', '3o3o'];
+    current = {
         x: 1,
         y: 1
     };
 
-    var condition = function(t) {
-        return t == '3';
+    condition = function(t) {
+        return t === '3';
     };
 
     equal(pr.utils.checkAll(tileMap, condition, [{
@@ -129,3 +139,4 @@ test('pr.utils.checkAll', function() {
     }], current), false);
     equal(pr.utils.checkAll(tileMap, condition, [], current), true);
 });
+

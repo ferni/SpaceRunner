@@ -6,29 +6,34 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-me, utils, ui, ship, screen*/
+me, utils, ui, ship, screen, TILE_SIZE*/
 
 module('utils.js');
 asyncTest('getParameterByName', function() {
+    'use strict';
     th.restartGame(function() {
-        equal(utils.getParameterByName('asdf'), null, "'asdf' not in query string");
+        equal(utils.getParameterByName('asdf'), null,
+            "'asdf' not in query string");
         start();
     });
 });
 
 asyncTest('getQueriedShip: queried ship not found', function() {
+    'use strict';
     th.restartGame(function() {
         var originalFunction = utils.getParameterByName;
         utils.getParameterByName = function() {
             return 'unknownShip';
         };
-        equal(utils.getQueriedShip(), 'area_01', "'unknownShip' not found, returns default ship");
+        equal(utils.getQueriedShip(), 'area_01',
+            "'unknownShip' not found, returns default ship");
         utils.getParameterByName = originalFunction;
         start();
     });
 });
 
 asyncTest('getQueriedShip', function() {
+    'use strict';
     th.restartGame(function() {
         var originalFunction = utils.getParameterByName;
         utils.getParameterByName = function() {
@@ -41,6 +46,7 @@ asyncTest('getQueriedShip', function() {
 });
 
 asyncTest('toTileVector', function() {
+    'use strict';
     th.restartGame(function() {
         var tileVector = utils.toTileVector(new me.Vector2d(7, 7));
         equal(tileVector.x, 0);
@@ -50,7 +56,8 @@ asyncTest('toTileVector', function() {
         equal(tileVector.x, 1);
         equal(tileVector.y, 1);
 
-        tileVector = utils.toTileVector(new me.Vector2d(TILE_SIZE - 1, TILE_SIZE));
+        tileVector = utils.toTileVector(
+            new me.Vector2d(TILE_SIZE - 1, TILE_SIZE));
         equal(tileVector.x, 0);
         equal(tileVector.y, 1);
         start();
@@ -58,6 +65,7 @@ asyncTest('toTileVector', function() {
 });
 
 asyncTest('getEmptyMatrix', function() {
+    'use strict';
     th.restartGame(function() {
         var matrix = utils.getEmptyMatrix(2, 3, 0);
         equal(matrix[0][0], 0);
@@ -73,6 +81,7 @@ asyncTest('getEmptyMatrix', function() {
 });
 
 asyncTest('makeItem: invalid item', function() {
+    'use strict';
     th.restartGame(function() {
         equal(utils.makeItem('asdf'), null);
         start();
@@ -80,6 +89,7 @@ asyncTest('makeItem: invalid item', function() {
 });
 
 asyncTest('getMouse', function() {
+    'use strict';
     th.restartGame(function() {
         var m = utils.getMouse();
         equal(m.x, 0);
@@ -89,6 +99,8 @@ asyncTest('getMouse', function() {
 });
 
 test('setCursor', function() {
+    'use strict';
     utils.setCursor('move');
-    equal(document.getElementById('jsapp').style.cursor, 'move', "Cursor set to 'move' in jsapp div");
+    equal(document.getElementById('jsapp').style.cursor, 'move',
+        "Cursor set to 'move' in jsapp div");
 });

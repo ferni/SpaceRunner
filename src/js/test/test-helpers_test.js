@@ -5,10 +5,12 @@
 * All rights reserved.
 */
 
-/*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th*/
+/*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
+me, utils*/
 
 module('test_helpers.js');
 asyncTest('onLevelReady', function() {
+    'use strict';
     th.onLevelReady(function() {
         ok(me.state.isCurrent(me.state.PLAY), 'Level is indeed ready');
         start();
@@ -16,6 +18,7 @@ asyncTest('onLevelReady', function() {
 });
 
 asyncTest('setMouse', function() {
+    'use strict';
     th.onLevelReady(function() {
         th.mouseBegin();
         th.setMouse(4, 6);

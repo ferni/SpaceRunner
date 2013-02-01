@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, utils*/
+/*global me, utils, screen, th, jsApp*/
 
 var th = {
     shipPositions: {
@@ -28,6 +28,7 @@ var th = {
     },
     //Calls the callback when the state is "PLAY"
     onLevelReady: function(callback) {
+        'use strict';
         var interval = setInterval(function() {
             if (me.state.isCurrent(me.state.PLAY)) {
                 callback();
@@ -36,6 +37,7 @@ var th = {
         }, 100);
     },
     restartGame: function(callback) {
+        'use strict';
         try {
             me.state.change(me.state.PLAY);
         } catch (e) {}
@@ -51,6 +53,7 @@ var th = {
         y: 1
     },
     mouseBegin: function() {
+        'use strict';
         //replace utils.getMouse function
         utils.getMouse = function() {
             var vector = new me.Vector2d();
@@ -60,19 +63,23 @@ var th = {
         };
     },
     mouseEnd: function() {
+        'use strict';
         utils.getMouse = this._originalGetMouseFunction;
     },
     //fakes the mouse position (x: tile column, y: tile row)
     setMouse: function(x, y) {
+        'use strict';
         this._mousePosition.x = x;
         this._mousePosition.y = y;
     },
     moveMouse: function(x, y) {
+        'use strict';
         this.setMouse(x, y);
         screen.mouseMove({});
     },
     clickMouse: function(which, x, y) {
-        if (x != undefined && y != undefined) {
+        'use strict';
+        if (x !== undefined && y !== undefined) {
             this.moveMouse(x, y);
         }
         screen.mouseDown({
@@ -83,9 +90,11 @@ var th = {
         });
     },
     leftClick: function(x, y) {
+        'use strict';
         this.clickMouse(me.input.mouse.LEFT, x, y);
     },
     rightClick: function(x, y) {
+        'use strict';
         this.clickMouse(me.input.mouse.RIGHT, x, y);
     }
 };
@@ -93,11 +102,11 @@ var th = {
 /*
  --- Clean test template ---
 
-    asyncTest("", function () {
+    asyncTest("test name", function () {
         th.restartGame(function () {
             //test here
             start();
         });
     });
-
 */
+
