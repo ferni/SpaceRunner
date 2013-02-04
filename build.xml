@@ -1,18 +1,15 @@
-<project name="SpaceRunner" default="build">
+<project name="SpaceRunner" default="report">
 
     <!-- Test reports -->
-    
-	<target name="build" description="Makes everything necessary to build the test reports.">
-		<antcall target="instrument"/>
-		<antcall target="report"/>
-	</target>
-	<target name="instrument" description="Runs jscoverage to instrument code">
-	  	<echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
+
+	<target name="report" description="Runs jscoverage to instrument code, runs the instrumented tests, gets the coverage report and makes a report file">
+        <!-- Instrument javascript -->
+        <echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
 	  	<exec executable="jscoverage" >
 	    		<arg line="src build/instrumented --encoding=UTF-8"/>
-	  	</exec>
-	</target>
-	<target name="report" description="Runs the instrumented tests, gets the coverage report and makes a report file">
+	  	</exec>     
+
+        <!-- Open intrumented folder -->
 		<echo message="Running phantomjs..."/>
 		<delete file="build/report.html"/>
 		<exec executable="tools/phantomjs" >
@@ -49,6 +46,7 @@
 	  	    <arg line="-r src -e src/js/vendor"/>
 	  	</exec>
 	</target>
+
 	<!-- Other -->
 	
 	<target name="tools/phantomjs" description="Downloads and extract phantomjs">
