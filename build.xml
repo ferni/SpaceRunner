@@ -2,7 +2,7 @@
 
     <!-- Test reports -->
 
-	<target name="report" description="Runs jscoverage to instrument code, runs the instrumented tests, gets the coverage report and makes a report file">
+	<target name="report" depends="tools/phantomjs" description="Runs jscoverage to instrument code, runs the instrumented tests, gets the coverage report and makes a report file">
         <!-- Instrument javascript -->
         <echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
 	  	<exec executable="jscoverage" >
@@ -22,11 +22,11 @@
 	
 	<!-- Lint -->
 	
-	<target name="lint" description="Runs a lint check in the code">
+	<target name="lint" depends="tools/phantomjs" description="Runs a lint check in the code">
 	    <echo message="**************************************"/>
 	    <echo message="*** 1; Checking lint with 'JSLint' ***"/>
 	    <echo message="**************************************"/>
-	   <exec executable="tools/phantomjs" >
+	    <exec executable="tools/phantomjs" >
 	    		<arg line="run-jslint.js"/>
 	  	</exec>
 	  	<echo message="**********************************************"/>
@@ -48,23 +48,30 @@
 	</target>
 
 	<!-- Other -->
-	
-	<target name="tools/phantomjs" description="Downloads and extract phantomjs">
-                <property name="version" value="phantomjs-1.8.1-linux-x86_64"/>
-                <property name="tarball" value="${version}.tar.bz2"/>
-		<delete file="tools/phantomjs"/>
+	<target name="check-phantomjs">
+        <condition property="phantomjs-not-installed">
+            <not>
+              <available file="tools/phantomjs"/>
+            </not>
+          </condition>
+    </target>
+	<target name="tools/phantomjs" description="Downloads and extract phantomjs" depends="check-phantomjs" if="phantomjs-not-installed">
+        <property name="version" value="phantomjs-1.8.1-linux-x86_64"/>
+        <property name="tarball" value="${version}.tar.bz2"/>
+        <delete file="tools/phantomjs"/>
 		<delete file="tools/${tarball}"/>
 		<delete dir="tools/${version}"/>
-		<echo message="Downloading phantomjs..."/>
-		<exec executable="wget" dir="tools">
-			<arg line="-c http://phantomjs.googlecode.com/files/${tarball}"/>
-	  	</exec>
-		<echo message="Extract phantomjs..."/>
-		<exec executable="tar" dir="tools">
-	    		<arg line="-jxvf ${tarball}"/>
-	  	</exec>
-                <symlink link="tools/phantomjs" resource="${version}/bin/phantomjs"/>
+        <echo message="Downloading phantomjs..."/>
+        <exec executable="wget" dir="tools">
+	        <arg line="-c http://phantomjs.googlecode.com/files/${tarball}"/>
+        </exec>
+        <echo message="Extract phantomjs..."/>
+        <exec executable="tar" dir="tools">
+		    <arg line="-jxvf ${tarball}"/>
+        </exec>
+        <symlink link="tools/phantomjs" resource="${version}/bin/phantomjs"/>
 	</target>
+
 	<target name="tools/closure-linter" description="Downloads and installs Closure Linter">
 	    <exec executable="sudo" dir="/tmp">
 	        <arg line="easy_install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"/>
