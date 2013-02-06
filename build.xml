@@ -10,7 +10,7 @@
 	  	</exec>     
 
         <!-- Open intrumented folder -->
-		<echo message="Running phantomjs..."/>
+		<echo message="Running phantomjs (build-test-report.js)..."/>
 		<delete file="build/report.html"/>
 		<exec executable="tools/phantomjs" >
 	    		<arg line="build-test-report.js build/instrumented"/>
@@ -22,7 +22,7 @@
 	
 	<!-- Lint -->
 	
-	<target name="lint" depends="tools/phantomjs" description="Runs a lint check in the code">
+	<target name="lint" depends="tools/closure_linter" description="Runs a lint check in the code">
 	    <echo message="**************************************"/>
 	    <echo message="*** 1; Checking lint with 'JSLint' ***"/>
 	    <echo message="**************************************"/>
@@ -32,7 +32,7 @@
 	  	<echo message="**********************************************"/>
 	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
 	  	<echo message="**********************************************"/>
-	  	<exec executable="gjslint">
+	  	<exec executable="tools/closure_linter/gjslint.py">
 	  	    <arg line="-r src -e src/js/vendor"/>
 	  	</exec>
 	</target>
@@ -42,12 +42,12 @@
 	  	</exec>
 	</target>
 	<target name="fixlint">
-	    <exec executable="fixjsstyle">
+	    <exec executable="tools/closure_linter/fixjsstyle.py">
 	  	    <arg line="-r src -e src/js/vendor"/>
 	  	</exec>
 	</target>
 
-	<!-- Other -->
+	<!-- Tools -->
 	<target name="check-phantomjs">
         <condition property="phantomjs-not-installed">
             <not>
@@ -72,9 +72,36 @@
         <symlink link="tools/phantomjs" resource="${version}/bin/phantomjs"/>
 	</target>
 
-	<target name="tools/closure-linter" description="Downloads and installs Closure Linter">
-	    <exec executable="sudo" dir="/tmp">
-	        <arg line="easy_install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"/>
-	    </exec>
+    <target name="check-closure_linter">
+        <condition property="closure_linter-not-installed">
+            <not>
+              <available file="tools/closure_linter/gjslint.py"/>
+            </not>
+          </condition>
+    </target>
+	<target name="tools/closure_linter" depends="tools/phantomjs,check-closure_linter" if="closure_linter-not-installed" description="Downloads and installs Closure Linter">
+        <property name="closure-tar" value="closure_linter-latest.tar.gz"/>
+        <delete dir="tools/closure_linter"/>
+		<delete file="tools/${closure-tar}"/>
+        <echo message="Downloading Closure Linter ..."/>
+        <exec executable="wget" dir="tools">
+	        <arg line="-c http://closure-linter.googlecode.com/files/${closure-tar}"/>
+        </exec>
+        <echo message="Extracting Closure Linter ..."/>
+        <exec executable="tar" dir="tools">
+		    <arg line="-zxvf ${closure-tar}"/>
+        </exec>
+        <echo message="Running PhantomJS (rename-closure-linter.js) ..."/>
+        <exec executable="tools/phantomjs">
+	    		<arg line="rename-closure-linter.js"/>
+	  	</exec>
+        <exec executable="cp">
+            <arg line="tools/closure_linter/closure_linter/gjslint.py tools/closure_linter/gjslint.py"/>
+        </exec>
+        <exec executable="cp">
+            <arg line="tools/closure_linter/closure_linter/fixjsstyle.py tools/closure_linter/fixjsstyle.py"/>
+        </exec>
 	</target>
+    
+
 </project>
