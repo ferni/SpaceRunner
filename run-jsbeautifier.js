@@ -1,7 +1,7 @@
-var couldLoadJsBeautifier = phantom.injectJs("beautify.js");
+var couldLoadJsBeautifier = phantom.injectJs("tools/beautify.js");
 var couldLoadGetFiles = phantom.injectJs("get-files.js");
 if(!couldLoadJsBeautifier){
-    console.log("ERROR: beautify.js not found");
+    console.log("ERROR: tools/beautify.js not found");
     phantom.exit();
 }
 if(!couldLoadGetFiles){

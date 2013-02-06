@@ -22,7 +22,7 @@
 	
 	<!-- Lint -->
 	
-	<target name="lint" depends="tools/closure_linter" description="Runs a lint check in the code">
+	<target name="lint" depends="tools/closure_linter,tools/jslint" description="Runs a lint check in the code">
 	    <echo message="**************************************"/>
 	    <echo message="*** 1; Checking lint with 'JSLint' ***"/>
 	    <echo message="**************************************"/>
@@ -36,12 +36,12 @@
 	  	    <arg line="-r src -e src/js/vendor"/>
 	  	</exec>
 	</target>
-	<target name="beautify">
+	<target name="beautify" depends="tools/jsbeautifier">
 	    <exec executable="tools/phantomjs" >
 	    		<arg line="run-jsbeautifier.js"/>
 	  	</exec>
 	</target>
-	<target name="fixlint">
+	<target name="fixlint" depends="tools/closure_linter">
 	    <exec executable="tools/closure_linter/fixjsstyle.py">
 	  	    <arg line="-r src -e src/js/vendor"/>
 	  	</exec>
@@ -102,6 +102,28 @@
             <arg line="tools/closure_linter/closure_linter/fixjsstyle.py tools/closure_linter/fixjsstyle.py"/>
         </exec>
 	</target>
-    
-
+    <target name="check-jslint">
+        <condition property="jslint-not-downloaded">
+            <not>
+              <available file="tools/jslint.js"/>
+            </not>
+          </condition>
+    </target>
+    <target name="tools/jslint" depends="check-jslint" if="jslint-not-downloaded" description="Downloads jslint.js into the tools folder">
+        <exec executable="wget" dir="tools">
+	        <arg line="-c https://raw.github.com/douglascrockford/JSLint/master/jslint.js"/>
+        </exec>
+    </target>
+    <target name="check-jsbeautifier">
+        <condition property="jsbeautifier-not-downloaded">
+            <not>
+              <available file="tools/beautify.js"/>
+            </not>
+          </condition>
+    </target>
+    <target name="tools/jsbeautifier" depends="check-jsbeautifier" if="jsbeautifier-not-downloaded" description="Downloads beautify.js into the tools folder">
+        <exec executable="wget" dir="tools">
+	        <arg line="-c https://raw.github.com/einars/js-beautify/master/beautify.js"/>
+        </exec>
+    </target>
 </project>

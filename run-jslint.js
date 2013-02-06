@@ -1,10 +1,10 @@
 /*This file is for running with PhantomJS
     Reports problems found with JSLint
 */
-var couldLoadJsLint = phantom.injectJs("jslint.js");
+var couldLoadJsLint = phantom.injectJs("tools/jslint.js");
 var couldLoadGetFiles = phantom.injectJs("get-files.js");
 if(!couldLoadJsLint){
-    console.log("ERROR: jslint.js not found");
+    console.log("ERROR: tools/jslint.js not found");
     phantom.exit();
 }
 if(!couldLoadGetFiles){
