@@ -6,19 +6,19 @@
 */
 
 /*global module, asyncTest, test, ok, equal, start, th,
-me, $, utils, ui, ship, screen*/
+me, $, utils*/
 
 module('mainlink.js');
 asyncTest('Item click', function() {
    'use strict';
     th.onLevelReady(function() {
         $('.items #item_weapon').trigger('click');
-        equal(ui.chosen.type, 'weapon', 'choose weapon');
+        equal(me.state.current().chosen.type, 'weapon', 'choose weapon');
         ok($('.items #item_weapon').hasClass('chosen'),
             "weapon thumbnail has 'chosen' class");
 
         $('.items #item_engine').trigger('click');
-        equal(ui.chosen.type, 'engine', 'choose engine');
+        equal(me.state.current().chosen.type, 'engine', 'choose engine');
         ok($('.items #item_engine').hasClass('chosen'),
             "engine thumbnail has 'chosen' class");
         ok(!$('.items #item_weapon').hasClass('chosen'),

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, ship, utils, charMap, pr, TILE_SIZE*/
+/*global me, _, utils, charMap, pr, TILE_SIZE*/
 
 /* An object that has tile position (x and y),
     and row length and col length through "size"
@@ -97,7 +97,7 @@ var TileObject = me.ObjectEntity.extend({
 
 /* individual object class */
 var ItemObject = TileObject.extend({
-    init: function(x, y, settings) {
+    init: function (x, y, settings) {
         'use strict';
         if (settings === undefined) {
             settings = {};
@@ -109,30 +109,30 @@ var ItemObject = TileObject.extend({
     /*functions to do when mouse-locked (override in each item)
     mouseTile : Vector2D
     */
-    lockedMouseUp: function(mouseTile) {'use strict';},
-    lockedMouseDown: function(mouseTile) {'use strict';},
-    lockedMouseMove: function(mouseTile) {'use strict';},
-    lockedMouseDbClick: function(mouseTile) {'use strict';},
+    lockedMouseUp: function (mouseTile) { 'use strict'; },
+    lockedMouseDown: function (mouseTile) { 'use strict'; },
+    lockedMouseMove: function (mouseTile) { 'use strict'; },
+    lockedMouseDbClick: function (mouseTile) { 'use strict'; },
     placementRules: [],
-    buildPlacementRules: function() {
+    buildPlacementRules: function () {
         'use strict';
         this.placementRules = [];
         this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared,
             this.size[0], this.size[1]));
     },
 
-    canBuildAt: function(x, y) {
+    canBuildAt: function (x, y, ship) {
         'use strict';
-        return _.every(this.placementRules, function(r) {
+        return _.every(this.placementRules, function (r) {
             return r.compliesAt(x, y, ship.map());
         });
     },
-    canBuildRotated: function(x, y) {
+    canBuildRotated: function (x, y, ship) {
         'use strict';
         return false;
     },
     _rotated: false,
-    rotated: function(rotated) {
+    rotated: function (rotated) {
         'use strict';
         if (rotated === undefined) {
             return this._rotated;
@@ -146,7 +146,7 @@ var ItemObject = TileObject.extend({
         return this;
     },
     //takes rotation into account
-    trueSize: function(index) {
+    trueSize: function (index) {
         'use strict';
         if (index === undefined) { //can pass an index: 0= width, 1= height
             return this.rotated() ? [this.size[1], this.size[0]] : this.size;
@@ -157,10 +157,10 @@ var ItemObject = TileObject.extend({
         return this.size[index];
     },
     //returns true is some part of the item is occupying the tile
-    occupies: function(x, y) {
+    occupies: function (x, y) {
         'use strict';
         var occupies = false;
-        utils.itemTiles(this, function(tX, tY) {
+        utils.itemTiles(this, function (tX, tY) {
             if (x === tX && y === tY) {
                 occupies = true;
             }
@@ -168,14 +168,18 @@ var ItemObject = TileObject.extend({
         return occupies;
     },
     //onBuilt is called only when the user himself builds it
-    onBuilt: function() {
+    onBuilt: function () {
         'use strict';
+        if (!me.state.isCurrent(me.state.BUILD)) {
+            console.error('item.onBuilt called when not building the ship');
+            return;
+        }
         //abstract method
     },
     temp: {} //for storing temporary stuff
     ,
     _onShip: false,
-    onShip: function(onShip) {
+    onShip: function (onShip) {
         'use strict';
         if (onShip === undefined) {
             return this._onShip;
@@ -188,7 +192,7 @@ var ItemObject = TileObject.extend({
         this._onShip = onShip;
         return this;
     },
-    whenOnShip: function() {
+    whenOnShip: function () {
         'use strict';
         var anim;
         if (this.rotated()) {
@@ -202,7 +206,7 @@ var ItemObject = TileObject.extend({
             this.setCurrentAnimation(anim);
         }
     },
-    whenOffShip: function() {
+    whenOffShip: function () {
         'use strict';
         var anim;
         if (this.rotated()) {

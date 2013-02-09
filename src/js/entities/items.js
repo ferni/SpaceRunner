@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemObject, PF, ui, charMap, ship, utils, WIDTH, HEIGHT*/
+/*global me, _, pr, ItemObject, PF, charMap, utils, WIDTH, HEIGHT*/
 
 /*
     In each item, set size and type before calling parent()
@@ -145,7 +145,7 @@ var DoorItem = ItemObject.extend({
             return tile.type === 'wall' && tile.isCurrentAnimation('tbWall');
         }, 1, 2)];
     },
-    canBuildRotated: function(x, y) {
+    canBuildRotated: function(x, y, ship) {
         'use strict';
         return _.every(this.rotatedPlacementRules, function(r) {
             return r.compliesAt(x, y, ship.map());
@@ -156,7 +156,7 @@ var DoorItem = ItemObject.extend({
 // wall object class
 var WallItem = ItemObject.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function (x, y, settings) {
         'use strict';
         this.type = 'wall';
         this.size = [1, 1];
@@ -178,12 +178,13 @@ var WallItem = ItemObject.extend({
         this.setCurrentAnimation('lrWall');
         this.animationspeed = 6;
     },
-    updateAnimation: function() {
+    updateAnimation: function () {
         'use strict';
-        var wallsAround, x, y, top, left, bot, right, animationName;
-        if (window.ship === undefined) {
+        var wallsAround, x, y, top, left, bot, right, animationName, ui;
+        if (!me.state.isCurrent(me.state.BUILD)) {
             return;
         }
+        ui = me.state.current();
         wallsAround = [];
         x = this._x;
         y = this._y;
@@ -226,20 +227,21 @@ var WallItem = ItemObject.extend({
         animationName = wallsAround.join('');
         this.setCurrentAnimation(animationName);
     },
-    update: function() {
+    update: function () {
         'use strict';
         this.updateAnimation();
     },
-    onBuilt: function() {
+    onBuilt: function () {
         'use strict';
-        var pfMatrix, t;
+        var pfMatrix, t, ui;
         this.parent();
+        ui = me.state.current();
         if (ui.mouseLockedOn === this) {
             return;
         }
         pfMatrix = utils.getEmptyMatrix(WIDTH, HEIGHT, 1);
-        utils.levelTiles(function(x, y) {
-            if (ship.map()[y][x] === charMap.codes._cleared) {
+        utils.levelTiles(function (x, y) {
+            if (ui.ship.map()[y][x] === charMap.codes._cleared) {
                 pfMatrix[y][x] = 0; //cleared tiles are walkable
             }
         });
@@ -256,10 +258,11 @@ var WallItem = ItemObject.extend({
         t.lastPathIndex = 0;
         ui.mouseLockedOn = this;
     },
-    lockedMouseMove: function(mouseTile) {
+    lockedMouseMove: function (mouseTile) {
         'use strict';
-        var t, finder, cloneGrid, path, i, f;
+        var t, finder, cloneGrid, path, i, f, ui;
         this.parent();
+        ui = me.state.current();
         t = this.temp;
 
         if ((mouseTile.x === t.pivotX && mouseTile.y === t.pivotY) ||
@@ -277,15 +280,15 @@ var WallItem = ItemObject.extend({
         t.paths[t.lastPathIndex] = path; //replace last path
         for (i = t.paths.length - 1; i >= 0; i--) {
             for (f = 1; f < t.paths[i].length; f++) {
-                ui.draw(t.paths[i][f][0], t.paths[i][f][1], 'wall');
+                ui.drawItem(t.paths[i][f][0], t.paths[i][f][1], 'wall');
             }
         }
     },
-    lockedMouseUp: function(mouseTile) {
+    lockedMouseUp: function (mouseTile) {
         'use strict';
         var t, lastPath, i;
         this.parent();
-        if (!this.canBuildAt(mouseTile.x, mouseTile.y)) {
+        if (!this.canBuildAt(mouseTile.x, mouseTile.y, me.state.current().ship)) {
             return;
         }
         t = this.temp;
@@ -300,22 +303,33 @@ var WallItem = ItemObject.extend({
         t.lastPathIndex++;
 
     },
-    lockedMouseDbClick: function(mouseTile) {
+    lockedMouseDbClick: function (mouseTile) {
         'use strict';
+        var ui = me.state.current();
         this.parent();
-        _.each(ui.drawingScreen, function(wall) {
-            ship.buildAt(wall.x(), wall.y(), 'wall');
+        _.each(ui.drawingScreen, function (wall) {
+            ui.ship.buildAt(wall.x(), wall.y(), 'wall');
         });
         ui.clear();
 
         ui.mouseLockedOn = null;
     },
-    lockedEscape: function() {
+    lockedEscape: function () {
         'use strict';
+        var ui = me.state.current();
         ui.clear();
 
         ui.mouseLockedOn = null;
-        ship.remove(this);
+        ui.ship.remove(this);
     }
 });
 
+var items = {
+    weapon: WeaponItem,
+    engine: EngineItem,
+    power: PowerItem,
+    console: ConsoleItem,
+    component: ComponentItem,
+    door: DoorItem,
+    wall: WallItem
+};

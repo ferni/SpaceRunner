@@ -6,6 +6,7 @@
 */
 
 /*global me, _, WIDTH, HEIGHT, g_resources, items*/
+
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
     (function() {

@@ -32,7 +32,7 @@ $(document).ready(function() {
         }
         idItem = $('img', this).attr('id');
         itemName = idItem.substring(5, idItem.length);
-        ui.choose(itemName);
+        me.state.current().choose(itemName);
     });
     $('#file_save').click(function() {
         onButtonSaveClick();

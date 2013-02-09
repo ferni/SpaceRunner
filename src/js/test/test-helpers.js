@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, utils, screen, th, jsApp*/
+/*global me, utils, th, jsApp*/
 
 var th = {
     shipPositions: {
@@ -30,7 +30,7 @@ var th = {
     onLevelReady: function(callback) {
         'use strict';
         var interval = setInterval(function() {
-            if (me.state.isCurrent(me.state.PLAY)) {
+            if (me.state.isCurrent(me.state.BUILD)) {
                 callback();
                 clearInterval(interval);
             }
@@ -39,7 +39,7 @@ var th = {
     restartGame: function(callback) {
         'use strict';
         try {
-            me.state.change(me.state.PLAY);
+            me.state.change(me.state.BUILD);
         } catch (e) {}
         th.onLevelReady(function() {
             me.state.change(me.state.GAMEOVER);
@@ -75,17 +75,17 @@ var th = {
     moveMouse: function(x, y) {
         'use strict';
         this.setMouse(x, y);
-        screen.mouseMove({});
+        me.state.current().mouseMove({});
     },
     clickMouse: function(which, x, y) {
         'use strict';
         if (x !== undefined && y !== undefined) {
             this.moveMouse(x, y);
         }
-        screen.mouseDown({
+        me.state.current().mouseDown({
             which: which
         });
-        screen.mouseUp({
+        me.state.current().mouseUp({
             which: which
         });
     },

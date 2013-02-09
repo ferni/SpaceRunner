@@ -6,7 +6,7 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-me, utils, ui, ship, screen, TILE_SIZE*/
+me, utils, TILE_SIZE*/
 
 module('utils.js');
 asyncTest('getParameterByName', function() {

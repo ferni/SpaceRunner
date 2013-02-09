@@ -12,7 +12,7 @@ module('test_helpers.js');
 asyncTest('onLevelReady', function() {
     'use strict';
     th.onLevelReady(function() {
-        ok(me.state.isCurrent(me.state.PLAY), 'Level is indeed ready');
+        ok(me.state.isCurrent(me.state.BUILD), 'Level is indeed ready');
         start();
     });
 });
