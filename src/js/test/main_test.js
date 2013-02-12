@@ -6,8 +6,7 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-strictEqual, me, _, utils, WIDTH, HEIGHT, TILE_SIZE,
-EngineItem, DoorItem*/
+strictEqual, me, _, utils, WIDTH, HEIGHT, TILE_SIZE, EngineItem, DoorItem*/
 
 module('main.js/PlayScreen');
 asyncTest('Globals are set', function() {
