@@ -27,14 +27,14 @@ if (!(window.console && console.log)) {
 }
 
 var utils = {
-    getParameterByName: function(name) {
+    getParameterByName: function (name) {
         'use strict';
         var match = new RegExp('[?&]' + name + '=([^&]*)')
             .exec(window.location.search);
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
     },
     //For loading different ships by adding ship=<name> in the query string.
-    getQueriedShip: function() {
+    getQueriedShip: function () {
         'use strict';
         var defaultShip, ship, i;
         defaultShip = 'area_01';
@@ -52,7 +52,7 @@ var utils = {
             defaultShip + '" instead.');
         return defaultShip;
     },
-    toTileVector: function(vector2D) {
+    toTileVector: function (vector2D) {
         'use strict';
         var v = new me.Vector2d();
         v.x = Math.floor(vector2D.x / me.game.currentLevel.tilewidth);
@@ -60,7 +60,7 @@ var utils = {
         return v;
     },
     //useful when wanting to do something at every coordinate of a matrix
-    matrixTiles: function(width, height, callback) { // callback(x, y)
+    matrixTiles: function (width, height, callback) { // callback(x, y)
         'use strict';
         var x, y;
         for (x = 0; x < width; x++) {
@@ -70,12 +70,12 @@ var utils = {
         }
     },
     //useful when wanting to do something at every coordinate of the level
-    levelTiles: function(callback) { //the callback must have x and y
+    levelTiles: function (callback) { //the callback must have x and y
         'use strict';
         utils.matrixTiles(WIDTH, HEIGHT, callback);
     },
     //traverses every tile coordinate inside the level of an item
-    itemTiles: function(item, callback) { //the callback must have x and y
+    itemTiles: function (item, callback) { //the callback must have x and y
         'use strict';
         var x, y;
         if (!item) {
@@ -89,7 +89,7 @@ var utils = {
             }
         }
     },
-    getEmptyMatrix: function(width, height, initialValue) {
+    getEmptyMatrix: function (width, height, initialValue) {
         'use strict';
         var matrix = [], i, j;
         for (i = 0; i < height; i++) {
@@ -100,7 +100,7 @@ var utils = {
         }
         return matrix;
     },
-    makeItem: function(type) {
+    makeItem: function (type) {
         'use strict';
         var Constructor = items[type];
         if (!Constructor) {
@@ -111,11 +111,11 @@ var utils = {
         return new Constructor(-100, -100, {});
     },
     //returns the tile position of the mouse
-    getMouse: function() {
+    getMouse: function () {
         'use strict';
         return utils.toTileVector(me.input.mouse.pos);
     },
-    setCursor: function(cursor) {
+    setCursor: function (cursor) {
         'use strict';
         document.getElementById('jsapp').style.cursor = cursor;
     }

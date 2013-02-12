@@ -3,11 +3,11 @@
 var ShipBuildingScreen = me.ScreenObject.extend({
     iItemID: 0,
     ship: null,
-    init: function (ship) {
+    init: function (shipTmxName) {
         'use strict';
         var self = this;
         this.parent(true);
-        this.ship = ship;
+        this.ship = new Ship(shipTmxName);
         this.ship.onBuildingsChanged = function () {
             self.updateGreenSpots();
         };

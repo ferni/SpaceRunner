@@ -15,6 +15,7 @@ asyncTest('Globals are set', function() {
         ok(TILE_SIZE, 'TILE_SIZE');
         ok(WIDTH, 'WIDTH');
         ok(HEIGHT, 'HEIGHT');
+        ok(FIRST_SCREEN, 'FIRST_SCREEN');
         start();
     });
 });
@@ -33,16 +34,17 @@ asyncTest('ESC key un-chooses the item', function() {
 });
 
 asyncTest('mouseDbClick does not give an error when mouse is not locked',
-    function() {
-    'use strict';
-    th.onLevelReady(function() {
-        equal(me.state.current().mouseLockedOn, null, 'Mouse is not locked');
-        me.state.current().mouseDbClick({
-            which: me.input.mouse.LEFT
+    function () {
+        'use strict';
+        th.onLevelReady(function () {
+            me.state.change(me.state.BUILD);
+            equal(me.state.current().mouseLockedOn, null, 'Mouse is not locked');
+            me.state.current().mouseDbClick({
+                which: me.input.mouse.LEFT
+            });
+            start();
         });
-        start();
     });
-});
 
 asyncTest('right click removes item', function() {
     'use strict';

@@ -59,6 +59,10 @@ var g_resources = [{
     name: 'test',
     type: 'tmx',
     src: 'data/outlines/test.tmx'
+}, {
+    name: 'button',
+    type: 'image',
+    src: 'data/img/render/button.png'
 }];
 
 var g_resources_size = [{
@@ -78,7 +82,7 @@ var jsApp = {
     Initialize the jsApp
 
     --- */
-    onload: function (shipName) {
+    onload: function () {
         'use strict';
         // init the video
         if (!me.video.init('jsapp', 576, 384)) {
@@ -88,7 +92,7 @@ var jsApp = {
         // initialize the "audio"
         //        me.audio.init("mp3,ogg");
         // set all resources to be loaded
-        me.loader.onload = this.loaded.bind(this, shipName);
+        me.loader.onload = this.loaded.bind(this);
         // set all resources to be loaded
         me.loader.preload(g_resources);
         // load everything & display a loading screen
@@ -97,15 +101,18 @@ var jsApp = {
     /* ---
     callback when everything is loaded
     --- */
-    loaded: function (shipName) {
+    loaded: function () {
         'use strict';
-        var ship = new Ship(shipName);
-        // set the "Play/Ingame" Screen Object
+        // set screens
+
+        me.state.SELECT = me.state.USER + 0;
         me.state.BUILD = me.state.USER + 1;
 
-        me.state.set(me.state.BUILD, new ShipBuildingScreen(ship));
+        window.FIRST_SCREEN = me.state.SELECT;
 
         // start the game
-        me.state.change(me.state.BUILD);
+        me.state.set(me.state.SELECT, new ShipSelectScreen());
+        
+        me.state.change(FIRST_SCREEN);
     }
 };

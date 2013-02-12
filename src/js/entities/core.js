@@ -224,4 +224,3 @@ var ItemObject = TileObject.extend({
     offShipAnimations: [] //idem
 
 });
-

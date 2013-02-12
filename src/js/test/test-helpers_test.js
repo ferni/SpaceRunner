@@ -9,10 +9,11 @@
 me, utils*/
 
 module('test_helpers.js');
-asyncTest('onLevelReady', function() {
+asyncTest('onLevelReady', function () {
     'use strict';
-    th.onLevelReady(function() {
-        ok(me.state.isCurrent(me.state.BUILD), 'Level is indeed ready');
+    th.onLevelReady(function () {
+        ok(FIRST_SCREEN, 'FIRST_SCREEN global is set');
+        ok(me.state.isCurrent(FIRST_SCREEN), 'Level is indeed ready');
         start();
     });
 });

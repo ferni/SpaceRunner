@@ -30,7 +30,7 @@ var th = {
     onLevelReady: function(callback) {
         'use strict';
         var interval = setInterval(function() {
-            if (me.state.isCurrent(me.state.BUILD)) {
+            if (me.state.isCurrent(FIRST_SCREEN)) {
                 callback();
                 clearInterval(interval);
             }
@@ -39,11 +39,11 @@ var th = {
     restartGame: function(callback) {
         'use strict';
         try {
-            me.state.change(me.state.BUILD);
+            me.state.change(FIRST_SCREEN);
         } catch (e) {}
         th.onLevelReady(function() {
             me.state.change(me.state.GAMEOVER);
-            jsApp.loaded('test');
+            jsApp.loaded();
             th.onLevelReady(callback);
         });
     },
