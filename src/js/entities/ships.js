@@ -97,7 +97,7 @@ function Ship(tmxName) {
         _buildingsMap: null,
         update: function () {
             var self = this;
-            self._buildingsMap = utils.getEmptyMatrix(WIDTH, HEIGHT,
+            self._buildingsMap = utils.getEmptyMatrix(WIDTH(), HEIGHT(),
                 charMap.codes._cleared);
             _.each(self.thisShip.buildings(), function (b) {
                 if (!b.hidden()) {
@@ -133,7 +133,7 @@ function Ship(tmxName) {
     //joins hullMap and buildingsMap
     this._getJointMap = function () {
         var self = this,
-        joint = utils.getEmptyMatrix(WIDTH, HEIGHT, charMap.codes._cleared);
+        joint = utils.getEmptyMatrix(WIDTH(), HEIGHT(), charMap.codes._cleared);
         utils.levelTiles(function (x, y) {
             joint[y][x] = self.hullMap.get()[y][x];
             if (self.buildingsMap.get()[y][x] !== charMap.codes._cleared) {

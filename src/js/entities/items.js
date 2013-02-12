@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemObject, PF, charMap, utils, WIDTH, HEIGHT*/
+/*global me, _, pr, ItemObject, PF, charMap, utils, WIDTH(), HEIGHT()*/
 
 /*
     In each item, set size and type before calling parent()
@@ -239,7 +239,7 @@ var WallItem = ItemObject.extend({
         if (ui.mouseLockedOn === this) {
             return;
         }
-        pfMatrix = utils.getEmptyMatrix(WIDTH, HEIGHT, 1);
+        pfMatrix = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 1);
         utils.levelTiles(function (x, y) {
             if (ui.ship.map()[y][x] === charMap.codes._cleared) {
                 pfMatrix[y][x] = 0; //cleared tiles are walkable
@@ -249,7 +249,7 @@ var WallItem = ItemObject.extend({
         pfMatrix[this.y()][this.x()] = 0;
 
         t = this.temp;
-        t.grid = new PF.Grid(WIDTH, HEIGHT, pfMatrix);
+        t.grid = new PF.Grid(WIDTH(), HEIGHT(), pfMatrix);
         t.preMouseX = this.x();
         t.preMouseY = this.y();
         t.pivotX = this.x();

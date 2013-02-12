@@ -3,6 +3,7 @@
 var ShipBuildingScreen = me.ScreenObject.extend({
     iItemID: 0,
     ship: null,
+    prevMouse: {},
     init: function (shipTmxName) {
         'use strict';
         var self = this;
@@ -28,15 +29,13 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.reset();
         // stuff to reset on state change
         me.levelDirector.loadLevel(this.ship.tmxName);
-        window.TILE_SIZE = me.game.currentLevel.tilewidth;
-        window.WIDTH = me.game.currentLevel.width;
-        window.HEIGHT = me.game.currentLevel.height;
+
         me.game.sort();
-        
+
 
         /*user interface stuff*/
         this.prepareGhostItems();
-        this.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
+        this.greenSpots = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 0);
 
     },
     update: function () {
@@ -95,6 +94,10 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     mouseMove: function () {
         'use strict';
         var mouseTile = utils.getMouse();
+        if (this.prevMouse.x === mouseTile.x &&
+            this.prevMouse.y === mouseTile.y) {
+            return;
+        }
         if (this.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object
             this.mouseLockedOn.lockedMouseMove(mouseTile);
@@ -106,6 +109,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.moveGhost(mouseTile.x, mouseTile.y);
         me.game.sort();
         me.game.repaint();
+        this.prevMouse = mouseTile;
 
     },
     mouseUp: function (e) {
@@ -252,7 +256,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         if (!this.chosen) {
             return;
         }
-        self.greenSpots = utils.getEmptyMatrix(WIDTH, HEIGHT, 0);
+        self.greenSpots = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 0);
         utils.levelTiles(function (x, y) {
             var i, j, cWidth, cHeight;
             if (self.chosen.canBuildAt(x, y, self.ship)) {
@@ -263,8 +267,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 cWidth = self.chosen.size[1];
                 cHeight = self.chosen.size[0];
             }
-            for (i = x; i < cWidth + x && i < WIDTH; i++) {
-                for (j = y; j < cHeight + y && j < HEIGHT; j++) {
+            for (i = x; i < cWidth + x && i < WIDTH(); i++) {
+                for (j = y; j < cHeight + y && j < HEIGHT(); j++) {
                     self.greenSpots[j][i] = 1;
                 }
             }

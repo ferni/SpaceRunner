@@ -34,7 +34,7 @@ var Button = me.GUI_Object.extend({
     draw: function (context) {
         this.parent(context);
         this.fontObject.draw(me.video.getScreenContext(),
-            this.text, this.pos.x + 30, this.pos.y + 24);
+            this.text, this.pos.x + 20, this.pos.y + 24);
     }
 });
 
