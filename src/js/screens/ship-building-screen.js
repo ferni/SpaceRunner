@@ -12,16 +12,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.ship.onBuildingsChanged = function () {
             self.updateGreenSpots();
         };
-        me.input.bindKey(me.input.KEY.ESC, 'escape');
-        me.input.registerMouseEvent('mousedown', me.game.viewport,
-            this.mouseDown.bind(this));
-        me.input.registerMouseEvent('mousemove', me.game.viewport,
-            this.mouseMove.bind(this));
-        me.input.registerMouseEvent('mouseup', me.game.viewport,
-            this.mouseUp.bind(this));
-
-        me.video.getScreenCanvas()
-            .addEventListener('dblclick', this.mouseDbClick, false);
+        
     },
     onResetEvent: function () {
         'use strict';
@@ -29,14 +20,35 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.reset();
         // stuff to reset on state change
         me.levelDirector.loadLevel(this.ship.tmxName);
-
         me.game.sort();
 
+        me.input.bindKey(me.input.KEY.ESC, 'escape');
+        me.input.registerMouseEvent('mousedown', me.game.viewport,
+            this.mouseDown.bind(this));
+        me.input.registerMouseEvent('mousemove', me.game.viewport,
+            this.mouseMove.bind(this));
+        me.input.registerMouseEvent('mouseup', me.game.viewport,
+            this.mouseUp.bind(this));
+        me.input.registerMouseEvent('dblclick', me.game.viewport,
+            this.mouseDbClick.bind(this));
+        
 
         /*user interface stuff*/
         this.prepareGhostItems();
         this.greenSpots = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 0);
 
+    },
+
+    /* ---
+    action to perform when game is finished (state change)
+    --- */
+    onDestroyEvent: function () {
+        'use strict';
+        me.input.unbindKey(me.input.KEY.ESC);
+        me.input.releaseMouseEvent('mousedown', me.game.viewport);
+        me.input.releaseMouseEvent('mousemove', me.game.viewport);
+        me.input.releaseMouseEvent('mouseup', me.game.viewport);
+        me.input.releaseMouseEvent('dblclick', me.game.viewport);
     },
     update: function () {
         'use strict';
@@ -135,12 +147,6 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.repaint();
 
     },
-    /* ---
-    action to perform when game is finished (state change)
-    --- */
-    onDestroyEvent: function () {
-        'use strict';
-    },
 
     /* User Interface Stuff*/
     chosen: null, //the chosen object from the panel (an ItemObject)
@@ -236,7 +242,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         var i = 0;
         for (i = this.redIndex; i > 0; i--) {
             me.game.remove(this.redScreen[i - 1]);
-            delete this.redScreen[i - 1];
+            this.redScreen.pop();
         }
         this.redIndex = 0;
     },

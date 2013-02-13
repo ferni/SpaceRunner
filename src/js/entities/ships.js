@@ -1,6 +1,4 @@
-﻿
-
-function Ship(tmxName) {
+﻿function Ship(tmxName) {
     'use strict';
     this.tmxName = tmxName;
     this._buildings = [];
@@ -120,6 +118,7 @@ function Ship(tmxName) {
         changed: true,
         _hullMap: null,
         update: function () {
+            
             this._hullMap = charMap.get();
             this._changed = true;
         },
