@@ -7,7 +7,6 @@
 
 /*global me*/
 var charMap = {
-    _current: null,
     codes: {
         _solid: 's',
         _front: 'f',
@@ -39,17 +38,14 @@ var charMap = {
     },
     get: function() {
         'use strict';
-        var tileWidth, tileHeight, y, x, pixelPos, row;
-        if (this._current !== null) {
-            return this._current;
-        }
+        var map, tileWidth, tileHeight, y, x, pixelPos, row;
         tileWidth = me.game.currentLevel.tilewidth;
         tileHeight = me.game.currentLevel.tileheight;
         pixelPos = {
             x: tileWidth / 2,
             y: tileHeight / 2
         };
-        this._current = [];
+        map = [];
         for (y = 0; y < me.game.currentLevel.height; y++) {
             row = [];
             pixelPos.x = tileWidth / 2;
@@ -57,11 +53,11 @@ var charMap = {
                 row.push(this.getCollisionTileChar(pixelPos.x, pixelPos.y));
                 pixelPos.x += tileWidth;
             }
-            this._current.push('');
-            this._current[y] = row.join('');
+            map.push('');
+            map[y] = row.join('');
             pixelPos.y += tileHeight;
         }
-        return this._current;
+        return map;
     }
 };
 
