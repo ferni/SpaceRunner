@@ -1,25 +1,31 @@
 ﻿
 /* Screen where one builds the ship */
 var ShipBuildingScreen = me.ScreenObject.extend({
-    iItemID: 0,
+    shipTmxName: null,
     ship: null,
     prevMouse: {},
+    width: 0,
+    height: 0,
     init: function (shipTmxName) {
         'use strict';
-        var self = this;
         this.parent(true);
-        this.ship = new Ship(shipTmxName);
-        this.ship.onBuildingsChanged = function () {
-            self.updateGreenSpots();
-        };
-        
+        this.shipTmxName = shipTmxName;
+
     },
     onResetEvent: function () {
         'use strict';
+        var self = this;
         this.parent(true);
         me.game.reset();
         // stuff to reset on state change
-        me.levelDirector.loadLevel(this.ship.tmxName);
+        me.levelDirector.loadLevel(this.shipTmxName);
+        this.ship = new Ship(me.game.currentLevel);
+        this.ship.onBuildingsChanged = function () {
+            self.updateGreenSpots();
+        };
+        this.width = me.game.currentLevel.width;
+        this.height = me.game.currentLevel.height;
+        
         me.game.sort();
 
         me.input.bindKey(me.input.KEY.ESC, 'escape');
@@ -31,7 +37,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('dblclick', me.game.viewport,
             this.mouseDbClick.bind(this));
-        
+
 
         /*user interface stuff*/
         this.prepareGhostItems();

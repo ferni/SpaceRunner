@@ -5,7 +5,6 @@
 * All rights reserved.
 */
 
-/*global me*/
 var charMap = {
     codes: {
         _solid: 's',
@@ -13,10 +12,10 @@ var charMap = {
         _back: 'b',
         _cleared: '.'
     },
-    getCollisionTileChar: function(x, y) {
+    getCollisionTileChar: function(tmxMap, x, y) {
         'use strict';
         var tileLayer, tileId, tileSet, tilePro;
-        tileLayer = me.game.currentLevel.getLayerByName('collision');
+        tileLayer = tmxMap.getLayerByName('collision');
         tileId = tileLayer.getTileId(x + 1, y + 1);
         if (tileId === null) {
             return charMap.codes._cleared;
@@ -36,21 +35,22 @@ var charMap = {
             return charMap.codes._front;
         }
     },
-    get: function() {
+    get: function(tmxMap) {
         'use strict';
         var map, tileWidth, tileHeight, y, x, pixelPos, row;
-        tileWidth = me.game.currentLevel.tilewidth;
-        tileHeight = me.game.currentLevel.tileheight;
+        tileWidth = tmxMap.tilewidth;
+        tileHeight = tmxMap.tileheight;
         pixelPos = {
             x: tileWidth / 2,
             y: tileHeight / 2
         };
         map = [];
-        for (y = 0; y < me.game.currentLevel.height; y++) {
+        for (y = 0; y < tmxMap.height; y++) {
             row = [];
             pixelPos.x = tileWidth / 2;
-            for (x = 0; x < me.game.currentLevel.width; x++) {
-                row.push(this.getCollisionTileChar(pixelPos.x, pixelPos.y));
+            for (x = 0; x < tmxMap.width; x++) {
+                row.push(this.getCollisionTileChar(tmxMap,
+                    pixelPos.x, pixelPos.y));
                 pixelPos.x += tileWidth;
             }
             map.push('');

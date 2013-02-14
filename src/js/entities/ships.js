@@ -1,7 +1,17 @@
-﻿function Ship(tmxName) {
+﻿/*global charMap, utils*/
+
+function Ship(tmxTileMap) {
     'use strict';
-    this.tmxName = tmxName;
+    this.tmxTileMap = tmxTileMap;
+    if(!this.tmxTileMap.initiated) {
+        this.tmxTileMap.load();
+    }
+    this.width = this.tmxTileMap.width;
+    this.height = this.tmxTileMap.height;
     this._buildings = [];
+    this.init = function () {
+        
+    };
     this.buildings = function () {
         return this._buildings;
     };
@@ -95,8 +105,8 @@
         _buildingsMap: null,
         update: function () {
             var self = this;
-            self._buildingsMap = utils.getEmptyMatrix(WIDTH(), HEIGHT(),
-                charMap.codes._cleared);
+            self._buildingsMap = utils.getEmptyMatrix(self.thisShip.width,
+                self.thisShip.height, charMap.codes._cleared);
             _.each(self.thisShip.buildings(), function (b) {
                 if (!b.hidden()) {
                     utils.itemTiles(b, function (x, y) {
@@ -115,11 +125,11 @@
         }
     };
     this.hullMap = {
+        thisShip: this,
         changed: true,
         _hullMap: null,
         update: function () {
-            
-            this._hullMap = charMap.get();
+            this._hullMap = charMap.get(this.thisShip.tmxTileMap);
             this._changed = true;
         },
         get: function () {
@@ -132,12 +142,14 @@
     //joins hullMap and buildingsMap
     this._getJointMap = function () {
         var self = this,
-        joint = utils.getEmptyMatrix(WIDTH(), HEIGHT(), charMap.codes._cleared);
-        utils.levelTiles(function (x, y) {
-            joint[y][x] = self.hullMap.get()[y][x];
-            if (self.buildingsMap.get()[y][x] !== charMap.codes._cleared) {
-                joint[y][x] = self.buildingsMap.get()[y][x];
-            }
+        joint = utils.getEmptyMatrix(this.width, this.height,
+            charMap.codes._cleared);
+        utils.matrixTiles(this.width, this.height,
+            function (x, y) {
+                joint[y][x] = self.hullMap.get()[y][x];
+                if (self.buildingsMap.get()[y][x] !== charMap.codes._cleared) {
+                    joint[y][x] = self.buildingsMap.get()[y][x];
+                }
         });
         return joint;
     };
@@ -164,7 +176,7 @@
         }
         this.buildingsChanged();
     };
-
+    this.init();
 }
 
 var ships = {
