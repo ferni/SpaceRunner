@@ -1,6 +1,6 @@
 ﻿/*global charMap, utils*/
 
-function Ship(tmxTileMap) {
+function Ship(tmxTileMap, syncWithGame) {
     'use strict';
     this.tmxTileMap = tmxTileMap;
     if(!this.tmxTileMap.initiated) {
@@ -8,6 +8,7 @@ function Ship(tmxTileMap) {
     }
     this.width = this.tmxTileMap.width;
     this.height = this.tmxTileMap.height;
+    this.syncWithGame = syncWithGame;
     this._buildings = [];
     this.init = function () {
         
@@ -32,7 +33,7 @@ function Ship(tmxTileMap) {
             //remove anything in its way
             utils.itemTiles(building, function (iX, iY) {
                 self.removeAt(iX, iY);
-            });
+            }, true);
             this.add(building);
             building.onBuilt();
             return building; //building successful
@@ -42,7 +43,10 @@ function Ship(tmxTileMap) {
 
     //Adds an item to the ship ignoring its placement rules
     this.add = function (item) {
-        me.game.add(item, item.zIndex);
+        if (this.syncWithGame) {
+            me.game.add(item, item.zIndex);
+        }
+        this._buildings.push(item);
         item.onShip(true);
         this.buildingsChanged();
     };
@@ -58,8 +62,10 @@ function Ship(tmxTileMap) {
         if (updateBuildings === undefined) {
             updateBuildings = true; //updates by default
         }
-        me.game.remove(item, true);
-
+        if (this.syncWithGame) {
+            me.game.remove(item, true);
+        }
+        this._buildings.remove(item);
         if (updateBuildings) {
             this.buildingsChanged();
         }
@@ -74,13 +80,8 @@ function Ship(tmxTileMap) {
     };
     //to call whenever buildings change
     this.buildingsChanged = function () {
-        this._buildings = _.filter(me.game.getEntityByName('item'),
-            function (item) {
-                return item.onShip();
-            });
         this.buildingsMap.update();
         this.onBuildingsChanged();
-        
     };
     this.onBuildingsChanged = function() {};
     this._map = null;
@@ -111,7 +112,7 @@ function Ship(tmxTileMap) {
                 if (!b.hidden()) {
                     utils.itemTiles(b, function (x, y) {
                         self._buildingsMap[y][x] = b;
-                    });
+                    }, true);
                 }
             });
 

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, WIDTH(), HEIGHT(), g_resources, items*/
+/*global me, _, g_resources, items*/
 
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
@@ -72,22 +72,27 @@ var utils = {
     //useful when wanting to do something at every coordinate of the level
     levelTiles: function (callback) { //the callback must have x and y
         'use strict';
-        utils.matrixTiles(WIDTH(), HEIGHT(), callback);
+        utils.matrixTiles(me.game.currentLevel.width,
+            me.game.currentLevel.height, callback);
     },
     //traverses every tile coordinate inside the level of an item
-    itemTiles: function (item, callback) { //the callback must have x and y
+    itemTiles: function (item, callback, insideShip) { //the callback must have x and y
         'use strict';
         var x, y;
         if (!item) {
             return;
         }
         for (x = item.x(); x < item.trueSize(0) + item.x() &&
-            x < WIDTH() && x >= 0; x++) {
+            (!insideShip || x < WIDTH()) && x >= 0; x++) {
             for (y = item.y(); y < item.trueSize(1) + item.y() &&
-                y < HEIGHT() && y >= 0; y++) {
+                (!insideShip || y < HEIGHT()) && y >= 0; y++) {
                 callback(x, y);
             }
         }
+    },
+    inRect: function (x, y, rect) {
+        //todo
+        console.error('inRect not implemented');
     },
     getEmptyMatrix: function (width, height, initialValue) {
         'use strict';

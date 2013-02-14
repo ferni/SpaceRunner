@@ -19,7 +19,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.reset();
         // stuff to reset on state change
         me.levelDirector.loadLevel(this.shipTmxName);
-        this.ship = new Ship(me.game.currentLevel);
+        this.ship = new Ship(me.game.currentLevel, true);
         this.ship.onBuildingsChanged = function () {
             self.updateGreenSpots();
         };
@@ -259,7 +259,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             if (self.greenSpots[iY][iX] === 0) {
                 self.printRed(iX, iY);
             }
-        });
+        }, true);
     },
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
     greenSpots: null,

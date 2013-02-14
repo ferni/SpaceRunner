@@ -221,6 +221,16 @@ var ItemObject = TileObject.extend({
         }
     },
     onShipAnimations: [], //0: not rotated, 1: rotated
-    offShipAnimations: [] //idem
-
+    offShipAnimations: [], //idem
+    /**
+    *@param insideRect A Rect (or any object with width and height)
+    */
+    tiles: function () {
+        'use strict';
+        var tiles = [];
+        utils.matrixTiles(this.trueSize(0), this.trueSize(1), function (x, y) {
+            tiles.push({ x: x, y: y });
+        });
+        return tiles;
+    }
 });
