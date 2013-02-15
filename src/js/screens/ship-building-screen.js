@@ -1,4 +1,5 @@
-﻿
+﻿/*global html, Ship, me, utils*/
+
 /* Screen where one builds the ship */
 var ShipBuildingScreen = me.ScreenObject.extend({
     shipTmxName: null,
@@ -25,7 +26,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         };
         this.width = me.game.currentLevel.width;
         this.height = me.game.currentLevel.height;
-        
+
         me.game.sort();
 
         me.input.bindKey(me.input.KEY.ESC, 'escape');
@@ -40,6 +41,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
 
 
         /*user interface stuff*/
+        html.load('ship-building-screen');
+        this.onHtmlLoaded();
         this.prepareGhostItems();
         this.greenSpots = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 0);
 
@@ -55,6 +58,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('dblclick', me.game.viewport);
+        html.clear();
     },
     update: function () {
         'use strict';
@@ -68,6 +72,41 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 this.choose();
             }
         }
+    },
+    onHtmlLoaded: function () {
+        'use strict';
+        var ajax, screen = this;
+        $('.items').click(function () {
+            var idItem, itemName;
+            if (me.state.isCurrent(me.state.LOADING)) {
+                return;
+            }
+            idItem = $('img', this).attr('id');
+            itemName = idItem.substring(5, idItem.length);
+            me.state.current().choose(itemName);
+        });
+
+        $(document).bind('contextmenu', function (e) {
+            return false;
+        });
+        //Save
+        $('#file_save').click(function () {
+            'use strict';
+            var strData = screen.ship.toJsonString(),
+            strName = 'ship_building.sav';
+            window.open('php/download.php?data=' + strData + '&name=' + strName);
+        });
+        //Load
+        ajax = new AjaxUpload($('#file_load'), {
+            action: 'php/upload.php',
+            name: 'uploadfile',
+            onSubmit: function (file, ext) { },
+            onComplete: function (file, response) {
+                if (response) {
+                    screen.ship.fromJsonString(response);
+                }
+            }
+        });
     },
     mouseDbClick: function (e) {
         'use strict';

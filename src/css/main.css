@@ -57,16 +57,27 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-#itemboard {
-    width:256px;
-    float:left;
-    background-color:#000000;
+
+#game{
+    width:640px;
+    position: relative;
+}
+#screensPrebuiltUi {
+    display: none;
+}
+#screensUi 
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
 }
 
-#info{
-    float:left;
-    width:640px;
-    float:left;
+#itemboard 
+{
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    width:256px;
 }
 
 #itemboard .empty{
@@ -76,10 +87,11 @@ textarea {
 
 #itemboard #item_main {
     width:148px;
-    background-color:#FEE2EB;
+    background-color:rgba(254,226,235,0.8);
     float:left;
     text-align:center;
     padding:0;
+    
 }
 
 #itemboard #item_main .items{
