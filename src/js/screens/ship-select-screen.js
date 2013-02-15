@@ -7,6 +7,7 @@
         //me.game.add(new ShipSelectButton('Small', 100, 100, 'area_01'));
         //me.game.add(new ShipSelectButton('Test', 100, 140, 'test'));
         me.game.add(new ShipSelectButton('Cyborg: Battleship I', 100, 180, 'cyborg_battleship1'));
+        me.game.add(new ShipSelectButton('Cyborg: Battleship II', 100, 220, 'cyborg_battleship2'));
         me.game.sort();
         me.game.repaint();
     }

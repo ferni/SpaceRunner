@@ -118,11 +118,19 @@ var utils = {
     //returns the tile position of the mouse
     getMouse: function () {
         'use strict';
-        return utils.toTileVector(me.input.mouse.pos);
+        var relPosition = this.vectorSub(me.input.mouse.pos,
+            me.game.currentLevel.pos);
+        return utils.toTileVector(relPosition);
     },
     setCursor: function (cursor) {
         'use strict';
         document.getElementById('jsapp').style.cursor = cursor;
+    },
+    vectorAdd: function (v1, v2) {
+        return { x: v1.x + v2.x, y: v1.y + v2.y };
+    },
+    vectorSub: function (v1, v2) {
+        return { x: v1.x - v2.x, y: v1.y - v2.y };
     }
 };
 

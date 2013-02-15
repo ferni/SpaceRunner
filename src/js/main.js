@@ -75,6 +75,14 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/ships/cyborg/battleship1.png'
 }, {
+    name: 'cyborg_battleship2',
+    type: 'tmx',
+    src: 'data/outlines/cyborg_battleship2.tmx'
+}, {
+    name: 'battleship2',
+    type: 'image',
+    src: 'data/img/render/ships/cyborg/battleship2.png'
+}, {
     name: 'button',
     type: 'image',
     src: 'data/img/render/button.png'
@@ -100,7 +108,7 @@ var jsApp = {
     onload: function () {
         'use strict';
         // init the video
-        if (!me.video.init('jsapp', 1440, 1056)) {
+        if (!me.video.init('jsapp', 1440, 1152)) {
             alert('Sorry but your browser does not support html 5 canvas.');
             return;
         }
