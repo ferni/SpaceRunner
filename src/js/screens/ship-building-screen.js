@@ -17,7 +17,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         'use strict';
         var self = this;
         this.parent(true);
-        me.game.reset();
+        me.video.clearSurface(me.video.getScreenContext(), 'black');
         // stuff to reset on state change
         me.levelDirector.loadLevel(this.shipTmxName);
         this.ship = new Ship(me.game.currentLevel, true);

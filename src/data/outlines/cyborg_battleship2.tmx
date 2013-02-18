@@ -27,7 +27,7 @@
   </tile>
  </tileset>
  <tileset firstgid="54" name="ship" tilewidth="1440" tileheight="1152">
-  <image source="../img/render/ships/cyborg/battleship2.png" width="1440" height="1152"/>
+  <image source="../img/render/ships/cyborg/cyborg_battleship2_img.png" width="1440" height="1152"/>
  </tileset>
  <layer name="exterior" width="45" height="36">
   <data encoding="base64">

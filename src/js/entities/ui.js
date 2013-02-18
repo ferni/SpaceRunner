@@ -23,8 +23,17 @@ var RedColorObject = TileObject.extend({
 var Button = me.GUI_Object.extend({
     fontObject: null,
     text: '',
-    init: function (text, x, y) {
-        this.parent(x, y, { image: 'button', name: 'button' });
+    init: function (text, x, y, settings) {
+        if(!settings){
+            settings = {};
+        }
+        if(!settings.image){
+            settings.image = 'button';
+        }
+        if(!settings.name){
+            settings.name = 'button';
+        }
+        this.parent(x, y, settings);
         this.text = text;
         this.setTransparency('#FFFFFF');
         this.fontObject = new me.Font('Arial', 16, 'white');
@@ -40,9 +49,10 @@ var Button = me.GUI_Object.extend({
 
 var ShipSelectButton = Button.extend({
     tmxName: '',
-    init: function (text, x, y, tmxName) {
+    init: function (text, x, y, race, type) {
+        this.tmxName = race + '_' + type;
         this.parent(text, x, y);
-        this.tmxName = tmxName;
+        
     },
     onClick: function () {
         me.state.set(me.state.BUILD, new ShipBuildingScreen(this.tmxName));

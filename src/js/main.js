@@ -67,21 +67,45 @@ var g_resources = [{
     type: 'tmx',
     src: 'data/outlines/test.tmx'
 }, {
+    name: 'cyborg_frigate',
+    type: 'tmx',
+    src: 'data/outlines/cyborg_frigate.tmx'
+}, {
+    name: 'cyborg_frigate_img',
+    type: 'image',
+    src: 'data/img/render/ships/cyborg/cyborg_frigate_img.png'
+}, {
+    name: 'cyborg_cruiser',
+    type: 'tmx',
+    src: 'data/outlines/cyborg_cruiser.tmx'
+}, {
+    name: 'cyborg_cruiser_img',
+    type: 'image',
+    src: 'data/img/render/ships/cyborg/cyborg_cruiser_img.png'
+}, {
     name: 'cyborg_battleship1',
     type: 'tmx',
     src: 'data/outlines/cyborg_battleship1.tmx'
 }, {
-    name: 'battleship1',
+    name: 'cyborg_battleship1_img',
     type: 'image',
-    src: 'data/img/render/ships/cyborg/battleship1.png'
+    src: 'data/img/render/ships/cyborg/cyborg_battleship1_img.png'
 }, {
     name: 'cyborg_battleship2',
     type: 'tmx',
     src: 'data/outlines/cyborg_battleship2.tmx'
 }, {
-    name: 'battleship2',
+    name: 'cyborg_battleship2_img',
     type: 'image',
-    src: 'data/img/render/ships/cyborg/battleship2.png'
+    src: 'data/img/render/ships/cyborg/cyborg_battleship2_img.png'
+}, {
+    name: 'cyborg_drone',
+    type: 'tmx',
+    src: 'data/outlines/cyborg_drone.tmx'
+}, {
+    name: 'cyborg_drone_img',
+    type: 'image',
+    src: 'data/img/render/ships/cyborg/cyborg_drone_img.png'
 }, {
     name: 'button',
     type: 'image',
