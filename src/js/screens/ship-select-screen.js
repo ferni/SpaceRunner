@@ -3,21 +3,57 @@
         this.parent();
     },
     onResetEvent: function () {
+        this.parent();
         me.video.clearSurface(me.video.getScreenContext(), 'gray');
-        //me.game.add(new ShipSelectButton('Small', 100, 100, 'area_01'));
-        //me.game.add(new ShipSelectButton('Test', 100, 140, 'test'));
-        me.game.add(new Button('Cyborg', 200, 180));
-        me.game.add(new ShipSelectButton('Frigate', 500, 180,
-            'cyborg', 'frigate'));
-        me.game.add(new ShipSelectButton('Cruiser', 500, 220,
-            'cyborg', 'cruiser'));
-        me.game.add(new ShipSelectButton('Battleship', 500, 260,
-            'cyborg', 'battleship1'));
-        me.game.add(new ShipSelectButton('Drone', 500, 300,
-            'cyborg', 'drone'));
-        
-        me.game.sort();
-        me.game.repaint();
+        html.load('ship-select-screen');
+        this.onHtmlLoaded();
+    },
+    onDestroyEvent: function () {
+        html.clear();
+    },
+    onHtmlLoaded: function () {
+        var RaceButtonSet, HtmlViewModel;
+        RaceButtonSet = function (name, ships, selected) {
+            this.name = name;
+            this.ships = ships;
+            this.selected = ko.observable(selected);
+        };
+        HtmlViewModel = function (screen) {
+            this.selectedRace = function () {
+                var race = _.find(this.races, function (r) {
+                    return r.selected();
+                });
+                if (!race) {
+                    console.error('No race is selected');
+                }
+                return race.name;
+            };
+            this.selectRace = function (raceButtonSet) {
+                _.each(screen.htmlVm.races, function (r) {
+                    r.selected(raceButtonSet.name === r.name);
+                });
+            };
+            this.selectShip = function (shipName) {
+                me.state.set(me.state.BUILD,
+                    new ShipBuildingScreen(screen.htmlVm.selectedRace() + '_' + shipName));
+                me.state.change(me.state.BUILD);
+            };
+            this.races = [
+                new RaceButtonSet('Cyborg',
+                    [
+                        'Frigate',
+                        'Cruiser',
+                        'Battleship1',
+                        'Drone'
+                    ], true),
+                new RaceButtonSet('Humanoid',
+                    [
+                        
+                    ])
+            ];
+        };
+        this.htmlVm = new HtmlViewModel(this);
+        ko.applyBindings(this.htmlVm);
     }
 
 });

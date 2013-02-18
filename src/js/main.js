@@ -157,9 +157,11 @@ var jsApp = {
 
         window.FIRST_SCREEN = me.state.SELECT;
 
+        html.store('ship-select-screen');
+        html.store('ship-building-screen');
         // start the game
         me.state.set(me.state.SELECT, new ShipSelectScreen());
-        
+
         me.state.change(FIRST_SCREEN);
     }
 };

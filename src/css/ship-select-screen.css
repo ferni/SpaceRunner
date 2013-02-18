@@ -1,0 +1,51 @@
+﻿#ship-select-screen .button
+{
+    border: 2px solid black;
+    padding: 4px;
+    font-size: 30px;
+    font-family: Verdana;
+}
+
+#ship-select-screen .button:hover {
+    border: 2px solid black;
+    cursor: pointer;
+}
+#ship-select-screen ul {
+    list-style-type: none;
+}
+
+#ship-select-screen .race-button {
+    background-color: green;
+}
+
+#ship-select-screen .race-button:hover {
+    background-color: greenyellow;
+}
+
+#ship-select-screen .race-button.selected 
+{
+    color: yellow;
+}
+
+#ship-select-screen .ship-select-buttons {
+    position: absolute;
+    top: 200px;
+    left: 300px;
+    
+}
+#ship-select-screen .ships {
+    position: absolute;
+    top: 0px;
+    left: 200px;
+}
+
+#ship-select-screen .ship-button  
+{
+    background-color: #0099FF; 
+}
+
+#ship-select-screen .ship-button:hover
+{
+    background-color: #66CCFF;
+}
+
