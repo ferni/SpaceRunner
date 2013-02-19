@@ -1,5 +1,6 @@
 ﻿/*global jQuery, $*/
 
+/*For handling the screens' html*/
 var html = {
     load: function (screenId) {
         var screenHtml;
@@ -15,6 +16,11 @@ var html = {
     *returns stored html
     */
     store: function (screenId) {
+        var node = $('#' + screenId)[0];
+        if (!node) {
+            console.error('#' + screenId + ' not found in html');
+            return '';
+        }
         var screenHtml = $('#' + screenId)[0].outerHTML;
         this.stored[screenId] = screenHtml;
         $('#' + screenId).remove();

@@ -48,7 +48,7 @@
                     ], true),
                 new RaceButtonSet('Humanoid',
                     [
-                        
+                        'Frigate'
                     ])
             ];
         };

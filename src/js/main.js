@@ -55,7 +55,7 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/wall_001.png'
 }, {
-    name: 'colTile',
+    name: 'metatiles32x32',
     type: 'image',
     src: 'data/img/render/metatiles32x32.png'
 }, {
@@ -107,6 +107,14 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/ships/cyborg/cyborg_drone_img.png'
 }, {
+    name: 'humanoid_frigate',
+    type: 'tmx',
+    src: 'data/outlines/humanoid_frigate.tmx'
+}, {
+    name: 'humanoid_frigate_img',
+    type: 'image',
+    src: 'data/img/render/ships/humanoid/humanoid_frigate_img.png'
+}, {
     name: 'button',
     type: 'image',
     src: 'data/img/render/button.png'
@@ -124,10 +132,11 @@ var g_resources_size = [{
 
 // jsApp
 var jsApp = {
+    loadReady: false,
     /* ---
 
     Initialize the jsApp
-
+    
     --- */
     onload: function () {
         'use strict';
@@ -163,5 +172,6 @@ var jsApp = {
         me.state.set(me.state.SELECT, new ShipSelectScreen());
 
         me.state.change(FIRST_SCREEN);
+        this.loadReady = true;
     }
 };
