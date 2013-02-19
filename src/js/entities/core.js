@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, charMap, pr, TILE_SIZE()*/
+/*global me, _, utils, charMap, pr, TILE_SIZE*/
 
 /* An object that has tile position (x and y),
     and row length and col length through "size"
@@ -23,8 +23,8 @@ var TileObject = me.ObjectEntity.extend({
         if (!this.totalSize) {
             this.totalSize = [this.size[0], this.size[1]];
         }
-        settings.spritewidth = this.totalSize[0] * TILE_SIZE();
-        settings.spriteheight = this.totalSize[1] * TILE_SIZE();
+        settings.spritewidth = this.totalSize[0] * TILE_SIZE;
+        settings.spriteheight = this.totalSize[1] * TILE_SIZE;
         this.parent(x, y, settings);
         //restore type reset on this.parent()
         this.type = settings.image;
@@ -40,7 +40,7 @@ var TileObject = me.ObjectEntity.extend({
             return this;
         }
         if (!this.hidden()) {
-            this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE();
+            this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
         }
         this._x = x;
         this.onPositionChange();
@@ -55,7 +55,7 @@ var TileObject = me.ObjectEntity.extend({
             return this;
         }
         if (!this.hidden()) {
-            this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE();
+            this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
         }
         this._y = y;
         this.onPositionChange();
@@ -71,8 +71,8 @@ var TileObject = me.ObjectEntity.extend({
             this.pos.x = -400;
             this.pos.y = 0;
         } else {
-            this.pos.x = this._x * TILE_SIZE();
-            this.pos.y = this._y * TILE_SIZE();
+            this.pos.x = this._x * TILE_SIZE;
+            this.pos.y = this._y * TILE_SIZE;
         }
         this._hidden = hide;
         return this;

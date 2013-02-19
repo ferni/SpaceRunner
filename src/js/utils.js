@@ -55,8 +55,8 @@ var utils = {
     toTileVector: function (vector2D) {
         'use strict';
         var v = new me.Vector2d();
-        v.x = Math.floor(vector2D.x / me.game.currentLevel.tilewidth);
-        v.y = Math.floor(vector2D.y / me.game.currentLevel.tileheight);
+        v.x = Math.floor(vector2D.x / TILE_SIZE);
+        v.y = Math.floor(vector2D.y / TILE_SIZE);
         return v;
     },
     //useful when wanting to do something at every coordinate of a matrix
@@ -83,9 +83,9 @@ var utils = {
             return;
         }
         for (x = item.x(); x < item.trueSize(0) + item.x() &&
-            (!insideShip || x < WIDTH()) && x >= 0; x++) {
+            (!insideShip || x < width()) && x >= 0; x++) {
             for (y = item.y(); y < item.trueSize(1) + item.y() &&
-                (!insideShip || y < HEIGHT()) && y >= 0; y++) {
+                (!insideShip || y < height()) && y >= 0; y++) {
                 callback(x, y);
             }
         }
@@ -118,6 +118,9 @@ var utils = {
     //returns the tile position of the mouse
     getMouse: function () {
         'use strict';
+        if (!me.game.currentLevel.initialized) {
+            throw "There's no level to get the mouse";
+        }
         var relPosition = this.vectorSub(me.input.mouse.pos,
             me.game.currentLevel.pos);
         return utils.toTileVector(relPosition);

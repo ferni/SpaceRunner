@@ -1,4 +1,6 @@
 ﻿var ShipSelectScreen = me.ScreenObject.extend({
+    name: 'ship-select-screen',
+    isReset: false,
     init: function () {
         this.parent();
     },
@@ -7,8 +9,11 @@
         me.video.clearSurface(me.video.getScreenContext(), 'gray');
         html.load('ship-select-screen');
         this.onHtmlLoaded();
+        this.isReset = true;
+        jsApp.onScreenReset();
     },
     onDestroyEvent: function () {
+        this.isReset = false;
         html.clear();
     },
     onHtmlLoaded: function () {
@@ -33,10 +38,8 @@
                     r.selected(raceButtonSet.name === r.name);
                 });
             };
-            this.selectShip = function (shipName) {
-                me.state.set(me.state.BUILD,
-                    new ShipBuildingScreen(screen.htmlVm.selectedRace() + '_' + shipName));
-                me.state.change(me.state.BUILD);
+            this.selectShip = function (shipType) {
+                me.state.change(me.state.BUILD, screen.htmlVm.selectedRace() + '_' + shipType);
             };
             this.races = [
                 new RaceButtonSet('Cyborg',

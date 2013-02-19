@@ -7,13 +7,20 @@
 
 /*global me, _, utils, $, items, RedColorObject, charMap*/
 
-function TILE_SIZE() {
-    return me.game.currentLevel.tilewidth;
-}
-function WIDTH() {
+//sugar
+var TILE_SIZE = 32;
+function width() {
+    if (!me.game.currentLevel.initialized) {
+        throw 'Cannot get width from the current level.' +
+            ' The level has not been loaded, or there is no level.';
+    }
     return me.game.currentLevel.width;
 }
-function HEIGHT() {
+function height() {
+    if (!me.game.currentLevel.initialized) {
+        throw 'Cannot get height from the current level.' +
+            ' The level has not been loaded, or there is no level.';
+    }
     return me.game.currentLevel.height;
 }
 // game resources
@@ -170,8 +177,15 @@ var jsApp = {
         html.store('ship-building-screen');
         // start the game
         me.state.set(me.state.SELECT, new ShipSelectScreen());
+        me.state.set(me.state.BUILD, new ShipBuildingScreen());
 
-        me.state.change(FIRST_SCREEN);
+        me.state.change(me.state.SELECT);
         this.loadReady = true;
-    }
+        this.onAppLoaded();
+    },
+    /*
+    useful for testing
+    */
+    onScreenReset: function () { },
+    onAppLoaded: function () { }
 };

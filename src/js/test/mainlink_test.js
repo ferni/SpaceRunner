@@ -11,14 +11,14 @@ me, $, utils*/
 module('mainlink.js');
 asyncTest('Item click', function() {
    'use strict';
-    th.onLevelReady(function() {
+    th.onGameReady(function() {
         $('.items #item_weapon').trigger('click');
-        equal(me.state.current().chosen.type, 'weapon', 'choose weapon');
+        equal(screen.chosen.type, 'weapon', 'choose weapon');
         ok($('.items #item_weapon').hasClass('chosen'),
             "weapon thumbnail has 'chosen' class");
 
         $('.items #item_engine').trigger('click');
-        equal(me.state.current().chosen.type, 'engine', 'choose engine');
+        equal(screen.chosen.type, 'engine', 'choose engine');
         ok($('.items #item_engine').hasClass('chosen'),
             "engine thumbnail has 'chosen' class");
         ok(!$('.items #item_weapon').hasClass('chosen'),

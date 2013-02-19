@@ -6,7 +6,12 @@
 */
 
 /*global QUnit*/
+QUnit.config.autostart = false;
+
 QUnit.done(function(e) {
     'use strict';
 });
 
+th.onGameReady(function () {
+    QUnit.start();
+});

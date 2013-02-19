@@ -73,9 +73,9 @@ function Ship(tmxTileMap, syncWithGame) {
 
     this.removeAll = function () {
         var self = this;
-        _.each(this.buildings(), function (building) {
-            self.remove(building, false);
-        });
+        for (var i = this.buildings().length - 1; i >= 0; i--) {
+            self.remove(this.buildings()[i]);
+        }
         this.buildingsChanged();
     };
     //to call whenever buildings change

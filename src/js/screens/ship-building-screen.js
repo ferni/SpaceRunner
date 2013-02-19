@@ -2,24 +2,23 @@
 
 /* Screen where one builds the ship */
 var ShipBuildingScreen = me.ScreenObject.extend({
-    shipTmxName: null,
+    name: 'ship-building-screen',
+    isReset: false,
     ship: null,
     prevMouse: {},
     width: 0,
     height: 0,
-    init: function (shipTmxName) {
+    init: function () {
         'use strict';
         this.parent(true);
-        this.shipTmxName = shipTmxName;
-
     },
-    onResetEvent: function () {
+    onResetEvent: function (shipTmxName) {
         'use strict';
         var self = this;
         this.parent(true);
         me.video.clearSurface(me.video.getScreenContext(), 'black');
         // stuff to reset on state change
-        me.levelDirector.loadLevel(this.shipTmxName);
+        me.levelDirector.loadLevel(shipTmxName);
         this.ship = new Ship(me.game.currentLevel, true);
         this.ship.onBuildingsChanged = function () {
             self.updateGreenSpots();
@@ -43,9 +42,13 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         /*user interface stuff*/
         html.load('ship-building-screen');
         this.onHtmlLoaded();
-        this.prepareGhostItems();
-        this.greenSpots = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 0);
 
+        this.mouseLockedOn = null;
+        this.prepareGhostItems();
+        this.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
+
+        this.isReset = true;
+        jsApp.onScreenReset();
     },
 
     /* ---
@@ -59,6 +62,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('dblclick', me.game.viewport);
         html.clear();
+        this.isReset = false;
     },
     update: function () {
         'use strict';
@@ -307,7 +311,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         if (!this.chosen) {
             return;
         }
-        self.greenSpots = utils.getEmptyMatrix(WIDTH(), HEIGHT(), 0);
+        self.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
         utils.levelTiles(function (x, y) {
             var i, j, cWidth, cHeight;
             if (self.chosen.canBuildAt(x, y, self.ship)) {
@@ -318,8 +322,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 cWidth = self.chosen.size[1];
                 cHeight = self.chosen.size[0];
             }
-            for (i = x; i < cWidth + x && i < WIDTH(); i++) {
-                for (j = y; j < cHeight + y && j < HEIGHT(); j++) {
+            for (i = x; i < cWidth + x && i < width(); i++) {
+                for (j = y; j < cHeight + y && j < height(); j++) {
                     self.greenSpots[j][i] = 1;
                 }
             }

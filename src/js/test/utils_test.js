@@ -9,45 +9,39 @@
 me, utils, TILE_SIZE*/
 
 module('utils.js');
-asyncTest('getParameterByName', function() {
+test('getParameterByName', function() {
     'use strict';
-    th.restartGame(function() {
-        equal(utils.getParameterByName('asdf'), null,
-            "'asdf' not in query string");
-        start();
-    });
+    equal(utils.getParameterByName('asdf'), null,
+        "'asdf' not in query string");
 });
 
-asyncTest('getQueriedShip: queried ship not found', function() {
+test('getQueriedShip: queried ship not found', function() {
     'use strict';
-    th.restartGame(function() {
-        var originalFunction = utils.getParameterByName;
-        utils.getParameterByName = function() {
-            return 'unknownShip';
-        };
-        equal(utils.getQueriedShip(), 'area_01',
-            "'unknownShip' not found, returns default ship");
-        utils.getParameterByName = originalFunction;
-        start();
-    });
+    var originalFunction = utils.getParameterByName;
+    utils.getParameterByName = function() {
+        return 'unknownShip';
+    };
+    equal(utils.getQueriedShip(), 'area_01',
+        "'unknownShip' not found, returns default ship");
+    utils.getParameterByName = originalFunction;
 });
 
-asyncTest('getQueriedShip', function() {
+test('getQueriedShip', function() {
     'use strict';
-    th.restartGame(function() {
-        var originalFunction = utils.getParameterByName;
-        utils.getParameterByName = function() {
-            return 'test';
-        };
-        equal(utils.getQueriedShip(), 'test');
-        utils.getParameterByName = originalFunction;
-        start();
-    });
+    var originalFunction = utils.getParameterByName;
+    utils.getParameterByName = function() {
+        return 'test';
+    };
+    equal(utils.getQueriedShip(), 'test');
+    utils.getParameterByName = originalFunction;
+
 });
 
-asyncTest('toTileVector', function() {
+asyncTest('toTileVector', function () {
     'use strict';
-    th.restartGame(function() {
+    th.loadScreen(function () {
+        me.state.change(me.state.BUILD, 'test');
+    }, function () {
         var tileVector = utils.toTileVector(new me.Vector2d(7, 7));
         equal(tileVector.x, 0);
         equal(tileVector.y, 0);
@@ -57,45 +51,46 @@ asyncTest('toTileVector', function() {
         equal(tileVector.y, 1);
 
         tileVector = utils.toTileVector(
-            new me.Vector2d(TILE_SIZE - 1, TILE_SIZE));
+        new me.Vector2d(TILE_SIZE - 1, TILE_SIZE));
         equal(tileVector.x, 0);
         equal(tileVector.y, 1);
         start();
     });
+
 });
 
-asyncTest('getEmptyMatrix', function() {
+test('getEmptyMatrix', function() {
     'use strict';
-    th.restartGame(function() {
-        var matrix = utils.getEmptyMatrix(2, 3, 0);
-        equal(matrix[0][0], 0);
-        equal(matrix[0][1], 0);
-        equal(matrix[1][0], 0);
-        equal(matrix[1][1], 0);
-        equal(matrix[2][0], 0);
-        equal(matrix[2][1], 0);
-        equal(matrix[0][2], undefined);
-        equal(matrix[3], undefined);
-        start();
-    });
+    var matrix = utils.getEmptyMatrix(2, 3, 0);
+    equal(matrix[0][0], 0);
+    equal(matrix[0][1], 0);
+    equal(matrix[1][0], 0);
+    equal(matrix[1][1], 0);
+    equal(matrix[2][0], 0);
+    equal(matrix[2][1], 0);
+    equal(matrix[0][2], undefined);
+    equal(matrix[3], undefined);
 });
 
-asyncTest('makeItem: invalid item', function() {
+test('makeItem: invalid item', function() {
     'use strict';
-    th.restartGame(function() {
-        equal(utils.makeItem('asdf'), null);
-        start();
-    });
+    equal(utils.makeItem('asdf'), null);
 });
 
-asyncTest('getMouse', function() {
+asyncTest('getMouse', function () {
     'use strict';
-    th.restartGame(function() {
+    th.loadScreen(function () {
+        me.state.change(me.state.BUILD, 'test');
+    }, function () {
+        var originalPos = me.game.currentLevel.pos;
+        me.game.currentLevel.pos = new me.Vector2d(0, 0);
         var m = utils.getMouse();
         equal(m.x, 0);
         equal(m.y, 0);
+        me.game.currentLevel.pos = originalPos;
         start();
     });
+
 });
 
 test('setCursor', function() {

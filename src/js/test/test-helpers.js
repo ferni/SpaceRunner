@@ -27,58 +27,88 @@ var th = {
         }
     },
     //Calls the callback when the state is "PLAY"
-    onLevelReady: function(callback) {
+    onGameReady: function (callback) {
         'use strict';
-        var interval = setInterval(function() {
-            if (me.state.isCurrent(FIRST_SCREEN)) {
+        if (jsApp.loadReady) {
+            callback();
+            return;
+        }
+        jsApp.onAppLoaded = function () {
+            jsApp.onAppLoaded = function () { };
+            callback();
+        };
+    },
+    restartGame: function (callback) {
+        me.state.change(me.state.GAMEOVER);
+        jsApp.onAppLoaded = function () {
+            jsApp.onAppLoaded = function () { };
+            th.onState(FIRST_SCREEN, callback);
+        };
+        jsApp.loaded();
+    },
+    onState: function (state, callback) {
+        var interval = setInterval(function () {
+            if (me.state.isCurrent(state)) {
                 callback();
                 clearInterval(interval);
             }
         }, 100);
     },
-    restartGame: function(callback) {
-        'use strict';
-        try {
-            me.state.change(FIRST_SCREEN);
-        } catch (e) {}
-        th.onLevelReady(function() {
-            me.state.change(me.state.GAMEOVER);
-            jsApp.loaded();
-            th.onLevelReady(callback);
-        });
+    loadScreen: function (changeState, onReady) {
+        jsApp.onScreenReset = function () {
+            jsApp.onScreenReset = function () { };
+            onReady(me.state.current());
+        };
+        changeState();
     },
     _originalGetMouseFunction: utils.getMouse,
     _mousePosition: {
         x: 1,
         y: 1
     },
-    mouseBegin: function() {
+    _screen: null,
+    mouseBegin: function (screen) {
         'use strict';
+        if (!screen) {
+            throw 'screen parameter is mandatory';
+        }
+        this._screen = screen;
         //replace utils.getMouse function
-        utils.getMouse = function() {
-            var vector = new me.Vector2d();
-            vector.x = th._mousePosition.x;
-            vector.y = th._mousePosition.y;
-            return vector;
+        utils.getMouse = function () {
+            return {
+                x: th._mousePosition.x,
+                y: th._mousePosition.y
+            };
+            
         };
     },
-    mouseEnd: function() {
+    mouseEnd: function () {
         'use strict';
         utils.getMouse = this._originalGetMouseFunction;
+        this._screen = null;
     },
     //fakes the mouse position (x: tile column, y: tile row)
-    setMouse: function(x, y) {
+    setMouse: function (x, y) {
         'use strict';
+        if (!this._screen) {
+            throw 'Call th.mouseBegin before calling th.setMouse';
+        }
         this._mousePosition.x = x;
         this._mousePosition.y = y;
     },
-    moveMouse: function(x, y) {
+    moveMouse: function (x, y) {
         'use strict';
+        if (!this._screen) {
+            throw 'Call th.mouseBegin before calling th.mouseMove';
+        }
         this.setMouse(x, y);
         me.state.current().mouseMove({});
     },
-    clickMouse: function(which, x, y) {
+    clickMouse: function (which, x, y) {
         'use strict';
+        if (!this._screen) {
+            throw 'Call th.mouseBegin before calling th.clickMouse';
+        }
         if (x !== undefined && y !== undefined) {
             this.moveMouse(x, y);
         }
@@ -89,12 +119,18 @@ var th = {
             which: which
         });
     },
-    leftClick: function(x, y) {
+    leftClick: function (x, y) {
         'use strict';
+        if (!this._screen) {
+            throw 'Call th.mouseBegin before calling th.leftClick';
+        }
         this.clickMouse(me.input.mouse.LEFT, x, y);
     },
-    rightClick: function(x, y) {
+    rightClick: function (x, y) {
         'use strict';
+        if (!this._screen) {
+            throw 'Call th.mouseBegin before calling th.rightClick';
+        }
         this.clickMouse(me.input.mouse.RIGHT, x, y);
     }
 };
