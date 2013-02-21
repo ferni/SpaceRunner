@@ -51,7 +51,10 @@
                     ], true),
                 new RaceButtonSet('Humanoid',
                     [
-                        'Frigate'
+                        'Frigate',
+                        'Cruiser',
+                        'Battleship',
+                        'Drone'
                     ])
             ];
         };

@@ -121,6 +121,30 @@ var g_resources = [{
     name: 'humanoid_frigate_img',
     type: 'image',
     src: 'data/img/render/ships/humanoid/humanoid_frigate_img.png'
+},{
+    name: 'humanoid_cruiser',
+    type: 'tmx',
+    src: 'data/outlines/humanoid_cruiser.tmx'
+}, {
+    name: 'humanoid_cruiser_img',
+    type: 'image',
+    src: 'data/img/render/ships/humanoid/humanoid_cruiser_img.png'
+},{
+    name: 'humanoid_battleship',
+    type: 'tmx',
+    src: 'data/outlines/humanoid_battleship.tmx'
+}, {
+    name: 'humanoid_battleship_img',
+    type: 'image',
+    src: 'data/img/render/ships/humanoid/humanoid_battleship_img.png'
+},{
+    name: 'humanoid_drone',
+    type: 'tmx',
+    src: 'data/outlines/humanoid_drone.tmx'
+}, {
+    name: 'humanoid_drone_img',
+    type: 'image',
+    src: 'data/img/render/ships/humanoid/humanoid_drone_img.png'
 }, {
     name: 'button',
     type: 'image',
