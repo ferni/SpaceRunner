@@ -145,6 +145,38 @@ var g_resources = [{
     name: 'humanoid_drone_img',
     type: 'image',
     src: 'data/img/render/ships/humanoid/humanoid_drone_img.png'
+},{
+    name: 'liquid_frigate',
+    type: 'tmx',
+    src: 'data/outlines/liquid_frigate.tmx'
+}, {
+    name: 'liquid_frigate_img',
+    type: 'image',
+    src: 'data/img/render/ships/liquid/liquid_frigate_img.png'
+},{
+    name: 'liquid_cruiser',
+    type: 'tmx',
+    src: 'data/outlines/liquid_cruiser.tmx'
+}, {
+    name: 'liquid_cruiser_img',
+    type: 'image',
+    src: 'data/img/render/ships/liquid/liquid_cruiser_img.png'
+},{
+    name: 'liquid_battleship',
+    type: 'tmx',
+    src: 'data/outlines/liquid_battleship.tmx'
+}, {
+    name: 'liquid_battleship_img',
+    type: 'image',
+    src: 'data/img/render/ships/liquid/liquid_battleship_img.png'
+},{
+    name: 'liquid_drone',
+    type: 'tmx',
+    src: 'data/outlines/liquid_drone.tmx'
+}, {
+    name: 'liquid_drone_img',
+    type: 'image',
+    src: 'data/img/render/ships/liquid/liquid_drone_img.png'
 }, {
     name: 'button',
     type: 'image',

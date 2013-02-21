@@ -55,6 +55,13 @@
                         'Cruiser',
                         'Battleship',
                         'Drone'
+                    ]),
+                new RaceButtonSet('Liquid',
+                    [
+                        'Frigate',
+                        'Cruiser',
+                        'Battleship',
+                        'Drone'
                     ])
             ];
         };
