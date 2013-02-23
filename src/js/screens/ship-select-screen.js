@@ -22,6 +22,11 @@
             this.name = name;
             this.ships = ships;
             this.selected = ko.observable(selected);
+            this.img = function(shipType){
+                var race = this.name.toLowerCase();
+                return 'data/img/render/ships/' + race + '/' + race + '_' +
+                    shipType.toLowerCase() + '_img.png';
+            };
         };
         HtmlViewModel = function (screen) {
             this.selectedRace = function () {

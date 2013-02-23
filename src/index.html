@@ -100,7 +100,10 @@
                             Cyborg
                         </span>
                         <ul class="ships" data-bind="visible: selected(),foreach: ships">
-                            <li class="ship-button button" data-bind="text: $data, click: $root.selectShip"></li>
+                            <li class="ship-button button" data-bind="click: $root.selectShip">
+                                <p><img alt="<ship preview>" data-bind="attr:{src: $parent.img($data)}"></img></p>
+                                <p><span data-bind="text: $data"></span></p>
+                            </li>
                         </ul>
                     </li>
                 </ul>
