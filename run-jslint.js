@@ -50,6 +50,52 @@ function reportForFile(path){
     }
 }
 
+//returns object,
+//obj.correct = true if header is correct
+//obj.line is differing line
+function checkHeader(file){
+    var headerLines = ['/*',
+            '-*- coding: utf-8 -*-',
+            '* vim: set ts=4 sw=4 et sts=4 ai:',
+            '* Copyright 2013 MITHIS',
+            '* All rights reserved.',
+            '*/'],
+        line,
+        stream = fs.open(file, 'r');
+    for(var i = 0; i < headerLines.length; i++){
+        line = stream.readLine();
+        if(line !== headerLines[i]){
+            return {correct: false, line: i};
+        }
+    }
+    return {correct: true};
+}
+
+function checkHeaders(files){
+    var checkHeaderResult, isCorrect, i, incorrectFiles = [];
+    console.log('\n*************************');
+    console.log('******   HEADERS   ******');
+    console.log('*************************');
+    for(i = 0; i < files.length; i++){
+        checkHeaderResult = checkHeader(files[i]);
+        isCorrect = checkHeaderResult.correct;
+        if(!isCorrect){
+            incorrectFiles.push({
+                    file: files[i],
+                    line: checkHeaderResult.line
+            });
+        }
+    }
+    if(incorrectFiles.length > 0){
+        console.log('The following ' + incorrectFiles.length + ' files have incorrect headers:');
+        for(i = 0; i < incorrectFiles.length; i++){
+            console.log(' - ' + incorrectFiles[i].file +
+                ' (Line ' + incorrectFiles[i].line + ')');
+        }
+    }
+    console.log('\n('+ (files.length - incorrectFiles.length) + ' files OK)\n');
+}
+
 //"Main"
 
 var files = getFilesForLint();
@@ -57,6 +103,7 @@ var files = getFilesForLint();
 for(var i = 0; i < files.length; i++){
     reportForFile(files[i]);
 }
+checkHeaders(files);
 phantom.exit();
 
 
