@@ -1,4 +1,14 @@
-﻿/*global html, Ship, me, utils*/
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+
+/*global
+_, html, $, Ship, me, utils, jsApp, width, height, AjaxUpload,
+items, RedColorObject, charMap */
 
 /* Screen where one builds the ship */
 var ShipBuildingScreen = me.ScreenObject.extend({
@@ -95,7 +105,6 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         });
         //Save
         $('#file_save').click(function () {
-            'use strict';
             var strData = screen.ship.toJsonString(),
             strName = 'ship_building.sav';
             window.open('php/download.php?data=' + strData + '&name=' + strName);
@@ -202,6 +211,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     mouseLockedOn: null, //who the mouse actions pertain to.
     ghostItems: {}, //Items that exist for the sole purpose of...
     prepareGhostItems: function () {
+        'use strict';
         var type, newItem;
         this.ghostItems = {}; //Items to be used when choosing building location
         for (type in items) {
@@ -217,6 +227,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
 
     // ...showing the position at which they will be built.
     choose: function (name) {
+        'use strict';
         if (this.chosen) {
             if (this.chosen.type === name) {
                 return;
@@ -243,9 +254,11 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.repaint();
     },
     moveGhost: function (x, y) {
+        'use strict';
         this.chosen.x(x).y(y);
         //Rotate if it fits somewhere
-        if (!this.chosen.rotated() && this.chosen.canBuildRotated(x, y, this.ship)) {
+        if (!this.chosen.rotated() &&
+                this.chosen.canBuildRotated(x, y, this.ship)) {
             this.chosen.rotated(true);
         }
         if (this.chosen.rotated() && this.chosen.canBuildAt(x, y, this.ship)) {
@@ -256,6 +269,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     //Dragging
     dragging: null,
     beginDrag: function (building) {
+        'use strict';
         if (this.chosen) {
             console.log('There should be nothing chosen when drag begins. ' +
                 '(this.beginDrag)');
@@ -266,6 +280,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.dragging = building;
     },
     endDrag: function () {
+        'use strict';
         if (!this.dragging) {
             return;
         }
@@ -282,12 +297,14 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     redScreen: [],
     redIndex: 0,
     printRed: function (x, y) {
+        'use strict';
         this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
         me.game.add(this.redScreen[this.redIndex],
         this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;
     },
     clearRed: function () {
+        'use strict';
         var i = 0;
         for (i = this.redIndex; i > 0; i--) {
             me.game.remove(this.redScreen[i - 1]);
@@ -296,6 +313,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.redIndex = 0;
     },
     updateRed: function () {
+        'use strict';
         this.clearRed();
         var self = this;
         utils.itemTiles(this.chosen, function (iX, iY) {
@@ -307,6 +325,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
     greenSpots: null,
     updateGreenSpots: function () {
+        'use strict';
         var self = this;
         if (!this.chosen) {
             return;
@@ -332,6 +351,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     drawingScreen: [],
     //draws arbitrary stuff
     drawItem: function (x, y, type) {
+        'use strict';
         var item = utils.makeItem(type).x(x).y(y);
         me.game.add(item, item.zIndex + 1000);
         this.drawingScreen.push(item);
@@ -340,6 +360,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
 
     },
     clear: function () {
+        'use strict';
         _.each(this.drawingScreen, function (i) {
             me.game.remove(i, true);
         });
@@ -352,6 +373,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
 
     //combines the ship map with the drawing screen
     mapAt: function (x, y) {
+        'use strict';
         var i, shipTile = null;
         for (i = 0; i < this.drawingScreen.length; i++) {
             if (this.drawingScreen[i].occupies(x, y)) {
@@ -367,5 +389,5 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         }
         return shipTile;
     }
-
 });
+

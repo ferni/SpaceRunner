@@ -1,4 +1,16 @@
-﻿module('ship-building-screen.js');
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+/*global
+_, th, asyncTest, equal, ok, me, notEqual, strictEqual, start,
+utils, module */
+
+module('ship-building-screen.js');
+
 asyncTest('ESC key un-chooses the item', function () {
     'use strict';
     th.restartGame(function() {

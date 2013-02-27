@@ -1,10 +1,21 @@
-﻿var ShipSelectScreen = me.ScreenObject.extend({
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+/*global me, html, jsApp, ko, _ */
+
+var ShipSelectScreen = me.ScreenObject.extend({
     name: 'ship-select-screen',
     isReset: false,
     init: function () {
+        'use strict';
         this.parent();
     },
     onResetEvent: function () {
+        'use strict';
         this.parent();
         me.video.clearSurface(me.video.getScreenContext(), 'gray');
         html.load('ship-select-screen');
@@ -13,10 +24,12 @@
         jsApp.onScreenReset();
     },
     onDestroyEvent: function () {
+        'use strict';
         this.isReset = false;
         html.clear();
     },
     onHtmlLoaded: function () {
+        'use strict';
         var RaceButtonSet, HtmlViewModel;
         RaceButtonSet = function (name, ships, selected) {
             this.name = name;
@@ -73,5 +86,5 @@
         this.htmlVm = new HtmlViewModel(this);
         ko.applyBindings(this.htmlVm);
     }
-
 });
+

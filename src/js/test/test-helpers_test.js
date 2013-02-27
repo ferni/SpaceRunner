@@ -6,7 +6,7 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-me, utils*/
+me, utils, FIRST_SCREEN, jsApp, strictEqual */
 
 module('test_helpers.js');
 asyncTest('onGameReady', function () {
@@ -79,6 +79,7 @@ asyncTest('setMouse (cyborg_battleship1)', function () {
 });
 
 asyncTest('loadScreen #1', function () {
+   'use strict';
     th.restartGame(function () {
         th.loadScreen(function () {
             me.state.change(me.state.BUILD, 'test');
@@ -93,7 +94,7 @@ asyncTest('loadScreen #1', function () {
 });
 
 asyncTest('loadScreen back and forth', function () {
-
+   'use strict';
     th.loadScreen(function () {
         me.state.change(me.state.BUILD, 'test');
     }, function (screen) {
@@ -125,5 +126,5 @@ asyncTest('loadScreen back and forth', function () {
         });
 
     });
-
 });
+

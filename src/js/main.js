@@ -5,11 +5,13 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, $, items, RedColorObject, charMap*/
+/*global me, _, utils, $, items, RedColorObject, charMap,
+html, ShipSelectScreen, ShipBuildingScreen*/
 
 //sugar
 var TILE_SIZE = 32;
 function width() {
+    'use strict';
     if (!me.game.currentLevel.initialized) {
         throw 'Cannot get width from the current level.' +
             ' The level has not been loaded, or there is no level.';
@@ -17,6 +19,7 @@ function width() {
     return me.game.currentLevel.width;
 }
 function height() {
+    'use strict';
     if (!me.game.currentLevel.initialized) {
         throw 'Cannot get height from the current level.' +
             ' The level has not been loaded, or there is no level.';
@@ -224,7 +227,7 @@ var jsApp = {
         'use strict';
         // set screens
 
-        me.state.SELECT = me.state.USER + 0;
+        me.state.SELECT = me.state.USER;
         me.state.BUILD = me.state.USER + 1;
 
         window.FIRST_SCREEN = me.state.SELECT;
@@ -242,6 +245,10 @@ var jsApp = {
     /*
     useful for testing
     */
-    onScreenReset: function () { },
-    onAppLoaded: function () { }
+    onScreenReset: function () {
+       'use strict';
+    },
+    onAppLoaded: function () {
+       'use strict';
+    }
 };

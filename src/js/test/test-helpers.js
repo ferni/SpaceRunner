@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, utils, th, jsApp*/
+/*global me, utils, th, jsApp, FIRST_SCREEN */
 
 var th = {
     shipPositions: {
@@ -39,6 +39,7 @@ var th = {
         };
     },
     restartGame: function (callback) {
+        'use strict';
         me.state.change(me.state.GAMEOVER);
         jsApp.onAppLoaded = function () {
             jsApp.onAppLoaded = function () { };
@@ -47,6 +48,7 @@ var th = {
         jsApp.loaded();
     },
     onState: function (state, callback) {
+        'use strict';
         var interval = setInterval(function () {
             if (me.state.isCurrent(state)) {
                 callback();
@@ -55,6 +57,7 @@ var th = {
         }, 100);
     },
     loadScreen: function (changeState, onReady) {
+        'use strict';
         jsApp.onScreenReset = function () {
             jsApp.onScreenReset = function () { };
             onReady(me.state.current());

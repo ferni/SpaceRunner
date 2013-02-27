@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemObject, PF, charMap, utils, width(), height()*/
+/*global me, _, pr, ItemObject, PF, charMap, utils, width, height*/
 
 /*
     In each item, set size and type before calling parent()

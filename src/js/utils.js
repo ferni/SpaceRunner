@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, g_resources, items*/
+/*global me, _, g_resources, items, width, height, TILE_SIZE */
 
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
@@ -91,8 +91,8 @@ var utils = {
         }
     },
     inRect: function (x, y, rect) {
-        //todo
-        console.error('inRect not implemented');
+        'use strict';
+        throw 'inRect not implemented';
     },
     getEmptyMatrix: function (width, height, initialValue) {
         'use strict';
@@ -130,9 +130,11 @@ var utils = {
         document.getElementById('jsapp').style.cursor = cursor;
     },
     vectorAdd: function (v1, v2) {
+        'use strict';
         return { x: v1.x + v2.x, y: v1.y + v2.y };
     },
     vectorSub: function (v1, v2) {
+        'use strict';
         return { x: v1.x - v2.x, y: v1.y - v2.y };
     }
 };

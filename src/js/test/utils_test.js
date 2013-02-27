@@ -82,9 +82,10 @@ asyncTest('getMouse', function () {
     th.loadScreen(function () {
         me.state.change(me.state.BUILD, 'test');
     }, function () {
-        var originalPos = me.game.currentLevel.pos;
+        var originalPos = me.game.currentLevel.pos,
+            m;
         me.game.currentLevel.pos = new me.Vector2d(0, 0);
-        var m = utils.getMouse();
+        m = utils.getMouse();
         equal(m.x, 0);
         equal(m.y, 0);
         me.game.currentLevel.pos = originalPos;
