@@ -6,6 +6,10 @@ function fileHasExtension(file, ext){
     return file.indexOf(ext, this.length - ext.length) !== -1;
 }
 
+function notBackup(file){
+    return file[file.length - 1] !== '~';
+}
+
 /**
 *Returns all the files paths in a directory
 *@param {string} directory The directory path
@@ -26,7 +30,7 @@ function getFiles(directory, options){
     for(i = 2; i< stuff.length; i++){//starts at 2 to skip "." and ".."
         
         var path = directory + fs.separator + stuff[i];
-        if(fs.isFile(path) && (!options || !options.extension || fileHasExtension(stuff[i], options.extension))){
+        if(fs.isFile(path) && (!options || !options.extension || fileHasExtension(stuff[i], options.extension)) && notBackup(stuff[i])){
             files.push(path);
         }
         

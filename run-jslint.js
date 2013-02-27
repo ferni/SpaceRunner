@@ -21,14 +21,15 @@ function getFilesForLint(){
 }
 
 function reportForFile(path){
-    console.log("----- (JSLint) FILE  :  "+path+"   -----");
+    var report = [];
+    report.push("----- (JSLint) FILE  :  "+path+"   -----");
     if(!fs.exists(path)){ 
-        console.log(path+" does not exist!");
-        return;
+        report.push(path+" does not exist!");
+        return report;
     }
     if(!fs.isFile(path)){
-        console.log(path+" is not a file.");
-        return;
+        report.push(path+" is not a file.");
+        return report;
     }
     var allOk = JSLINT(fs.read(path), {
 		nomen: true,
@@ -38,15 +39,16 @@ function reportForFile(path){
 		plusplus: true
 	});
     if(allOk){
-        console.log("JSLint found no problems.");
+        return false;
     }else{
         var errors = JSLINT.errors;
         for(var i = 0; i < errors.length; i++){
             if(errors[i] === null){
                 break;
             }
-            console.log("Line "+errors[i].line+": "+errors[i].reason);
+            report.push("Line "+errors[i].line+": "+errors[i].reason);
         }
+        return report;
     }
 }
 
@@ -98,11 +100,20 @@ function checkHeaders(files){
 
 //"Main"
 
-var files = getFilesForLint();
-
+var files = getFilesForLint(),
+    problems = 0;
+console.log('\nChecking ' + files.length + ' files ...\n');
 for(var i = 0; i < files.length; i++){
-    reportForFile(files[i]);
+    var report = reportForFile(files[i]);
+    if(report){
+        console.log(report.join('\n'));
+        problems++;
+    }
 }
+
+console.log('\nFound problems in ' + problems +' files (' +
+    (files.length - problems) + ' files OK)');
+
 checkHeaders(files);
 phantom.exit();
 
