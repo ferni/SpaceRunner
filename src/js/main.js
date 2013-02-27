@@ -204,7 +204,7 @@ var jsApp = {
     Initialize the jsApp
     
     --- */
-    onload: function () {
+    onload: function() {
         'use strict';
         // init the video
         if (!me.video.init('jsapp', 1440, 1152)) {
@@ -223,7 +223,7 @@ var jsApp = {
     /* ---
     callback when everything is loaded
     --- */
-    loaded: function () {
+    loaded: function() {
         'use strict';
         // set screens
 
@@ -245,10 +245,10 @@ var jsApp = {
     /*
     useful for testing
     */
-    onScreenReset: function () {
+    onScreenReset: function() {
        'use strict';
     },
-    onAppLoaded: function () {
+    onAppLoaded: function() {
        'use strict';
     }
 };

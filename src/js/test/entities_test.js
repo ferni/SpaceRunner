@@ -42,7 +42,7 @@ test('ItemObject onShip/offShip animations', function() {
 });
 
 module('entities/items.js');
-test('engine proper placement', function () {
+test('engine proper placement', function() {
     'use strict';
     var level = new me.TMXTileMap('test'),
         ship;
@@ -52,7 +52,7 @@ test('engine proper placement', function () {
         'engine'), 'building succeeds');
 });
 
-test('engine invalid placement', function () {
+test('engine invalid placement', function() {
     'use strict';
     var level = new me.TMXTileMap('test'),
         ship;
@@ -62,7 +62,7 @@ test('engine invalid placement', function () {
         'engine'), 'building fails');
 });
 
-test('weapon proper placement', function () {
+test('weapon proper placement', function() {
     'use strict';
     var level = new me.TMXTileMap('test'),
         ship;
@@ -72,7 +72,7 @@ test('weapon proper placement', function () {
         'weapon'), 'building succeeds');
 });
 
-test('weapon invalid placement', function () {
+test('weapon invalid placement', function() {
     'use strict';
     var level = new me.TMXTileMap('test'),
         ship;
@@ -82,7 +82,7 @@ test('weapon invalid placement', function () {
         'weapon'), 'building fails');
 });
 
-test('Console placement', function () {
+test('Console placement', function() {
     'use strict';
     var x, y, level, ship;
     level = new me.TMXTileMap('test');
@@ -98,15 +98,15 @@ test('Console placement', function () {
         'Console building succeeds next to power');
 });
 
-asyncTest('Wall building', function () {
+asyncTest('Wall building', function() {
     'use strict';
 
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
-    th.loadScreen(function () {
+    th.loadScreen(function() {
             me.state.change(me.state.BUILD, 'test');
         },
-        function (screen) {
+        function(screen) {
             screen.ship.buildAt(x, y, 'wall');
             ok(screen.mouseLockedOn, 'Mouse locked on something');
             equal(screen.mouseLockedOn.type, 'wall', 'Mouse locked on wall');
@@ -137,13 +137,13 @@ asyncTest('Wall building', function () {
         });
 });
 
-asyncTest('Wall building canceled by escape key', function () {
+asyncTest('Wall building canceled by escape key', function() {
     'use strict';
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         screen.choose('wall');
         th.mouseBegin(screen);
         th.leftClick(x, y);

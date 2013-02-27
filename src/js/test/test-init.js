@@ -12,7 +12,7 @@ QUnit.done(function(e) {
     'use strict';
 });
 
-th.onGameReady(function () {
+th.onGameReady(function() {
    'use strict';
     QUnit.start();
 });

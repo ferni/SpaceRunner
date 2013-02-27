@@ -27,39 +27,39 @@ var th = {
         }
     },
     //Calls the callback when the state is "PLAY"
-    onGameReady: function (callback) {
+    onGameReady: function(callback) {
         'use strict';
         if (jsApp.loadReady) {
             callback();
             return;
         }
-        jsApp.onAppLoaded = function () {
-            jsApp.onAppLoaded = function () { };
+        jsApp.onAppLoaded = function() {
+            jsApp.onAppLoaded = function() { };
             callback();
         };
     },
-    restartGame: function (callback) {
+    restartGame: function(callback) {
         'use strict';
         me.state.change(me.state.GAMEOVER);
-        jsApp.onAppLoaded = function () {
-            jsApp.onAppLoaded = function () { };
+        jsApp.onAppLoaded = function() {
+            jsApp.onAppLoaded = function() { };
             th.onState(FIRST_SCREEN, callback);
         };
         jsApp.loaded();
     },
-    onState: function (state, callback) {
+    onState: function(state, callback) {
         'use strict';
-        var interval = setInterval(function () {
+        var interval = setInterval(function() {
             if (me.state.isCurrent(state)) {
                 callback();
                 clearInterval(interval);
             }
         }, 100);
     },
-    loadScreen: function (changeState, onReady) {
+    loadScreen: function(changeState, onReady) {
         'use strict';
-        jsApp.onScreenReset = function () {
-            jsApp.onScreenReset = function () { };
+        jsApp.onScreenReset = function() {
+            jsApp.onScreenReset = function() { };
             onReady(me.state.current());
         };
         changeState();
@@ -70,14 +70,14 @@ var th = {
         y: 1
     },
     _screen: null,
-    mouseBegin: function (screen) {
+    mouseBegin: function(screen) {
         'use strict';
         if (!screen) {
             throw 'screen parameter is mandatory';
         }
         this._screen = screen;
         //replace utils.getMouse function
-        utils.getMouse = function () {
+        utils.getMouse = function() {
             return {
                 x: th._mousePosition.x,
                 y: th._mousePosition.y
@@ -85,13 +85,13 @@ var th = {
             
         };
     },
-    mouseEnd: function () {
+    mouseEnd: function() {
         'use strict';
         utils.getMouse = this._originalGetMouseFunction;
         this._screen = null;
     },
     //fakes the mouse position (x: tile column, y: tile row)
-    setMouse: function (x, y) {
+    setMouse: function(x, y) {
         'use strict';
         if (!this._screen) {
             throw 'Call th.mouseBegin before calling th.setMouse';
@@ -99,7 +99,7 @@ var th = {
         this._mousePosition.x = x;
         this._mousePosition.y = y;
     },
-    moveMouse: function (x, y) {
+    moveMouse: function(x, y) {
         'use strict';
         if (!this._screen) {
             throw 'Call th.mouseBegin before calling th.mouseMove';
@@ -107,7 +107,7 @@ var th = {
         this.setMouse(x, y);
         me.state.current().mouseMove({});
     },
-    clickMouse: function (which, x, y) {
+    clickMouse: function(which, x, y) {
         'use strict';
         if (!this._screen) {
             throw 'Call th.mouseBegin before calling th.clickMouse';
@@ -122,14 +122,14 @@ var th = {
             which: which
         });
     },
-    leftClick: function (x, y) {
+    leftClick: function(x, y) {
         'use strict';
         if (!this._screen) {
             throw 'Call th.mouseBegin before calling th.leftClick';
         }
         this.clickMouse(me.input.mouse.LEFT, x, y);
     },
-    rightClick: function (x, y) {
+    rightClick: function(x, y) {
         'use strict';
         if (!this._screen) {
             throw 'Call th.mouseBegin before calling th.rightClick';
@@ -141,8 +141,8 @@ var th = {
 /*
  --- Clean test template ---
 
-    asyncTest("test name", function () {
-        th.restartGame(function () {
+    asyncTest("test name", function() {
+        th.restartGame(function() {
             //test here
             start();
         });

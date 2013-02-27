@@ -9,23 +9,23 @@
 me, utils, FIRST_SCREEN, jsApp, strictEqual */
 
 module('test_helpers.js');
-asyncTest('onGameReady', function () {
+asyncTest('onGameReady', function() {
     'use strict';
-    th.onGameReady(function () {
+    th.onGameReady(function() {
         ok(FIRST_SCREEN, 'FIRST_SCREEN global is set');
         start();
     });
 });
 
-asyncTest('restartGame', function () {
+asyncTest('restartGame', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
     },
-    function () {
+    function() {
         ok(me.state.isCurrent(me.state.BUILD));
         jsApp.loadReady = false;
-        th.restartGame(function () {
+        th.restartGame(function() {
             ok(jsApp.loadReady);
             start();
         });
@@ -33,12 +33,12 @@ asyncTest('restartGame', function () {
 
 });
 
-asyncTest('setMouse #1', function () {
+asyncTest('setMouse #1', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.SELECT);
     },
-    function (screen) {
+    function(screen) {
         th.mouseBegin(screen);
         th.setMouse(4, 6);
         equal(utils.getMouse().x, 4, 'x');
@@ -48,12 +48,12 @@ asyncTest('setMouse #1', function () {
     });
 });
 
-asyncTest('setMouse (test ship)', function () {
+asyncTest('setMouse (test ship)', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
     },
-        function (screen) {
+        function(screen) {
             th.mouseBegin(screen);
             th.setMouse(4, 6);
             equal(utils.getMouse().x, 4, 'x');
@@ -63,12 +63,12 @@ asyncTest('setMouse (test ship)', function () {
         });
 });
 
-asyncTest('setMouse (cyborg_battleship1)', function () {
+asyncTest('setMouse (cyborg_battleship1)', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'cyborg_battleship1');
     },
-    function (screen) {
+    function(screen) {
         th.mouseBegin(screen);
         th.setMouse(4, 6);
         equal(utils.getMouse().x, 4, 'x');
@@ -78,12 +78,12 @@ asyncTest('setMouse (cyborg_battleship1)', function () {
     });
 });
 
-asyncTest('loadScreen #1', function () {
+asyncTest('loadScreen #1', function() {
    'use strict';
-    th.restartGame(function () {
-        th.loadScreen(function () {
+    th.restartGame(function() {
+        th.loadScreen(function() {
             me.state.change(me.state.BUILD, 'test');
-        }, function (screen) {
+        }, function(screen) {
             ok(me.state.current().isReset);
             ok(me.state.isCurrent(me.state.BUILD));
             ok(screen.isReset);
@@ -93,28 +93,28 @@ asyncTest('loadScreen #1', function () {
     });
 });
 
-asyncTest('loadScreen back and forth', function () {
+asyncTest('loadScreen back and forth', function() {
    'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         ok(me.state.current().isReset);
         ok(me.state.isCurrent(me.state.BUILD));
         ok(screen.isReset);
         strictEqual(me.state.current(), screen);
 
-        th.loadScreen(function () {
+        th.loadScreen(function() {
             me.state.change(me.state.SELECT);
-        }, function (screen2) {
+        }, function(screen2) {
             ok(!screen.isReset);
             ok(me.state.current().isReset);
             ok(me.state.isCurrent(me.state.SELECT));
             ok(screen2.isReset);
             strictEqual(me.state.current(), screen2);
 
-            th.loadScreen(function () {
+            th.loadScreen(function() {
                 me.state.change(me.state.BUILD, 'test');
-            }, function (screen3) {
+            }, function(screen3) {
                 ok(!screen2.isReset);
                 ok(me.state.current().isReset);
                 ok(me.state.isCurrent(me.state.BUILD));

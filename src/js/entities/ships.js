@@ -17,14 +17,14 @@ function Ship(tmxTileMap, syncWithGame) {
     this.height = this.tmxTileMap.height;
     this.syncWithGame = syncWithGame;
     this._buildings = [];
-    this.init = function () {
+    this.init = function() {
         
     };
-    this.buildings = function () {
+    this.buildings = function() {
         return this._buildings;
     };
     //this should be called when the user builds something
-    this.buildAt = function (x, y, buildingType) {
+    this.buildAt = function(x, y, buildingType) {
         var self = this,
         building = utils.makeItem(buildingType),
         canBuild = building.canBuildAt(x, y, this),
@@ -38,7 +38,7 @@ function Ship(tmxTileMap, syncWithGame) {
         if (canBuild || canBuildRotated) {
             building.x(x).y(y);
             //remove anything in its way
-            utils.itemTiles(building, function (iX, iY) {
+            utils.itemTiles(building, function(iX, iY) {
                 self.removeAt(iX, iY);
             }, true);
             this.add(building);
@@ -49,7 +49,7 @@ function Ship(tmxTileMap, syncWithGame) {
     };
 
     //Adds an item to the ship ignoring its placement rules
-    this.add = function (item) {
+    this.add = function(item) {
         if (this.syncWithGame) {
             me.game.add(item, item.zIndex);
         }
@@ -57,12 +57,12 @@ function Ship(tmxTileMap, syncWithGame) {
         item.onShip(true);
         this.buildingsChanged();
     };
-    this.removeAt = function (x, y) {
+    this.removeAt = function(x, y) {
         while (this.mapAt(x, y).name === 'item') {
             this.remove(this.mapAt(x, y), true);
         }
     };
-    this.remove = function (item, updateBuildings) {
+    this.remove = function(item, updateBuildings) {
         if (!item) {
             return;
         }
@@ -78,7 +78,7 @@ function Ship(tmxTileMap, syncWithGame) {
         }
     };
 
-    this.removeAll = function () {
+    this.removeAll = function() {
         var self = this,
             i;
         for (i = this.buildings().length - 1; i >= 0; i--) {
@@ -87,13 +87,13 @@ function Ship(tmxTileMap, syncWithGame) {
         this.buildingsChanged();
     };
     //to call whenever buildings change
-    this.buildingsChanged = function () {
+    this.buildingsChanged = function() {
         this.buildingsMap.update();
         this.onBuildingsChanged();
     };
     this.onBuildingsChanged = function() {};
     this._map = null;
-    this.map = function () {
+    this.map = function() {
         if (this.buildingsMap.changed || this.hullMap.changed ||
             this._map === null) {
             this._map = this._getJointMap();
@@ -102,7 +102,7 @@ function Ship(tmxTileMap, syncWithGame) {
         }
         return this._map;
     };
-    this.mapAt = function (x, y) {
+    this.mapAt = function(x, y) {
         if (this.map()[y] !== undefined && this.map()[y][x] !== undefined) {
             return this.map()[y][x];
         }
@@ -112,13 +112,13 @@ function Ship(tmxTileMap, syncWithGame) {
         thisShip: this,
         changed: true,
         _buildingsMap: null,
-        update: function () {
+        update: function() {
             var self = this;
             self._buildingsMap = utils.getEmptyMatrix(self.thisShip.width,
                 self.thisShip.height, charMap.codes._cleared);
-            _.each(self.thisShip.buildings(), function (b) {
+            _.each(self.thisShip.buildings(), function(b) {
                 if (!b.hidden()) {
-                    utils.itemTiles(b, function (x, y) {
+                    utils.itemTiles(b, function(x, y) {
                         self._buildingsMap[y][x] = b;
                     }, true);
                 }
@@ -126,7 +126,7 @@ function Ship(tmxTileMap, syncWithGame) {
 
             this.changed = true;
         },
-        get: function () {
+        get: function() {
             if (this._buildingsMap === null) {
                 this.update();
             }
@@ -137,11 +137,11 @@ function Ship(tmxTileMap, syncWithGame) {
         thisShip: this,
         changed: true,
         _hullMap: null,
-        update: function () {
+        update: function() {
             this._hullMap = charMap.get(this.thisShip.tmxTileMap);
             this._changed = true;
         },
-        get: function () {
+        get: function() {
             if (this._hullMap === null) {
                 this.update();
             }
@@ -149,12 +149,12 @@ function Ship(tmxTileMap, syncWithGame) {
         }
     };
     //joins hullMap and buildingsMap
-    this._getJointMap = function () {
+    this._getJointMap = function() {
         var self = this,
         joint = utils.getEmptyMatrix(this.width, this.height,
             charMap.codes._cleared);
         utils.matrixTiles(this.width, this.height,
-            function (x, y) {
+            function(x, y) {
                 joint[y][x] = self.hullMap.get()[y][x];
                 if (self.buildingsMap.get()[y][x] !== charMap.codes._cleared) {
                     joint[y][x] = self.buildingsMap.get()[y][x];
@@ -162,8 +162,8 @@ function Ship(tmxTileMap, syncWithGame) {
         });
         return joint;
     };
-    this.toJsonString = function () {
-        return JSON.stringify(_.map(this.buildings(), function (b) {
+    this.toJsonString = function() {
+        return JSON.stringify(_.map(this.buildings(), function(b) {
             return {
                 type: b.type,
                 x: b.x(),
@@ -172,7 +172,7 @@ function Ship(tmxTileMap, syncWithGame) {
             };
         }));
     };
-    this.fromJsonString = function (jsonString) {
+    this.fromJsonString = function(jsonString) {
         var itemArray, item, i;
         this.removeAll();
         itemArray = JSON.parse(jsonString);

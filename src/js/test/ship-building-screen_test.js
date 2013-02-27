@@ -11,7 +11,7 @@ utils, module */
 
 module('ship-building-screen.js');
 
-asyncTest('ESC key un-chooses the item', function () {
+asyncTest('ESC key un-chooses the item', function() {
     'use strict';
     th.restartGame(function() {
         th.loadScreen(function() {
@@ -29,11 +29,11 @@ asyncTest('ESC key un-chooses the item', function () {
 });
 
 asyncTest('mouseDbClick does not give an error when mouse is not locked',
-    function () {
+    function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         equal(screen.mouseLockedOn, null, 'Mouse is not locked');
         screen.mouseDbClick({
             which: me.input.mouse.LEFT
@@ -42,11 +42,11 @@ asyncTest('mouseDbClick does not give an error when mouse is not locked',
     });
 });
 
-asyncTest('right click removes item', function () {
+asyncTest('right click removes item', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y;
         screen.ship.buildAt(x, y, 'component');
@@ -59,11 +59,11 @@ asyncTest('right click removes item', function () {
     });
 });
 
-asyncTest('drag and drop', function () {
+asyncTest('drag and drop', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var power;
         ok(screen.ship.buildAt(3, 4, 'power'), 'power succesfully built');
         th.mouseBegin(screen);
@@ -87,22 +87,22 @@ asyncTest('drag and drop', function () {
     });
 });
 
-asyncTest('choose', function () {
+asyncTest('choose', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         screen.choose('engine');
         equal(screen.chosen.type, 'engine');
         start();
     });
 });
 
-asyncTest('moveGhost', function () {
+asyncTest('moveGhost', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         screen.choose('power');
         equal(screen.chosen.type, 'power');
 
@@ -117,11 +117,11 @@ asyncTest('moveGhost', function () {
     });
 });
 
-asyncTest('beginDrag/endDrag', function () {
+asyncTest('beginDrag/endDrag', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var x, y, power;
         screen.ship.removeAll();
         x = th.shipPositions.free.x;
@@ -147,21 +147,21 @@ asyncTest('beginDrag/endDrag', function () {
     });
 });
 
-asyncTest('printRed/clearRed', function () {
+asyncTest('printRed/clearRed', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var reds, redsInX4Y5;
         screen.clear();
         screen.printRed(4, 5);
         reds = me.game.getEntityByName('red');
-        redsInX4Y5 = _.filter(reds, function (r) {
+        redsInX4Y5 = _.filter(reds, function(r) {
             return r.x() === 4 && r.y() === 5;
         }).length;
         ok(redsInX4Y5 > 0, 'There are red objects in the printed position');
         screen.clearRed();
-        setTimeout(function () { //allow the game to refresh
+        setTimeout(function() { //allow the game to refresh
             equal(me.game.getEntityByName('red').length, 0,
                 'Red objects cleared');
             start();
@@ -169,11 +169,11 @@ asyncTest('printRed/clearRed', function () {
     });
 });
 
-asyncTest('rotate ghost when it could be built rotated', function () {
+asyncTest('rotate ghost when it could be built rotated', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var hX, hY, hWall1, hWall2, door, vX, vY, vWall1, vWall2;
         hX = th.shipPositions.engine.x;
         hY = th.shipPositions.engine.y;
@@ -213,15 +213,15 @@ asyncTest('rotate ghost when it could be built rotated', function () {
     });
 });
 
-asyncTest('draw/mapAt', function () {
+asyncTest('draw/mapAt', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var items;
         screen.drawItem(4, 5, 'engine');
         items = me.game.getEntityByName('item');
-        ok(_.some(items, function (item) {
+        ok(_.some(items, function(item) {
             return item.type === 'engine' && item.x() === 4 && item.y() === 5;
         }), 'Engine drawn at correct position');
 

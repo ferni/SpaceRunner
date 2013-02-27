@@ -19,11 +19,11 @@ test('Globals are set', function() {
 
 module('main.js/ship');
 
-asyncTest('buildAt', function () {
+asyncTest('buildAt', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         screen.ship.removeAll();
         ok(screen.ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
             'power'), 'could build power');
@@ -32,11 +32,11 @@ asyncTest('buildAt', function () {
     });
 });
 
-asyncTest('add/mapAt/removeAt', function () {
+asyncTest('add/mapAt/removeAt', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y,
         engine = new EngineItem(x, y);
@@ -75,11 +75,11 @@ asyncTest('add/mapAt/removeAt', function () {
     });
 });
 
-asyncTest('remove', function () {
+asyncTest('remove', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var x, y, item;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
@@ -100,9 +100,9 @@ asyncTest('remove', function () {
 
 asyncTest('buildAt rotates item when can only be built rotated', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var x, y, door;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
@@ -128,11 +128,11 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
     });
 });
 
-asyncTest('mapAt out of bounds', function () {
+asyncTest('mapAt out of bounds', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         screen.ship.removeAll();
         strictEqual(screen.ship.mapAt(-1, 0), null, 'mapAt(-1,0) is null');
         strictEqual(screen.ship.mapAt(width(), 0), null, 'mapAt(WIDTH,0) is null');
@@ -144,9 +144,9 @@ asyncTest('mapAt out of bounds', function () {
 
 asyncTest('fromJsonString', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var power, door;
         screen.ship.removeAll();
         screen.ship.fromJsonString('[{"type":"power", "x":0, "y":0},' +
@@ -169,11 +169,11 @@ asyncTest('fromJsonString', function() {
     });
 });
 
-asyncTest('fromJsonString clears buildings', function () {
+asyncTest('fromJsonString clears buildings', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         screen.ship.removeAll();
         ok(screen.ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
             'power'), 'power successfully built');
@@ -193,11 +193,11 @@ asyncTest('fromJsonString clears buildings', function () {
 
 });
 
-asyncTest('toJsonString', function () {
+asyncTest('toJsonString', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function (screen) {
+    }, function(screen) {
         var jsonObject, power, engine;
         screen.ship.removeAll();
         ok(screen.ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
@@ -210,7 +210,7 @@ asyncTest('toJsonString', function () {
         jsonObject = JSON.parse(screen.ship.toJsonString());
         equal(jsonObject.length, 2, 'JSON object (array) has 2 objects');
 
-        power = _.find(jsonObject, function (i) {
+        power = _.find(jsonObject, function(i) {
             return i.type === 'power';
         });
         equal(power.x, th.shipPositions.free.x,
@@ -219,7 +219,7 @@ asyncTest('toJsonString', function () {
             'power saved with correct y position');
         ok(!power.rotated, 'power saved as not rotated');
 
-        engine = _.find(jsonObject, function (i) {
+        engine = _.find(jsonObject, function(i) {
             return i.type === 'engine';
         });
         equal(engine.x, th.shipPositions.engine.x,

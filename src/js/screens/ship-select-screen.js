@@ -10,11 +10,11 @@
 var ShipSelectScreen = me.ScreenObject.extend({
     name: 'ship-select-screen',
     isReset: false,
-    init: function () {
+    init: function() {
         'use strict';
         this.parent();
     },
-    onResetEvent: function () {
+    onResetEvent: function() {
         'use strict';
         this.parent();
         me.video.clearSurface(me.video.getScreenContext(), 'gray');
@@ -23,15 +23,15 @@ var ShipSelectScreen = me.ScreenObject.extend({
         this.isReset = true;
         jsApp.onScreenReset();
     },
-    onDestroyEvent: function () {
+    onDestroyEvent: function() {
         'use strict';
         this.isReset = false;
         html.clear();
     },
-    onHtmlLoaded: function () {
+    onHtmlLoaded: function() {
         'use strict';
         var RaceButtonSet, HtmlViewModel;
-        RaceButtonSet = function (name, ships, selected) {
+        RaceButtonSet = function(name, ships, selected) {
             this.name = name;
             this.ships = ships;
             this.selected = ko.observable(selected);
@@ -41,9 +41,9 @@ var ShipSelectScreen = me.ScreenObject.extend({
                     shipType.toLowerCase() + '_img.png';
             };
         };
-        HtmlViewModel = function (screen) {
-            this.selectedRace = function () {
-                var race = _.find(this.races, function (r) {
+        HtmlViewModel = function(screen) {
+            this.selectedRace = function() {
+                var race = _.find(this.races, function(r) {
                     return r.selected();
                 });
                 if (!race) {
@@ -51,12 +51,12 @@ var ShipSelectScreen = me.ScreenObject.extend({
                 }
                 return race.name;
             };
-            this.selectRace = function (raceButtonSet) {
-                _.each(screen.htmlVm.races, function (r) {
+            this.selectRace = function(raceButtonSet) {
+                _.each(screen.htmlVm.races, function(r) {
                     r.selected(raceButtonSet.name === r.name);
                 });
             };
-            this.selectShip = function (shipType) {
+            this.selectShip = function(shipType) {
                 me.state.change(me.state.BUILD, screen.htmlVm.selectedRace() + '_' + shipType);
             };
             this.races = [

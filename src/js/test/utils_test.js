@@ -37,11 +37,11 @@ test('getQueriedShip', function() {
 
 });
 
-asyncTest('toTileVector', function () {
+asyncTest('toTileVector', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function () {
+    }, function() {
         var tileVector = utils.toTileVector(new me.Vector2d(7, 7));
         equal(tileVector.x, 0);
         equal(tileVector.y, 0);
@@ -77,11 +77,11 @@ test('makeItem: invalid item', function() {
     equal(utils.makeItem('asdf'), null);
 });
 
-asyncTest('getMouse', function () {
+asyncTest('getMouse', function() {
     'use strict';
-    th.loadScreen(function () {
+    th.loadScreen(function() {
         me.state.change(me.state.BUILD, 'test');
-    }, function () {
+    }, function() {
         var originalPos = me.game.currentLevel.pos,
             m;
         me.game.currentLevel.pos = new me.Vector2d(0, 0);

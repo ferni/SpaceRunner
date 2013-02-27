@@ -156,7 +156,7 @@ var DoorItem = ItemObject.extend({
 // wall object class
 var WallItem = ItemObject.extend({
     // init function
-    init: function (x, y, settings) {
+    init: function(x, y, settings) {
         'use strict';
         this.type = 'wall';
         this.size = [1, 1];
@@ -178,7 +178,7 @@ var WallItem = ItemObject.extend({
         this.setCurrentAnimation('lrWall');
         this.animationspeed = 6;
     },
-    updateAnimation: function () {
+    updateAnimation: function() {
         'use strict';
         var wallsAround, x, y, top, left, bot, right, animationName, ui;
         if (!me.state.isCurrent(me.state.BUILD) || !me.state.current().isReset) {
@@ -227,11 +227,11 @@ var WallItem = ItemObject.extend({
         animationName = wallsAround.join('');
         this.setCurrentAnimation(animationName);
     },
-    update: function () {
+    update: function() {
         'use strict';
         this.updateAnimation();
     },
-    onBuilt: function () {
+    onBuilt: function() {
         'use strict';
         var pfMatrix, t, ui;
         this.parent();
@@ -240,7 +240,7 @@ var WallItem = ItemObject.extend({
             return;
         }
         pfMatrix = utils.getEmptyMatrix(width(), height(), 1);
-        utils.levelTiles(function (x, y) {
+        utils.levelTiles(function(x, y) {
             if (ui.ship.map()[y][x] === charMap.codes._cleared) {
                 pfMatrix[y][x] = 0; //cleared tiles are walkable
             }
@@ -258,7 +258,7 @@ var WallItem = ItemObject.extend({
         t.lastPathIndex = 0;
         ui.mouseLockedOn = this;
     },
-    lockedMouseMove: function (mouseTile) {
+    lockedMouseMove: function(mouseTile) {
         'use strict';
         var t, finder, cloneGrid, path, i, f, ui;
         this.parent();
@@ -284,7 +284,7 @@ var WallItem = ItemObject.extend({
             }
         }
     },
-    lockedMouseUp: function (mouseTile) {
+    lockedMouseUp: function(mouseTile) {
         'use strict';
         var t, lastPath, i;
         this.parent();
@@ -303,18 +303,18 @@ var WallItem = ItemObject.extend({
         t.lastPathIndex++;
 
     },
-    lockedMouseDbClick: function (mouseTile) {
+    lockedMouseDbClick: function(mouseTile) {
         'use strict';
         var ui = me.state.current();
         this.parent();
-        _.each(ui.drawingScreen, function (wall) {
+        _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x(), wall.y(), 'wall');
         });
         ui.clear();
 
         ui.mouseLockedOn = null;
     },
-    lockedEscape: function () {
+    lockedEscape: function() {
         'use strict';
         var ui = me.state.current();
         ui.clear();

@@ -18,11 +18,11 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     prevMouse: {},
     width: 0,
     height: 0,
-    init: function () {
+    init: function() {
         'use strict';
         this.parent(true);
     },
-    onResetEvent: function (shipTmxName) {
+    onResetEvent: function(shipTmxName) {
         'use strict';
         var self = this;
         this.parent(true);
@@ -30,7 +30,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         // stuff to reset on state change
         me.levelDirector.loadLevel(shipTmxName);
         this.ship = new Ship(me.game.currentLevel, true);
-        this.ship.onBuildingsChanged = function () {
+        this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();
         };
         this.width = me.game.currentLevel.width;
@@ -64,7 +64,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     /* ---
     action to perform when game is finished (state change)
     --- */
-    onDestroyEvent: function () {
+    onDestroyEvent: function() {
         'use strict';
         me.input.unbindKey(me.input.KEY.ESC);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
@@ -74,7 +74,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         html.clear();
         this.isReset = false;
     },
-    update: function () {
+    update: function() {
         'use strict';
         this.addAsObject = true;
         if (me.input.isKeyPressed('escape')) {
@@ -87,10 +87,10 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             }
         }
     },
-    onHtmlLoaded: function () {
+    onHtmlLoaded: function() {
         'use strict';
         var ajax, screen = this;
-        $('.items').click(function () {
+        $('.items').click(function() {
             var idItem, itemName;
             if (me.state.isCurrent(me.state.LOADING)) {
                 return;
@@ -100,11 +100,11 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             me.state.current().choose(itemName);
         });
 
-        $(document).bind('contextmenu', function (e) {
+        $(document).bind('contextmenu', function(e) {
             return false;
         });
         //Save
-        $('#file_save').click(function () {
+        $('#file_save').click(function() {
             var strData = screen.ship.toJsonString(),
             strName = 'ship_building.sav';
             window.open('php/download.php?data=' + strData + '&name=' + strName);
@@ -113,15 +113,15 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         ajax = new AjaxUpload($('#file_load'), {
             action: 'php/upload.php',
             name: 'uploadfile',
-            onSubmit: function (file, ext) { },
-            onComplete: function (file, response) {
+            onSubmit: function(file, ext) { },
+            onComplete: function(file, response) {
                 if (response) {
                     screen.ship.fromJsonString(response);
                 }
             }
         });
     },
-    mouseDbClick: function (e) {
+    mouseDbClick: function(e) {
         'use strict';
         //note: the "this" context is a canvas, not the screen
         var mouseTile, screen = me.state.current();
@@ -135,7 +135,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.sort();
         me.game.repaint();
     },
-    mouseDown: function (e) {
+    mouseDown: function(e) {
         'use strict';
         var mouseTile, item, which;
         which = e.which - 1;
@@ -161,7 +161,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.sort();
         me.game.repaint();
     },
-    mouseMove: function () {
+    mouseMove: function() {
         'use strict';
         var mouseTile = utils.getMouse();
         if (this.prevMouse.x === mouseTile.x &&
@@ -182,7 +182,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.prevMouse = mouseTile;
 
     },
-    mouseUp: function (e) {
+    mouseUp: function(e) {
         'use strict';
         var mouseTile, which;
         which = e.which - 1;
@@ -210,7 +210,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     chosen: null, //the chosen object from the panel (an ItemObject)
     mouseLockedOn: null, //who the mouse actions pertain to.
     ghostItems: {}, //Items that exist for the sole purpose of...
-    prepareGhostItems: function () {
+    prepareGhostItems: function() {
         'use strict';
         var type, newItem;
         this.ghostItems = {}; //Items to be used when choosing building location
@@ -226,7 +226,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
 
     // ...showing the position at which they will be built.
-    choose: function (name) {
+    choose: function(name) {
         'use strict';
         if (this.chosen) {
             if (this.chosen.type === name) {
@@ -253,7 +253,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.sort();
         me.game.repaint();
     },
-    moveGhost: function (x, y) {
+    moveGhost: function(x, y) {
         'use strict';
         this.chosen.x(x).y(y);
         //Rotate if it fits somewhere
@@ -268,7 +268,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     //Dragging
     dragging: null,
-    beginDrag: function (building) {
+    beginDrag: function(building) {
         'use strict';
         if (this.chosen) {
             console.log('There should be nothing chosen when drag begins. ' +
@@ -279,7 +279,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.choose(building.type);
         this.dragging = building;
     },
-    endDrag: function () {
+    endDrag: function() {
         'use strict';
         if (!this.dragging) {
             return;
@@ -296,14 +296,14 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     //Red overlay
     redScreen: [],
     redIndex: 0,
-    printRed: function (x, y) {
+    printRed: function(x, y) {
         'use strict';
         this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
         me.game.add(this.redScreen[this.redIndex],
         this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;
     },
-    clearRed: function () {
+    clearRed: function() {
         'use strict';
         var i = 0;
         for (i = this.redIndex; i > 0; i--) {
@@ -312,11 +312,11 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         }
         this.redIndex = 0;
     },
-    updateRed: function () {
+    updateRed: function() {
         'use strict';
         this.clearRed();
         var self = this;
-        utils.itemTiles(this.chosen, function (iX, iY) {
+        utils.itemTiles(this.chosen, function(iX, iY) {
             if (self.greenSpots[iY][iX] === 0) {
                 self.printRed(iX, iY);
             }
@@ -324,14 +324,14 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
     greenSpots: null,
-    updateGreenSpots: function () {
+    updateGreenSpots: function() {
         'use strict';
         var self = this;
         if (!this.chosen) {
             return;
         }
         self.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
-        utils.levelTiles(function (x, y) {
+        utils.levelTiles(function(x, y) {
             var i, j, cWidth, cHeight;
             if (self.chosen.canBuildAt(x, y, self.ship)) {
                 cWidth = self.chosen.size[0];
@@ -350,7 +350,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     drawingScreen: [],
     //draws arbitrary stuff
-    drawItem: function (x, y, type) {
+    drawItem: function(x, y, type) {
         'use strict';
         var item = utils.makeItem(type).x(x).y(y);
         me.game.add(item, item.zIndex + 1000);
@@ -359,9 +359,9 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.repaint();
 
     },
-    clear: function () {
+    clear: function() {
         'use strict';
-        _.each(this.drawingScreen, function (i) {
+        _.each(this.drawingScreen, function(i) {
             me.game.remove(i, true);
         });
         this.drawingScreen = [];
@@ -372,7 +372,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
 
     //combines the ship map with the drawing screen
-    mapAt: function (x, y) {
+    mapAt: function(x, y) {
         'use strict';
         var i, shipTile = null;
         for (i = 0; i < this.drawingScreen.length; i++) {
