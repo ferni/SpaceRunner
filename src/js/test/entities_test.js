@@ -6,7 +6,7 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-me, utils, ui, ship*/
+me, utils, ui, Ship*/
 
 module('entities/core.js');
 test('ItemObject.trueSize()', function() {
@@ -44,36 +44,40 @@ test('ItemObject onShip/offShip animations', function() {
 module('entities/items.js');
 test('engine proper placement', function () {
     'use strict';
-    var level = new me.TMXTileMap('test');
+    var level = new me.TMXTileMap('test'),
+        ship;
     level.load();
-    var ship = new Ship(level);
+    ship = new Ship(level);
     ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y,
         'engine'), 'building succeeds');
 });
 
 test('engine invalid placement', function () {
     'use strict';
-    var level = new me.TMXTileMap('test');
+    var level = new me.TMXTileMap('test'),
+        ship;
     level.load();
-    var ship = new Ship(level);
+    ship = new Ship(level);
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
         'engine'), 'building fails');
 });
 
 test('weapon proper placement', function () {
     'use strict';
-    var level = new me.TMXTileMap('test');
+    var level = new me.TMXTileMap('test'),
+        ship;
     level.load();
-    var ship = new Ship(level);
+    ship = new Ship(level);
     ok(ship.buildAt(th.shipPositions.weapon.x, th.shipPositions.weapon.y,
         'weapon'), 'building succeeds');
 });
 
 test('weapon invalid placement', function () {
     'use strict';
-    var level = new me.TMXTileMap('test');
+    var level = new me.TMXTileMap('test'),
+        ship;
     level.load();
-    var ship = new Ship(level);
+    ship = new Ship(level);
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
         'weapon'), 'building fails');
 });

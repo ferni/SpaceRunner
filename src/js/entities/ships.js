@@ -1,4 +1,11 @@
-﻿/*global charMap, utils*/
+﻿/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
+
+/*global me, charMap, utils, _ */
 
 function Ship(tmxTileMap, syncWithGame) {
     'use strict';
@@ -72,8 +79,9 @@ function Ship(tmxTileMap, syncWithGame) {
     };
 
     this.removeAll = function () {
-        var self = this;
-        for (var i = this.buildings().length - 1; i >= 0; i--) {
+        var self = this,
+            i;
+        for (i = this.buildings().length - 1; i >= 0; i--) {
             self.remove(this.buildings()[i]);
         }
         this.buildingsChanged();

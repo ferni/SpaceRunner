@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global QUnit*/
+/*global QUnit, th */
 QUnit.config.autostart = false;
 
 QUnit.done(function(e) {
@@ -13,5 +13,6 @@ QUnit.done(function(e) {
 });
 
 th.onGameReady(function () {
+   'use strict';
     QUnit.start();
 });
