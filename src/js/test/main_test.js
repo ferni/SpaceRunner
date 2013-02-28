@@ -25,9 +25,10 @@ asyncTest('buildAt', function() {
         me.state.change(me.state.BUILD, 'test');
     }, function(screen) {
         screen.ship.removeAll();
-        ok(screen.ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
-            'power'), 'could build power');
-        equal(screen.ship.buildings()[0].type, 'power', 'first building is power');
+        ok(screen.ship.buildAt(th.shipPositions.free.x,
+            th.shipPositions.free.y, 'power'), 'could build power');
+        equal(screen.ship.buildings()[0].type, 'power',
+            'first building is power');
         start();
     });
 });
@@ -88,7 +89,8 @@ asyncTest('remove', function() {
         screen.ship.buildAt(x, y, 'component');
         equal(screen.ship.buildings()[0].type, 'component',
             'Ship has component built');
-        equal(screen.ship.mapAt(x, y).type, 'component', 'mapAt(x,y) is component');
+        equal(screen.ship.mapAt(x, y).type, 'component',
+            'mapAt(x,y) is component');
         item = screen.ship.buildings()[0];
         screen.ship.remove(item);
         notEqual(screen.ship.mapAt(x, y).type, 'component',
@@ -107,14 +109,17 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
         door = new DoorItem();
-        ok(!door.canBuildAt(x, y, screen.ship), "Cannot build at x,y (there's no wall)");
-        ok(!door.canBuildRotated(x, y, screen.ship), 'It cannot be built rotated either');
+        ok(!door.canBuildAt(x, y, screen.ship),
+            "Cannot build at x,y (there's no wall)");
+        ok(!door.canBuildRotated(x, y, screen.ship),
+            'It cannot be built rotated either');
 
         screen.ship.buildAt(x, y, 'wall');
         screen.ship.buildAt(x, y + 1, 'wall');
         //update wall animations, important for door placement rules
         me.game.update();
-        ok(!door.canBuildAt(x, y, screen.ship), 'After building vertical wall,' +
+        ok(!door.canBuildAt(x, y, screen.ship),
+            'After building vertical wall,' +
             'door still cannot be built at x,y...');
         ok(door.canBuildRotated(x, y, screen.ship), '... but it can rotated.');
 
@@ -134,9 +139,12 @@ asyncTest('mapAt out of bounds', function() {
         me.state.change(me.state.BUILD, 'test');
     }, function(screen) {
         screen.ship.removeAll();
-        strictEqual(screen.ship.mapAt(-1, 0), null, 'mapAt(-1,0) is null');
-        strictEqual(screen.ship.mapAt(width(), 0), null, 'mapAt(WIDTH,0) is null');
-        strictEqual(screen.ship.mapAt(0, height()), null, 'mapAt(0,HEIGHT) is null');
+        strictEqual(screen.ship.mapAt(-1, 0), null,
+            'mapAt(-1,0) is null');
+        strictEqual(screen.ship.mapAt(width(), 0), null,
+            'mapAt(WIDTH,0) is null');
+        strictEqual(screen.ship.mapAt(0, height()), null,
+            'mapAt(0,HEIGHT) is null');
         start();
     });
 
@@ -175,10 +183,10 @@ asyncTest('fromJsonString clears buildings', function() {
         me.state.change(me.state.BUILD, 'test');
     }, function(screen) {
         screen.ship.removeAll();
-        ok(screen.ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
-            'power'), 'power successfully built');
-        ok(screen.ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y,
-            'engine'), 'engine succesfully built');
+        ok(screen.ship.buildAt(th.shipPositions.free.x,
+            th.shipPositions.free.y, 'power'), 'power successfully built');
+        ok(screen.ship.buildAt(th.shipPositions.engine.x,
+            th.shipPositions.engine.y, 'engine'), 'engine succesfully built');
         screen.ship.fromJsonString('[{"type":"wall", "x":0, "y":0}]');
         equal(screen.ship.buildings().length, 1,
             'ship has only one building after loading');
@@ -200,10 +208,10 @@ asyncTest('toJsonString', function() {
     }, function(screen) {
         var jsonObject, power, engine;
         screen.ship.removeAll();
-        ok(screen.ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
-            'power'), 'power successfully built');
-        ok(screen.ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y,
-            'engine'), 'engine succesfully built');
+        ok(screen.ship.buildAt(th.shipPositions.free.x,
+            th.shipPositions.free.y, 'power'), 'power successfully built');
+        ok(screen.ship.buildAt(th.shipPositions.engine.x,
+            th.shipPositions.engine.y, 'engine'), 'engine succesfully built');
         screen.ship.mapAt(th.shipPositions.engine.x, th.shipPositions.engine.y)
             .rotated(true);
 

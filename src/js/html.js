@@ -19,10 +19,8 @@ var html = {
         }
         $('#screensUi').html(screenHtml);
     },
-    /**
-    *deletes html from the dom and stores it in stored
-    *returns stored html
-    */
+    //deletes html from the dom and stores it in stored
+    //returns stored html
     store: function(screenId) {
         'use strict';
         var node = $('#' + screenId)[0],

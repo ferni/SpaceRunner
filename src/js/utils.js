@@ -76,7 +76,8 @@ var utils = {
             me.game.currentLevel.height, callback);
     },
     //traverses every tile coordinate inside the level of an item
-    itemTiles: function(item, callback, insideShip) { //the callback must have x and y
+    //callback must have x and y
+    itemTiles: function(item, callback, insideShip) {
         'use strict';
         var x, y;
         if (!item) {

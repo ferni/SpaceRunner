@@ -54,7 +54,8 @@ asyncTest('right click removes item', function() {
         th.mouseBegin(screen);
         th.rightClick(x + 1, y + 1); //botton right of component
         th.mouseEnd();
-        notEqual(screen.ship.mapAt(x, y).type, 'component', 'Component removed');
+        notEqual(screen.ship.mapAt(x, y).type, 'component',
+            'Component removed');
         start();
     });
 });

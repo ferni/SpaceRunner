@@ -169,7 +169,8 @@ asyncTest('Wall building canceled by escape key', function() {
         screen.update();
         me.input.triggerKeyEvent(me.input.KEY.ESC, false);
 
-        ok(!screen.mouseLockedOn, 'Mouse no longer locked on wall after ESC key');
+        ok(!screen.mouseLockedOn,
+            'Mouse no longer locked on wall after ESC key');
         //wall does no longer appear on the screen (except the cursor)
         equal(screen.mapAt(x, y).type, 'wall',
             'Cursor still appears on the screen');

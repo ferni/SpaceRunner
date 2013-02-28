@@ -107,7 +107,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         $('#file_save').click(function() {
             var strData = screen.ship.toJsonString(),
             strName = 'ship_building.sav';
-            window.open('php/download.php?data=' + strData + '&name=' + strName);
+            window.open('php/download.php?data=' + strData +
+                '&name=' + strName);
         });
         //Load
         ajax = new AjaxUpload($('#file_load'), {
@@ -126,7 +127,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         //note: the "this" context is a canvas, not the screen
         var mouseTile, screen = me.state.current();
         mouseTile = utils.getMouse();
-        if (screen.mouseLockedOn) { //the mouse is involved in a specific object
+        if (screen.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
             screen.mouseLockedOn.lockedMouseDbClick(mouseTile);
             return;
@@ -140,7 +141,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         var mouseTile, item, which;
         which = e.which - 1;
         mouseTile = utils.getMouse();
-        if (this.mouseLockedOn) { //the mouse is involved in a specific object
+        if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
             this.mouseLockedOn.lockedMouseDown(mouseTile);
             return;
@@ -168,7 +169,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             this.prevMouse.y === mouseTile.y) {
             return;
         }
-        if (this.mouseLockedOn) { //the mouse is involved in a specific object
+        if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
             this.mouseLockedOn.lockedMouseMove(mouseTile);
             return;
@@ -213,7 +214,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     prepareGhostItems: function() {
         'use strict';
         var type, newItem;
-        this.ghostItems = {}; //Items to be used when choosing building location
+        this.ghostItems = {};//Items to be used when choosing building location
         for (type in items) {
             if (items.hasOwnProperty(type)) {
                 newItem = utils.makeItem(type);
@@ -380,7 +381,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 return this.drawingScreen[i];
             }
         }
-        if (this.ship.map()[y] !== undefined && this.ship.map()[y][x] !== undefined) {
+        if (this.ship.map()[y] !== undefined &&
+            this.ship.map()[y][x] !== undefined) {
             shipTile = this.ship.map()[y][x];
         }
         if (shipTile === charMap.codes._cleared && this.chosen &&

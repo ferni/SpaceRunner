@@ -10,7 +10,7 @@
 function Ship(tmxTileMap, syncWithGame) {
     'use strict';
     this.tmxTileMap = tmxTileMap;
-    if(!this.tmxTileMap.initiated) {
+    if (!this.tmxTileMap.initiated) {
         this.tmxTileMap.load();
     }
     this.width = this.tmxTileMap.width;
@@ -18,7 +18,6 @@ function Ship(tmxTileMap, syncWithGame) {
     this.syncWithGame = syncWithGame;
     this._buildings = [];
     this.init = function() {
-        
     };
     this.buildings = function() {
         return this._buildings;
@@ -188,6 +187,3 @@ function Ship(tmxTileMap, syncWithGame) {
     this.init();
 }
 
-var ships = {
-    
-};

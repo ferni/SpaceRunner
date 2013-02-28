@@ -202,7 +202,7 @@ var jsApp = {
     /* ---
 
     Initialize the jsApp
-    
+
     --- */
     onload: function() {
         'use strict';

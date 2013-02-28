@@ -82,7 +82,6 @@ var th = {
                 x: th._mousePosition.x,
                 y: th._mousePosition.y
             };
-            
         };
     },
     mouseEnd: function() {

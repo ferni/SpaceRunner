@@ -6,6 +6,10 @@
 */
 
 /*global QUnit, th */
+
+/**
+*Autostart config
+*/
 QUnit.config.autostart = false;
 
 QUnit.done(function(e) {

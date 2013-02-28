@@ -181,7 +181,8 @@ var WallItem = ItemObject.extend({
     updateAnimation: function() {
         'use strict';
         var wallsAround, x, y, top, left, bot, right, animationName, ui;
-        if (!me.state.isCurrent(me.state.BUILD) || !me.state.current().isReset) {
+        if (!me.state.isCurrent(me.state.BUILD) ||
+            !me.state.current().isReset) {
             return;
         }
         ui = me.state.current();
@@ -288,7 +289,8 @@ var WallItem = ItemObject.extend({
         'use strict';
         var t, lastPath, i;
         this.parent();
-        if (!this.canBuildAt(mouseTile.x, mouseTile.y, me.state.current().ship)) {
+        if (!this.canBuildAt(mouseTile.x, mouseTile.y,
+            me.state.current().ship)) {
             return;
         }
         t = this.temp;
