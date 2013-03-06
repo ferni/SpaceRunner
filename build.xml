@@ -6,7 +6,7 @@
         <!-- Instrument javascript -->
         <echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
 	  	<exec executable="jscoverage" >
-	    		<arg line="src build/instrumented --encoding=UTF-8"/>
+	    		<arg line="src/public build/instrumented --encoding=UTF-8"/>
 	  	</exec>     
 
         <!-- Open intrumented folder -->
@@ -33,7 +33,7 @@
 	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
 	  	<echo message="**********************************************"/>
 	  	<exec executable="tools/closure_linter/gjslint.py">
-	  	    <arg line="-r src -e src/js/vendor"/>
+	  	    <arg line="-r src/public -e src/public/js/vendor"/>
 	  	</exec>
 	</target>
 	<target name="beautify" depends="tools/jsbeautifier">
@@ -43,7 +43,7 @@
 	</target>
 	<target name="fixlint" depends="tools/closure_linter">
 	    <exec executable="tools/closure_linter/fixjsstyle.py">
-	  	    <arg line="-r src -e src/js/vendor"/>
+	  	    <arg line="-r src/public -e src/public/js/vendor"/>
 	  	</exec>
 	</target>
 

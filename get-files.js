@@ -44,3 +44,11 @@ function getFiles(directory, options){
     return files;
 }
 
+function getOwnJsFiles(){
+    return getFiles('src' + fs.separator + 'public',{
+        extension:'js',
+        exclude:['src' + fs.separator + 'public' +
+            fs.separator + "js" + fs.separator + "vendor"]
+    });
+}
+

@@ -105,13 +105,14 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         });
         //Save
         $('#file_save').click(function() {
-            var shipData = screen.ship.toJsonString();
-            var name = prompt('Enter the ship name.');
-            $.post('/save', {name: name, buildings: shipData}, function(response){
-                if(response){
+            var shipData = screen.ship.toJsonString(),
+                name = prompt('Enter the ship name.');
+            $.post('/save', {name: name, buildings: shipData},
+                function(response) {
+                if (response) {
                     alert('saved');
                 }
-                else{
+                else {
                     alert('Error: Could not save ship.');
                 }
             },'json');
@@ -119,8 +120,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         //Load
         $('#file_load').click(function() {
             var name = prompt('Enter the ship name you wish to load.');
-            $.post('/load', {name: name},function(response){
-                if(response) {
+            $.post('/load', {name: name},function(response) {
+                if (response) {
                     screen.ship.fromJsonString(response);
                     me.game.sort();
                     me.game.repaint();
@@ -128,7 +129,6 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                     alert('Error: Could not load ship.');
                 }
             },'json');
-            
         });
     },
     mouseDbClick: function(e) {
