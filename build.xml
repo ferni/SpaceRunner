@@ -33,7 +33,7 @@
 	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
 	  	<echo message="**********************************************"/>
 	  	<exec executable="tools/closure_linter/gjslint.py">
-	  	    <arg line="-r src/public -e src/public/js/vendor"/>
+	  	    <arg line="-r src -e src/public/js/vendor,src/node_modules"/>
 	  	</exec>
 	</target>
 	<target name="beautify" depends="tools/jsbeautifier">
@@ -43,11 +43,12 @@
 	</target>
 	<target name="fixlint" depends="tools/closure_linter">
 	    <exec executable="tools/closure_linter/fixjsstyle.py">
-	  	    <arg line="-r src/public -e src/public/js/vendor"/>
+	  	    <arg line="-r src -e src/public/js/vendor,src/node_modules"/>
 	  	</exec>
 	</target>
 
 	<!-- Tools -->
+
 	<target name="check-phantomjs">
         <condition property="phantomjs-not-installed">
             <not>

@@ -2,8 +2,15 @@ var fs = require("fs");
 
 //Returns true if a file name has "ext" extension
 function fileHasExtension(file, ext){
-    ext = "."+ext;
-    return file.indexOf(ext, this.length - ext.length) !== -1;
+    var i, index;
+    ext = "." + ext;
+    for(i = 0; i < ext.length; i++){
+        index = (file.length - ext.length) + i;
+        if(file[index] !== ext[i]){
+            return false;
+        }
+    }
+    return true;
 }
 
 function notBackup(file){
@@ -30,7 +37,7 @@ function getFiles(directory, options){
     for(i = 2; i< stuff.length; i++){//starts at 2 to skip "." and ".."
         
         var path = directory + fs.separator + stuff[i];
-        if(fs.isFile(path) && (!options || !options.extension || fileHasExtension(stuff[i], options.extension)) && notBackup(stuff[i])){
+        if(fs.isFile(path) && (!options || !options.extension || fileHasExtension(stuff[i], options.extension))){
             files.push(path);
         }
         
@@ -44,11 +51,14 @@ function getFiles(directory, options){
     return files;
 }
 
-function getOwnJsFiles(){
-    return getFiles('src' + fs.separator + 'public',{
+function getOwnJsFiles() {
+    var s = fs.separator,
+        root = 'src';
+    return getFiles(root, {
         extension:'js',
-        exclude:['src' + fs.separator + 'public' +
-            fs.separator + "js" + fs.separator + "vendor"]
+        exclude:[root + s + 'public' + s + 'js' + s + 'vendor',
+                 root + s + 'node_modules']
     });
 }
+
 
