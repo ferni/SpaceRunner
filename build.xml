@@ -1,4 +1,10 @@
 <project name="SpaceRunner" default="report">
+    <target name="run" description="Starts the app with the NodeJS server">
+        <echo message="Starting NodeJS ..."/>
+        <exec executable="node" >
+	    		<arg line="src/app.js"/>
+	  	</exec>
+    </target>
 
     <!-- Test reports -->
 
