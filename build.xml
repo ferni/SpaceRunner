@@ -1,7 +1,10 @@
 <project name="SpaceRunner" default="report">
-    <target name="run" description="Starts the app with the NodeJS server">
+    <property name="node-version" value="0.8.22"/>
+    <property name="node-dir" value="node-v${node-version}-linux-x86"/>
+
+    <target name="run" depends="tools/node" description="Starts the app with the NodeJS server">
         <echo message="Starting NodeJS ..."/>
-        <exec executable="node" >
+        <exec executable="tools/${node-dir}/bin/node" >
 	    		<arg line="src/app.js"/>
 	  	</exec>
     </target>
@@ -131,6 +134,23 @@
     <target name="tools/jsbeautifier" depends="check-jsbeautifier" if="jsbeautifier-not-downloaded" description="Downloads beautify.js into the tools folder">
         <exec executable="wget" dir="tools">
 	        <arg line="-c https://raw.github.com/einars/js-beautify/master/beautify.js"/>
+        </exec>
+    </target>
+
+    <!-- Note: node-dir and node-version properties defined on top of file -->
+    <target name="check-node">
+        <condition property="node-not-downloaded">
+            <not>
+              <available file="tools/${node-dir}/bin/node"/>
+            </not>
+          </condition>
+    </target>
+    <target name="tools/node" depends="check-node" if="node-not-downloaded" description="Downloads NodeJS into the tools folder">
+        <exec executable="wget" dir="tools">
+	        <arg line="-c http://nodejs.org/dist/v${node-version}/${node-dir}.tar.gz"/>
+        </exec>
+        <exec executable="tar" dir="tools">
+		    <arg line="-zxvf ${node-dir}.tar.gz"/>
         </exec>
     </target>
 </project>
