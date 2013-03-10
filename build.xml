@@ -1,6 +1,8 @@
 <project name="SpaceRunner" default="report">
     <property name="node-version" value="0.8.22"/>
     <property name="node-dir" value="node-v${node-version}-linux-x86"/>
+    <property name="redis-version" value="2.6.10"/>
+    <property name="redis-dir" value="redis-${redis-version}"/>
 
     <target name="run" depends="tools/node" description="Starts the app with the NodeJS server">
         <echo message="Starting NodeJS ..."/>
@@ -151,6 +153,25 @@
         </exec>
         <exec executable="tar" dir="tools">
 		    <arg line="-zxvf ${node-dir}.tar.gz"/>
+        </exec>
+    </target>
+
+
+    <target name="check-redis">
+        <condition property="redis-not-downloaded">
+            <not>
+              <available file="tools/${redis-dir}/src/redis-server"/>
+            </not>
+          </condition>
+    </target>
+    <target name="tools/redis" depends="check-redis" if="redis-not-downloaded" description="Downloads redis into the tools folder">
+        <exec executable="wget" dir="tools">
+	        <arg line="-c http://redis.googlecode.com/files/${redis-dir}.tar.gz"/>
+        </exec>
+        <exec executable="tar" dir="tools">
+		    <arg line="-zxvf ${redis-dir}.tar.gz"/>
+        </exec>
+        <exec executable="make" dir="tools/${redis-dir}">
         </exec>
     </target>
 </project>
