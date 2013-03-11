@@ -12,14 +12,6 @@ if(!couldLoadGetFiles){
     phantom.exit();
 }
 
-//Returns an array with paths to js files which would be analized with JSLint
-function getFilesForLint(){
-    return getFiles("src", {
-        extension: "js", 
-        exclude: ["src"+fs.separator+"js"+fs.separator+"vendor"]
-    });
-}
-
 function reportForFile(path){
     var report = [];
     report.push("----- (JSLint) FILE  :  "+path+"   -----");
@@ -100,7 +92,7 @@ function checkHeaders(files){
 
 //"Main"
 
-var files = getFilesForLint(),
+var files = getOwnJsFiles(),
     problems = 0;
 console.log('\nChecking ' + files.length + ' files ...\n');
 for(var i = 0; i < files.length; i++){

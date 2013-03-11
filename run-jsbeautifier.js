@@ -9,10 +9,7 @@ if(!couldLoadGetFiles){
     phantom.exit();
 }
 
-var files = getFiles("src",{
-    extension:"js",
-    exclude:["src"+fs.separator+"js"+fs.separator+"vendor"]
-});
+var files = getOwnJsFiles();
 
 for(var i = 0; i < files.length; i++){
     console.log("Beautifying "+files[i]+" ...");

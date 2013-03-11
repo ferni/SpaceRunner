@@ -1,4 +1,34 @@
 <project name="SpaceRunner" default="report">
+    <property name="node-version" value="0.8.22"/>
+    <property name="node-dir" value="node-v${node-version}-linux-x86"/>
+    <property name="redis-version" value="2.6.10"/>
+    <property name="redis-dir" value="redis-${redis-version}"/>
+
+    <target name="run" depends="tools/node,tools/redis" description="Starts the app with the NodeJS server">
+        <property name="app-url" value="http://localhost:3000"/>
+        <parallel>
+            <sequential>
+                <echo message="Starting redis server ..."/>
+                <exec executable="tools/${redis-dir}/src/redis-server" >
+	      	    </exec>
+            </sequential>
+            <sequential>
+                <sleep seconds="3"/>
+                <echo message="Starting NodeJS ..."/>
+                <exec executable="tools/${node-dir}/bin/node" >
+	        		<arg line="src/app.js"/>
+	      	    </exec>
+            </sequential>
+            <sequential>
+                <echo message="Waiting 6 seconds ..."/>
+                <sleep seconds="6"/>
+                <echo message="Launching app at ${app-url}"/>
+                <exec executable="xdg-open" >
+	    		    <arg line="${app-url}"/>
+	  	        </exec>
+            </sequential>
+        </parallel>
+    </target>
 
     <!-- Test reports -->
 
@@ -6,7 +36,7 @@
         <!-- Instrument javascript -->
         <echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
 	  	<exec executable="jscoverage" >
-	    		<arg line="src build/instrumented --encoding=UTF-8"/>
+	    		<arg line="src/public build/instrumented --encoding=UTF-8"/>
 	  	</exec>     
 
         <!-- Open intrumented folder -->
@@ -33,7 +63,7 @@
 	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
 	  	<echo message="**********************************************"/>
 	  	<exec executable="tools/closure_linter/gjslint.py">
-	  	    <arg line="-r src -e src/js/vendor"/>
+	  	    <arg line="-r src -e src/public/js/vendor,src/node_modules"/>
 	  	</exec>
 	</target>
 	<target name="beautify" depends="tools/jsbeautifier">
@@ -43,11 +73,12 @@
 	</target>
 	<target name="fixlint" depends="tools/closure_linter">
 	    <exec executable="tools/closure_linter/fixjsstyle.py">
-	  	    <arg line="-r src -e src/js/vendor"/>
+	  	    <arg line="-r src -e src/public/js/vendor,src/node_modules"/>
 	  	</exec>
 	</target>
 
 	<!-- Tools -->
+
 	<target name="check-phantomjs">
         <condition property="phantomjs-not-installed">
             <not>
@@ -124,6 +155,42 @@
     <target name="tools/jsbeautifier" depends="check-jsbeautifier" if="jsbeautifier-not-downloaded" description="Downloads beautify.js into the tools folder">
         <exec executable="wget" dir="tools">
 	        <arg line="-c https://raw.github.com/einars/js-beautify/master/beautify.js"/>
+        </exec>
+    </target>
+
+    <!-- Note: node-dir and node-version properties defined on top of file -->
+    <target name="check-node">
+        <condition property="node-not-downloaded">
+            <not>
+              <available file="tools/${node-dir}/bin/node"/>
+            </not>
+          </condition>
+    </target>
+    <target name="tools/node" depends="check-node" if="node-not-downloaded" description="Downloads NodeJS into the tools folder">
+        <exec executable="wget" dir="tools">
+	        <arg line="-c http://nodejs.org/dist/v${node-version}/${node-dir}.tar.gz"/>
+        </exec>
+        <exec executable="tar" dir="tools">
+		    <arg line="-zxvf ${node-dir}.tar.gz"/>
+        </exec>
+    </target>
+
+
+    <target name="check-redis">
+        <condition property="redis-not-downloaded">
+            <not>
+              <available file="tools/${redis-dir}/src/redis-server"/>
+            </not>
+          </condition>
+    </target>
+    <target name="tools/redis" depends="check-redis" if="redis-not-downloaded" description="Downloads redis into the tools folder">
+        <exec executable="wget" dir="tools">
+	        <arg line="-c http://redis.googlecode.com/files/${redis-dir}.tar.gz"/>
+        </exec>
+        <exec executable="tar" dir="tools">
+		    <arg line="-zxvf ${redis-dir}.tar.gz"/>
+        </exec>
+        <exec executable="make" dir="tools/${redis-dir}">
         </exec>
     </target>
 </project>
