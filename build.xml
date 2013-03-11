@@ -4,11 +4,30 @@
     <property name="redis-version" value="2.6.10"/>
     <property name="redis-dir" value="redis-${redis-version}"/>
 
-    <target name="run" depends="tools/node" description="Starts the app with the NodeJS server">
-        <echo message="Starting NodeJS ..."/>
-        <exec executable="tools/${node-dir}/bin/node" >
-	    		<arg line="src/app.js"/>
-	  	</exec>
+    <target name="run" depends="tools/node,tools/redis" description="Starts the app with the NodeJS server">
+        <property name="app-url" value="http://localhost:3000"/>
+        <parallel>
+            <sequential>
+                <echo message="Starting redis server ..."/>
+                <exec executable="tools/${redis-dir}/src/redis-server" >
+	      	    </exec>
+            </sequential>
+            <sequential>
+                <sleep seconds="3"/>
+                <echo message="Starting NodeJS ..."/>
+                <exec executable="tools/${node-dir}/bin/node" >
+	        		<arg line="src/app.js"/>
+	      	    </exec>
+            </sequential>
+            <sequential>
+                <echo message="Waiting 6 seconds ..."/>
+                <sleep seconds="6"/>
+                <echo message="Launching app at ${app-url}"/>
+                <exec executable="xdg-open" >
+	    		    <arg line="${app-url}"/>
+	  	        </exec>
+            </sequential>
+        </parallel>
     </target>
 
     <!-- Test reports -->
