@@ -180,6 +180,38 @@ var g_resources = [{
     name: 'liquid_drone_img',
     type: 'image',
     src: 'data/img/render/ships/liquid/liquid_drone_img.png'
+},{
+    name: 'mechanoid_frigate',
+    type: 'tmx',
+    src: 'data/outlines/mechanoid_frigate.tmx'
+}, {
+    name: 'mechanoid_frigate_img',
+    type: 'image',
+    src: 'data/img/render/ships/mechanoid/mechanoid_frigate_img.png'
+},{
+    name: 'mechanoid_cruiser',
+    type: 'tmx',
+    src: 'data/outlines/mechanoid_cruiser.tmx'
+}, {
+    name: 'mechanoid_cruiser_img',
+    type: 'image',
+    src: 'data/img/render/ships/mechanoid/mechanoid_cruiser_img.png'
+},{
+    name: 'mechanoid_battleship',
+    type: 'tmx',
+    src: 'data/outlines/mechanoid_battleship.tmx'
+}, {
+    name: 'mechanoid_battleship_img',
+    type: 'image',
+    src: 'data/img/render/ships/mechanoid/mechanoid_battleship_img.png'
+},{
+    name: 'mechanoid_drone',
+    type: 'tmx',
+    src: 'data/outlines/mechanoid_drone.tmx'
+}, {
+    name: 'mechanoid_drone_img',
+    type: 'image',
+    src: 'data/img/render/ships/mechanoid/mechanoid_drone_img.png'
 }, {
     name: 'button',
     type: 'image',
@@ -207,7 +239,7 @@ var jsApp = {
     onload: function() {
         'use strict';
         // init the video
-        if (!me.video.init('jsapp', 1440, 1152)) {
+        if (!me.video.init('jsapp', 1440, 1344)) {
             alert('Sorry but your browser does not support html 5 canvas.');
             return;
         }

@@ -80,6 +80,13 @@ var ShipSelectScreen = me.ScreenObject.extend({
                         'Cruiser',
                         'Battleship',
                         'Drone'
+                    ]),
+                new RaceButtonSet('Mechanoid',
+                    [
+                        'Frigate',
+                        'Cruiser',
+                        'Battleship',
+                        'Drone'
                     ])
             ];
         };
