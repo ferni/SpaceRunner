@@ -76,7 +76,6 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     update: function() {
         'use strict';
-        this.addAsObject = true;
         if (me.input.isKeyPressed('escape')) {
             if (this.mouseLockedOn) {
                 this.mouseLockedOn.lockedEscape();
