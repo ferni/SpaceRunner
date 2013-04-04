@@ -57,8 +57,8 @@ var ShipSelectScreen = me.ScreenObject.extend({
                 });
             };
             this.selectShip = function(shipType) {
-                me.state.change(me.state.BUILD,
-                    screen.htmlVm.selectedRace() + '_' + shipType);
+                var tmxName = screen.htmlVm.selectedRace() + '_' + shipType;
+                me.state.change(me.state.BUILD, {tmxName: tmxName});
             };
             this.races = [
                 new RaceButtonSet('Cyborg',

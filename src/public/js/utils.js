@@ -77,16 +77,16 @@ var utils = {
     },
     //traverses every tile coordinate inside the level of an item
     //callback must have x and y
-    itemTiles: function(item, callback, insideShip) {
+    itemTiles: function(item, callback, withinSize) {
         'use strict';
         var x, y;
         if (!item) {
             return;
         }
         for (x = item.x(); x < item.trueSize(0) + item.x() &&
-            (!insideShip || x < width()) && x >= 0; x++) {
+            (!withinSize || x < withinSize.width) && x >= 0; x++) {
             for (y = item.y(); y < item.trueSize(1) + item.y() &&
-                (!insideShip || y < height()) && y >= 0; y++) {
+                (!withinSize || y < withinSize.height) && y >= 0; y++) {
                 callback(x, y);
             }
         }

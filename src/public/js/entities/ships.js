@@ -7,15 +7,32 @@
 
 /*global me, charMap, utils, _ */
 
-function Ship(tmxName, syncWithGame) {
+function Ship(settings, syncWithGame) {
     'use strict';
-    this.tmxName = tmxName;
-    this.tmxTileMap = new me.TMXTileMap(tmxName, 0, 0);
-    this.tmxTileMap.load();
-    this.width = this.tmxTileMap.width;
-    this.height = this.tmxTileMap.height;
-    this.syncWithGame = syncWithGame;
-    this._buildings = [];
+
+    this.init = function(settings, syncWithGame){
+        if (!settings.tmxName && !settings.jsonString) {
+            throw 'Ship settings must have tmxName or jsonData';
+        }
+        if (settings.jsonString) {
+            this.tmxName = JSON.parse(settings.jsonString).tmxName;
+        } else {
+            this.tmxName = settings.tmxName;
+        }
+        this.loadMap();
+
+        this.width = this.tmxTileMap.width;
+        this.height = this.tmxTileMap.height;
+        this.syncWithGame = syncWithGame;
+        this._buildings = [];
+        if (settings.jsonString) {
+            this.fromJsonString(settings.jsonString);
+        }
+    };
+    this.loadMap = function(){
+        this.tmxTileMap = new me.TMXTileMap(this.tmxName, 0, 0);
+        this.tmxTileMap.load();
+    };
     this.buildings = function() {
         return this._buildings;
     };
@@ -36,7 +53,7 @@ function Ship(tmxName, syncWithGame) {
             //remove anything in its way
             utils.itemTiles(building, function(iX, iY) {
                 self.removeAt(iX, iY);
-            }, true);
+            }, this);
             this.add(building);
             building.onBuilt();
             return building; //building successful
@@ -116,7 +133,7 @@ function Ship(tmxName, syncWithGame) {
                 if (!b.hidden()) {
                     utils.itemTiles(b, function(x, y) {
                         self._buildingsMap[y][x] = b;
-                    }, true);
+                    }, self.thisShip);
                 }
             });
 
@@ -160,7 +177,7 @@ function Ship(tmxName, syncWithGame) {
     };
     this.toJsonString = function() {
         return JSON.stringify({
-            'tmx': this.tmxName,
+            'tmxName': this.tmxName,
             'buildings':_.map(this.buildings(), function(b) {
                             return {
                                 type: b.type,
@@ -186,6 +203,10 @@ function Ship(tmxName, syncWithGame) {
     };
     this.showInScreen = function(){
       me.levelDirector.loadLevel(this.tmxName);
+        _.each(this.buildings(), function(b){
+            me.game.add(b, b.zIndex);
+      });
     };
+    this.init(settings, syncWithGame);
 }
 

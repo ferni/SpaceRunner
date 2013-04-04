@@ -22,13 +22,18 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         'use strict';
         this.parent(true);
     },
-    onResetEvent: function(shipTmxName) {
+    /**
+     *
+     * @param settings has tmxName or jsonData
+     */
+    onResetEvent: function(settings) {
         'use strict';
         var self = this;
         this.parent(true);
+
         me.video.clearSurface(me.video.getScreenContext(), 'black');
         // stuff to reset on state change
-        this.ship = new Ship(shipTmxName, true);
+        this.ship = new Ship(settings, true);
         this.ship.showInScreen();
         this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();
@@ -37,6 +42,10 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.height = me.game.currentLevel.height;
 
         me.game.sort();
+
+        //Debugging commands
+        me.input.bindKey(me.input.KEY.L, 'load');//load
+        me.input.bindKey(me.input.KEY.S, 'save');//save
 
         me.input.bindKey(me.input.KEY.ESC, 'escape');
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -85,6 +94,13 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 this.choose();
             }
         }
+        if (me.input.isKeyPressed('save')) {
+            console.log(this.ship.toJsonString());
+        }
+        if (me.input.isKeyPressed('load')) {
+            var data = window.prompt('enter ship json data');
+            me.state.change(me.state.BUILD, {jsonString: data});
+        }
     },
     onHtmlLoaded: function() {
         'use strict';
@@ -121,9 +137,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             var name = prompt('Enter the ship name you wish to load.');
             $.post('/load', {name: name},function(response) {
                 if (response) {
-                    screen.ship.fromJsonString(response);
-                    me.game.sort();
-                    me.game.repaint();
+                    me.state.change(me.state.BUILD, {jsonString: response});
                 }else {
                     alert('Error: Could not load ship.');
                 }
@@ -329,7 +343,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             if (self.greenSpots[iY][iX] === 0) {
                 self.printRed(iX, iY);
             }
-        }, true);
+        }, me.game.currentLevel);
     },
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
     greenSpots: null,
