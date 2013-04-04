@@ -7,18 +7,15 @@
 
 /*global me, charMap, utils, _ */
 
-function Ship(tmxTileMap, syncWithGame) {
+function Ship(tmxName, syncWithGame) {
     'use strict';
-    this.tmxTileMap = tmxTileMap;
-    if (!this.tmxTileMap.initiated) {
-        this.tmxTileMap.load();
-    }
+    this.tmxName = tmxName;
+    this.tmxTileMap = new me.TMXTileMap(tmxName, 0, 0);
+    this.tmxTileMap.load();
     this.width = this.tmxTileMap.width;
     this.height = this.tmxTileMap.height;
     this.syncWithGame = syncWithGame;
     this._buildings = [];
-    this.init = function() {
-    };
     this.buildings = function() {
         return this._buildings;
     };
@@ -162,19 +159,22 @@ function Ship(tmxTileMap, syncWithGame) {
         return joint;
     };
     this.toJsonString = function() {
-        return JSON.stringify(_.map(this.buildings(), function(b) {
-            return {
-                type: b.type,
-                x: b.x(),
-                y: b.y(),
-                rotated: b.rotated()
-            };
-        }));
+        return JSON.stringify({
+            'tmx': this.tmxName,
+            'buildings':_.map(this.buildings(), function(b) {
+                            return {
+                                type: b.type,
+                                x: b.x(),
+                                y: b.y(),
+                                rotated: b.rotated()
+                            };})
+        });
     };
     this.fromJsonString = function(jsonString) {
-        var itemArray, item, i;
+        var obj, itemArray, item, i;
         this.removeAll();
-        itemArray = JSON.parse(jsonString);
+        obj = JSON.parse(jsonString);
+        itemArray = obj.buildings;
         for (i = 0; i < itemArray.length; i++) {
             item = utils.makeItem(itemArray[i].type);
             item.x(itemArray[i].x)
@@ -184,6 +184,8 @@ function Ship(tmxTileMap, syncWithGame) {
         }
         this.buildingsChanged();
     };
-    this.init();
+    this.showInScreen = function(){
+      me.levelDirector.loadLevel(this.tmxName);
+    };
 }
 

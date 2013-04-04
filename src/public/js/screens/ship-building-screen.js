@@ -28,8 +28,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         this.parent(true);
         me.video.clearSurface(me.video.getScreenContext(), 'black');
         // stuff to reset on state change
-        me.levelDirector.loadLevel(shipTmxName);
-        this.ship = new Ship(me.game.currentLevel, true);
+        this.ship = new Ship(shipTmxName, true);
+        this.ship.showInScreen();
         this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();
         };
@@ -88,7 +88,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     onHtmlLoaded: function() {
         'use strict';
-        var ajax, screen = this;
+        var screen = this;
         $('.items').click(function() {
             var idItem, itemName;
             if (me.state.isCurrent(me.state.LOADING)) {
