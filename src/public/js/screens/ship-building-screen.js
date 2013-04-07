@@ -143,6 +143,12 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 }
             },'json');
         });
+
+        $('.battle-button').click(function(){
+            //put the ship in global context
+            me.game.ship = screen.ship;
+            me.state.change(me.state.BATTLE);
+        })
     },
     mouseDbClick: function(e) {
         'use strict';

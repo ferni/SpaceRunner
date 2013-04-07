@@ -1,16 +1,4 @@
-﻿#ship-select-screen .button
-{
-    border: 2px solid black;
-    padding: 4px;
-    font-size: 30px;
-    font-family: Verdana;
-}
-
-#ship-select-screen .button:hover {
-    border: 2px solid black;
-    cursor: pointer;
-}
-#ship-select-screen ul {
+﻿#ship-select-screen ul {
     list-style-type: none;
 }
 

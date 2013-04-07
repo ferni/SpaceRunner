@@ -261,7 +261,7 @@ var jsApp = {
 
         me.state.SELECT = me.state.USER;
         me.state.BUILD = me.state.USER + 1;
-
+        me.state.BATTLE = me.state.USER + 2;
         window.FIRST_SCREEN = me.state.SELECT;
 
         html.store('ship-select-screen');
@@ -269,6 +269,7 @@ var jsApp = {
         // start the game
         me.state.set(me.state.SELECT, new ShipSelectScreen());
         me.state.set(me.state.BUILD, new ShipBuildingScreen());
+        me.state.set(me.state.BATTLE, new BattleScreen());
 
         me.state.change(me.state.SELECT);
         this.loadReady = true;
