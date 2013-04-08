@@ -23,6 +23,8 @@ var BattleScreen = me.ScreenObject.extend({
 
         me.game.ship.showInScreen();
 
+        this.putUnits();
+
         this.isReset = true;
         jsApp.onScreenReset();
     },
@@ -34,6 +36,22 @@ var BattleScreen = me.ScreenObject.extend({
     onHtmlLoaded: function() {
         'use strict';
 
+    },
+    putUnits: function(){
+        'use strict';
+        //find empty spot
+        var empty = null;
+        utils.matrixTiles(me.game.ship.width, me.game.ship.height,
+            function(x, y){
+                if(empty){
+                    return;
+                }
+                if(me.game.ship.mapAt(x, y) == charMap.codes._cleared){
+                    empty = {x: x, y: y};
+                }
+            });
+        var unit = new Unit(empty.x, empty.y);
+        me.game.add(unit, unit.zIndex);
     }
 });
 

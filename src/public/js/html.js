@@ -26,7 +26,7 @@ var html = {
         var node = $('#' + screenId)[0],
             screenHtml;
         if (!node) {
-            console.error('#' + screenId + ' not found in html');
+            console.warn('#' + screenId + ' not found in html');
             return '';
         }
         screenHtml = $('#' + screenId)[0].outerHTML;

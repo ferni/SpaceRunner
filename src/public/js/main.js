@@ -216,6 +216,10 @@ var g_resources = [{
     name: 'button',
     type: 'image',
     src: 'data/img/render/button.png'
+}, {
+    name: 'unit_robot_alien',
+    type: 'image',
+    src: 'data/img/render/units/unit_robot_alien.png'
 }];
 
 var g_resources_size = [{

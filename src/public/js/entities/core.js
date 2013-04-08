@@ -222,9 +222,6 @@ var ItemObject = TileObject.extend({
     },
     onShipAnimations: [], //0: not rotated, 1: rotated
     offShipAnimations: [], //idem
-    /**
-    *@param insideRect A Rect (or any object with width and height)
-    */
     tiles: function() {
         'use strict';
         var tiles = [];
