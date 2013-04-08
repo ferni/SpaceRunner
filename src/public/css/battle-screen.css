@@ -1,0 +1,35 @@
+#battle-screen body{
+    font-family: Verdana;
+}
+
+#battle-screen #resume-button{
+    border: 3px solid white;
+    font-size: 10pt;
+}
+
+#battle-screen #paused-indicator{
+    position: fixed;
+    bottom: 30px;
+    font-size: 30pt;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    background-color: rgba(50,50,50,0.5);
+}
+
+#battle-screen .button{
+    opacity: 0.8;
+}
+
+#battle-screen .button:hover{
+    opacity: 1;
+}
+
+#battle-screen #elapsed{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 30pt;
+    color:white;
+}

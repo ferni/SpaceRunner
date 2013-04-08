@@ -13,6 +13,7 @@ var Unit = TileObject.extend({
 
         this.parent(x, y, {image: 'unit_robot_alien'});
         this.addAnimation('idle', [0,1,2,1]);
+
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
     }

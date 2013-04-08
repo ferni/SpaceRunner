@@ -8,11 +8,24 @@
 /*global me, html, jsApp, ko, _ */
 
 var BattleScreen = me.ScreenObject.extend({
+    TURN_DURATION: 5000,//in milliseconds
     name: 'battle-screen',
     isReset: false,
+    paused: true,
+    turnBeginTime: null,
     init: function() {
         'use strict';
-        this.parent();
+        this.parent(true);
+    },
+
+    update: function(){
+        if(!this.paused){
+            var elapsed = this.getElapsedTime();
+            $('#elapsed').html(elapsed);
+            if(elapsed >= this.TURN_DURATION){
+                this.pause();
+            }
+        }
     },
     onResetEvent: function() {
         'use strict';
@@ -24,7 +37,7 @@ var BattleScreen = me.ScreenObject.extend({
         me.game.ship.showInScreen();
 
         this.putUnits();
-
+        this.pause();
         this.isReset = true;
         jsApp.onScreenReset();
     },
@@ -35,7 +48,10 @@ var BattleScreen = me.ScreenObject.extend({
     },
     onHtmlLoaded: function() {
         'use strict';
-
+        var screen = this;
+        $('#resume-button').click(function(){
+            screen.resume();
+        });
     },
     putUnits: function(){
         'use strict';
@@ -52,6 +68,24 @@ var BattleScreen = me.ScreenObject.extend({
             });
         var unit = new Unit(empty.x, empty.y);
         me.game.add(unit, unit.zIndex);
+    },
+    pause: function(){
+        'use strict';
+        $('#paused-indicator, #resume-button').show();
+        this.paused = true;
+    },
+    resume: function(){
+        'use strict';
+        $('#paused-indicator, #resume-button').hide();
+        //reset time
+        this.turnBeginTime = me.timer.getTime();
+        this.paused = false;
+    },
+    getElapsedTime: function(){
+        if(this.paused){
+            throw 'Should only call getElapsedTime when resumed.';
+        }
+        return me.timer.getTime() - this.turnBeginTime;
     }
 });
 
