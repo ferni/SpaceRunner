@@ -15,7 +15,7 @@ asyncTest('ESC key un-chooses the item', function() {
     'use strict';
     th.restartGame(function() {
         th.loadScreen(function() {
-            me.state.change(me.state.BUILD, 'test');
+            me.state.change(me.state.BUILD, {tmxName: 'test'});
         }, function(screen) {
             screen.choose('power');
             ok(screen.chosen, 'something chosen');
@@ -32,7 +32,7 @@ asyncTest('mouseDbClick does not give an error when mouse is not locked',
     function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         equal(screen.mouseLockedOn, null, 'Mouse is not locked');
         screen.mouseDbClick({
@@ -45,7 +45,7 @@ asyncTest('mouseDbClick does not give an error when mouse is not locked',
 asyncTest('right click removes item', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y;
@@ -63,7 +63,7 @@ asyncTest('right click removes item', function() {
 asyncTest('drag and drop', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         var power;
         ok(screen.ship.buildAt(3, 4, 'power'), 'power succesfully built');
@@ -91,7 +91,7 @@ asyncTest('drag and drop', function() {
 asyncTest('choose', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         screen.choose('engine');
         equal(screen.chosen.type, 'engine');
@@ -102,7 +102,7 @@ asyncTest('choose', function() {
 asyncTest('moveGhost', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         screen.choose('power');
         equal(screen.chosen.type, 'power');
@@ -121,7 +121,7 @@ asyncTest('moveGhost', function() {
 asyncTest('beginDrag/endDrag', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         var x, y, power;
         screen.ship.removeAll();
@@ -151,7 +151,7 @@ asyncTest('beginDrag/endDrag', function() {
 asyncTest('printRed/clearRed', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         var reds, redsInX4Y5;
         screen.clear();
@@ -173,7 +173,7 @@ asyncTest('printRed/clearRed', function() {
 asyncTest('rotate ghost when it could be built rotated', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         var hX, hY, hWall1, hWall2, door, vX, vY, vWall1, vWall2;
         hX = th.shipPositions.engine.x;
@@ -217,7 +217,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
 asyncTest('draw/mapAt', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         var items;
         screen.drawItem(4, 5, 'engine');

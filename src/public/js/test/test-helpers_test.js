@@ -20,7 +20,7 @@ asyncTest('onGameReady', function() {
 asyncTest('restartGame', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     },
     function() {
         ok(me.state.isCurrent(me.state.BUILD));
@@ -51,7 +51,7 @@ asyncTest('setMouse #1', function() {
 asyncTest('setMouse (test ship)', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     },
         function(screen) {
             th.mouseBegin(screen);
@@ -66,7 +66,7 @@ asyncTest('setMouse (test ship)', function() {
 asyncTest('setMouse (cyborg_battleship1)', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'cyborg_battleship1');
+        me.state.change(me.state.BUILD, {tmxName: 'cyborg_battleship1'});
     },
     function(screen) {
         th.mouseBegin(screen);
@@ -82,7 +82,7 @@ asyncTest('loadScreen #1', function() {
    'use strict';
     th.restartGame(function() {
         th.loadScreen(function() {
-            me.state.change(me.state.BUILD, 'test');
+            me.state.change(me.state.BUILD, {tmxName: 'test'});
         }, function(screen) {
             ok(me.state.current().isReset);
             ok(me.state.isCurrent(me.state.BUILD));
@@ -96,7 +96,7 @@ asyncTest('loadScreen #1', function() {
 asyncTest('loadScreen back and forth', function() {
    'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         ok(me.state.current().isReset);
         ok(me.state.isCurrent(me.state.BUILD));
@@ -113,7 +113,7 @@ asyncTest('loadScreen back and forth', function() {
             strictEqual(me.state.current(), screen2);
 
             th.loadScreen(function() {
-                me.state.change(me.state.BUILD, 'test');
+                me.state.change(me.state.BUILD, {tmxName: 'test'});
             }, function(screen3) {
                 ok(!screen2.isReset);
                 ok(me.state.current().isReset);

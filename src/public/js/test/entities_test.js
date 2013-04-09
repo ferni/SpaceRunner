@@ -44,50 +44,40 @@ test('ItemObject onShip/offShip animations', function() {
 module('entities/items.js');
 test('engine proper placement', function() {
     'use strict';
-    var level = new me.TMXTileMap('test'),
-        ship;
-    level.load();
-    ship = new Ship(level);
+    var ship;
+    ship = new Ship({tmxName: 'test'});
     ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y,
         'engine'), 'building succeeds');
 });
 
 test('engine invalid placement', function() {
     'use strict';
-    var level = new me.TMXTileMap('test'),
-        ship;
-    level.load();
-    ship = new Ship(level);
+    var ship;
+    ship = new Ship({tmxName: 'test'});
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
         'engine'), 'building fails');
 });
 
 test('weapon proper placement', function() {
     'use strict';
-    var level = new me.TMXTileMap('test'),
-        ship;
-    level.load();
-    ship = new Ship(level);
+    var ship;
+    ship = new Ship({tmxName: 'test'});
     ok(ship.buildAt(th.shipPositions.weapon.x, th.shipPositions.weapon.y,
         'weapon'), 'building succeeds');
 });
 
 test('weapon invalid placement', function() {
     'use strict';
-    var level = new me.TMXTileMap('test'),
-        ship;
-    level.load();
-    ship = new Ship(level);
+    var ship;
+    ship = new Ship({tmxName: 'test'});
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
         'weapon'), 'building fails');
 });
 
 test('Console placement', function() {
     'use strict';
-    var x, y, level, ship;
-    level = new me.TMXTileMap('test');
-    level.load();
-    ship = new Ship(level);
+    var x, y, ship;
+    ship = new Ship({tmxName: 'test'});
     x = th.shipPositions.free.x;
     y = th.shipPositions.free.y;
 
@@ -104,7 +94,7 @@ asyncTest('Wall building', function() {
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
     th.loadScreen(function() {
-            me.state.change(me.state.BUILD, 'test');
+            me.state.change(me.state.BUILD, {tmxName: 'test'});
         },
         function(screen) {
             screen.ship.buildAt(x, y, 'wall');
@@ -142,7 +132,7 @@ asyncTest('Wall building canceled by escape key', function() {
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function(screen) {
         screen.choose('wall');
         th.mouseBegin(screen);

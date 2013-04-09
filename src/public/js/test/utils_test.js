@@ -40,7 +40,7 @@ test('getQueriedShip', function() {
 asyncTest('toTileVector', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function() {
         var tileVector = utils.toTileVector(new me.Vector2d(7, 7));
         equal(tileVector.x, 0);
@@ -80,7 +80,7 @@ test('makeItem: invalid item', function() {
 asyncTest('getMouse', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, 'test');
+        me.state.change(me.state.BUILD, {tmxName: 'test'});
     }, function() {
         var originalPos = me.game.currentLevel.pos,
             m;
