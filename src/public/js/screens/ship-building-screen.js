@@ -8,7 +8,7 @@
 
 /*global
 _, html, $, Ship, me, utils, jsApp, width, height, AjaxUpload,
-items, RedColorObject, charMap */
+items, RedColorEntity, charMap */
 
 /* Screen where one builds the ship */
 var ShipBuildingScreen = me.ScreenObject.extend({
@@ -167,7 +167,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     mouseDown: function(e) {
         'use strict';
         var mouseTile, item, which;
-        which = e.which - 1;
+        which = e.which - 1; //workaround for melonJS mismatch
         mouseTile = utils.getMouse();
         if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
@@ -214,7 +214,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     mouseUp: function(e) {
         'use strict';
         var mouseTile, which;
-        which = e.which - 1;
+        which = e.which - 1; //workaround for melonJS mismatch
         mouseTile = utils.getMouse();
         if (this.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object
@@ -236,7 +236,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
 
     /* User Interface Stuff*/
-    chosen: null, //the chosen object from the panel (an ItemObject)
+    chosen: null, //the chosen object from the panel (an ItemEntity)
     mouseLockedOn: null, //who the mouse actions pertain to.
     ghostItems: {}, //Items that exist for the sole purpose of...
     prepareGhostItems: function() {
@@ -327,7 +327,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     redIndex: 0,
     printRed: function(x, y) {
         'use strict';
-        this.redScreen[this.redIndex] = new RedColorObject(x, y, {});
+        this.redScreen[this.redIndex] = new RedColorEntity(x, y, {});
         me.game.add(this.redScreen[this.redIndex],
         this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;

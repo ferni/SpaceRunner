@@ -5,13 +5,13 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemObject, PF, charMap, utils, width, height*/
+/*global me, _, pr, ItemEntity, PF, charMap, utils, width, height*/
 
 /*
     In each item, set size and type before calling parent()
 */
 // weapon object
-var WeaponItem = ItemObject.extend({
+var WeaponItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -37,7 +37,7 @@ var WeaponItem = ItemObject.extend({
 });
 
 // engine object
-var EngineItem = ItemObject.extend({
+var EngineItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -65,7 +65,7 @@ var EngineItem = ItemObject.extend({
 
 
 // power object
-var PowerItem = ItemObject.extend({
+var PowerItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -76,7 +76,7 @@ var PowerItem = ItemObject.extend({
 });
 
 // console object class
-var ConsoleItem = ItemObject.extend({
+var ConsoleItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -95,7 +95,7 @@ var ConsoleItem = ItemObject.extend({
 });
 
 // component object class
-var ComponentItem = ItemObject.extend({
+var ComponentItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -113,7 +113,7 @@ var ComponentItem = ItemObject.extend({
 });
 
 // door object class
-var DoorItem = ItemObject.extend({
+var DoorItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';
@@ -154,7 +154,7 @@ var DoorItem = ItemObject.extend({
 
 });
 // wall object class
-var WallItem = ItemObject.extend({
+var WallItem = ItemEntity.extend({
     // init function
     init: function(x, y, settings) {
         'use strict';

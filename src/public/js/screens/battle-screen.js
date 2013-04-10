@@ -14,6 +14,9 @@ var BattleScreen = me.ScreenObject.extend({
     paused: true,
     turnBeginTime: null,
     selected: [],//selected units
+    Order: function(){
+       this.unit;
+    },
     init: function() {
         'use strict';
         this.parent(true);
@@ -70,8 +73,18 @@ var BattleScreen = me.ScreenObject.extend({
         });
     },
     mouseUp: function(e){
-        var mouse = utils.getMouse();
-        this.selectUnit(mouse.x, mouse.y);
+        var mouse = utils.getMouse(),
+            which = e.which - 1; //workaround for melonJS mismatch
+        if(!this.paused){
+            return;
+        }
+        if(which == me.input.mouse.LEFT){
+            this.selectUnit(mouse.x, mouse.y);
+        }else if(which == me.input.mouse.RIGHT){
+            if(this.selected[0]) {//there is a selected unit
+
+            }
+        }
     },
     putUnits: function(){
         'use strict';

@@ -7,7 +7,9 @@
 
 /*global me*/
 
-var Unit = TileObject.extend({
+var Unit = TileEntity.extend({
+    pendingOrders: [],
+    executing: null,
     init: function(x, y) {
         'use strict';
 
@@ -16,6 +18,11 @@ var Unit = TileObject.extend({
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
-    }
 
+    },
+    update: function(){
+        this.parent();
+
+    }
 });
+

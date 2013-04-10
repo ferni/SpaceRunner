@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, $, items, RedColorObject, charMap,
+/*global me, _, utils, $, items, RedColorEntity, charMap,
 html, ShipSelectScreen, ShipBuildingScreen*/
 
 //sugar

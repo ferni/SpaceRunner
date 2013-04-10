@@ -10,7 +10,7 @@
 /* An object that has tile position (x and y),
     and row length and col length through "size"
 */
-var TileObject = me.ObjectEntity.extend({
+var TileEntity = me.ObjectEntity.extend({
     _x: 0, //column
     _y: 0, //row
     size: [1, 1],
@@ -96,7 +96,7 @@ var TileObject = me.ObjectEntity.extend({
 
 
 /* individual object class */
-var ItemObject = TileObject.extend({
+var ItemEntity = TileEntity.extend({
     init: function(x, y, settings) {
         'use strict';
         if (settings === undefined) {

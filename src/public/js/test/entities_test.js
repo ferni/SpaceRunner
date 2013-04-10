@@ -9,7 +9,7 @@
 me, utils, ui, Ship*/
 
 module('entities/core.js');
-test('ItemObject.trueSize()', function() {
+test('ItemEntity.trueSize()', function() {
     'use strict';
     var door = utils.makeItem('door');
     deepEqual(door.size, [2, 1]);
@@ -21,7 +21,7 @@ test('ItemObject.trueSize()', function() {
     equal(door.trueSize(1), 2);
 });
 
-test('ItemObject onShip/offShip animations', function() {
+test('ItemEntity onShip/offShip animations', function() {
     'use strict';
     var door = utils.makeItem('door');
     deepEqual(door.offShipAnimations, ['idle']);
