@@ -9,7 +9,7 @@
 html, ShipSelectScreen, ShipBuildingScreen*/
 
 //sugar
-var TILE_SIZE = 32;
+var TILE_SIZE = 32, HALF_SIZE = 16;
 function width() {
     'use strict';
     if (!me.game.currentLevel.initialized) {
@@ -26,6 +26,7 @@ function height() {
     }
     return me.game.currentLevel.height;
 }
+
 // game resources
 // in the case of the items, set their image name equal to their type.
 var g_resources = [{
@@ -267,7 +268,6 @@ var jsApp = {
         me.state.BUILD = me.state.USER + 1;
         me.state.BATTLE = me.state.USER + 2;
         window.FIRST_SCREEN = me.state.SELECT;
-
         html.store('ship-select-screen');
         html.store('ship-building-screen');
         // start the game

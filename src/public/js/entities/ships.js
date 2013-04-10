@@ -25,6 +25,7 @@ function Ship(settings, syncWithGame) {
         this.height = this.tmxTileMap.height;
         this.syncWithGame = syncWithGame;
         this._buildings = [];
+        this._units = [];
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
         }
@@ -35,6 +36,15 @@ function Ship(settings, syncWithGame) {
     };
     this.buildings = function() {
         return this._buildings;
+    };
+    this.units = function(){
+        return this._units;
+    };
+    this.addUnit = function(unit){
+        this._units.push(unit);
+        if(this.syncWithGame){
+            me.game.add(unit, unit.zIndex);
+        }
     };
     //this should be called when the user builds something
     this.buildAt = function(x, y, buildingType) {

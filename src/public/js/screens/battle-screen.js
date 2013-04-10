@@ -13,19 +13,10 @@ var BattleScreen = me.ScreenObject.extend({
     isReset: false,
     paused: true,
     turnBeginTime: null,
+    selected: [],//selected units
     init: function() {
         'use strict';
         this.parent(true);
-    },
-
-    update: function(){
-        if(!this.paused){
-            var elapsed = this.getElapsedTime();
-            $('#elapsed').html(elapsed);
-            if(elapsed >= this.TURN_DURATION){
-                this.pause();
-            }
-        }
     },
     onResetEvent: function() {
         'use strict';
@@ -33,6 +24,9 @@ var BattleScreen = me.ScreenObject.extend({
         me.video.clearSurface(me.video.getScreenContext(), 'black');
         html.load('battle-screen');
         this.onHtmlLoaded();
+
+        me.input.registerMouseEvent('mouseup', me.game.viewport,
+            this.mouseUp.bind(this));
 
         me.game.ship.showInScreen();
 
@@ -45,6 +39,7 @@ var BattleScreen = me.ScreenObject.extend({
         'use strict';
         this.isReset = false;
         html.clear();
+        me.input.releaseMouseEvent('mouseup', me.game.viewport);
     },
     onHtmlLoaded: function() {
         'use strict';
@@ -53,21 +48,60 @@ var BattleScreen = me.ScreenObject.extend({
             screen.resume();
         });
     },
+    update: function(){
+        if(!this.paused){
+            var elapsed = this.getElapsedTime();
+            //update counter
+            $('#elapsed').html(elapsed);
+            if(elapsed >= this.TURN_DURATION){
+                this.pause();
+            }
+        }
+    },
+    draw: function(ctx){
+        this.parent(ctx);
+        ctx.beginPath();
+        ctx.strokeStyle = 'limegreen';
+        ctx.lineWidth = 2;
+        _.each(this.selected, function(u){
+            //draw rectangle around each selected unit
+            ctx.moveTo(u.pos.x, u.pos.y);
+            ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
+        });
+    },
+    mouseUp: function(e){
+        var mouse = utils.getMouse();
+        this.selectUnit(mouse.x, mouse.y);
+    },
     putUnits: function(){
         'use strict';
         //find empty spot
-        var empty = null;
-        utils.matrixTiles(me.game.ship.width, me.game.ship.height,
+        var empty = null, ship = me.game.ship, unit;
+        utils.matrixTiles(ship.width, ship.height,
             function(x, y){
                 if(empty){
                     return;
                 }
-                if(me.game.ship.mapAt(x, y) == charMap.codes._cleared){
+                if(ship.mapAt(x, y) == charMap.codes._cleared){
                     empty = {x: x, y: y};
                 }
             });
-        var unit = new Unit(empty.x, empty.y);
-        me.game.add(unit, unit.zIndex);
+        unit = new Unit(empty.x, empty.y);
+        ship.addUnit(unit);
+    },
+    selectUnit: function(x, y){
+        var ship = me.game.ship,
+            unit = _.find(ship.units(), function(u){
+                return u.x() == x && u.y() == y;
+            });
+        this.unselectAll();
+        if(!unit){
+            return false;
+        }
+        this.selected.push(unit);
+    },
+    unselectAll: function(){
+        this.selected = [];
     },
     pause: function(){
         'use strict';
