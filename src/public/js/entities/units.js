@@ -10,6 +10,7 @@
 var Unit = TileEntity.extend({
     pendingOrders: [],
     executing: null,
+    _frozen: true,
     init: function(x, y) {
         'use strict';
 
@@ -20,8 +21,22 @@ var Unit = TileEntity.extend({
         this.setTransparency('000000');
 
     },
+    freeze: function(){
+       this._frozen = true;
+    },
+    unfreeze: function(){
+       this._frozen = false;
+    },
+    draw: function(ctx){
+       this.parent(ctx);
+    },
     update: function(){
-        this.parent();
+        if(this._frozen){
+            return true;
+        }
+        return this.parent();
+    },
+    giveMoveOrder: function(){
 
     }
 });

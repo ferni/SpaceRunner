@@ -8,7 +8,7 @@
 /*global me, html, jsApp, ko, _ */
 
 var BattleScreen = me.ScreenObject.extend({
-    TURN_DURATION: 5000,//in milliseconds
+    TURN_DURATION: 3000,//in milliseconds
     name: 'battle-screen',
     isReset: false,
     paused: true,
@@ -119,6 +119,9 @@ var BattleScreen = me.ScreenObject.extend({
     pause: function(){
         'use strict';
         $('#paused-indicator, #resume-button').show();
+        _.each(me.game.ship.units(), function(u){
+            u.freeze();
+        });
         this.paused = true;
     },
     resume: function(){
@@ -126,6 +129,9 @@ var BattleScreen = me.ScreenObject.extend({
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
+        _.each(me.game.ship.units(), function(u){
+            u.unfreeze();
+        });
         this.paused = false;
     },
     getElapsedTime: function(){
