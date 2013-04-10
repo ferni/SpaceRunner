@@ -14,9 +14,7 @@ var BattleScreen = me.ScreenObject.extend({
     paused: true,
     turnBeginTime: null,
     selected: [],//selected units
-    Order: function(){
-       this.unit;
-    },
+    pfFinder: new PF.BestFirstFinder(),
     init: function() {
         'use strict';
         this.parent(true);
@@ -74,7 +72,9 @@ var BattleScreen = me.ScreenObject.extend({
     },
     mouseUp: function(e){
         var mouse = utils.getMouse(),
-            which = e.which - 1; //workaround for melonJS mismatch
+            which = e.which - 1, //workaround for melonJS mismatch
+            ship = me.game.ship,
+            unit, grid, path;
         if(!this.paused){
             return;
         }
@@ -82,9 +82,19 @@ var BattleScreen = me.ScreenObject.extend({
             this.selectUnit(mouse.x, mouse.y);
         }else if(which == me.input.mouse.RIGHT){
             if(this.selected[0]) {//there is a selected unit
-
+                unit = this.selected[0];
+                //output calculated arrival time
+                //TODO: cache pf matrix on ship
+                grid = new PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix());
+                path = this.pfFinder.findPath(unit.x(), unit.y(),
+                    mouse.x, mouse.y, grid);
+                console.log('path length: '+ path.length);
             }
         }
+    },
+    mouseMove: function(e){
+        //TODO show little square where the mouse is pointing
     },
     putUnits: function(){
         'use strict';
@@ -120,7 +130,7 @@ var BattleScreen = me.ScreenObject.extend({
         'use strict';
         $('#paused-indicator, #resume-button').show();
         _.each(me.game.ship.units(), function(u){
-            u.freeze();
+            u.pause();
         });
         this.paused = true;
     },
@@ -130,7 +140,7 @@ var BattleScreen = me.ScreenObject.extend({
         //reset time
         this.turnBeginTime = me.timer.getTime();
         _.each(me.game.ship.units(), function(u){
-            u.unfreeze();
+            u.resume();
         });
         this.paused = false;
     },

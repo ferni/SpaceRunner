@@ -240,12 +240,7 @@ var WallItem = ItemEntity.extend({
         if (ui.mouseLockedOn === this) {
             return;
         }
-        pfMatrix = utils.getEmptyMatrix(width(), height(), 1);
-        utils.levelTiles(function(x, y) {
-            if (ui.ship.map()[y][x] === charMap.codes._cleared) {
-                pfMatrix[y][x] = 0; //cleared tiles are walkable
-            }
-        });
+        pfMatrix = ui.ship.getPfMatrix();
         //self tile will be walkable for pathfinding purposes
         pfMatrix[this.y()][this.x()] = 0;
 
@@ -273,6 +268,7 @@ var WallItem = ItemEntity.extend({
         t.preMouseX = mouseTile.x;
         t.preMouseY = mouseTile.y;
         ui.clear();
+        //TODO: init finder at onBuilt
         finder = new PF.BestFirstFinder();
         cloneGrid = t.grid.clone();
         path = finder.findPath(t.pivotX, t.pivotY,

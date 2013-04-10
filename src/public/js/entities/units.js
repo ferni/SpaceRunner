@@ -5,12 +5,13 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, TileEntity*/
 
 var Unit = TileEntity.extend({
     pendingOrders: [],
     executing: null,
-    _frozen: true,
+    _paused: true,
+    speed: 1, //tiles per second
     init: function(x, y) {
         'use strict';
 
@@ -21,20 +22,25 @@ var Unit = TileEntity.extend({
         this.setTransparency('000000');
 
     },
-    freeze: function(){
-       this._frozen = true;
+    pause: function(){
+       this._paused = true;
     },
-    unfreeze: function(){
-       this._frozen = false;
+    resume: function(){
+       this._paused = false;
     },
     draw: function(ctx){
        this.parent(ctx);
     },
     update: function(){
-        if(this._frozen){
+        if(this._paused){
+            //if one does not return true, melonjs breaks
             return true;
         }
-        return this.parent();
+        this.parent();
+
+        //do stuff
+
+        return true;
     },
     giveMoveOrder: function(){
 
