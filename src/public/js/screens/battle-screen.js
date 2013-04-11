@@ -14,7 +14,10 @@ var BattleScreen = me.ScreenObject.extend({
     paused: true,
     turnBeginTime: null,
     selected: [],//selected units
-    pfFinder: new PF.BestFirstFinder(),
+    pfFinder: new PF.BiAStarFinder({
+        allowDiagonal: false
+    }),
+    paths: [],
     init: function() {
         'use strict';
         this.parent(true);
@@ -28,7 +31,8 @@ var BattleScreen = me.ScreenObject.extend({
 
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
-
+        me.input.registerMouseEvent('mousedown', me.game.viewport,
+            this.mouseDown.bind(this));
         me.game.ship.showInScreen();
 
         this.putUnits();
@@ -41,6 +45,7 @@ var BattleScreen = me.ScreenObject.extend({
         this.isReset = false;
         html.clear();
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
+        me.input.releaseMouseEvent('mousedown', me.game.viewport);
     },
     onHtmlLoaded: function() {
         'use strict';
@@ -60,6 +65,7 @@ var BattleScreen = me.ScreenObject.extend({
         }
     },
     draw: function(ctx){
+        var screen = this;
         this.parent(ctx);
         ctx.beginPath();
         ctx.strokeStyle = 'limegreen';
@@ -69,8 +75,23 @@ var BattleScreen = me.ScreenObject.extend({
             ctx.moveTo(u.pos.x, u.pos.y);
             ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
         });
+        _.each(me.game.ship.units(), function(u){
+            screen.drawPath(ctx, u.path);
+        });
     },
     mouseUp: function(e){
+        var mouse = utils.getMouse(),
+            which = e.which - 1; //workaround for melonJS mismatch
+        if(!this.paused){
+            return;
+        }
+        if(which == me.input.mouse.LEFT){
+            this.selectUnit(mouse.x, mouse.y);
+        }else if(which == me.input.mouse.RIGHT){
+
+        }
+    },
+    mouseDown: function(e){
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
             ship = me.game.ship,
@@ -78,9 +99,7 @@ var BattleScreen = me.ScreenObject.extend({
         if(!this.paused){
             return;
         }
-        if(which == me.input.mouse.LEFT){
-            this.selectUnit(mouse.x, mouse.y);
-        }else if(which == me.input.mouse.RIGHT){
+        if(which == me.input.mouse.RIGHT){
             if(this.selected[0]) {//there is a selected unit
                 unit = this.selected[0];
                 //output calculated arrival time
@@ -89,12 +108,44 @@ var BattleScreen = me.ScreenObject.extend({
                     ship.getPfMatrix());
                 path = this.pfFinder.findPath(unit.x(), unit.y(),
                     mouse.x, mouse.y, grid);
-                console.log('path length: '+ path.length);
+                console.log('path length: '+ (path.length - 1));
+                unit.path = path;
             }
         }
     },
     mouseMove: function(e){
         //TODO show little square where the mouse is pointing
+    },
+    pathToPixels: function(path){
+        var newPath = [];
+        for(var i = 0; i < path.length; i++){
+            newPath.push([(path[i][0] * TILE_SIZE) +
+                /*me.game.ship.tmxTileMap.pos.x +*/ HALF_TILE,
+                (path[i][1] * TILE_SIZE) +
+                /*me.game.ship.tmxTileMap.pos.y +*/ HALF_TILE]);
+        }
+        return newPath;
+    },
+    drawPath: function(ctx, path){
+        if(path.length <= 0){
+            console.warn('drawPath: path given to draw has zero length');
+            return;
+        }
+        path = this.pathToPixels(path);
+        ctx.beginPath();
+        ctx.strokeStyle = 'green';
+        ctx.lineWidth = 3;
+        ctx.moveTo(path[0][0], path[0][1]);
+        for(var i = 0; i < path.length; i++){
+            ctx.lineTo(path[i][0], path[i][1]);
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle = 'green';
+        ctx.arc(path[path.length - 1][0], path[path.length - 1][1],
+            HALF_TILE / 2, 0, Math.PI * 2, false);
+        ctx.fill();
+        //ctx.stroke();
     },
     putUnits: function(){
         'use strict';

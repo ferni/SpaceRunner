@@ -9,7 +9,7 @@
 html, ShipSelectScreen, ShipBuildingScreen*/
 
 //sugar
-var TILE_SIZE = 32, HALF_SIZE = 16;
+var TILE_SIZE = 32, HALF_TILE = 16;
 function width() {
     'use strict';
     if (!me.game.currentLevel.initialized) {

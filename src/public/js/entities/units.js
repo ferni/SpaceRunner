@@ -12,6 +12,7 @@ var Unit = TileEntity.extend({
     executing: null,
     _paused: true,
     speed: 1, //tiles per second
+    path:[],
     init: function(x, y) {
         'use strict';
 
@@ -44,6 +45,10 @@ var Unit = TileEntity.extend({
     },
     giveMoveOrder: function(){
 
+    },
+    //the time it takes to traverse one tile in seconds
+    getTileTraversalTime: function(){
+        return 0.5;
     }
 });
 

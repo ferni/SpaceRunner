@@ -91,10 +91,6 @@ var utils = {
             }
         }
     },
-    inRect: function(x, y, rect) {
-        'use strict';
-        throw 'inRect not implemented';
-    },
     getEmptyMatrix: function(width, height, initialValue) {
         'use strict';
         var matrix = [], i, j;
