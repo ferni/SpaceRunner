@@ -54,12 +54,12 @@ var BattleScreen = me.ScreenObject.extend({
             screen.resume();
         });
     },
-    update: function(){
-        if(!this.paused){
+    update: function() {
+        if (!this.paused) {
             var elapsed = this.getElapsedTime();
             //update counter
             $('#elapsed').html(elapsed);
-            if(elapsed >= this.TURN_DURATION){
+            if (elapsed >= this.TURN_DURATION) {
                 this.pause();
             }
         }
@@ -67,27 +67,31 @@ var BattleScreen = me.ScreenObject.extend({
     draw: function(ctx){
         var screen = this;
         this.parent(ctx);
-        ctx.beginPath();
-        ctx.strokeStyle = 'limegreen';
-        ctx.lineWidth = 2;
-        _.each(this.selected, function(u){
-            //draw rectangle around each selected unit
-            ctx.moveTo(u.pos.x, u.pos.y);
-            ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
-        });
-        _.each(me.game.ship.units(), function(u){
-            screen.drawPath(ctx, u.path);
-        });
+        if (this.paused) {
+            ctx.beginPath();
+            ctx.strokeStyle = 'limegreen';
+            ctx.lineWidth = 2;
+            _.each(this.selected, function(u){
+                //draw rectangle around each selected unit
+                ctx.moveTo(u.pos.x, u.pos.y);
+                ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
+            });
+            _.each(me.game.ship.units(), function(u) {
+                if(u.path.length > 0){
+                    screen.drawPath(ctx, u.path, 3);
+                }
+            });
+        }
     },
     mouseUp: function(e){
         var mouse = utils.getMouse(),
             which = e.which - 1; //workaround for melonJS mismatch
-        if(!this.paused){
+        if (!this.paused) {
             return;
         }
-        if(which == me.input.mouse.LEFT){
+        if (which == me.input.mouse.LEFT) {
             this.selectUnit(mouse.x, mouse.y);
-        }else if(which == me.input.mouse.RIGHT){
+        }else if (which == me.input.mouse.RIGHT) {
 
         }
     },
@@ -96,11 +100,11 @@ var BattleScreen = me.ScreenObject.extend({
             which = e.which - 1, //workaround for melonJS mismatch
             ship = me.game.ship,
             unit, grid, path;
-        if(!this.paused){
+        if (!this.paused) {
             return;
         }
-        if(which == me.input.mouse.RIGHT){
-            if(this.selected[0]) {//there is a selected unit
+        if (which == me.input.mouse.RIGHT) {
+            if (this.selected[0]) {//there is a selected unit
                 unit = this.selected[0];
                 //output calculated arrival time
                 //TODO: cache pf matrix on ship
@@ -113,22 +117,27 @@ var BattleScreen = me.ScreenObject.extend({
             }
         }
     },
-    mouseMove: function(e){
+    mouseMove: function(e) {
         //TODO show little square where the mouse is pointing
     },
-    pathToPixels: function(path){
+    pathToPixels: function(path) {
         var newPath = [];
         for(var i = 0; i < path.length; i++){
-            newPath.push([(path[i][0] * TILE_SIZE) +
-                /*me.game.ship.tmxTileMap.pos.x +*/ HALF_TILE,
-                (path[i][1] * TILE_SIZE) +
-                /*me.game.ship.tmxTileMap.pos.y +*/ HALF_TILE]);
+            newPath.push([(path[i][0] * TILE_SIZE) + HALF_TILE,
+                (path[i][1] * TILE_SIZE) + HALF_TILE]);
         }
         return newPath;
     },
-    drawPath: function(ctx, path){
-        if(path.length <= 0){
-            console.warn('drawPath: path given to draw has zero length');
+    /**
+     * Draws a movement path
+     * @param ctx Canvas2DContext passed to the draw function
+     * @param path a path given by Pathfinding
+     * @param reachLength the length that the unit can traverse in the turn
+     */
+    drawPath: function(ctx, path, reachLength) {
+        var outOfReach = false;
+        if(path.length <= 1){
+            console.warn('drawPath: path given to draw has < 1 length');
             return;
         }
         path = this.pathToPixels(path);
@@ -136,12 +145,24 @@ var BattleScreen = me.ScreenObject.extend({
         ctx.strokeStyle = 'green';
         ctx.lineWidth = 3;
         ctx.moveTo(path[0][0], path[0][1]);
-        for(var i = 0; i < path.length; i++){
+        for(var i = 1; i < path.length; i++){
+            if (i === reachLength + 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = 'orange';
+                ctx.moveTo(path[i - 1][0], path[i - 1][1]);
+                outOfReach = true;
+            }
             ctx.lineTo(path[i][0], path[i][1]);
+            ctx.stroke();
         }
-        ctx.stroke();
+
         ctx.beginPath();
-        ctx.fillStyle = 'green';
+        if(outOfReach){
+            ctx.fillStyle = 'orange';
+        }else{
+            ctx.fillStyle = 'green'
+        }
+
         ctx.arc(path[path.length - 1][0], path[path.length - 1][1],
             HALF_TILE / 2, 0, Math.PI * 2, false);
         ctx.fill();
