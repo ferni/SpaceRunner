@@ -137,8 +137,12 @@ var BattleScreen = me.ScreenObject.extend({
      */
     drawPath: function(ctx, path, reachLength) {
         var outOfReach = false;
-        if(path.length <= 1){
-            console.warn('drawPath: path given to draw has < 1 length');
+        if(path.length == 0)
+        {
+            return;
+        }
+        if(path.length == 1){
+            console.warn('drawPath: path given to draw has 1 length');
             return;
         }
         path = this.pathToPixels(path);

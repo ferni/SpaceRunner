@@ -17,7 +17,6 @@ var Unit = TileEntity.extend({
     script: [],
     init: function(x, y) {
         'use strict';
-
         this.parent(x, y, {image: 'unit_robot_alien'});
         this.addAnimation('idle', [0,1,2,1]);
 
@@ -29,6 +28,7 @@ var Unit = TileEntity.extend({
        this._paused = true;
     },
     resume: function(){
+       this.adjustPath();
        this._paused = false;
     },
     draw: function(ctx){
@@ -73,6 +73,15 @@ var Unit = TileEntity.extend({
                 y: this.path[i][1]};
             this.script.push({pos: pos, time: elapsed});
         }
+        if(i > 0){
+            this.pathMaxReach = i - 1;
+        }else{
+            this.pathMaxReach = 0;
+        }
+
+    },
+    adjustPath: function(){
+        this.path = _.last(this.path, this.path.length - this.pathMaxReach);
     },
     printScript: function(){
         _.each(this.script, function(frame){
