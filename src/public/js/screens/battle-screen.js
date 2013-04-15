@@ -8,7 +8,8 @@
 /*global me, html, jsApp, ko, _ */
 
 var BattleScreen = me.ScreenObject.extend({
-    TURN_DURATION: 3000,//in milliseconds
+    TURN_DURATION_SEC: 3,
+    TURN_DURATION: 3000,
     name: 'battle-screen',
     isReset: false,
     paused: true,
@@ -17,7 +18,6 @@ var BattleScreen = me.ScreenObject.extend({
     pfFinder: new PF.BiAStarFinder({
         allowDiagonal: false
     }),
-    paths: [],
     init: function() {
         'use strict';
         this.parent(true);
@@ -78,7 +78,8 @@ var BattleScreen = me.ScreenObject.extend({
             });
             _.each(me.game.ship.units(), function(u) {
                 if(u.path.length > 0){
-                    screen.drawPath(ctx, u.path, 3);
+                    screen.drawPath(ctx, u.path,
+                        u.getTilesTraversedGivenTime(screen.TURN_DURATION_SEC));
                 }
             });
         }
@@ -183,6 +184,7 @@ var BattleScreen = me.ScreenObject.extend({
             });
         unit = new Unit(empty.x, empty.y);
         ship.addUnit(unit);
+        ship.addUnit(new Unit(empty.x + 1, empty.y));
     },
     selectUnit: function(x, y){
         var ship = me.game.ship,
@@ -208,10 +210,13 @@ var BattleScreen = me.ScreenObject.extend({
     },
     resume: function(){
         'use strict';
+        var screen = this;
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
         _.each(me.game.ship.units(), function(u){
+            u.generateScript(screen.TURN_DURATION);
+            u.printScript();
             u.resume();
         });
         this.paused = false;
