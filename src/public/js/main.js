@@ -6,7 +6,7 @@
 */
 
 /*global me, _, utils, $, items, RedColorEntity, charMap,
-html, ShipSelectScreen, ShipBuildingScreen*/
+html, ShipSelectScreen, ShipBuildingScreen, BattleScreen*/
 
 //sugar
 var TILE_SIZE = 32, HALF_TILE = 16;

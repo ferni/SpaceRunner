@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, html, jsApp, ko, _ */
+/*global me, html, jsApp, ko, _, PF, $, utils */
 
 var BattleScreen = me.ScreenObject.extend({
     TURN_DURATION_SEC: 3,

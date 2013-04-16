@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, TileEntity*/
+/*global me, TileEntity, _*/
 
 var Unit = TileEntity.extend({
     pendingOrders: [],
@@ -25,16 +25,20 @@ var Unit = TileEntity.extend({
 
     },
     pause: function(){
-       this._paused = true;
+        'use strict';
+        this._paused = true;
     },
     resume: function(){
-       this.adjustPath();
-       this._paused = false;
+        'use strict';
+        this.adjustPath();
+        this._paused = false;
     },
     draw: function(ctx){
-       this.parent(ctx);
+        'use strict';
+        this.parent(ctx);
     },
     update: function(){
+        'use strict';
         //Assumes it's the battle screen
         var screen = me.state.current(),
             elapsed,
@@ -62,13 +66,15 @@ var Unit = TileEntity.extend({
      * @param maxTime max time in milliseconds
      */
     generateScript: function(maxTime){
+        'use strict';
         var i,
             step = this.getTimeForOneTile() * 1000,
-            elapsed = 0;
+            elapsed = 0,
+            pos;
         this.script = [];
         for(i = 0; i < this.path.length && elapsed <= maxTime;
             i++, elapsed += step){
-            var pos = {
+            pos = {
                 x: this.path[i][0],
                 y: this.path[i][1]};
             this.script.push({pos: pos, time: elapsed});
@@ -81,15 +87,19 @@ var Unit = TileEntity.extend({
 
     },
     adjustPath: function(){
+        'use strict';
         this.path = _.last(this.path, this.path.length - this.pathMaxReach);
     },
     printScript: function(){
+        'use strict';
         _.each(this.script, function(frame){
             console.log(frame.time + ': ' + frame.pos.x + ', ' + frame.pos.y);
         });
     },
     getPosGivenTime: function(elapsed){
+        'use strict';
         var i,
+            frame,
             prevFrame,
             interpolationFactor,
             interpolationX,
@@ -112,7 +122,7 @@ var Unit = TileEntity.extend({
             //return last position
             return this.script[this.script.length - 1].pos;
         }
-        var frame = this.script[i];
+        frame = this.script[i];
         if(i > 0){
             prevFrame = this.script[i - 1];
         }
@@ -137,11 +147,13 @@ var Unit = TileEntity.extend({
 
     },
     getTilesTraversedGivenTime: function(seconds){
+        'use strict';
         return seconds * this.speed;
     },
     //this should be divisor of TURN_DURATION
     //check that on battle screen
     getTimeForOneTile: function(){
+        'use strict';
         return 1 / this.speed;
     }
 });
