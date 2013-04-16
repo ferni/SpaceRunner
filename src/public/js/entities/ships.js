@@ -131,6 +131,13 @@ function Ship(settings, syncWithGame) {
         }
         return null;
     };
+    this.isInside = function(x, y) {
+        'use strict';
+        var tiles = charMap.codes,
+            tile = this.mapAt(x, y);
+        return tile !== tiles._solid && tile !== tiles._front &&
+            tile !== tiles._back;
+    };
     this.buildingsMap = {
         thisShip: this,
         changed: true,

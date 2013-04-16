@@ -37,6 +37,7 @@ var BattleScreen = me.ScreenObject.extend({
 
         this.putUnits();
         this.pause();
+
         this.isReset = true;
         jsApp.onScreenReset();
     },
@@ -65,7 +66,9 @@ var BattleScreen = me.ScreenObject.extend({
         }
     },
     draw: function(ctx){
-        var screen = this;
+        var screen = this,
+            mouse = utils.getMouse(),
+            mousePx;
         this.parent(ctx);
         if (this.paused) {
             ctx.beginPath();
@@ -82,6 +85,16 @@ var BattleScreen = me.ScreenObject.extend({
                         u.getTilesTraversedGivenTime(screen.TURN_DURATION_SEC));
                 }
             });
+        }
+
+        //highlight where the mouse is pointing
+        if(me.game.ship.isInside(mouse.x, mouse.y)){
+            mousePx = {x: mouse.x * TILE_SIZE,
+                y: mouse.y * TILE_SIZE};
+            ctx.strokeStyle = 'teal';
+            ctx.lineWidth = 1;
+            ctx.moveTo(mousePx.x, mousePx.y);
+            ctx.strokeRect(mousePx.x, mousePx.y, TILE_SIZE, TILE_SIZE);
         }
     },
     mouseUp: function(e){
