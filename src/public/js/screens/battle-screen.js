@@ -15,7 +15,7 @@ var BattleScreen = me.ScreenObject.extend({
     paused: true,
     turnBeginTime: null,
     selected: [],//selected units
-    pfFinder: new PF.BiAStarFinder({
+    pfFinder: new PF.AStarFinder({
         allowDiagonal: false
     }),
     init: function() {
