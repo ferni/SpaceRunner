@@ -10,7 +10,7 @@
 function Ship(settings, syncWithGame) {
     'use strict';
 
-    this.init = function(settings, syncWithGame){
+    this.init = function(settings, syncWithGame) {
         if (!settings.tmxName && !settings.jsonString) {
             throw 'Ship settings must have tmxName or jsonData';
         }
@@ -30,19 +30,19 @@ function Ship(settings, syncWithGame) {
             this.fromJsonString(settings.jsonString);
         }
     };
-    this.loadMap = function(){
+    this.loadMap = function() {
         this.tmxTileMap = new me.TMXTileMap(this.tmxName, 0, 0);
         this.tmxTileMap.load();
     };
     this.buildings = function() {
         return this._buildings;
     };
-    this.units = function(){
+    this.units = function() {
         return this._units;
     };
-    this.addUnit = function(unit){
+    this.addUnit = function(unit) {
         this._units.push(unit);
-        if(this.syncWithGame){
+        if (this.syncWithGame) {
             me.game.add(unit, unit.zIndex);
         }
     };
@@ -132,7 +132,6 @@ function Ship(settings, syncWithGame) {
         return null;
     };
     this.isInside = function(x, y) {
-        'use strict';
         var tiles = charMap.codes,
             tile = this.mapAt(x, y);
         return tile !== tiles._solid && tile !== tiles._front &&
@@ -195,7 +194,7 @@ function Ship(settings, syncWithGame) {
     this.toJsonString = function() {
         return JSON.stringify({
             'tmxName': this.tmxName,
-            'buildings':_.map(this.buildings(), function(b) {
+            'buildings': _.map(this.buildings(), function(b) {
                             return {
                                 type: b.type,
                                 x: b.x(),
@@ -218,13 +217,13 @@ function Ship(settings, syncWithGame) {
         }
         this.buildingsChanged();
     };
-    this.showInScreen = function(){
+    this.showInScreen = function() {
       me.levelDirector.loadLevel(this.tmxName);
-        _.each(this.buildings(), function(b){
+        _.each(this.buildings(), function(b) {
             me.game.add(b, b.zIndex);
       });
     };
-    this.getPfMatrix = function(){
+    this.getPfMatrix = function() {
         var ship = this,
             pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
         utils.matrixTiles(this.width, this.height, function(x, y) {

@@ -217,7 +217,7 @@ asyncTest('toJsonString', function() {
         screen.ship.mapAt(th.shipPositions.engine.x, th.shipPositions.engine.y)
             .rotated(true);
 
-        jsonObject = JSON.parse(screen.ship.toJsonString())
+        jsonObject = JSON.parse(screen.ship.toJsonString());
         buildings = jsonObject.buildings;
         equal(buildings.length, 2, 'JSON object (array) has 2 objects');
 

@@ -7,9 +7,10 @@
 
 /*global me*/
 
-me.plugin.patch(me.TMXTileMap, 'load', function(){
-	'use strict';
-	this.parent();
-	this.mapLayers.push(new me.ColorLayer('background_color', '#000000',
-		this.z - 10));
+me.plugin.patch(me.TMXTileMap, 'load', function() {
+    'use strict';
+    this.parent();
+    this.mapLayers.push(new me.ColorLayer('background_color', '#000000',
+        this.z - 10));
 });
+
