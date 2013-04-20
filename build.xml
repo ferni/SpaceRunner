@@ -9,7 +9,7 @@
         <parallel>
             <sequential>
                 <echo message="Starting redis server ..."/>
-                <exec executable="tools/${redis-dir}/src/redis-server" >
+                <exec executable="tools/redis" >
 	      	    </exec>
             </sequential>
             <sequential>
@@ -101,7 +101,7 @@
 		    <arg line="-jxvf ${tarball}"/>
         </exec>
         <symlink link="tools/phantomjs" resource="${version}/bin/phantomjs"/>
-	</target>
+    </target>
 
     <target name="check-closure_linter">
         <condition property="closure_linter-not-installed">
@@ -110,7 +110,8 @@
             </not>
           </condition>
     </target>
-	<target name="tools/closure_linter" depends="tools/phantomjs,check-closure_linter" if="closure_linter-not-installed" description="Downloads and installs Closure Linter">
+
+    <target name="tools/closure_linter" depends="tools/phantomjs,check-closure_linter" if="closure_linter-not-installed" description="Downloads and installs Closure Linter">
         <property name="closure-tar" value="closure_linter-latest.tar.gz"/>
         <delete dir="tools/closure_linter"/>
 		<delete file="tools/${closure-tar}"/>
@@ -132,7 +133,8 @@
         <exec executable="cp">
             <arg line="tools/closure_linter/closure_linter/fixjsstyle.py tools/closure_linter/fixjsstyle.py"/>
         </exec>
-	</target>
+    </target>
+
     <target name="check-jslint">
         <condition property="jslint-not-downloaded">
             <not>
@@ -173,8 +175,8 @@
         <exec executable="tar" dir="tools">
 		    <arg line="-zxvf ${node-dir}.tar.gz"/>
         </exec>
+	<symlink link="tools/node" resource="${node-dir}/bin/node"/>
     </target>
-
 
     <target name="check-redis">
         <condition property="redis-not-downloaded">
@@ -192,5 +194,6 @@
         </exec>
         <exec executable="make" dir="tools/${redis-dir}">
         </exec>
+	<symlink link="tools/redis" resource="${redis-dir}/src/redis-server"/>
     </target>
 </project>
