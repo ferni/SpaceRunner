@@ -5,7 +5,8 @@
 * All rights reserved.
 */
 
-/*global me, html, jsApp, ko, _, PF, $, utils */
+/*global me, html, jsApp, ko, _, PF, $, utils, TILE_SIZE, HALF_TILE,
+charMap, Unit*/
 
 var BattleScreen = me.ScreenObject.extend({
     TURN_DURATION_SEC: 3,
@@ -51,11 +52,12 @@ var BattleScreen = me.ScreenObject.extend({
     onHtmlLoaded: function() {
         'use strict';
         var screen = this;
-        $('#resume-button').click(function(){
+        $('#resume-button').click(function() {
             screen.resume();
         });
     },
     update: function() {
+        'use strict';
         if (!this.paused) {
             var elapsed = this.getElapsedTime();
             //update counter
@@ -65,7 +67,8 @@ var BattleScreen = me.ScreenObject.extend({
             }
         }
     },
-    draw: function(ctx){
+    draw: function(ctx) {
+        'use strict';
         var screen = this,
             mouse = utils.getMouse(),
             mousePx;
@@ -74,13 +77,13 @@ var BattleScreen = me.ScreenObject.extend({
             ctx.beginPath();
             ctx.strokeStyle = 'limegreen';
             ctx.lineWidth = 2;
-            _.each(this.selected, function(u){
+            _.each(this.selected, function(u) {
                 //draw rectangle around each selected unit
                 ctx.moveTo(u.pos.x, u.pos.y);
                 ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
             });
             _.each(me.game.ship.units(), function(u) {
-                if(u.path.length > 0){
+                if (u.path.length > 0) {
                     screen.drawPath(ctx, u.path,
                         u.getTilesTraversedGivenTime(screen.TURN_DURATION_SEC));
                 }
@@ -88,7 +91,7 @@ var BattleScreen = me.ScreenObject.extend({
         }
 
         //highlight where the mouse is pointing
-        if(me.game.ship.isInside(mouse.x, mouse.y)){
+        if (me.game.ship.isInside(mouse.x, mouse.y)) {
             mousePx = {x: mouse.x * TILE_SIZE,
                 y: mouse.y * TILE_SIZE};
             ctx.strokeStyle = 'teal';
@@ -97,19 +100,19 @@ var BattleScreen = me.ScreenObject.extend({
             ctx.strokeRect(mousePx.x, mousePx.y, TILE_SIZE, TILE_SIZE);
         }
     },
-    mouseUp: function(e){
+    mouseUp: function(e) {
+        'use strict';
         var mouse = utils.getMouse(),
             which = e.which - 1; //workaround for melonJS mismatch
         if (!this.paused) {
             return;
         }
-        if (which == me.input.mouse.LEFT) {
+        if (which === me.input.mouse.LEFT) {
             this.selectUnit(mouse.x, mouse.y);
-        }else if (which == me.input.mouse.RIGHT) {
-
         }
     },
-    mouseDown: function(e){
+    mouseDown: function(e) {
+        'use strict';
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
             ship = me.game.ship,
@@ -117,7 +120,7 @@ var BattleScreen = me.ScreenObject.extend({
         if (!this.paused) {
             return;
         }
-        if (which == me.input.mouse.RIGHT) {
+        if (which === me.input.mouse.RIGHT) {
             if (this.selected[0]) {//there is a selected unit
                 unit = this.selected[0];
                 //output calculated arrival time
@@ -126,35 +129,37 @@ var BattleScreen = me.ScreenObject.extend({
                     ship.getPfMatrix());
                 path = this.pfFinder.findPath(unit.x(), unit.y(),
                     mouse.x, mouse.y, grid);
-                console.log('path length: '+ (path.length - 1));
+                console.log('path length: ' + (path.length - 1));
                 unit.path = path;
             }
         }
     },
     mouseMove: function(e) {
+        'use strict';
         //TODO show little square where the mouse is pointing
     },
     pathToPixels: function(path) {
-        var newPath = [];
-        for(var i = 0; i < path.length; i++){
+        'use strict';
+        var newPath = [], i;
+        for (i = 0; i < path.length; i++) {
             newPath.push([(path[i][0] * TILE_SIZE) + HALF_TILE,
                 (path[i][1] * TILE_SIZE) + HALF_TILE]);
         }
         return newPath;
     },
     /**
-     * Draws a movement path
-     * @param ctx Canvas2DContext passed to the draw function
-     * @param path a path given by Pathfinding
-     * @param reachLength the length that the unit can traverse in the turn
+     * Draws a movement path.
+     * @param {Canvas2DContext} ctx passed to the draw function.
+     * @param {Array} path a path given by Pathfinding.
+     * @param {int} reachLength the length that the unit can traverse in turn.
      */
     drawPath: function(ctx, path, reachLength) {
-        var outOfReach = false;
-        if(path.length == 0)
-        {
+        'use strict';
+        var outOfReach = false, i;
+        if (path.length === 0) {
             return;
         }
-        if(path.length == 1){
+        if (path.length === 1) {
             console.warn('drawPath: path given to draw has 1 length');
             return;
         }
@@ -163,7 +168,7 @@ var BattleScreen = me.ScreenObject.extend({
         ctx.strokeStyle = 'green';
         ctx.lineWidth = 3;
         ctx.moveTo(path[0][0], path[0][1]);
-        for(var i = 1; i < path.length; i++){
+        for (i = 1; i < path.length; i++) {
             if (i === reachLength + 1) {
                 ctx.beginPath();
                 ctx.strokeStyle = 'orange';
@@ -175,10 +180,10 @@ var BattleScreen = me.ScreenObject.extend({
         }
 
         ctx.beginPath();
-        if(outOfReach){
+        if (outOfReach) {
             ctx.fillStyle = 'orange';
-        }else{
-            ctx.fillStyle = 'green'
+        }else {
+            ctx.fillStyle = 'green';
         }
 
         ctx.arc(path[path.length - 1][0], path[path.length - 1][1],
@@ -186,16 +191,16 @@ var BattleScreen = me.ScreenObject.extend({
         ctx.fill();
         //ctx.stroke();
     },
-    putUnits: function(){
+    putUnits: function() {
         'use strict';
         //find empty spot
         var empty = null, ship = me.game.ship, unit;
         utils.matrixTiles(ship.width, ship.height,
-            function(x, y){
-                if(empty){
+            function(x, y) {
+                if (empty) {
                     return;
                 }
-                if(ship.mapAt(x, y) == charMap.codes._cleared){
+                if (ship.mapAt(x, y) === charMap.codes._cleared) {
                     empty = {x: x, y: y};
                 }
             });
@@ -203,43 +208,46 @@ var BattleScreen = me.ScreenObject.extend({
         ship.addUnit(unit);
         ship.addUnit(new Unit(empty.x + 1, empty.y));
     },
-    selectUnit: function(x, y){
+    selectUnit: function(x, y) {
+        'use strict';
         var ship = me.game.ship,
-            unit = _.find(ship.units(), function(u){
-                return u.x() == x && u.y() == y;
+            unit = _.find(ship.units(), function(u) {
+                return u.x() === x && u.y() === y;
             });
         this.unselectAll();
-        if(!unit){
+        if (!unit) {
             return false;
         }
         this.selected.push(unit);
     },
-    unselectAll: function(){
+    unselectAll: function() {
+        'use strict';
         this.selected = [];
     },
-    pause: function(){
+    pause: function() {
         'use strict';
         $('#paused-indicator, #resume-button').show();
-        _.each(me.game.ship.units(), function(u){
+        _.each(me.game.ship.units(), function(u) {
             u.pause();
         });
         this.paused = true;
     },
-    resume: function(){
+    resume: function() {
         'use strict';
         var screen = this;
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
-        _.each(me.game.ship.units(), function(u){
+        _.each(me.game.ship.units(), function(u) {
             u.generateScript(screen.TURN_DURATION);
             u.printScript();
             u.resume();
         });
         this.paused = false;
     },
-    getElapsedTime: function(){
-        if(this.paused){
+    getElapsedTime: function() {
+        'use strict';
+        if (this.paused) {
             throw 'Should only call getElapsedTime when resumed.';
         }
         return me.timer.getTime() - this.turnBeginTime;

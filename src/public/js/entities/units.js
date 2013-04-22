@@ -12,43 +12,43 @@ var Unit = TileEntity.extend({
     executing: null,
     _paused: true,
     speed: 1, //tiles per second
-    path:[],
+    path: [],
     pathMaxReach: 0,
     script: [],
     init: function(x, y) {
         'use strict';
         this.parent(x, y, {image: 'unit_robot_alien'});
-        this.addAnimation('idle', [0,1,2,1]);
+        this.addAnimation('idle', [0, 1, 2, 1]);
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
 
     },
-    pause: function(){
+    pause: function() {
         'use strict';
         this._paused = true;
     },
-    resume: function(){
+    resume: function() {
         'use strict';
         this.adjustPath();
         this._paused = false;
     },
-    draw: function(ctx){
+    draw: function(ctx) {
         'use strict';
         this.parent(ctx);
     },
-    update: function(){
+    update: function() {
         'use strict';
         //Assumes it's the battle screen
         var screen = me.state.current(),
             elapsed,
             position;
-        if(this._paused){
+        if (this._paused) {
             //if update doesn't return true, melonjs breaks
             return true;
         }
         this.parent();
-        if(screen.name !== 'battle-screen'){
+        if (screen.name !== 'battle-screen') {
             throw 'The unit should be on the battle_screen (update).';
         }
         elapsed = screen.getElapsedTime();
@@ -63,40 +63,41 @@ var Unit = TileEntity.extend({
      *Generates a list of positions and the corresponding time
      * according to the unit's path and speed.
      *Stores the list in the "script" array.
-     * @param maxTime max time in milliseconds
+     * @param {int} maxTime max time in milliseconds.
      */
-    generateScript: function(maxTime){
+    generateScript: function(maxTime) {
         'use strict';
         var i,
             step = this.getTimeForOneTile() * 1000,
             elapsed = 0,
             pos;
         this.script = [];
-        for(i = 0; i < this.path.length && elapsed <= maxTime;
-            i++, elapsed += step){
+        for (i = 0; i < this.path.length && elapsed <= maxTime;
+            i++, elapsed += step) {
             pos = {
                 x: this.path[i][0],
                 y: this.path[i][1]};
             this.script.push({pos: pos, time: elapsed});
         }
-        if(i > 0){
+        if (i > 0) {
             this.pathMaxReach = i - 1;
-        }else{
+        }
+        else {
             this.pathMaxReach = 0;
         }
 
     },
-    adjustPath: function(){
+    adjustPath: function() {
         'use strict';
         this.path = _.last(this.path, this.path.length - this.pathMaxReach);
     },
-    printScript: function(){
+    printScript: function() {
         'use strict';
-        _.each(this.script, function(frame){
+        _.each(this.script, function(frame) {
             console.log(frame.time + ': ' + frame.pos.x + ', ' + frame.pos.y);
         });
     },
-    getPosGivenTime: function(elapsed){
+    getPosGivenTime: function(elapsed) {
         'use strict';
         var i,
             frame,
@@ -105,30 +106,31 @@ var Unit = TileEntity.extend({
             interpolationX,
             interpolationY,
             position;
-        if(this.script.length === 0){
+        if (this.script.length === 0) {
             return this.pos;
         }
         //find first frame
-        for(i = 0; i < this.script.length; i++){
-            if(this.script[i].time === elapsed){
+        for (i = 0; i < this.script.length; i++) {
+            if (this.script[i].time === elapsed) {
                 return this.script[i].pos;
             }
-            if(this.script[i].time > elapsed){
+            if (this.script[i].time > elapsed) {
                 break;
             }
         }
         //surpassed script's last frame time
-        if(i >= this.script.length){
+        if (i >= this.script.length) {
             //return last position
             return this.script[this.script.length - 1].pos;
         }
         frame = this.script[i];
-        if(i > 0){
+        if (i > 0) {
             prevFrame = this.script[i - 1];
         }
-        else{
+        else
+        {
             //time elapsed it's exactly the frame time
-            if(frame.time !== elapsed){
+            if (frame.time !== elapsed) {
                 throw 'expected time elapsed to be equal to frame time';
             }
             return frame.pos;
@@ -146,13 +148,13 @@ var Unit = TileEntity.extend({
         return position;
 
     },
-    getTilesTraversedGivenTime: function(seconds){
+    getTilesTraversedGivenTime: function(seconds) {
         'use strict';
         return seconds * this.speed;
     },
     //this should be divisor of TURN_DURATION
     //check that on battle screen
-    getTimeForOneTile: function(){
+    getTimeForOneTile: function() {
         'use strict';
         return 1 / this.speed;
     }
