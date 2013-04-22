@@ -101,6 +101,16 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             var data = window.prompt('enter ship json data');
             me.state.change(me.state.BUILD, {jsonString: data});
         }
+        _.each(this.drawingScreen, function(item){
+            item.update();
+        });
+    },
+    draw: function(ctx) {
+        'use strict';
+        this.parent(ctx);
+        _.each(this.drawingScreen, function(item){
+            item.draw(ctx);
+        });
     },
     onHtmlLoaded: function() {
         'use strict';
@@ -382,21 +392,13 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     drawItem: function(x, y, type) {
         'use strict';
         var item = utils.makeItem(type).x(x).y(y);
-        me.game.add(item, item.zIndex + 1000);
         this.drawingScreen.push(item);
-        me.game.sort();
         me.game.repaint();
-
     },
     clear: function() {
         'use strict';
-        _.each(this.drawingScreen, function(i) {
-            me.game.remove(i, true);
-        });
         this.drawingScreen = [];
         this.clearRed();
-
-        me.game.sort();
         me.game.repaint();
     },
 
