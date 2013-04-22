@@ -97,6 +97,11 @@ var TileEntity = me.ObjectEntity.extend({
 
 /* individual object class */
 var ItemEntity = TileEntity.extend({
+    onShipAnimations: [], //0: not rotated, 1: rotated
+    offShipAnimations: [], //0: not rotated, 1: rotated
+    //2x2 grid
+    animationGrid: [], //0: offShip, 1: onShip
+
     init: function(x, y, settings) {
         'use strict';
         if (settings === undefined) {
@@ -105,6 +110,19 @@ var ItemEntity = TileEntity.extend({
         settings.name = 'item';
         this.parent(x, y, settings);
         this.buildPlacementRules();
+    },
+
+    updateAnimation: function() {
+        var animRow, anim, rowIndex, colIndex;
+        rowIndex = utils.boolToInt(this._onShip);
+        colIndex = utils.boolToInt(this._rotated);
+        animRow = this.animationGrid[rowIndex];
+        if (animRow) {
+            anim = animRow[colIndex];
+            if (anim) {
+                this.setCurrentAnimation(anim);
+            }
+        }
     },
     /*functions to do when mouse-locked (override in each item)
     mouseTile : Vector2D
@@ -134,6 +152,7 @@ var ItemEntity = TileEntity.extend({
     _rotated: false,
     rotated: function(rotated) {
         'use strict';
+        var prev = this._rotated;
         if (rotated === undefined) {
             return this._rotated;
         }
@@ -143,6 +162,9 @@ var ItemEntity = TileEntity.extend({
             this.angle = 0;
         }
         this._rotated = rotated;
+        if (prev !== this._rotated) {
+            this.updateAnimation();
+        }
         return this;
     },
     //takes rotation into account
@@ -181,47 +203,29 @@ var ItemEntity = TileEntity.extend({
     _onShip: false,
     onShip: function(onShip) {
         'use strict';
+        var prev = this._onShip;
         if (onShip === undefined) {
             return this._onShip;
         }
-        if (onShip) {
-            this.whenOnShip();
-        } else {
-            this.whenOffShip();
-        }
+
         this._onShip = onShip;
+        if (prev !== this._onShip) {
+            this.updateAnimation();
+            if (onShip) {
+                this.whenOnShip();
+            } else {
+                this.whenOffShip();
+            }
+        }
         return this;
     },
     whenOnShip: function() {
         'use strict';
-        var anim;
-        if (this.rotated()) {
-            anim = this.onShipAnimations[1] !== undefined ?
-                this.onShipAnimations[1] : this.onShipAnimations[0];
-        }
-        else {
-            anim = this.onShipAnimations[0];
-        }
-        if (anim) {
-            this.setCurrentAnimation(anim);
-        }
     },
     whenOffShip: function() {
         'use strict';
-        var anim;
-        if (this.rotated()) {
-            anim = this.offShipAnimations[1] !== undefined ?
-                this.offShipAnimations[1] : this.offShipAnimations[0];
-        }
-        else {
-            anim = this.offShipAnimations[0];
-        }
-        if (anim) {
-            this.setCurrentAnimation(anim);
-        }
     },
-    onShipAnimations: [], //0: not rotated, 1: rotated
-    offShipAnimations: [], //idem
+
     tiles: function() {
         'use strict';
         var tiles = [];

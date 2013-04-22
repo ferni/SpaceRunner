@@ -106,9 +106,11 @@ var ComponentItem = ItemEntity.extend({
         this.addAnimation('idle', [3]);
         this.addAnimation('charge', [0, 1, 2, 3, 4, 5, 5]);
         // set animation
-        this.offShipAnimations = ['idle'];
-        this.onShipAnimations = ['charge'];
+        this.offShipAnimations = ['idle', 'idle'];
+        this.onShipAnimations = ['charge', 'charge'];
+        this.animationGrid = [this.offShipAnimations, this.onShipAnimations];
         this.animationspeed = 15;
+        this.setCurrentAnimation('idle');
     }
 });
 
@@ -123,6 +125,7 @@ var DoorItem = ItemEntity.extend({
 
         // add animation
         this.addAnimation('idle', [2]);
+        this.addAnimation('v_idle', [3]);
         this.addAnimation('h_open_close',
             [0, 2, 4, 6, 8, 10, 10, 8, 6, 4, 2, 0]);
         this.addAnimation('v_open_close',
@@ -130,8 +133,9 @@ var DoorItem = ItemEntity.extend({
         this.anchorPoint.x = 0.25;
         this.anchorPoint.y = 0.5;
         // set animation
-        this.offShipAnimations = ['idle'];
+        this.offShipAnimations = ['idle', 'v_idle'];
         this.onShipAnimations = ['h_open_close', 'v_open_close'];
+        this.animationGrid = [this.offShipAnimations, this.onShipAnimations];
         this.animationspeed = 10;
         this.zIndex = 110;
     },
@@ -181,6 +185,7 @@ var WallItem = ItemEntity.extend({
     updateAnimation: function() {
         'use strict';
         var wallsAround, x, y, top, left, bot, right, animationName, ui;
+        this.parent();
         if (!me.state.isCurrent(me.state.BUILD) ||
             !me.state.current().isReset) {
             return;

@@ -133,6 +133,10 @@ var utils = {
     vectorSub: function(v1, v2) {
         'use strict';
         return { x: v1.x - v2.x, y: v1.y - v2.y };
+    },
+    boolToInt: function(boolean){
+        'use strict';
+        return boolean ? 1 : 0;
     }
 };
 
