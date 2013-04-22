@@ -221,7 +221,7 @@ asyncTest('draw/mapAt', function() {
     }, function(screen) {
         var items;
         screen.drawItem(4, 5, 'engine');
-        items = me.game.getEntityByName('item');
+        items = screen.drawingScreen;
         ok(_.some(items, function(item) {
             return item.type === 'engine' && item.x() === 4 && item.y() === 5;
         }), 'Engine drawn at correct position');

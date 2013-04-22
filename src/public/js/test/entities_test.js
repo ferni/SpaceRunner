@@ -24,7 +24,7 @@ test('ItemEntity.trueSize()', function() {
 test('ItemEntity onShip/offShip animations', function() {
     'use strict';
     var door = utils.makeItem('door');
-    deepEqual(door.offShipAnimations, ['idle']);
+    deepEqual(door.offShipAnimations, ['idle', 'v_idle']);
     deepEqual(door.onShipAnimations, ['h_open_close', 'v_open_close']);
     ok(!door.onShip(), 'door is not on ship');
     ok(!door.rotated(), 'door is not rotated');
@@ -35,9 +35,7 @@ test('ItemEntity onShip/offShip animations', function() {
 
     door.rotated(true);
     door.onShip(false);
-    ok(door.isCurrentAnimation('idle'), 'door is rotated and off ship,' +
-        " but since it doesn't have off ship rotated animation," +
-        " it uses 'idle'");
+    ok(door.isCurrentAnimation('v_idle'));
 
 });
 
