@@ -255,13 +255,12 @@ var WallItem = ItemEntity.extend({
         t.preMouseY = this.y();
         t.pivotX = this.x();
         t.pivotY = this.y();
-        t.paths = [];
-        t.lastPathIndex = 0;
+        t.path = null;
         ui.mouseLockedOn = this;
     },
     lockedMouseMove: function(mouseTile) {
         'use strict';
-        var t, finder, cloneGrid, path, i, f, ui;
+        var t, finder, cloneGrid, i, f, ui;
         this.parent();
         ui = me.state.current();
         t = this.temp;
@@ -276,45 +275,26 @@ var WallItem = ItemEntity.extend({
         //TODO: init finder at onBuilt
         finder = new PF.BestFirstFinder();
         cloneGrid = t.grid.clone();
-        path = finder.findPath(t.pivotX, t.pivotY,
+        t.path = finder.findPath(t.pivotX, t.pivotY,
             mouseTile.x, mouseTile.y, cloneGrid);
-
-        t.paths[t.lastPathIndex] = path; //replace last path
-        for (i = t.paths.length - 1; i >= 0; i--) {
-            for (f = 1; f < t.paths[i].length; f++) {
-                ui.drawItem(t.paths[i][f][0], t.paths[i][f][1], 'wall');
-            }
-        }
+        _.each(t.path, function(p){
+            ui.drawItem(p[0], p[1], 'wall');
+        });
     },
     lockedMouseUp: function(mouseTile) {
         'use strict';
-        var t, lastPath, i;
+        var t, lastPath, i,
+            ui = me.state.current();
         this.parent();
         if (!this.canBuildAt(mouseTile.x, mouseTile.y,
             me.state.current().ship)) {
             return;
         }
         t = this.temp;
-        lastPath = t.paths[t.lastPathIndex];
-        if (lastPath) {
-            for (i = 0; i < lastPath.length; i++) {
-                t.grid.setWalkableAt(lastPath[i][0], lastPath[i][1], false);
-            }
-        }
-        t.pivotX = mouseTile.x;
-        t.pivotY = mouseTile.y;
-        t.lastPathIndex++;
-
-    },
-    lockedMouseDbClick: function(mouseTile) {
-        'use strict';
-        var ui = me.state.current();
-        this.parent();
         _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x(), wall.y(), 'wall');
         });
         ui.clear();
-
         ui.mouseLockedOn = null;
     },
     lockedEscape: function() {
