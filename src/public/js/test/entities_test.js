@@ -100,20 +100,8 @@ asyncTest('Wall building', function() {
             equal(screen.mouseLockedOn.type, 'wall', 'Mouse locked on wall');
 
             th.mouseBegin(screen);
-            th.setMouse(x + 2, y);
-            screen.mouseMove();
-            screen.mouseDown({
-                which: me.input.mouse.LEFT
-            });
-            screen.mouseUp({
-                which: me.input.mouse.LEFT
-            });
-            th.setMouse(x + 2, y + 2);
-            screen.mouseMove();
-            screen.mouseDbClick({
-                which: me.input.mouse.LEFT
-            });
-            ok(!screen.mouseLockedOn, 'Mouse unlocked after double click');
+            th.leftClick(x + 2, y + 2);
+            ok(!screen.mouseLockedOn, 'Mouse unlocked after click');
             equal(screen.ship.mapAt(x, y).type, 'wall');
             equal(screen.ship.mapAt(x + 1, y).type, 'wall');
             equal(screen.ship.mapAt(x + 2, y).type, 'wall');
@@ -137,8 +125,7 @@ asyncTest('Wall building canceled by escape key', function() {
         th.leftClick(x, y);
         equal(screen.mouseLockedOn.type, 'wall', 'Mouse locked on wall');
 
-        th.leftClick(x + 2, y);
-        th.leftClick(x + 2, y + 2);
+        th.moveMouse(x + 2, y + 2);
         th.mouseEnd();
         //entire wall is seen on the screen...
         equal(screen.mapAt(x, y).type, 'wall', 'wall appears at x,y');
