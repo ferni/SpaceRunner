@@ -95,7 +95,7 @@ var TileEntity = me.ObjectEntity.extend({
 });
 
 
-/* individual object class */
+    /* individual object class */
 var ItemEntity = TileEntity.extend({
     onShipAnimations: [], //0: not rotated, 1: rotated
     offShipAnimations: [], //0: not rotated, 1: rotated
@@ -107,7 +107,9 @@ var ItemEntity = TileEntity.extend({
         if (settings === undefined) {
             settings = {};
         }
-        settings.name = 'item';
+        if (!settings.name) {
+            settings.name = 'item';
+        }
         this.parent(x, y, settings);
         this.buildPlacementRules();
     },

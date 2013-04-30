@@ -25,7 +25,6 @@ function Ship(settings, syncWithGame) {
         this.height = this.tmxTileMap.height;
         this.syncWithGame = syncWithGame;
         this._buildings = [];
-        this._units = [];
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
         }
@@ -38,13 +37,9 @@ function Ship(settings, syncWithGame) {
         return this._buildings;
     };
     this.units = function() {
-        return this._units;
-    };
-    this.addUnit = function(unit) {
-        this._units.push(unit);
-        if (this.syncWithGame) {
-            me.game.add(unit, unit.zIndex);
-        }
+        return _.filter(this._buildings, function(b){
+            return b.name === 'unit';
+        });
     };
     //this should be called when the user builds something
     this.buildAt = function(x, y, buildingType) {
@@ -77,11 +72,12 @@ function Ship(settings, syncWithGame) {
             me.game.add(item, item.zIndex);
         }
         this._buildings.push(item);
-        item.onShip(true);
+        item.onShip(this);
         this.buildingsChanged();
     };
     this.removeAt = function(x, y) {
-        while (this.mapAt(x, y).name === 'item') {
+        //remove while is not string (is an item or unit)
+        while (!(_.isString(this.mapAt(x, y)))) {
             this.remove(this.mapAt(x, y), true);
         }
     };

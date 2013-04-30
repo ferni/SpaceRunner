@@ -7,26 +7,37 @@
 
 /*global me, TileEntity, _*/
 
-var Unit = TileEntity.extend({
+var Unit = ItemEntity.extend({
     pendingOrders: [],
     executing: null,
     _paused: true,
     speed: 1, //tiles per second
-    path: [],
+    path: [[]],
     pathMaxReach: 0,
     script: [],
     init: function(x, y) {
         'use strict';
-        this.parent(x, y, {image: 'unit_robot_alien'});
+        this.parent(x, y, {
+            name: 'unit',
+            image: 'unit_robot_alien'
+        });
         this.addAnimation('idle', [0, 1, 2, 1]);
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
+        this.path[0] = [];
 
     },
     pause: function() {
         'use strict';
         this._paused = true;
+        //update position on ship
+        if(this.onShip()){
+            if(this.onShip() === true){
+                throw "onShip shouldn't be true, it should be a Ship";
+            }
+            this.onShip().buildingsChanged();
+        }
     },
     resume: function() {
         'use strict';

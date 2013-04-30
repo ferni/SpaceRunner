@@ -29,7 +29,7 @@ test('ItemEntity onShip/offShip animations', function() {
     ok(!door.onShip(), 'door is not on ship');
     ok(!door.rotated(), 'door is not rotated');
 
-    door.onShip(true); //not really ;)
+    door.onShip(new Ship({tmxName: 'test'})); //not really ;)
     ok(door.isCurrentAnimation('h_open_close'),
         "on ship it has 'h_open_close' animation");
 

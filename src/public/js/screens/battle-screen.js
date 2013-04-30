@@ -130,13 +130,11 @@ var BattleScreen = me.ScreenObject.extend({
                 path = this.pfFinder.findPath(unit.x(), unit.y(),
                     mouse.x, mouse.y, grid);
                 console.log('path length: ' + (path.length - 1));
-                unit.path = path;
+                if(path.length > 1) {
+                    unit.path = path;
+                }
             }
         }
-    },
-    mouseMove: function(e) {
-        'use strict';
-        //TODO show little square where the mouse is pointing
     },
     pathToPixels: function(path) {
         'use strict';
@@ -146,6 +144,14 @@ var BattleScreen = me.ScreenObject.extend({
                 (path[i][1] * TILE_SIZE) + HALF_TILE]);
         }
         return newPath;
+    },
+    moveOrderImplementations: {
+        avoidCollisionEndOfTurn: function(unit, destination){
+
+        }
+    },
+    processMoveOrder: function(unit, destination){
+
     },
     /**
      * Draws a movement path.
@@ -205,8 +211,8 @@ var BattleScreen = me.ScreenObject.extend({
                 }
             });
         unit = new Unit(empty.x, empty.y);
-        ship.addUnit(unit);
-        ship.addUnit(new Unit(empty.x + 1, empty.y));
+        ship.add(unit);
+        ship.add(new Unit(empty.x + 1, empty.y));
     },
     selectUnit: function(x, y) {
         'use strict';
