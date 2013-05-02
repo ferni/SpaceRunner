@@ -19,6 +19,7 @@ var BattleScreen = me.ScreenObject.extend({
     pfFinder: new PF.AStarFinder({
         allowDiagonal: false
     }),
+    unitsEndPos: [],
     init: function() {
         'use strict';
         this.parent(true);
@@ -109,6 +110,10 @@ var BattleScreen = me.ScreenObject.extend({
         }
         if (which === me.input.mouse.LEFT) {
             this.selectUnit(mouse.x, mouse.y);
+
+            if(this.posConflictsWithOtherEndPos(mouse)){
+                console.log('-- UNIT END POSITION SELECTED --');
+            }
         }
     },
     mouseDown: function(e) {
@@ -132,9 +137,17 @@ var BattleScreen = me.ScreenObject.extend({
                 console.log('path length: ' + (path.length - 1));
                 if(path.length > 1) {
                     unit.path = path;
+                    unit.generateScript(this.TURN_DURATION);
                 }
             }
         }
+    },
+    posConflictsWithOtherEndPos: function(pos){
+        var ship = me.game.ship;
+        return _.any(ship.units(), function(u){
+            var unitEndPos = u.getEndOfTurnPosition();
+            return unitEndPos.x === pos.x && unitEndPos.y === pos.y;
+        });
     },
     pathToPixels: function(path) {
         'use strict';
@@ -144,14 +157,6 @@ var BattleScreen = me.ScreenObject.extend({
                 (path[i][1] * TILE_SIZE) + HALF_TILE]);
         }
         return newPath;
-    },
-    moveOrderImplementations: {
-        avoidCollisionEndOfTurn: function(unit, destination){
-
-        }
-    },
-    processMoveOrder: function(unit, destination){
-
     },
     /**
      * Draws a movement path.
@@ -246,7 +251,6 @@ var BattleScreen = me.ScreenObject.extend({
         this.turnBeginTime = me.timer.getTime();
         _.each(me.game.ship.units(), function(u) {
             u.generateScript(screen.TURN_DURATION);
-            u.printScript();
             u.resume();
         });
         this.paused = false;

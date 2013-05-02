@@ -63,8 +63,6 @@ var Unit = ItemEntity.extend({
             throw 'The unit should be on the battle_screen (update).';
         }
         elapsed = screen.getElapsedTime();
-        //do stuff
-
         position = this.getPosGivenTime(elapsed);
         this.x(position.x);
         this.y(position.y);
@@ -95,6 +93,16 @@ var Unit = ItemEntity.extend({
         }
         else {
             this.pathMaxReach = 0;
+        }
+
+    },
+    getEndOfTurnPosition: function(){
+        'use strict';
+        if (this.script.length > 0) {
+            return this.script[this.script.length - 1].pos;
+        } else {
+            console.log('script length <= 0');
+            return {x: this.x(), y: this.y()};
         }
 
     },
