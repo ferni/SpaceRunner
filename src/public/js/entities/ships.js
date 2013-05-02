@@ -41,6 +41,11 @@ function Ship(settings, syncWithGame) {
             return b.name === 'unit';
         });
     };
+    this.selected = function(){
+        return _.filter(this.units(), function(u){
+            return u.selected;
+        });
+    };
     //this should be called when the user builds something
     this.buildAt = function(x, y, buildingType) {
         var self = this,

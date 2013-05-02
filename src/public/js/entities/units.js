@@ -14,6 +14,7 @@ var Unit = ItemEntity.extend({
     speed: 1, //tiles per second
     path: [],
     script: [],
+    selected: false,
     init: function(x, y) {
         'use strict';
         this.parent(x, y, {
@@ -24,8 +25,6 @@ var Unit = ItemEntity.extend({
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
-        //this.path[0] = [x, y];
-
     },
     pause: function() {
         'use strict';
@@ -84,6 +83,9 @@ var Unit = ItemEntity.extend({
         ctx.beginPath();
         ctx.strokeStyle = 'green';
         ctx.lineWidth = 3;
+        if(!this.selected) {
+            ctx.globalAlpha = 0.5;
+        }
         ctx.moveTo(path[0][0], path[0][1]);
         for (i = 1; i < path.length; i++) {
             if (i === reachLength) {
@@ -106,6 +108,7 @@ var Unit = ItemEntity.extend({
         ctx.arc(path[path.length - 1][0], path[path.length - 1][1],
             HALF_TILE / 2, 0, Math.PI * 2, false);
         ctx.fill();
+        ctx.globalAlpha = 1.0;
     },
     /**
      *Generates a list of positions and the corresponding time

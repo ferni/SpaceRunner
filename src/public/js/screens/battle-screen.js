@@ -15,7 +15,6 @@ var BattleScreen = me.ScreenObject.extend({
     isReset: false,
     paused: true,
     turnBeginTime: null,
-    selected: [],//selected units
     pfFinder: new PF.AStarFinder({
         allowDiagonal: false
     }),
@@ -78,16 +77,16 @@ var BattleScreen = me.ScreenObject.extend({
             mousePx;
         this.parent(ctx);
         if (this.paused) {
-            ctx.beginPath();
-            ctx.strokeStyle = 'limegreen';
-            ctx.lineWidth = 2;
-            _.each(this.selected, function(u) {
-                //draw rectangle around each selected unit
-                ctx.moveTo(u.pos.x, u.pos.y);
-                ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
-            });
             _.each(me.game.ship.units(), function(u) {
                 u.drawPath(ctx);
+                if (u.selected) {
+                    //draw rectangle around each selected unit
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'limegreen';
+                    ctx.lineWidth = 2;
+                    ctx.moveTo(u.pos.x, u.pos.y);
+                    ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
+                }
             });
         }
 
@@ -121,21 +120,25 @@ var BattleScreen = me.ScreenObject.extend({
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
             ship = me.game.ship,
-            unit, grid, path, eotPos;
+            unit, grid, path;
         if (!this.paused) {
             return;
         }
         if (which === me.input.mouse.RIGHT) {
-            if (this.selected[0]) {//there is a selected unit
-                unit = this.selected[0];
-                //TODO: cache pf matrix on ship
-                grid = new PF.Grid(ship.width, ship.height,
-                    ship.getPfMatrix());
-                path = this.pfFinder.findPath(unit.x(), unit.y(),
-                    mouse.x, mouse.y, grid);
-                console.log('path length: ' + (path.length - 1));
-                if(path.length > 1) {
-                    unit.path = path;
+            if (ship.selected().length > 0) {//there is a selected unit
+                unit = ship.selected()[0];
+                if (mouse.x === unit.x() && mouse.y === unit.y()) {
+                    unit.path = [];
+                } else {
+                    //TODO: cache pf matrix on ship
+                    grid = new PF.Grid(ship.width, ship.height,
+                        ship.getPfMatrix());
+                    path = this.pfFinder.findPath(unit.x(), unit.y(),
+                        mouse.x, mouse.y, grid);
+                    console.log('path length: ' + (path.length - 1));
+                    if(path.length > 1) {
+                        unit.path = path;
+                    }
                 }
                 this.generateScripts();
             }
@@ -159,7 +162,7 @@ var BattleScreen = me.ScreenObject.extend({
             _.each(units, function(u){
                 while (screen.posConflictsWithOtherEndPos(u, u.eotPos())) {
                     if (u.script.length === 0) {
-                        console.error('The end position conflict should be' +
+                        console.warn('The end position conflict should be' +
                             ' resolved but persists after removing all the' +
                             ' unit script');
                         break;
@@ -207,11 +210,13 @@ var BattleScreen = me.ScreenObject.extend({
         if (!unit) {
             return false;
         }
-        this.selected.push(unit);
+        unit.selected = true;
     },
     unselectAll: function() {
         'use strict';
-        this.selected = [];
+        _.each(me.game.ship.units(), function(u) {
+            return u.selected = false;
+        });
     },
     pause: function() {
         'use strict';
