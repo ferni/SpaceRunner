@@ -37,7 +37,10 @@ var BattleScreen = me.ScreenObject.extend({
             this.mouseDown.bind(this));
         me.game.ship.showInScreen();
 
-        this.putUnits();
+        this.putUnit();
+        this.putUnit();
+        this.putUnit();
+        this.putUnit();
         this.pause();
 
         this.isReset = true;
@@ -111,7 +114,7 @@ var BattleScreen = me.ScreenObject.extend({
         if (which === me.input.mouse.LEFT) {
             this.selectUnit(mouse.x, mouse.y);
 
-            if(this.posConflictsWithOtherEndPos(mouse)){
+            if(this.posConflictsWithOtherEndPos(null, mouse)){
                 console.log('-- UNIT END POSITION SELECTED --');
             }
         }
@@ -121,7 +124,7 @@ var BattleScreen = me.ScreenObject.extend({
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
             ship = me.game.ship,
-            unit, grid, path;
+            unit, grid, path, eotPos;
         if (!this.paused) {
             return;
         }
@@ -137,15 +140,48 @@ var BattleScreen = me.ScreenObject.extend({
                 console.log('path length: ' + (path.length - 1));
                 if(path.length > 1) {
                     unit.path = path;
-                    unit.generateScript(this.TURN_DURATION);
+                    //this.generateScripts();
                 }
             }
         }
     },
-    posConflictsWithOtherEndPos: function(pos){
+    /**
+     * Generates scripts for the units resolving
+     * any end-position conflicts.
+     */
+    generateScripts: function(){
+        'use strict';
+        var units = me.game.ship.units(),
+            screen = this,
+            someScriptChanged;
+        _.each(units, function(u){
+            u.generateScript(screen.TURN_DURATION);
+        });
+        //solve end positions conflicts
+        do {
+            someScriptChanged = false;
+            _.each(units, function(u){
+                while (screen.posConflictsWithOtherEndPos(u, u.eotPos())) {
+                    if (u.script.length === 0) {
+                        console.error('The end position conflict should be' +
+                            ' resolved but persists after removing all the' +
+                            ' unit script');
+                        break;
+                    }
+                    u.script.pop();
+                    someScriptChanged = true;
+                }
+            });
+        } while(someScriptChanged)
+    },
+    posConflictsWithOtherEndPos: function(unit, pos){
         var ship = me.game.ship;
         return _.any(ship.units(), function(u){
-            var unitEndPos = u.getEndOfTurnPosition();
+            var unitEndPos;
+            if (unit === u) {
+                return false;
+            }
+            unitEndPos = u.eotPos();
             return unitEndPos.x === pos.x && unitEndPos.y === pos.y;
         });
     },
@@ -171,7 +207,7 @@ var BattleScreen = me.ScreenObject.extend({
             return;
         }
         if (path.length === 1) {
-            console.warn('drawPath: path given to draw has 1 length');
+            //console.warn('drawPath: path given to draw has 1 length');
             return;
         }
         path = this.pathToPixels(path);
@@ -202,10 +238,10 @@ var BattleScreen = me.ScreenObject.extend({
         ctx.fill();
         //ctx.stroke();
     },
-    putUnits: function() {
+    putUnit: function() {
         'use strict';
         //find empty spot
-        var empty = null, ship = me.game.ship, unit;
+        var empty = null, ship = me.game.ship;
         utils.matrixTiles(ship.width, ship.height,
             function(x, y) {
                 if (empty) {
@@ -215,9 +251,7 @@ var BattleScreen = me.ScreenObject.extend({
                     empty = {x: x, y: y};
                 }
             });
-        unit = new Unit(empty.x, empty.y);
-        ship.add(unit);
-        ship.add(new Unit(empty.x + 1, empty.y));
+        ship.add(new Unit(empty.x, empty.y));
     },
     selectUnit: function(x, y) {
         'use strict';
@@ -249,8 +283,12 @@ var BattleScreen = me.ScreenObject.extend({
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
+        this.generateScripts();
         _.each(me.game.ship.units(), function(u) {
-            u.generateScript(screen.TURN_DURATION);
+            /*
+            if(u.script.length === 0) {
+                u.generateScript(screen.TURN_DURATION);
+            }*/
             u.resume();
         });
         this.paused = false;

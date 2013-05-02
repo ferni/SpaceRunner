@@ -223,7 +223,8 @@ function Ship(settings, syncWithGame) {
         var ship = this,
             pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
         utils.matrixTiles(this.width, this.height, function(x, y) {
-            if (ship.map()[y][x] === charMap.codes._cleared) {
+            if (ship.map()[y][x] === charMap.codes._cleared ||
+                ship.map()[y][x].name === 'unit') {
                 pfMatrix[y][x] = 0; //cleared tiles are walkable
             }
         });

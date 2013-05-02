@@ -12,8 +12,7 @@ var Unit = ItemEntity.extend({
     executing: null,
     _paused: true,
     speed: 1, //tiles per second
-    path: [[]],
-    pathMaxReach: 0,
+    path: [],
     script: [],
     init: function(x, y) {
         'use strict';
@@ -25,12 +24,14 @@ var Unit = ItemEntity.extend({
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
-        this.path[0] = [];
+        //this.path[0] = [x, y];
 
     },
     pause: function() {
         'use strict';
         this._paused = true;
+        this.adjustPath();
+        this.script = [];
         //update position on ship
         if(this.onShip()){
             if(this.onShip() === true){
@@ -41,7 +42,6 @@ var Unit = ItemEntity.extend({
     },
     resume: function() {
         'use strict';
-        this.adjustPath();
         this._paused = false;
     },
     draw: function(ctx) {
@@ -88,32 +88,32 @@ var Unit = ItemEntity.extend({
                 y: this.path[i][1]};
             this.script.push({pos: pos, time: elapsed});
         }
-        if (i > 0) {
-            this.pathMaxReach = i - 1;
-        }
-        else {
-            this.pathMaxReach = 0;
-        }
-
+        console.log('generated script for unit '+ this.GUID);
+        this.printScript();
     },
-    getEndOfTurnPosition: function(){
+    /**
+     * End of turn position according to the script
+     * @returns {*}
+     */
+    eotPos: function(){
         'use strict';
         if (this.script.length > 0) {
             return this.script[this.script.length - 1].pos;
         } else {
-            console.log('script length <= 0');
             return {x: this.x(), y: this.y()};
         }
 
     },
     adjustPath: function() {
         'use strict';
-        this.path = _.last(this.path, this.path.length - this.pathMaxReach);
+        this.path = _.last(this.path, this.path.length -
+            this.script.length + 1);
     },
     printScript: function() {
         'use strict';
         _.each(this.script, function(frame) {
-            console.log(frame.time + ': ' + frame.pos.x + ', ' + frame.pos.y);
+            console.log(frame.time + 'ms : (' + frame.pos.x + ', ' +
+                frame.pos.y + ')');
         });
     },
     getPosGivenTime: function(elapsed) {
@@ -126,7 +126,7 @@ var Unit = ItemEntity.extend({
             interpolationY,
             position;
         if (this.script.length === 0) {
-            return this.pos;
+            return {x: this.x(), y: this.y()};
         }
         //find first frame
         for (i = 0; i < this.script.length; i++) {
