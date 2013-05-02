@@ -87,10 +87,7 @@ var BattleScreen = me.ScreenObject.extend({
                 ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
             });
             _.each(me.game.ship.units(), function(u) {
-                if (u.path.length > 0) {
-                    screen.drawPath(ctx, u.path,
-                        u.getTilesTraversedGivenTime(screen.TURN_DURATION_SEC));
-                }
+                u.drawPath(ctx);
             });
         }
 
@@ -131,7 +128,6 @@ var BattleScreen = me.ScreenObject.extend({
         if (which === me.input.mouse.RIGHT) {
             if (this.selected[0]) {//there is a selected unit
                 unit = this.selected[0];
-                //output calculated arrival time
                 //TODO: cache pf matrix on ship
                 grid = new PF.Grid(ship.width, ship.height,
                     ship.getPfMatrix());
@@ -140,8 +136,8 @@ var BattleScreen = me.ScreenObject.extend({
                 console.log('path length: ' + (path.length - 1));
                 if(path.length > 1) {
                     unit.path = path;
-                    //this.generateScripts();
                 }
+                this.generateScripts();
             }
         }
     },
@@ -185,59 +181,7 @@ var BattleScreen = me.ScreenObject.extend({
             return unitEndPos.x === pos.x && unitEndPos.y === pos.y;
         });
     },
-    pathToPixels: function(path) {
-        'use strict';
-        var newPath = [], i;
-        for (i = 0; i < path.length; i++) {
-            newPath.push([(path[i][0] * TILE_SIZE) + HALF_TILE,
-                (path[i][1] * TILE_SIZE) + HALF_TILE]);
-        }
-        return newPath;
-    },
-    /**
-     * Draws a movement path.
-     * @param {Canvas2DContext} ctx passed to the draw function.
-     * @param {Array} path a path given by Pathfinding.
-     * @param {int} reachLength the length that the unit can traverse in turn.
-     */
-    drawPath: function(ctx, path, reachLength) {
-        'use strict';
-        var outOfReach = false, i;
-        if (path.length === 0) {
-            return;
-        }
-        if (path.length === 1) {
-            //console.warn('drawPath: path given to draw has 1 length');
-            return;
-        }
-        path = this.pathToPixels(path);
-        ctx.beginPath();
-        ctx.strokeStyle = 'green';
-        ctx.lineWidth = 3;
-        ctx.moveTo(path[0][0], path[0][1]);
-        for (i = 1; i < path.length; i++) {
-            if (i === reachLength + 1) {
-                ctx.beginPath();
-                ctx.strokeStyle = 'orange';
-                ctx.moveTo(path[i - 1][0], path[i - 1][1]);
-                outOfReach = true;
-            }
-            ctx.lineTo(path[i][0], path[i][1]);
-            ctx.stroke();
-        }
 
-        ctx.beginPath();
-        if (outOfReach) {
-            ctx.fillStyle = 'orange';
-        }else {
-            ctx.fillStyle = 'green';
-        }
-
-        ctx.arc(path[path.length - 1][0], path[path.length - 1][1],
-            HALF_TILE / 2, 0, Math.PI * 2, false);
-        ctx.fill();
-        //ctx.stroke();
-    },
     putUnit: function() {
         'use strict';
         //find empty spot
@@ -275,6 +219,7 @@ var BattleScreen = me.ScreenObject.extend({
         _.each(me.game.ship.units(), function(u) {
             u.pause();
         });
+        this.generateScripts();
         this.paused = true;
     },
     resume: function() {
@@ -283,7 +228,6 @@ var BattleScreen = me.ScreenObject.extend({
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
-        this.generateScripts();
         _.each(me.game.ship.units(), function(u) {
             /*
             if(u.script.length === 0) {

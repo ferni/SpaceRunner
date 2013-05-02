@@ -137,6 +137,16 @@ var utils = {
     boolToInt: function(boolean){
         'use strict';
         return boolean ? 1 : 0;
+    },
+    pathToPixels: function(path) {
+        'use strict';
+        var newPath = [], i;
+        for (i = 0; i < path.length; i++) {
+            newPath.push([(path[i][0] * TILE_SIZE) + HALF_TILE,
+                (path[i][1] * TILE_SIZE) + HALF_TILE]);
+        }
+        return newPath;
     }
+
 };
 

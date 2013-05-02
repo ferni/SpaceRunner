@@ -68,6 +68,45 @@ var Unit = ItemEntity.extend({
         this.y(position.y);
         return true;
     },
+    drawPath: function(ctx){
+        'use strict';
+        var outOfReach = false, i,
+            path = this.path,
+            reachLength = this.script.length;
+        if (path.length === 0) {
+            return;
+        }
+        if (path.length === 1) {
+            //console.warn('drawPath: path given to draw has 1 length');
+            return;
+        }
+        path = utils.pathToPixels(path);
+        ctx.beginPath();
+        ctx.strokeStyle = 'green';
+        ctx.lineWidth = 3;
+        ctx.moveTo(path[0][0], path[0][1]);
+        for (i = 1; i < path.length; i++) {
+            if (i === reachLength) {
+                ctx.beginPath();
+                ctx.strokeStyle = 'orange';
+                ctx.moveTo(path[i - 1][0], path[i - 1][1]);
+                outOfReach = true;
+            }
+            ctx.lineTo(path[i][0], path[i][1]);
+            ctx.stroke();
+        }
+
+        ctx.beginPath();
+        if (outOfReach) {
+            ctx.fillStyle = 'orange';
+        }else {
+            ctx.fillStyle = 'green';
+        }
+
+        ctx.arc(path[path.length - 1][0], path[path.length - 1][1],
+            HALF_TILE / 2, 0, Math.PI * 2, false);
+        ctx.fill();
+    },
     /**
      *Generates a list of positions and the corresponding time
      * according to the unit's path and speed.
