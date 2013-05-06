@@ -80,7 +80,11 @@ var BattleScreen = me.ScreenObject.extend({
             };
             this.apply = function(){
                 //reload screen
-                me.state.change(me.state.BATTLE, ko.toJS(this.settings));
+                if (screen.paused) {
+                    me.state.change(me.state.BATTLE, ko.toJS(this.settings));
+                } else{
+                    alert('Can apply only when paused.');
+                }
             };
             this.toggle = function(){
                 this.settings.showSettings(!this.settings.showSettings());
