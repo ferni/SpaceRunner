@@ -18,15 +18,30 @@ var BattleScreen = me.ScreenObject.extend({
     pfFinder: new PF.AStarFinder({
         allowDiagonal: false
     }),
-    unitsEndPos: [],
+    settings:{},
     init: function() {
         'use strict';
         this.parent(true);
     },
-    onResetEvent: function() {
+    onResetEvent: function(settings) {
         'use strict';
         this.parent();
+        //set default settings
+        if (!settings) {
+           settings = {};
+        }
+        if (!settings.collisionResolution) {
+            settings.collisionResolution = collisionResolutions.endOfTurn;
+        }
+        this.settings = settings;
         me.video.clearSurface(me.video.getScreenContext(), 'black');
+        //reset ship
+        //TODO: make ship.toJsonString work with units
+        /*
+        me.game.ship = new Ship({
+            jsonString: me.game.ship.toJsonString()
+        }, true);*/
+        this.configureUnits(settings);
         html.load('battle-screen');
         this.onHtmlLoaded();
 
@@ -36,10 +51,6 @@ var BattleScreen = me.ScreenObject.extend({
             this.mouseDown.bind(this));
         me.game.ship.showInScreen();
 
-        this.putUnit();
-        this.putUnit();
-        this.putUnit();
-        this.putUnit();
         this.pause();
 
         this.isReset = true;
@@ -54,10 +65,29 @@ var BattleScreen = me.ScreenObject.extend({
     },
     onHtmlLoaded: function() {
         'use strict';
-        var screen = this;
+        var screen = this,
+            DebugSettingsPanelVM;
         $('#resume-button').click(function() {
             screen.resume();
         });
+        //prepare debug settings panel
+        DebugSettingsPanelVM = function(){
+            this.settings = {
+                collisionResolution:
+                    ko.observable(screen.settings.collisionResolution),
+                showSettings:
+                    ko.observable(screen.settings.showSettings)
+            };
+            this.apply = function(){
+                //reload screen
+                me.state.change(me.state.BATTLE, ko.toJS(this.settings));
+            };
+            this.toggle = function(){
+                this.settings.showSettings(!this.settings.showSettings());
+            };
+        };
+        ko.applyBindings(new DebugSettingsPanelVM(),
+            document.getElementById('debug-settings'));
     },
     update: function() {
         'use strict';
@@ -72,8 +102,7 @@ var BattleScreen = me.ScreenObject.extend({
     },
     draw: function(ctx) {
         'use strict';
-        var screen = this,
-            mouse = utils.getMouse(),
+        var mouse = utils.getMouse(),
             mousePx;
         this.parent(ctx);
         if (this.paused) {
@@ -99,6 +128,16 @@ var BattleScreen = me.ScreenObject.extend({
             ctx.moveTo(mousePx.x, mousePx.y);
             ctx.strokeRect(mousePx.x, mousePx.y, TILE_SIZE, TILE_SIZE);
         }
+    },
+    configureUnits: function(settings) {
+        'use strict';
+        var units = me.game.ship.units();
+        _.each(units, function(u){
+            //temporary workaround to reset units
+            //until ship.toJsonString work with units
+            u.path = [];
+            u.script = [];
+        });
     },
     mouseUp: function(e) {
         'use strict';
@@ -144,11 +183,28 @@ var BattleScreen = me.ScreenObject.extend({
             }
         }
     },
+    generateScripts: function(){
+        'use strict';
+        switch(this.settings.collisionResolution){
+            case collisionResolutions.none:
+                return this.generateScripts_noResolution();
+            case collisionResolutions.endOfTurn:
+                return this.generateScripts_eotResolution();
+        }
+    },
+    generateScripts_noResolution: function(){
+        'use strict';
+        var units = me.game.ship.units(),
+            screen = this;
+        _.each(units, function(u){
+            u.generateScript(screen.TURN_DURATION);
+        });
+    },
     /**
      * Generates scripts for the units resolving
      * any end-position conflicts.
      */
-    generateScripts: function(){
+    generateScripts_eotResolution: function(){
         'use strict';
         var units = me.game.ship.units(),
             screen = this,
@@ -185,21 +241,7 @@ var BattleScreen = me.ScreenObject.extend({
         });
     },
 
-    putUnit: function() {
-        'use strict';
-        //find empty spot
-        var empty = null, ship = me.game.ship;
-        utils.matrixTiles(ship.width, ship.height,
-            function(x, y) {
-                if (empty) {
-                    return;
-                }
-                if (ship.mapAt(x, y) === charMap.codes._cleared) {
-                    empty = {x: x, y: y};
-                }
-            });
-        ship.add(new Unit(empty.x, empty.y));
-    },
+
     selectUnit: function(x, y) {
         'use strict';
         var ship = me.game.ship,
@@ -229,15 +271,10 @@ var BattleScreen = me.ScreenObject.extend({
     },
     resume: function() {
         'use strict';
-        var screen = this;
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
         _.each(me.game.ship.units(), function(u) {
-            /*
-            if(u.script.length === 0) {
-                u.generateScript(screen.TURN_DURATION);
-            }*/
             u.resume();
         });
         this.paused = false;

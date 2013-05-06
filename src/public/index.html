@@ -20,6 +20,7 @@
         <script type="text/javascript" src="js/vendor/knockout-2.2.1.debug.js"></script>
 
         <script type="text/javascript" src="js/melonjs-plugins.js"></script>
+        <script type="text/javascript" src="js/enums.js"></script>
         <script type="text/javascript" src="js/html.js"></script>
         <script type="text/javascript" src="js/utils.js"></script>
         <script type="text/javascript" src="js/char-map.js"></script>
@@ -107,7 +108,7 @@
                         </span>
                         <ul class="ships" data-bind="visible: selected(),foreach: ships">
                             <li class="ship-button button" data-bind="click: $root.selectShip">
-                                <p><img alt="<ship preview>" data-bind="attr:{src: $parent.img($data)}"></img></p>
+                                <p><img alt="<ship preview>" data-bind="attr:{src: $parent.img($data)}"/></p>
                                 <p><span data-bind="text: $data"></span></p>
                             </li>
                         </ul>
@@ -117,7 +118,22 @@
             <div id="battle-screen">
                 <span id="paused-indicator">PAUSED <button id="resume-button" class="button">Resume</button></span>
                 <span id="elapsed"></span>
-
+                <div id="debug-settings">
+                    <h4 class="point" data-bind="click:toggle">[+] Settings</h4>
+                    <div data-bind="visible:settings.showSettings()">
+                        <div data-bind="with:settings">
+                            <h5>Collision Resolution</h5>
+                            <div><input type="radio" name="collisionResolutionGroup"
+                                        value="none" data-bind="checked: collisionResolution" /> None</div>
+                            <div><input type="radio" name="collisionResolutionGroup"
+                                        value="endOfTurn" data-bind="checked: collisionResolution" /> End of turn</div>
+                            <!--<div><input type="radio" name="collisionResolutionGroup"
+                                        value="always" data-bind="checked: collisionResolution" /> Always</div>
+                            -->
+                        </div>
+                        <button data-bind="click:apply">Apply</button>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

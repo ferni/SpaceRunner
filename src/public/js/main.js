@@ -223,16 +223,6 @@ var g_resources = [{
     src: 'data/img/render/units/unit_robot_alien.png'
 }];
 
-var g_resources_size = [{
-    name: 'outline',
-    width: 192,
-    height: 256
-}, {
-    name: 'small',
-    width: 1440,
-    height: 1056
-}];
-
 // jsApp
 var jsApp = {
     loadReady: false,
@@ -270,6 +260,7 @@ var jsApp = {
         window.FIRST_SCREEN = me.state.SELECT;
         html.store('ship-select-screen');
         html.store('ship-building-screen');
+        html.store('battle-screen');
         // start the game
         me.state.set(me.state.SELECT, new ShipSelectScreen());
         me.state.set(me.state.BUILD, new ShipBuildingScreen());

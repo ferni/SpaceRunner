@@ -157,6 +157,10 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         $('.battle-button').click(function() {
             //put the ship in global context
             me.game.ship = screen.ship;
+            me.game.ship.putUnit();
+            me.game.ship.putUnit();
+            me.game.ship.putUnit();
+            me.game.ship.putUnit();
             me.state.change(me.state.BATTLE);
         });
     },

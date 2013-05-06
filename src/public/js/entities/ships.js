@@ -70,7 +70,21 @@ function Ship(settings, syncWithGame) {
         }
         return null; //building failed
     };
-
+    this.putUnit = function() {
+        'use strict';
+        //find empty spot
+        var empty = null, ship = this;
+        utils.matrixTiles(ship.width, ship.height,
+            function(x, y) {
+                if (empty) {
+                    return;
+                }
+                if (ship.mapAt(x, y) === charMap.codes._cleared) {
+                    empty = {x: x, y: y};
+                }
+            });
+        this.add(new Unit(empty.x, empty.y));
+    };
     //Adds an item to the ship ignoring its placement rules
     this.add = function(item) {
         if (this.syncWithGame) {
@@ -169,7 +183,7 @@ function Ship(settings, syncWithGame) {
         _hullMap: null,
         update: function() {
             this._hullMap = charMap.get(this.thisShip.tmxTileMap);
-            this._changed = true;
+            this.changed = true;
         },
         get: function() {
             if (this._hullMap === null) {
