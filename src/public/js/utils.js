@@ -146,6 +146,37 @@ var utils = {
                 (path[i][1] * TILE_SIZE) + HALF_TILE]);
         }
         return newPath;
+    },
+    /**
+     * Executes a callback when a certain number of
+     * .done() were called on TaskWait, or an
+     * error handler if .error() was called instead.
+     * @param settings {Object} has 'pendingCount'(int), 'success', 'error'.
+     * @constructor
+     */
+    TaskWait: function(settings){
+        var tickCount = 0,
+            errorThrown = false,
+            pendingCount = settings.pendingCount,
+            _allDoneCallback = settings.allDone,
+            _errorCallback = settings.error;
+
+        this.done = function(){
+            if(errorThrown){
+                return;
+            }
+            tickCount++;
+            if(tickCount === pendingCount){
+                _allDoneCallback();
+            }else if(tickCount > pendingCount){
+                throw 'Number of ticks exceeded expected count ' +
+                    '(pendingCount).';
+            }
+        }
+        this.error = function(){
+            errorThrown = true;
+            _errorCallback();
+        }
     }
 
 };

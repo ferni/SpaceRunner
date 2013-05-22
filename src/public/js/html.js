@@ -11,28 +11,24 @@
 var html = {
     load: function(screenId) {
         'use strict';
-        var screenHtml;
-        if (this.stored[screenId]) {
-            screenHtml = this.stored[screenId];
-        } else {
-            screenHtml = this.store(screenId);
+        if (!this.stored[screenId]) {
+            throw 'Could not find preloaded html for ' + screenId;
         }
-        $('#screensUi').html(screenHtml);
+        $('#screensUi').html(this.stored[screenId]);
     },
-    //deletes html from the dom and stores it in stored
-    //returns stored html
-    store: function(screenId) {
+    store: function(screenId, success, error) {
         'use strict';
-        var node = $('#' + screenId)[0],
-            screenHtml;
-        if (!node) {
-            console.warn('#' + screenId + ' not found in html');
-            return '';
-        }
-        screenHtml = $('#' + screenId)[0].outerHTML;
-        this.stored[screenId] = screenHtml;
-        $('#' + screenId).remove();
-        return screenHtml;
+        var self = this;
+        $.get(screenId+'.html', function(data) {
+            self.stored[screenId] = data;
+            if (success) {
+                success();
+            }
+        }).fail(function() {
+            if (error) {
+                error();
+            }
+        });
     },
     stored: {},
     clear: function() {

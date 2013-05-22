@@ -13,7 +13,7 @@
         <link href="css/battle-screen.css" rel="stylesheet" type="text/css" />
 
         <script type="text/javascript" src="js/vendor/ajaxupload.3.5.js" ></script>
-        <script type="text/javascript" src="js/vendor/jquery-1.3.2.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery-1.9.1.js"></script>
         <script type="text/javascript" src="js/vendor/melonJS-0.9.5.js"></script>
         <script type="text/javascript" src="js/vendor/pathfinding-browser.js"></script>
         <script type="text/javascript" src="js/vendor/underscore.js"></script>
@@ -49,92 +49,9 @@
             <div id="screensUi"></div>
         </div>
         <div id="screensPrebuiltUi">
-            <div id="ship-building-screen">
-                <div id="itemboard">
-                    <div class="empty">&nbsp;</div>
-                    <div id="item_main">
-                        <div class="items">
-                            <img id="item_weapon" src="data/img/render/weapon_01.png" width="64px" height="43px" style="background-color:#000000" />
-                            <span>&nbsp;Weapon</span>
-                        </div>
 
-                        <div class="items" >
-                            <img id="item_engine" src="data/img/render/engine_01.png" width="64px" height="43px" style="background-color:#000000" />
-                            <span>&nbsp;Engine</span>
-                        </div>
 
-                        <div class="items" >
-                            <img id="item_power" src="data/img/render/power_01.png" width="43px" height="43px" style="background-color:#000000" />
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Power</span>
-                        </div>
 
-                        <div class="items">
-                            <img id="item_console" src="data/img/render/console_02.png" width="43px" height="43px" style="background-color:#000000"/>
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console</span>
-                        </div>
-
-                        <div class="items">
-                            <img id="item_component" src="data/img/render/components_02.png" width="43px" height="43px" style="background-color:#000000"/>
-                            <span>&nbsp;&nbsp;Component</span>
-                        </div>
-
-                        <div class="items">
-                            <img id="item_door" src="data/img/render/door_02.png" width="64px" height="43px" style="background-color:#000000"/>
-                            <span>&nbsp;Door</span>
-                        </div>
-
-                        <div class="items">
-                            <img id="item_wall" src="data/img/render/wall_02.png" width="43px" height="43px" style="background-color:#000000"/>
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wall</span>
-                        </div>
-
-                        <div class="blackempty">&nbsp;</div>
-                        <div class="blackempty">
-                            <button class = "globalbutton" id="file_save">Save</button>
-                            <button class = "globalbutton" id="file_load">Load</button>
-                        </div>
-                    </div>
-                    <div class="empty">&nbsp;</div>
-                </div>
-                <button class="button battle-button">To Battle! &gt</button>
-
-            </div>
-            <div id="ship-select-screen">
-                <ul class="ship-select-buttons" data-bind="foreach: races">
-                    <li>
-                        <span class="race-button button" 
-                              data-bind="text: name, click: $parent.selectRace, css: {selected: selected()}">
-                            Cyborg
-                        </span>
-                        <ul class="ships" data-bind="visible: selected(),foreach: ships">
-                            <li class="ship-button button" data-bind="click: $root.selectShip">
-                                <p><img alt="<ship preview>" data-bind="attr:{src: $parent.img($data)}"/></p>
-                                <p><span data-bind="text: $data"></span></p>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div id="battle-screen">
-                <span id="paused-indicator">PAUSED <button id="resume-button" class="button">Resume</button></span>
-                <span id="elapsed"></span>
-                <div id="debug-settings">
-                    <h4 class="point" data-bind="click:toggle">[+] Settings</h4>
-                    <div data-bind="visible:settings.showSettings()">
-                        <div data-bind="with:settings">
-                            <h5>Collision Resolution</h5>
-                            <div><input type="radio" name="collisionResolutionGroup"
-                                        value="none" data-bind="checked: collisionResolution" /> None</div>
-                            <div><input type="radio" name="collisionResolutionGroup"
-                                        value="endOfTurn" data-bind="checked: collisionResolution" /> End of turn</div>
-                            <!--<div><input type="radio" name="collisionResolutionGroup"
-                                        value="always" data-bind="checked: collisionResolution" /> Always</div>
-                            -->
-                        </div>
-                        <button data-bind="click:apply">Apply</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </body>
 </html>
