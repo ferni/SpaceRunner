@@ -155,14 +155,17 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         });
 
         $('.battle-button').click(function() {
-            //put the ship in global context
-            me.game.ship = screen.ship;
-            me.game.ship.putUnit();
-            me.game.ship.putUnit();
-            me.game.ship.putUnit();
-            me.game.ship.putUnit();
-            me.state.change(me.state.BATTLE);
+            screen.finishShip();
         });
+    },
+    finishShip: function(){
+            //put the ship in global context
+            me.game.ship = this.ship;
+            me.game.ship.putUnit({imgRow: 0});
+            me.game.ship.putUnit({imgRow: 6});
+            me.game.ship.putUnit({imgRow: 7});
+            me.game.ship.putUnit({imgRow: 12});
+        me.state.change(me.state.BATTLE);
     },
     mouseDbClick: function(e) {
         'use strict';

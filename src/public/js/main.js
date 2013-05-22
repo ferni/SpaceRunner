@@ -218,9 +218,9 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/button.png'
 }, {
-    name: 'unit_robot_alien',
+    name: 'creatures',
     type: 'image',
-    src: 'data/img/render/units/unit_robot_alien.png'
+    src: 'data/img/render/creatures.png'
 }];
 
 // jsApp

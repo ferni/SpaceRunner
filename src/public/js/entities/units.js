@@ -15,13 +15,22 @@ var Unit = ItemEntity.extend({
     path: [],
     script: [],
     selected: false,
-    init: function(x, y) {
+    init: function(x, y, settings) {
         'use strict';
+        var toImgRow;
+        settings = this.completeSettings(settings);
+        this.speed = settings.speed;
         this.parent(x, y, {
             name: 'unit',
-            image: 'unit_robot_alien'
+            image: 'creatures'
         });
-        this.addAnimation('idle', [0, 1, 2, 1]);
+        toImgRow = function(array){
+            for(var i = 0; i < array.length; i++){
+                array[i] += settings.imgRow * 4;
+            }
+            return array;
+        };
+        this.addAnimation('idle', toImgRow([0, 1, 2, 1]));
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
@@ -66,6 +75,19 @@ var Unit = ItemEntity.extend({
         this.x(position.x);
         this.y(position.y);
         return true;
+    },
+    completeSettings: function(settings){
+        'use strict';
+        if (!settings) {
+            settings = {};
+        }
+        if (!settings.imgRow) {
+            settings.imgRow = 0;
+        }
+        if(!settings.speed){
+            settings.speed = 1;
+        }
+        return settings;
     },
     drawPath: function(ctx){
         'use strict';
