@@ -5,6 +5,13 @@
         <h4 class="point" data-bind="click:toggle">[+] Settings</h4>
         <div data-bind="visible:settings.showSettings()">
             <div data-bind="with:settings">
+                <h5>Units speeds (tiles/second)</h5>
+                <ul data-bind="foreach:unitSpeeds">
+                    <li>
+                        <label data-bind="text:'Unit ' + $index()"></label>
+                        <input type="text" data-bind="value:speed"/>
+                    </li>
+                </ul>
                 <h5>Collision Resolution</h5>
                 <div><input type="radio" name="collisionResolutionGroup"
                             value="none" data-bind="checked: collisionResolution" /> None</div>

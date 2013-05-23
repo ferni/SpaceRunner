@@ -94,13 +94,27 @@ textarea {
     position: fixed;
     top: 100px;
     right: 10px;
-    width: 150px;
+    width: 180px;
+    max-height: 500px;
+    overflow-y: scroll;
 }
 
 #debug-settings h5, h4{
     height: 18px;
+    margin: 2px;
+    padding: 2px;
 }
 
+#debug-settings input{
+    width: 40px;
+}
+
+#debug-settings button{
+    width: 90%;
+    height: 30px;
+    margin: 5px;
+    font-weight: bold;
+}
 .point{
     cursor: pointer;
 }

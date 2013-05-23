@@ -26,14 +26,8 @@ var BattleScreen = me.ScreenObject.extend({
     onResetEvent: function(settings) {
         'use strict';
         this.parent();
-        //set default settings
-        if (!settings) {
-           settings = {};
-        }
-        if (!settings.collisionResolution) {
-           settings.collisionResolution = collisionResolutions.avoidOtherPaths;
-        }
-        this.settings = settings;
+
+        this.settings = this.completeSettings(settings);
         me.video.clearSurface(me.video.getScreenContext(), 'black');
         //reset ship
         //TODO: make ship.toJsonString work with units
@@ -41,7 +35,7 @@ var BattleScreen = me.ScreenObject.extend({
         me.game.ship = new Ship({
             jsonString: me.game.ship.toJsonString()
         }, true);*/
-        this.configureUnits(settings);
+        this.configureUnits();
         html.load('battle-screen');
         this.onHtmlLoaded();
 
@@ -70,14 +64,9 @@ var BattleScreen = me.ScreenObject.extend({
         $('#resume-button').click(function() {
             screen.resume();
         });
-        //prepare debug settings panel
+
         DebugSettingsPanelVM = function(){
-            this.settings = {
-                collisionResolution:
-                    ko.observable(screen.settings.collisionResolution),
-                showSettings:
-                    ko.observable(screen.settings.showSettings)
-            };
+            this.settings = ko.mapping.fromJS(screen.settings);
             this.apply = function(){
                 //reload screen
                 if (screen.paused) {
@@ -133,15 +122,38 @@ var BattleScreen = me.ScreenObject.extend({
             ctx.strokeRect(mousePx.x, mousePx.y, TILE_SIZE, TILE_SIZE);
         }
     },
-    configureUnits: function(settings) {
+    completeSettings: function(settings) {
+        //set default settings
+        var units = me.game.ship.units(),
+            i;
+        if (!settings) {
+            settings = {};
+        }
+        if (!settings.collisionResolution) {
+            settings.collisionResolution = collisionResolutions.endOfTurn;
+        }
+        if(!settings.showSettings){
+            settings.showSettings = true;
+        }
+        if(!settings.unitSpeeds) {
+            settings.unitSpeeds = [];
+            for(i = 0; i < units.length; i++){
+                settings.unitSpeeds[i] = {speed: units[i].speed};
+            }
+        }
+        return settings;
+    },
+    configureUnits: function() {
         'use strict';
-        var units = me.game.ship.units();
-        _.each(units, function(u){
+        var units = me.game.ship.units(),
+            i;
+        for(i = 0; i < units.length; i++) {
             //temporary workaround to reset units
-            //until ship.toJsonString work with units
-            u.path = [];
-            u.script = [];
-        });
+            //until ship.toJsonString works with units
+            units[i].path = [];
+            units[i].script = [];
+            units[i].speed = this.settings.unitSpeeds[i].speed;
+        }
     },
     mouseUp: function(e) {
         'use strict';

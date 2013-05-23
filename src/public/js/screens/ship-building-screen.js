@@ -161,10 +161,10 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     finishShip: function(){
             //put the ship in global context
             me.game.ship = this.ship;
-            me.game.ship.putUnit({imgRow: 0});
-            me.game.ship.putUnit({imgRow: 6});
-            me.game.ship.putUnit({imgRow: 7});
-            me.game.ship.putUnit({imgRow: 12});
+            me.game.ship.putUnit({imgRow: 0, speed: 0.5});
+            me.game.ship.putUnit({imgRow: 6, speed: 1});
+            me.game.ship.putUnit({imgRow: 7, speed: 2});
+            me.game.ship.putUnit({imgRow: 12, speed: 3});
         me.state.change(me.state.BATTLE);
     },
     mouseDbClick: function(e) {
