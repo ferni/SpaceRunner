@@ -31,7 +31,7 @@ var BattleScreen = me.ScreenObject.extend({
            settings = {};
         }
         if (!settings.collisionResolution) {
-            settings.collisionResolution = collisionResolutions.endOfTurn;
+           settings.collisionResolution = collisionResolutions.avoidOtherPaths;
         }
         this.settings = settings;
         me.video.clearSurface(me.video.getScreenContext(), 'black');
@@ -162,44 +162,49 @@ var BattleScreen = me.ScreenObject.extend({
         'use strict';
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
-            ship = me.game.ship,
-            unit, grid, path;
+            ship = me.game.ship;
         if (!this.paused) {
             return;
         }
         if (which === me.input.mouse.RIGHT) {
             if (ship.selected().length > 0) {//there is a selected unit
-                unit = ship.selected()[0];
-                if (mouse.x === unit.x() && mouse.y === unit.y()) {
-                    unit.path = [];
-                } else {
-                    //TODO: cache pf matrix on ship
-                    grid = new PF.Grid(ship.width, ship.height,
-                        ship.getPfMatrix());
-                    path = this.pfFinder.findPath(unit.x(), unit.y(),
-                        mouse.x, mouse.y, grid);
-                    console.log('path length: ' + (path.length - 1));
-                    if(path.length > 1) {
-                        unit.path = path;
-                    }
-                }
-                this.generateScripts();
+                this.generateScripts(ship.selected()[0], mouse);
             }
         }
     },
-    generateScripts: function(){
+    generateScripts: function(unit, destination){
         'use strict';
         switch(this.settings.collisionResolution){
             case collisionResolutions.none:
-                return this.generateScripts_noResolution();
+                return this.generateScripts_noResolution(unit, destination);
             case collisionResolutions.endOfTurn:
-                return this.generateScripts_eotResolution();
+                return this.generateScripts_eotResolution(unit, destination);
+            case collisionResolutions.avoidOtherPaths:
+                return this.generateScripts_avoidOtherPaths(
+                    unit, destination);
         }
     },
-    generateScripts_noResolution: function(){
+    generateScripts_noResolution: function(unit, mouse){
         'use strict';
-        var units = me.game.ship.units(),
-            screen = this;
+        var ship = me.game.ship,
+            units = ship.units(),
+            screen = this,
+            grid, path;
+        if (unit && mouse) {
+            if (mouse.x === unit.x() && mouse.y === unit.y()) {
+                unit.path = [];
+            } else {
+                //TODO: cache pf matrix on ship
+                grid = new PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix());
+                path = this.pfFinder.findPath(unit.x(), unit.y(),
+                    mouse.x, mouse.y, grid);
+                console.log('path length: ' + (path.length - 1));
+                if(path.length > 1) {
+                    unit.path = path;
+                }
+            }
+        }
         _.each(units, function(u){
             u.generateScript(screen.TURN_DURATION);
         });
@@ -208,11 +213,28 @@ var BattleScreen = me.ScreenObject.extend({
      * Generates scripts for the units resolving
      * any end-position conflicts.
      */
-    generateScripts_eotResolution: function(){
+    generateScripts_eotResolution: function(unit, mouse){
         'use strict';
-        var units = me.game.ship.units(),
+        var ship = me.game.ship,
+            units = ship.units(),
             screen = this,
-            someScriptChanged;
+            someScriptChanged,
+            grid, path;
+        if (unit && mouse) {
+            if (mouse.x === unit.x() && mouse.y === unit.y()) {
+                unit.path = [];
+            } else {
+                //TODO: cache pf matrix on ship
+                grid = new PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix());
+                path = this.pfFinder.findPath(unit.x(), unit.y(),
+                    mouse.x, mouse.y, grid);
+                console.log('path length: ' + (path.length - 1));
+                if(path.length > 1) {
+                    unit.path = path;
+                }
+            }
+        }
         _.each(units, function(u){
             u.generateScript(screen.TURN_DURATION);
         });
@@ -233,7 +255,7 @@ var BattleScreen = me.ScreenObject.extend({
             });
         } while(someScriptChanged)
     },
-    posConflictsWithOtherEndPos: function(unit, pos){
+    posConflictsWithOtherEndPos: function(unit, pos) {
         var ship = me.game.ship;
         return _.any(ship.units(), function(u){
             var unitEndPos;
@@ -244,7 +266,44 @@ var BattleScreen = me.ScreenObject.extend({
             return unitEndPos.x === pos.x && unitEndPos.y === pos.y;
         });
     },
-
+    generateScripts_avoidOtherPaths: function(unit, mouse) {
+        var ship = me.game.ship,
+            units = ship.units(),
+            screen = this,
+            grid, path, i;
+        if (unit && mouse) {
+            if (mouse.x === unit.x() && mouse.y === unit.y()) {
+                unit.path = [];
+            } else {
+                //TODO: cache pf matrix on ship
+                grid = new PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix());
+                _.each(units, function(u){
+                    if(u !== unit){
+                        if (u.willMove()) {
+                            for(i = 1; i < u.path.length; i++){
+                                //set the units' paths as not walkable
+                                grid.setWalkableAt(u.path[i][0], u.path[i][1],
+                                    false);
+                            }
+                        } else {
+                            //if the unit would not move, it blocks
+                            grid.setWalkableAt(u.x(), u.y(), false);
+                        }
+                    }
+                });
+                path = this.pfFinder.findPath(unit.x(), unit.y(),
+                    mouse.x, mouse.y, grid);
+                console.log('path length: ' + (path.length - 1));
+                if(path.length > 1) {
+                    unit.path = path;
+                }
+            }
+        }
+        _.each(units, function(u){
+            u.generateScript(screen.TURN_DURATION);
+        });
+    },
 
     selectUnit: function(x, y) {
         'use strict';

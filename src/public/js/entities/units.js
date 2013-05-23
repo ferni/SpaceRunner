@@ -166,7 +166,9 @@ var Unit = ItemEntity.extend({
         } else {
             return {x: this.x(), y: this.y()};
         }
-
+    },
+    willMove: function(){
+        return this.eotPos().x !== this.x() || this.eotPos().y !== this.y();
     },
     adjustPath: function() {
         'use strict';
