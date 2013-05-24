@@ -27,6 +27,9 @@ var BattleScreen = me.ScreenObject.extend({
         'use strict';
         this.parent();
 
+        if(settings && settings.tmxName){
+            me.game.ship = new Ship({tmxName: settings.tmxName}, true);
+        }
         this.settings = this.completeSettings(settings);
         me.video.clearSurface(me.video.getScreenContext(), 'black');
         //reset ship
@@ -35,6 +38,9 @@ var BattleScreen = me.ScreenObject.extend({
         me.game.ship = new Ship({
             jsonString: me.game.ship.toJsonString()
         }, true);*/
+        this.TURN_DURATION_SEC = this.settings.turnDuration;
+        this.TURN_DURATION = this.settings.turnDuration * 1000;
+
         this.configureUnits();
         html.load('battle-screen');
         this.onHtmlLoaded();
@@ -132,14 +138,17 @@ var BattleScreen = me.ScreenObject.extend({
         if (!settings.collisionResolution) {
             settings.collisionResolution = collisionResolutions.endOfTurn;
         }
-        if(!settings.showSettings){
+        if (!settings.showSettings) {
             settings.showSettings = true;
         }
-        if(!settings.unitSpeeds) {
+        if (!settings.unitSpeeds) {
             settings.unitSpeeds = [];
             for(i = 0; i < units.length; i++){
                 settings.unitSpeeds[i] = {speed: units[i].speed};
             }
+        }
+        if (!settings.turnDuration) {
+            settings.turnDuration = 4;
         }
         return settings;
     },
@@ -316,7 +325,9 @@ var BattleScreen = me.ScreenObject.extend({
             u.generateScript(screen.TURN_DURATION);
         });
     },
+    generateScripts_waitForClearing: function(unit, mouse){
 
+    },
     selectUnit: function(x, y) {
         'use strict';
         var ship = me.game.ship,

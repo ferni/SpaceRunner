@@ -242,6 +242,40 @@ var Unit = ItemEntity.extend({
     getTimeForOneTile: function() {
         'use strict';
         return 1 / this.speed;
+    },
+    insertWait: function(scriptIndex, milliseconds) {
+        'use strict';
+        var i,
+            forCopying = this.script[scriptIndex],
+            forInserting = {
+                pos: {x: forCopying.pos.x, y: forCopying.pos.y},
+                time: forCopying.time
+            };
+        if (me.state.current().name !== 'battle-screen') {
+            throw 'The unit should be on the battle_screen (insertWait).';
+        }
+        //copy frame at scriptIndex
+        this.script.splice(scriptIndex, 0, forInserting);
+        this.path.splice(scriptIndex, 0, this.path[scriptIndex]);
+        for (i = scriptIndex + 1; i < this.script.length; i++) {
+            this.script[i].time += milliseconds;
+        }
+        //remove script that does not fit into time
+        this.cropScript(me.state.current().TURN_DURATION);
+    },
+    /**
+     * Deletes frames that are not within maxTime
+     * @param maxTime
+     */
+    cropScript: function(maxTime){
+        var i, removeAt;
+        for (i = 0; i < this.script.length; i++) {
+            if (this.script[i].time > maxTime) {
+                removeAt = i;
+                break;
+            }
+        }
+        this.script.splice(removeAt, this.script.length - removeAt);
     }
 });
 
