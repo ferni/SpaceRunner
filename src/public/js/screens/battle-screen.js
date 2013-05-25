@@ -19,6 +19,7 @@ var BattleScreen = me.ScreenObject.extend({
         allowDiagonal: false
     }),
     settings:{},
+    highlightedTiles: [],
     init: function() {
         'use strict';
         this.parent(true);
@@ -102,31 +103,37 @@ var BattleScreen = me.ScreenObject.extend({
     draw: function(ctx) {
         'use strict';
         var mouse = utils.getMouse(),
-            mousePx;
+            screen = this;
         this.parent(ctx);
         if (this.paused) {
             _.each(me.game.ship.units(), function(u) {
                 u.drawPath(ctx);
                 if (u.selected) {
                     //draw rectangle around each selected unit
-                    ctx.beginPath();
-                    ctx.strokeStyle = 'limegreen';
-                    ctx.lineWidth = 2;
-                    ctx.moveTo(u.pos.x, u.pos.y);
-                    ctx.strokeRect(u.pos.x, u.pos.y, TILE_SIZE, TILE_SIZE);
+                    screen.drawTileHighlight(ctx, u.x(), u.y(),
+                        'limegreen', 2);
                 }
             });
         }
 
         //highlight where the mouse is pointing
         if (me.game.ship.isInside(mouse.x, mouse.y)) {
-            mousePx = {x: mouse.x * TILE_SIZE,
-                y: mouse.y * TILE_SIZE};
-            ctx.strokeStyle = 'teal';
-            ctx.lineWidth = 1;
-            ctx.moveTo(mousePx.x, mousePx.y);
-            ctx.strokeRect(mousePx.x, mousePx.y, TILE_SIZE, TILE_SIZE);
+            this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
         }
+
+        //highlight highlighted tiles
+        _.each(this.highlightedTiles, function(t){
+            screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
+        });
+    },
+    drawTileHighlight: function(ctx, x, y, color, thickness) {
+        'use strict';
+        var pixelPos = {x: x * TILE_SIZE,
+            y: y * TILE_SIZE};
+        ctx.strokeStyle = color;
+        ctx.lineWidth = thickness;
+        ctx.moveTo(pixelPos.x, pixelPos.y);
+        ctx.strokeRect(pixelPos.x, pixelPos.y, TILE_SIZE, TILE_SIZE);
     },
     completeSettings: function(settings) {
         //set default settings
@@ -136,7 +143,7 @@ var BattleScreen = me.ScreenObject.extend({
             settings = {};
         }
         if (!settings.collisionResolution) {
-            settings.collisionResolution = collisionResolutions.endOfTurn;
+            settings.collisionResolution = collisionResolutions.waitForClearing;
         }
         if (!settings.showSettings) {
             settings.showSettings = true;
@@ -193,6 +200,9 @@ var BattleScreen = me.ScreenObject.extend({
             }
         }
     },
+    highlightTile: function(x, y){
+        this.highlightedTiles.push({x: x, y: y});
+    },
     generateScripts: function(unit, destination){
         'use strict';
         switch(this.settings.collisionResolution){
@@ -203,6 +213,8 @@ var BattleScreen = me.ScreenObject.extend({
             case collisionResolutions.avoidOtherPaths:
                 return this.generateScripts_avoidOtherPaths(
                     unit, destination);
+            case collisionResolutions.waitForClearing:
+                return this.generateScripts_waitForClearing(unit, destination);
         }
     },
     generateScripts_noResolution: function(unit, mouse){
@@ -326,7 +338,115 @@ var BattleScreen = me.ScreenObject.extend({
         });
     },
     generateScripts_waitForClearing: function(unit, mouse){
+        'use strict';
+        var ship = me.game.ship,
+            units = ship.units(),
+            screen = this,
+            someScriptChanged = true,
+            grid, path;
+        this.highlightedTiles = [];
+        if (unit && mouse) {
+            if (mouse.x === unit.x() && mouse.y === unit.y()) {
+                unit.path = [];
+            } else {
+                //TODO: cache pf matrix on ship
+                grid = new PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix());
+                path = this.pfFinder.findPath(unit.x(), unit.y(),
+                    mouse.x, mouse.y, grid);
+                console.log('path length: ' + (path.length - 1));
+                if(path.length > 1) {
+                    unit.path = path;
+                }
+            }
+        }
+        _.each(units, function(u){
+            u.generateScript(screen.TURN_DURATION);
+        });
+        //solve end positions conflicts
 
+        do {
+            if (!someScriptChanged) {
+                throw 'infinite loop in waitForClearing collision solver';
+            }
+            someScriptChanged = false;
+            _.each(units, function(u){
+                var timeForTraversingTile = u.getTimeForOneTile(),
+                    i, frame, clearStatus;
+                for (i = 0; i < u.script.length; i++) {
+                    frame = u.script[i],
+                        clearStatus = screen.getTileClearStatus(frame.pos, {
+                            from: frame.time,
+                            to: frame.time + timeForTraversingTile}, u);
+
+                    if (!clearStatus.isClear) {
+                        screen.highlightTile(frame.pos.x, frame.pos.y);
+                        u.insertWait(i - 1, clearStatus.when - frame.time);
+                        someScriptChanged = true;
+                    }
+                }
+            });
+        } while(someScriptChanged)
+    },
+    /**
+     * Returns true if the tile is clear for the timeWindow
+     * @param pos {Object} the position for the tile.
+     * @param timeWindow {Object} a time window containing from and to.
+     * @param excludedUnit
+     */
+    getTileClearStatus: function(pos, timeWindow, excludedUnit) {
+        'use strict';
+        var frames = [],
+            i,
+            occupyWindow,
+            maxOverlapping,
+            clearStatus = {
+                isClear : true,
+                when : null
+            };
+        //get the frames that are at that position
+        //TODO: maybe use a reservation table
+        _.each(me.game.ship.units(), function(u){
+            if(u !== excludedUnit && u.willMove()){
+                _.each(u.script, function(f, index){
+                    if(f.pos.x === pos.x && f.pos.y === pos.y){
+                        frames.push({unit: u, frameIndex: index, f: f});
+                    }
+                });
+            }
+        });
+        if (frames.length === 0) {
+            //is clear
+            return clearStatus;
+        }
+
+        //find out when will the tile be clear
+        do{
+            maxOverlapping = 0;
+            for (i = 0; i < frames.length; i++) {
+                occupyWindow = frames[i].unit.getTimeWindow(
+                    frames[i].frameIndex
+                );
+                if (utils.windowsOverlap(occupyWindow, timeWindow)) {
+                    clearStatus.isClear = false;
+                    if (occupyWindow.to > maxOverlapping) {
+                        maxOverlapping = occupyWindow.to;
+                    }
+                }
+            }
+            if(maxOverlapping > 0) {
+                timeWindow = {
+                    from: maxOverlapping,
+                    to: maxOverlapping + (timeWindow.to - timeWindow.from)
+                }
+            }
+        }
+        while(maxOverlapping > 0);
+
+        if (!clearStatus.isClear) {
+            clearStatus.when = timeWindow.from;//is clear from that time
+        }
+        return clearStatus;
     },
     selectUnit: function(x, y) {
         'use strict';

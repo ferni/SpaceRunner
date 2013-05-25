@@ -134,6 +134,10 @@ var utils = {
         'use strict';
         return { x: v1.x - v2.x, y: v1.y - v2.y };
     },
+    vectorEqual: function(v1, v2) {
+        'use strict';
+        return v1.x === v2.x && v1.y === v2.y;
+    },
     boolToInt: function(boolean){
         'use strict';
         return boolean ? 1 : 0;
@@ -177,6 +181,25 @@ var utils = {
             errorThrown = true;
             _errorCallback();
         }
+    },
+    windowsOverlap: function(w1, w2) {
+        'use strict';
+        if(w1.to < w1.from || w2.to < w2.from ) {
+            throw 'Argument not a valid window (to < than from)';
+        }
+        return w1.from < w2.to && w1.to > w2.from
+            || w2.from < w1.to && w2.to > w1.from;
+    },
+    windowAdd: function(w1, w2) {
+        'use strict';
+        if(w1.to < w1.from || w2.to < w2.from ) {
+            throw 'Argument not a valid window (to < than from)';
+        }
+        if(!utils.windowsOverlap(w1, w2)) {
+            throw 'Can only add overlapping windows.';
+        }
+        return {from: w1.from < w2.from ? w1.from : w2.from,
+                to: w1.to > w2.to ? w1.to : w2.to};
     }
 
 };

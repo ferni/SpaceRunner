@@ -8,5 +8,6 @@
 var collisionResolutions = {
     none: 'none',
     endOfTurn: 'endOfTurn',
-    avoidOtherPaths: 'avoidOtherPaths'
+    avoidOtherPaths: 'avoidOtherPaths',
+    waitForClearing: 'waitForClearing'
 };

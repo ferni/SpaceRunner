@@ -72,6 +72,8 @@ var Unit = ItemEntity.extend({
         }
         elapsed = screen.getElapsedTime();
         position = this.getPosGivenTime(elapsed);
+
+        //TODO: set the pixel position, and calculate the tile position
         this.x(position.x);
         this.y(position.y);
         return true;
@@ -153,7 +155,7 @@ var Unit = ItemEntity.extend({
             this.script.push({pos: pos, time: elapsed});
         }
         console.log('generated script for unit '+ this.GUID);
-        this.printScript();
+        //this.printScript();
     },
     /**
      * End of turn position according to the script
@@ -245,12 +247,15 @@ var Unit = ItemEntity.extend({
     },
     insertWait: function(scriptIndex, milliseconds) {
         'use strict';
-        var i,
-            forCopying = this.script[scriptIndex],
-            forInserting = {
-                pos: {x: forCopying.pos.x, y: forCopying.pos.y},
-                time: forCopying.time
-            };
+        var i, forCopying, forInserting;
+        if (scriptIndex < 0 || scriptIndex >= scriptIndex.length) {
+            throw 'scriptIndex out of bounds (' + scriptIndex+ ')';
+        }
+        forCopying = this.script[scriptIndex];
+        forInserting = {
+            pos: {x: forCopying.pos.x, y: forCopying.pos.y},
+            time: forCopying.time
+        };
         if (me.state.current().name !== 'battle-screen') {
             throw 'The unit should be on the battle_screen (insertWait).';
         }
@@ -276,6 +281,18 @@ var Unit = ItemEntity.extend({
             }
         }
         this.script.splice(removeAt, this.script.length - removeAt);
+    },
+    getTimeWindow: function(scriptIndex){
+        var //total = this.getTimeForOneTile(),
+            time = this.script[scriptIndex].time;
+        //  from = time  - (total / 2);
+
+        return {
+            from: time,
+            to: this.script[scriptIndex + 1] ?
+                this.script[scriptIndex + 1].time :
+                me.state.current().TURN_DURATION
+        }
     }
 });
 

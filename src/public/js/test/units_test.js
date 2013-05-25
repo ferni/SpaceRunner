@@ -11,7 +11,9 @@
 module('units');
 asyncTest('cropScript', function(){
     th.loadScreen(function() {
-        me.state.change(me.state.BATTLE, {tmxName: 'test', turnDuration: 3});
+        me.state.change(me.state.BATTLE, {tmxName: 'test',
+            turnDuration: 3,
+            collisionResolution: collisionResolutions.none});
     }, function(screen) {
         var ship = me.game.ship,
             unit;
@@ -25,3 +27,19 @@ asyncTest('cropScript', function(){
         start();
     });
 });
+      /*
+asyncTest('insertWait', function(){
+    th.loadScreen(function() {
+        me.state.change(me.state.BATTLE, {tmxName: 'test', turnDuration: 3});
+    }, function(screen) {
+        var ship = me.game.ship,
+            unit;
+        unit = ship.putUnit({speed: 1});
+        screen.generateScripts(unit, {x: unit.x() + 2, y: unit.y() + 1});
+
+        //TODO
+        ok(true);
+
+        start();
+    });
+}); */
