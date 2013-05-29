@@ -343,7 +343,13 @@ var BattleScreen = me.ScreenObject.extend({
             units = ship.units(),
             screen = this,
             someScriptChanged = true,
-            grid, path;
+            grid, path,
+            //when a unit blocks another (the other is waiting)
+            unitBlockings = {};
+
+        _.each(units, function(u){
+            unitBlockings[u.GUID] = [];
+        });
         this.highlightedTiles = [];
         if (unit && mouse) {
             if (mouse.x === unit.x() && mouse.y === unit.y()) {
@@ -363,7 +369,6 @@ var BattleScreen = me.ScreenObject.extend({
         _.each(units, function(u){
             u.generateScript(screen.TURN_DURATION);
         });
-        //solve end positions conflicts
 
         do {
             if (!someScriptChanged) {
@@ -372,16 +377,39 @@ var BattleScreen = me.ScreenObject.extend({
             someScriptChanged = false;
             _.each(units, function(u){
                 var timeForTraversingTile = u.getTimeForOneTile(),
-                    i, frame, clearStatus;
+                    i, b, blocking, frame, clearStatus;
                 for (i = 0; i < u.script.length; i++) {
-                    frame = u.script[i],
-                        clearStatus = screen.getTileClearStatus(frame.pos, {
-                            from: frame.time,
-                            to: frame.time + timeForTraversingTile}, u);
+                    frame = u.script[i];
+                    clearStatus = screen.getTileClearStatus(frame.pos, {
+                        from: frame.time,
+                        to: frame.time + timeForTraversingTile}, u);
 
                     if (!clearStatus.isClear) {
                         screen.highlightTile(frame.pos.x, frame.pos.y);
                         u.insertWait(i - 1, clearStatus.when - frame.time);
+                        //register a 'unitBlocking' for each unit that blocks
+                        (function(){
+                            const waitIndex = i - 1;
+                            _.each(clearStatus.unitsThatBlock, function(blocker) {
+                                unitBlockings[blocker.unit.GUID].push({
+                                    scriptIndex: blocker.frameIndex,
+                                    undoWait: function(){
+                                        u.removeWait(waitIndex);
+                                    }
+                                });
+                            });
+                        })();
+                        //reset units' waiting that were being blocked
+                        b = 0;
+                        while (b < unitBlockings[u.GUID].length) {
+                            blocking = unitBlockings[u.GUID][b];
+                            if (blocking.scriptIndex > i) {
+                                blocking.undoWait();
+                                unitBlockings[u.GUID].splice(b, 1);
+                            } else {
+                                b++;
+                            }
+                        }
                         someScriptChanged = true;
                     }
                 }
@@ -396,13 +424,15 @@ var BattleScreen = me.ScreenObject.extend({
      */
     getTileClearStatus: function(pos, timeWindow, excludedUnit) {
         'use strict';
+        //TODO: change 'frames' to a more accurate name
         var frames = [],
             i,
             occupyWindow,
             maxOverlapping,
             clearStatus = {
                 isClear : true,
-                when : null
+                when : null,
+                unitsThatBlock: []
             };
         //get the frames that are at that position
         //TODO: maybe use a reservation table
@@ -429,6 +459,7 @@ var BattleScreen = me.ScreenObject.extend({
                 );
                 if (utils.windowsOverlap(occupyWindow, timeWindow)) {
                     clearStatus.isClear = false;
+                    clearStatus.unitsThatBlock.push(frames[i]);
                     if (occupyWindow.to > maxOverlapping) {
                         maxOverlapping = occupyWindow.to;
                     }
@@ -459,6 +490,7 @@ var BattleScreen = me.ScreenObject.extend({
             return false;
         }
         unit.selected = true;
+        return true;
     },
     unselectAll: function() {
         'use strict';

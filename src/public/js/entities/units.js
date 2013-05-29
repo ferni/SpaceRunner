@@ -8,8 +8,6 @@
 /*global me, TileEntity, _*/
 
 var Unit = ItemEntity.extend({
-    pendingOrders: [],
-    executing: null,
     _paused: true,
     speed: 1, //tiles per second
     path: [],
@@ -139,15 +137,21 @@ var Unit = ItemEntity.extend({
      * according to the unit's path and speed.
      *Stores the list in the "script" array.
      * @param {int} maxTime max time in milliseconds.
+     * @param pathStart {int} path index from which it should start processing.
      */
-    generateScript: function(maxTime) {
+    generateScript: function(maxTime, pathStart) {
         'use strict';
         var i,
             step = this.getTimeForOneTile() * 1000,
-            elapsed = 0,
+            elapsed,
             pos;
-        this.script = [];
-        for (i = 0; i < this.path.length && elapsed <= maxTime;
+
+        if (!pathStart) {
+            pathStart = 0;
+            this.script = [];
+        }
+        elapsed = pathStart * step;
+        for (i = pathStart; i < this.path.length && elapsed <= maxTime;
             i++, elapsed += step) {
             pos = {
                 x: this.path[i][0],
@@ -259,7 +263,7 @@ var Unit = ItemEntity.extend({
         if (me.state.current().name !== 'battle-screen') {
             throw 'The unit should be on the battle_screen (insertWait).';
         }
-        //copy frame at scriptIndex
+
         this.script.splice(scriptIndex, 0, forInserting);
         this.path.splice(scriptIndex, 0, this.path[scriptIndex]);
         for (i = scriptIndex + 1; i < this.script.length; i++) {
@@ -267,6 +271,23 @@ var Unit = ItemEntity.extend({
         }
         //remove script that does not fit into time
         this.cropScript(me.state.current().TURN_DURATION);
+    },
+    /**
+     *
+     * @param scriptIndex {int} Must be the same as used in insertWait.
+     */
+    removeWait: function(scriptIndex) {
+        'use strict';
+        var waitingTime, i;
+        waitingTime = this.script[scriptIndex + 1].time -
+                      this.script[scriptIndex].time;
+        this.script.splice(scriptIndex, 1);
+        this.path.splice(scriptIndex, 1);
+        for (i = scriptIndex; i < this.script.length; i++) {
+            this.script[i].time -= waitingTime;
+        }
+        this.generateScript(me.state.current().TURN_DURATION,
+            this.script.length);
     },
     /**
      * Deletes frames that are not within maxTime
