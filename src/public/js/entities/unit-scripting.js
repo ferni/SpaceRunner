@@ -25,6 +25,7 @@ var Scripter = Object.extend({
         } else {
             grid = new PF.Grid(ship.width, ship.height,
                 ship.getPfMatrix());
+            grid = this.processGrid(grid, unit, mouse);
             path = screen.pfFinder.findPath(unit.x(), unit.y(),
                 mouse.x, mouse.y, grid);
             console.log('path length: ' + (path.length - 1));
@@ -32,6 +33,10 @@ var Scripter = Object.extend({
                 unit.path = path;
             }
         }
+    },
+    processGrid: function(grid, unit, mouse) {
+        'use strict';
+        return grid;
     }
 
 });
@@ -87,6 +92,7 @@ var EndOfTurnScripter = Scripter.extend({
         } while(someScriptChanged)
     },
     posConflictsWithOtherEndPos: function(unit, pos) {
+        'use strict';
         var ship = me.game.ship;
         return _.any(ship.units(), function(u){
             var unitEndPos;
@@ -101,6 +107,7 @@ var EndOfTurnScripter = Scripter.extend({
 
 var AvoidOtherPathsScripter = Scripter.extend({
     generateScripts: function(unit, mouse) {
+        'use strict';
         var ship = me.game.ship,
             units = ship.units(),
             screen = this.screen;
@@ -111,38 +118,25 @@ var AvoidOtherPathsScripter = Scripter.extend({
             u.generateScript(screen.TURN_DURATION);
         });
     },
-    setUnitPath: function(unit, mouse) {
-        var ship = me.game.ship,
-            units = ship.units(),
-            grid, path, i,
-            screen = this.screen;
-        if (mouse.x === unit.x() && mouse.y === unit.y()) {
-            unit.path = [];
-        } else {
-            //TODO: cache pf matrix on ship
-            grid = new PF.Grid(ship.width, ship.height,
-                ship.getPfMatrix());
-            _.each(units, function(u){
-                if(u !== unit){
-                    if (u.willMove()) {
-                        for(i = 1; i < u.path.length; i++){
-                            //set the units' paths as not walkable
-                            grid.setWalkableAt(u.path[i][0], u.path[i][1],
-                                false);
-                        }
-                    } else {
-                        //if the unit would not move, it blocks
-                        grid.setWalkableAt(u.x(), u.y(), false);
+    processGrid: function(grid, unit, mouse) {
+        'use strict';
+        var units = me.game.ship.units(),
+            i;
+        _.each(units, function(u){
+            if(u !== unit){
+                if (u.willMove()) {
+                    for(i = 1; i < u.path.length; i++){
+                        //set the units' paths as not walkable
+                        grid.setWalkableAt(u.path[i][0], u.path[i][1],
+                            false);
                     }
+                } else {
+                    //if the unit would not move, it blocks
+                    grid.setWalkableAt(u.x(), u.y(), false);
                 }
-            });
-            path = screen.pfFinder.findPath(unit.x(), unit.y(),
-                mouse.x, mouse.y, grid);
-            console.log('path length: ' + (path.length - 1));
-            if(path.length > 1) {
-                unit.path = path;
             }
-        }
+        });
+        return grid;
     }
 });
 
@@ -161,7 +155,7 @@ var WaitForClearingScripter = Scripter.extend({
         _.each(units, function(u){
             unitBlockings[u.GUID] = [];
         });
-        this.highlightedTiles = [];
+        screen.highlightedTiles = [];
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
         }
@@ -177,7 +171,7 @@ var WaitForClearingScripter = Scripter.extend({
             _.each(units, function(u){
                 var timeForTraversingTile = u.getTimeForOneTile(),
                     i, b, blocking, frame, clearStatus;
-                for (i = 0; i < u.script.length; i++) {
+                for (i = 1; i < u.script.length; i++) {
                     frame = u.script[i];
                     clearStatus = self.getTileClearStatus(frame.pos, {
                         from: frame.time,
@@ -185,30 +179,41 @@ var WaitForClearingScripter = Scripter.extend({
 
                     if (!clearStatus.isClear) {
                         screen.highlightTile(frame.pos.x, frame.pos.y);
-                        u.insertWait(i - 1, clearStatus.when - frame.time);
-                        //register a 'unitBlocking' for each unit that blocks
-                        (function(){
-                            var waitIndex = i - 1;
-                            _.each(clearStatus.unitsThatBlock, function(blocker) {
-                                unitBlockings[blocker.unit.GUID].push({
-                                    scriptIndex: blocker.frameIndex,
-                                    undoWait: function(){
-                                        u.removeWait(waitIndex);
-                                    }
+                        if (clearStatus.when) {
+                            u.insertWait(i - 1, clearStatus.when - frame.time);
+
+                            /*
+                            //register a 'unitBlocking' for each unit that blocks
+                            (function(){
+                                var waitIndex = i - 1;
+                                _.each(clearStatus.unitsThatBlock, function(blocker) {
+                                    unitBlockings[blocker.unit.GUID].push({
+                                        scriptIndex: blocker.frameIndex,
+                                        undoWait: function(){
+                                            u.removeWait(waitIndex);
+                                        }
+                                    });
                                 });
-                            });
-                        })();
-                        //reset units' waiting that were being blocked
-                        b = 0;
-                        while (b < unitBlockings[u.GUID].length) {
-                            blocking = unitBlockings[u.GUID][b];
-                            if (blocking.scriptIndex > i) {
-                                blocking.undoWait();
-                                unitBlockings[u.GUID].splice(b, 1);
-                            } else {
-                                b++;
-                            }
+                            })();
+                            //reset units' waiting that were being blocked
+                            b = 0;
+                            while (b < unitBlockings[u.GUID].length) {
+                                blocking = unitBlockings[u.GUID][b];
+                                if (blocking.scriptIndex > i) {
+                                    blocking.undoWait();
+                                    unitBlockings[u.GUID].splice(b, 1);
+                                } else {
+                                    b++;
+                                }
+                            }      */
+
                         }
+                        else { //is never gonna clear up
+                            //remove rest of the script
+                            u.script.splice(i, u.script.length - i);
+                            break;
+                        }
+
                         someScriptChanged = true;
                     }
                 }
@@ -239,12 +244,18 @@ var WaitForClearingScripter = Scripter.extend({
         //get the frames that are at that position
         //TODO: maybe use a reservation table
         _.each(me.game.ship.units(), function(u){
-            if(u !== excludedUnit && u.willMove()){
-                _.each(u.script, function(f, index){
-                    if(f.pos.x === pos.x && f.pos.y === pos.y){
-                        frames.push({unit: u, frameIndex: index, f: f});
-                    }
-                });
+            if (u !== excludedUnit) {
+                if (u.willMove()) {
+                    _.each(u.script, function (f, index) {
+                        if (f.pos.x === pos.x && f.pos.y === pos.y) {
+                            frames.push({unit: u, frameIndex: index, f: f});
+                        }
+                    });
+                } else if(u.x() === pos.x && u.y() === pos.y) {
+                    clearStatus.isClear = false;
+                    clearStatus.when = false;
+                    return clearStatus;
+                }
             }
         });
         if (frames.length === 0) {
@@ -264,6 +275,11 @@ var WaitForClearingScripter = Scripter.extend({
                     clearStatus.unitsThatBlock.push(frames[i]);
                     if (occupyWindow.to > maxOverlapping) {
                         maxOverlapping = occupyWindow.to;
+                    }
+                    if (frames[i].frameIndex ===
+                        frames[i].unit.script.length - 1) {//last frame
+                        clearStatus.when = false;
+                        return clearStatus;
                     }
                 }
             }
