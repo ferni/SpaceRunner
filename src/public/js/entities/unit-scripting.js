@@ -240,6 +240,10 @@ var WaitForClearingScripter = Scripter.extend({
             };
         //get the frames that are at that position
         //TODO: maybe use a reservation table
+        if (timeWindow.from === timeWindow.to) {
+            throw 'getTileClearStatus should not process instant timeWindow ' +
+                '(from = to)';
+        }
         _.each(me.game.ship.units(), function(u){
             if (u !== excludedUnit) {
                 if (u.willMove()) {

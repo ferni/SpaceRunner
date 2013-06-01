@@ -28,3 +28,14 @@ asyncTest('cropScript', function(){
     });
 });
 
+test('getTimeWindow', function(){
+    var unit = new Unit(1, 1, {turnDuration: 10}),
+        timeWindow;
+    unit.script = [{pos:{x:1,y:1}, time:0},
+        {pos:{x:1,y:1}, time:2},
+        {pos:{x:1,y:1}, time:3}];
+    timeWindow = unit.getTimeWindow(2);
+    equal(timeWindow.from, 3, 'time window from 3');
+    equal(timeWindow.to, 10, 'time window to 10 (end of turn)');
+});
+

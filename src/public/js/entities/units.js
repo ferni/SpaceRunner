@@ -178,7 +178,7 @@ var Unit = ItemEntity.extend({
         }
     },
     willMove: function(){
-        return this.eotPos().x !== this.x() || this.eotPos().y !== this.y();
+        return this.script && this.script.length > 0;
     },
     adjustPath: function() {
         'use strict';
@@ -308,12 +308,14 @@ var Unit = ItemEntity.extend({
         var //total = this.getTimeForOneTile(),
             time = this.script[scriptIndex].time;
         //  from = time  - (total / 2);
-
+        if(!this.turnDuration) {
+            throw 'The turn duration for the unit has not been set';
+        }
         return {
             from: time,
             to: this.script[scriptIndex + 1] ?
                 this.script[scriptIndex + 1].time :
-                me.state.current().TURN_DURATION
+                this.turnDuration
         }
     }
 });
