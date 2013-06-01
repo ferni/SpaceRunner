@@ -8,17 +8,18 @@
 /*global me*/
 
 var Scripter = Object.extend({
-    screen : {},
-    init: function(screen) {
+    init: function(turnDuration) {
         'use strict';
-        this.screen = screen;
+        this.pfFinder = new PF.AStarFinder({
+            allowDiagonal: false
+        });
+        this.turnDuration = turnDuration;
     },
 
     generateScripts: function(unit, mouse) {},
     setUnitPath: function(unit, mouse) {
         'use strict';
         var grid, path,
-            screen = this.screen,
             ship = me.game.ship;
         if (mouse.x === unit.x() && mouse.y === unit.y()) {
             unit.path = [];
@@ -26,7 +27,7 @@ var Scripter = Object.extend({
             grid = new PF.Grid(ship.width, ship.height,
                 ship.getPfMatrix());
             grid = this.processGrid(grid, unit, mouse);
-            path = screen.pfFinder.findPath(unit.x(), unit.y(),
+            path = this.pfFinder.findPath(unit.x(), unit.y(),
                 mouse.x, mouse.y, grid);
             console.log('path length: ' + (path.length - 1));
             if(path.length > 1) {
@@ -46,12 +47,12 @@ var DefaultScripter = Scripter.extend({
         'use strict';
         var ship = me.game.ship,
             units = ship.units(),
-            screen = this.screen;
+            self = this;
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
         }
         _.each(units, function(u){
-            u.generateScript(screen.TURN_DURATION);
+            u.generateScript(self.turnDuration);
         });
     }
 });
@@ -66,13 +67,12 @@ var EndOfTurnScripter = Scripter.extend({
         var self = this,
             ship = me.game.ship,
             units = ship.units(),
-            screen = this.screen,
             someScriptChanged;
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
         }
         _.each(units, function(u){
-            u.generateScript(screen.TURN_DURATION);
+            u.generateScript(self.turnDuration);
         });
         //solve end positions conflicts
         do {
@@ -110,12 +110,12 @@ var AvoidOtherPathsScripter = Scripter.extend({
         'use strict';
         var ship = me.game.ship,
             units = ship.units(),
-            screen = this.screen;
+            self = this;
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
         }
         _.each(units, function(u){
-            u.generateScript(screen.TURN_DURATION);
+            u.generateScript(self.turnDuration);
         });
     },
     processGrid: function(grid, unit, mouse) {
@@ -147,7 +147,6 @@ var WaitForClearingScripter = Scripter.extend({
         var self = this,
             ship = me.game.ship,
             units = ship.units(),
-            screen = this.screen,
             someScriptChanged = true,
         //when a unit blocks another (the other is waiting)
             unitBlockings = {};
@@ -155,12 +154,11 @@ var WaitForClearingScripter = Scripter.extend({
         _.each(units, function(u){
             unitBlockings[u.GUID] = [];
         });
-        screen.highlightedTiles = [];
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
         }
         _.each(units, function(u){
-            u.generateScript(screen.TURN_DURATION);
+            u.generateScript(self.turnDuration);
         });
 
         do {
@@ -178,10 +176,9 @@ var WaitForClearingScripter = Scripter.extend({
                         to: frame.time + timeForTraversingTile}, u);
 
                     if (!clearStatus.isClear) {
-                        screen.highlightTile(frame.pos.x, frame.pos.y);
                         if (clearStatus.when) {
                             u.insertWait(i - 1, clearStatus.when - frame.time);
-
+                            i++;
                             /*
                             //register a 'unitBlocking' for each unit that blocks
                             (function(){

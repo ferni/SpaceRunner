@@ -8,7 +8,7 @@
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
  me, utils, ui, Ship*/
 
-module('units');
+module('units.js');
 asyncTest('cropScript', function(){
     th.loadScreen(function() {
         me.state.change(me.state.BATTLE, {tmxName: 'test',

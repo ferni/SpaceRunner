@@ -18,6 +18,10 @@ var Unit = ItemEntity.extend({
         var toImgRow;
         settings = this.completeSettings(settings);
         this.speed = settings.speed;
+        if(settings.turnDuration) {
+            this.turnDuration = settings.turnDuration;
+        }
+
         this.parent(x, y, {
             name: 'unit',
             image: 'creatures'
@@ -158,7 +162,7 @@ var Unit = ItemEntity.extend({
                 y: this.path[i][1]};
             this.script.push({pos: pos, time: elapsed});
         }
-        console.log('generated script for unit '+ this.GUID);
+        //console.log('generated script for unit '+ this.GUID);
         //this.printScript();
     },
     /**
@@ -260,9 +264,6 @@ var Unit = ItemEntity.extend({
             pos: {x: forCopying.pos.x, y: forCopying.pos.y},
             time: forCopying.time
         };
-        if (me.state.current().name !== 'battle-screen') {
-            throw 'The unit should be on the battle_screen (insertWait).';
-        }
 
         this.script.splice(scriptIndex, 0, forInserting);
         this.path.splice(scriptIndex, 0, this.path[scriptIndex]);
@@ -270,7 +271,7 @@ var Unit = ItemEntity.extend({
             this.script[i].time += milliseconds;
         }
         //remove script that does not fit into time
-        this.cropScript(me.state.current().TURN_DURATION);
+        this.cropScript(this.turnDuration);
     },
     /**
      *
@@ -286,7 +287,7 @@ var Unit = ItemEntity.extend({
         for (i = scriptIndex; i < this.script.length; i++) {
             this.script[i].time -= waitingTime;
         }
-        this.generateScript(me.state.current().TURN_DURATION,
+        this.generateScript(this.turnDuration,
             this.script.length);
     },
     /**

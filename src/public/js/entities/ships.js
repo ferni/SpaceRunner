@@ -72,10 +72,10 @@ function Ship(settings, syncWithGame) {
     };
     this.putUnit = function(settings) {
         'use strict';
-        //find empty spot
-        var empty = null, ship = this, unit;
-        utils.matrixTiles(ship.width, ship.height,
-            function(x, y) {
+                //find empty spot
+                var empty = null, ship = this, unit;
+                utils.matrixTiles(ship.width, ship.height,
+                    function(x, y) {
                 if (empty) {
                     return;
                 }

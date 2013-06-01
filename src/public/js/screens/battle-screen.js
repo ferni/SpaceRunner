@@ -15,9 +15,6 @@ var BattleScreen = me.ScreenObject.extend({
     isReset: false,
     paused: true,
     turnBeginTime: null,
-    pfFinder: new PF.AStarFinder({
-        allowDiagonal: false
-    }),
     settings:{},
     highlightedTiles: [],
     scripter: null,
@@ -170,6 +167,7 @@ var BattleScreen = me.ScreenObject.extend({
             units[i].path = [];
             units[i].script = [];
             units[i].speed = this.settings.unitSpeeds[i].speed;
+            units[i].turnDuration = this.TURN_DURATION;
         }
     },
     mouseUp: function(e) {
@@ -207,13 +205,13 @@ var BattleScreen = me.ScreenObject.extend({
     getScripter: function(){
         switch(this.settings.collisionResolution){
             case collisionResolutions.endOfTurn:
-                return new EndOfTurnScripter(this);
+                return new EndOfTurnScripter(this.TURN_DURATION);
             case collisionResolutions.avoidOtherPaths:
-                return new AvoidOtherPathsScripter(this);
+                return new AvoidOtherPathsScripter(this.TURN_DURATION);
             case collisionResolutions.waitForClearing:
-                return new WaitForClearingScripter(this);
+                return new WaitForClearingScripter(this.TURN_DURATION);
             default : //collisionResolutions.none
-                return new DefaultScripter(this);
+                return new DefaultScripter(this.TURN_DURATION);
         }
     },
     selectUnit: function(x, y) {
