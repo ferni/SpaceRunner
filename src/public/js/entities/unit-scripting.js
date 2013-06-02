@@ -178,8 +178,7 @@ var WaitForClearingScripter = Scripter.extend({
                     if (!clearStatus.isClear) {
                         if (clearStatus.when) {
                             u.insertWait(i - 1, clearStatus.when - frame.time);
-                            i++;
-                            /*
+
                             //register a 'unitBlocking' for each unit that blocks
                             (function(){
                                 var waitIndex = i - 1;
@@ -202,16 +201,17 @@ var WaitForClearingScripter = Scripter.extend({
                                 } else {
                                     b++;
                                 }
-                            }      */
-
+                            }
+                            i++;
                         }
                         else { //is never gonna clear up
                             //remove rest of the script
                             u.script.splice(i, u.script.length - i);
+                            someScriptChanged = true;
                             break;
                         }
 
-                        someScriptChanged = true;
+
                     }
                 }
             });

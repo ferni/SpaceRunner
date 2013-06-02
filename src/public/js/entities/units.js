@@ -259,6 +259,10 @@ var Unit = ItemEntity.extend({
         if (scriptIndex < 0 || scriptIndex >= scriptIndex.length) {
             throw 'scriptIndex out of bounds (' + scriptIndex+ ')';
         }
+        if (milliseconds <= 0) {
+            throw 'Inserted wait time should be a positive greater than' +
+                ' zero value.';
+        }
         forCopying = this.script[scriptIndex];
         forInserting = {
             pos: {x: forCopying.pos.x, y: forCopying.pos.y},
