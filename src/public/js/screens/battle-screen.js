@@ -18,6 +18,7 @@ var BattleScreen = me.ScreenObject.extend({
     settings:{},
     highlightedTiles: [],
     scripter: null,
+    dragBox: null,
     init: function() {
         'use strict';
         this.parent(true);
@@ -48,6 +49,8 @@ var BattleScreen = me.ScreenObject.extend({
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
             this.mouseDown.bind(this));
+        me.input.registerMouseEvent('mousemove', me.game.viewport,
+            this.mouseMove.bind(this));
         me.game.ship.showInScreen();
 
         this.pause();
@@ -61,6 +64,7 @@ var BattleScreen = me.ScreenObject.extend({
         html.clear();
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
+        me.input.releaseMouseEvent('mousemove', me.game.viewport);
     },
     onHtmlLoaded: function() {
         'use strict';
@@ -123,6 +127,10 @@ var BattleScreen = me.ScreenObject.extend({
         _.each(this.highlightedTiles, function(t){
             screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
         });
+
+        if (this.dragBox) {
+            this.dragBox.draw(ctx);
+        }
     },
     drawTileHighlight: function(ctx, x, y, color, thickness) {
         'use strict';
@@ -179,11 +187,13 @@ var BattleScreen = me.ScreenObject.extend({
         }
         if (which === me.input.mouse.LEFT) {
             this.selectUnit(mouse.x, mouse.y);
+            this.releaseDragBox();
         }
     },
     mouseDown: function(e) {
         'use strict';
-        var mouse = utils.getMouse(),
+        var screen = this,
+            mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
             ship = me.game.ship;
         if (!this.paused) {
@@ -191,9 +201,39 @@ var BattleScreen = me.ScreenObject.extend({
         }
         if (which === me.input.mouse.RIGHT) {
             if (ship.selected().length > 0) {//there is a selected unit
-                this.generateScripts(ship.selected()[0], mouse);
+                _.each(ship.selected(), function(unit){
+                    screen.generateScripts(unit, mouse);
+                });
+
             }
+        } else if (which === me.input.mouse.LEFT){
+            this.startDragBox(utils.getMouse(true));
         }
+    },
+    mouseMove: function(e) {
+        'use strict';
+        if (this.dragBox) {
+            this.dragBox.updateFromMouse(utils.getMouse(true));
+        }
+    },
+    startDragBox: function(pos) {
+        this.dragBox = new DragBox(pos);
+    },
+    releaseDragBox: function() {
+        var self = this;
+        if (this.dragBox) {
+            _.each(me.game.ship.units(), function(u){
+                var unitRect = new me.Rect(u.pos, TILE_SIZE, TILE_SIZE);
+                if(self.dragBox.overlaps(unitRect)) {
+                    u.selected = true;
+                }
+            });
+            this.dragBox = null;
+        } else {
+            console.warn('Tried to release dragBox but it was already' +
+                ' released.');
+        }
+
     },
     highlightTile: function(x, y){
         this.highlightedTiles.push({x: x, y: y});

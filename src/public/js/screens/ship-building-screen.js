@@ -125,9 +125,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             me.state.current().choose(itemName);
         });
 
-        $(document).bind('contextmenu', function(e) {
-            return false;
-        });
+
         //Save
         $('#file_save').click(function() {
             var shipData = screen.ship.toJsonString(),

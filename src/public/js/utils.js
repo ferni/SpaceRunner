@@ -113,14 +113,14 @@ var utils = {
         return new Constructor(-100, -100, {});
     },
     //returns the tile position of the mouse
-    getMouse: function() {
+    getMouse: function(exact) {
         'use strict';
         if (!me.game.currentLevel.initialized) {
             throw "There's no level to get the mouse";
         }
         var relPosition = this.vectorSub(me.input.mouse.pos,
             me.game.currentLevel.pos);
-        return utils.toTileVector(relPosition);
+        return exact ? relPosition : utils.toTileVector(relPosition);
     },
     setCursor: function(cursor) {
         'use strict';

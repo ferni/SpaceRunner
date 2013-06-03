@@ -281,6 +281,12 @@ var jsApp = {
         html.store('ship-building-screen', tasks.done, tasks.error);
         html.store('battle-screen', tasks.done, tasks.error);
 
+        //prepare dom
+        $(document).bind('contextmenu', function(e) {
+            return false;//disable context menu
+        }).attr('unselectable', 'on')
+            .css('user-select', 'none')
+            .on('selectstart', false);//disable selection
     },
     /*
     useful for testing
