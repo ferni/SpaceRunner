@@ -43,13 +43,11 @@ var DragBox = me.Rect.extend({
         'use strict';
         if(mouse.x > this.piv.x) {
             this.width = mouse.x - this.piv.x;
-            console.log('mouse greater, result: x='+this.pos.x+' width='+this.width);
         } else{
             //the width must not have negative values or
             //else the 'contains' method would not work
             this.pos.x = mouse.x;
             this.width = this.piv.x - mouse.x;
-            console.log('mouse less, result: x='+this.pos.x+' width='+this.width+'(pivot='+this.piv.x+')');
         }
 
         if(mouse.y > this.piv.y) {

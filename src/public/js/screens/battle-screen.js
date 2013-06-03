@@ -108,6 +108,7 @@ var BattleScreen = me.ScreenObject.extend({
             screen = this;
         this.parent(ctx);
         if (this.paused) {
+
             _.each(me.game.ship.units(), function(u) {
                 u.drawPath(ctx);
                 if (u.selected) {
@@ -116,21 +117,36 @@ var BattleScreen = me.ScreenObject.extend({
                         'limegreen', 2);
                 }
             });
+            if (me.game.ship.isAt(mouse.x, mouse.y, 'unit')) {
+                utils.setCursor('pointer');
+            } else if(!this.dragBox){
+                utils.setCursor('default')
+            }
+
+            //highlight where the mouse is pointing if it's a unit
+            if (me.game.ship.isAt(mouse.x, mouse.y, 'unit') ||
+                me.game.ship.selected().length > 0) {
+                this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
+            }
+            if (this.dragBox) {
+                this.dragBox.draw(ctx);
+                utils.setCursor('crosshair');
+            }
+
+
+
+        } else {
+            utils.setCursor('default');
         }
 
-        //highlight where the mouse is pointing
-        if (me.game.ship.isInside(mouse.x, mouse.y)) {
-            this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
-        }
+
 
         //highlight highlighted tiles
         _.each(this.highlightedTiles, function(t){
             screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
         });
 
-        if (this.dragBox) {
-            this.dragBox.draw(ctx);
-        }
+
     },
     drawTileHighlight: function(ctx, x, y, color, thickness) {
         'use strict';
@@ -257,15 +273,13 @@ var BattleScreen = me.ScreenObject.extend({
     selectUnit: function(x, y) {
         'use strict';
         var ship = me.game.ship,
-            unit = _.find(ship.units(), function(u) {
-                return u.x() === x && u.y() === y;
-            });
+            unit = ship.mapAt(x, y);
         this.unselectAll();
-        if (!unit) {
-            return false;
+        if (unit && unit.name === 'unit') {
+            unit.selected = true;
+            return true;
         }
-        unit.selected = true;
-        return true;
+        return false;
     },
     unselectAll: function() {
         'use strict';

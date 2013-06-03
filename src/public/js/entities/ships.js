@@ -148,6 +148,10 @@ function Ship(settings, syncWithGame) {
         }
         return null;
     };
+    this.isAt = function(x, y, name){
+        var what = this.mapAt(x, y);
+        return what && what.name === name;
+    };
     this.isInside = function(x, y) {
         var tiles = charMap.codes,
             tile = this.mapAt(x, y);
