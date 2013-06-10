@@ -12,6 +12,10 @@
         <link href="css/ship-building-screen.css" rel="stylesheet" type="text/css" />
         <link href="css/battle-screen.css" rel="stylesheet" type="text/css" />
 
+        <!-- This file shouldn't be compressed with the rest because
+        it needs to be found by NodeJS module loader -->
+        <script type="text/javascript" src="js/shared.js"></script>
+
         <script type="text/javascript" src="js/vendor/ajaxupload.3.5.js" ></script>
         <script type="text/javascript" src="js/vendor/jquery-1.9.1.js"></script>
         <script type="text/javascript" src="js/vendor/melonJS-0.9.5.js"></script>
@@ -49,11 +53,6 @@
         <div id="game">
             <div id="jsapp"></div>
             <div id="screensUi"></div>
-        </div>
-        <div id="screensPrebuiltUi">
-
-
-
         </div>
     </body>
 </html>

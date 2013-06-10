@@ -16,7 +16,7 @@ var express = require('express'),
     ship = require('./routes/ship'),
     http = require('http'),
     path = require('path'),
-
+    shared = require('./public/js/shared'),
     app = express();
 
 app.configure(function() {
@@ -44,4 +44,6 @@ app.post('/load', ship.load);
 http.createServer(app).listen(app.get('port'), function() {
     'use strict';
   console.log('Express server listening on port ' + app.get('port'));
+   console.log(shared.test());
 });
+

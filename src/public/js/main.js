@@ -287,6 +287,8 @@ var jsApp = {
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
             .on('selectstart', false);//disable selection
+
+        console.log(shared.test());
     },
     /*
     useful for testing
