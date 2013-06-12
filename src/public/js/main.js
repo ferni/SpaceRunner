@@ -221,6 +221,10 @@ var g_resources = [{
     name: 'creatures',
     type: 'image',
     src: 'data/img/render/creatures.png'
+}, {
+    name: 'creatures_16x16',
+    type: 'image',
+    src: 'data/img/render/creatures_16x16.png'
 }];
 
 // jsApp
