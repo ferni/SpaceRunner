@@ -11,7 +11,7 @@ var Scripter = Object.extend({
     init: function(turnDuration) {
         'use strict';
         this.pfFinder = new PF.AStarFinder({
-            allowDiagonal: false
+            allowDiagonal: true
         });
         this.turnDuration = turnDuration;
     },
