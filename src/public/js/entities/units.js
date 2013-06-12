@@ -13,6 +13,8 @@ var Unit = ItemEntity.extend({
     path: [],
     script: [],
     selected: false,
+    //TODO: maybe make setting the size more direct
+    size:[0.5,0.5],
     init: function(x, y, settings) {
         'use strict';
         var toImgRow;
@@ -24,7 +26,7 @@ var Unit = ItemEntity.extend({
 
         this.parent(x, y, {
             name: 'unit',
-            image: 'creatures'
+            image: 'creatures_16x16'
         });
         toImgRow = function(array){
             for(var i = 0; i < array.length; i++){
