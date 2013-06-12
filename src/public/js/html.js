@@ -19,7 +19,7 @@ var html = {
     store: function(screenId, success, error) {
         'use strict';
         var self = this;
-        $.get(screenId+'.html', function(data) {
+        $.get('screens/'+ screenId+'.html', function(data) {
             self.stored[screenId] = data;
             if (success) {
                 success();
