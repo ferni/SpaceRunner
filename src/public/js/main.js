@@ -259,11 +259,11 @@ var jsApp = {
         // set screens
         var self = this,
             tasks = new utils.TaskWait({
-                pendingCount: 3, //must be number of screen loaded
+                pendingCount: 4, //must be number of screen loaded
                 allDone: function(){
                     //start the game
 
-                    me.state.change(me.state.SELECT);
+                    me.state.change(FIRST_SCREEN);
                     self.loadReady = true;
                     self.onAppLoaded();
                 },
@@ -271,16 +271,19 @@ var jsApp = {
                     alert('An error has occurred attempting to load html templates.');
                 }
             });
-        me.state.SELECT = me.state.USER;
-        me.state.BUILD = me.state.USER + 1;
-        me.state.BATTLE = me.state.USER + 2;
-        window.FIRST_SCREEN = me.state.SELECT;
+        me.state.LOBBY = me.state.USER;
+        me.state.SELECT = me.state.USER + 1;
+        me.state.BUILD = me.state.USER + 2;
+        me.state.BATTLE = me.state.USER + 3;
+        window.FIRST_SCREEN = me.state.LOBBY;
 
         // start the game
+        me.state.set(me.state.LOBBY, new LobbyScreen());
         me.state.set(me.state.SELECT, new ShipSelectScreen());
         me.state.set(me.state.BUILD, new ShipBuildingScreen());
         me.state.set(me.state.BATTLE, new BattleScreen());
 
+        html.store('lobby-screen', tasks.done, tasks.error);
         html.store('ship-select-screen', tasks.done, tasks.error);
         html.store('ship-building-screen', tasks.done, tasks.error);
         html.store('battle-screen', tasks.done, tasks.error);
@@ -291,8 +294,6 @@ var jsApp = {
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
             .on('selectstart', false);//disable selection
-
-        console.log(shared.test());
     },
     /*
     useful for testing

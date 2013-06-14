@@ -114,7 +114,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     onHtmlLoaded: function() {
         'use strict';
-        var screen = this;
+        var screen = this,
+            loadingNextScreen = false;
         $('.items').click(function() {
             var idItem, itemName;
             if (me.state.isCurrent(me.state.LOADING)) {
@@ -153,11 +154,16 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         });
 
         $('.battle-button').click(function() {
-            screen.finishShip();
+            if (!loadingNextScreen) {
+                screen.finishShip();
+                loadingNextScreen = true;
+            }
+
         });
     },
     finishShip: function(){
         //put the ship in global context
+
         me.game.ship = this.ship;
         //TODO: since units are configured, battle screen start up time has
         //todo: been slower
@@ -165,7 +171,13 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.ship.putUnit({imgRow: 6, speed: 1});
         me.game.ship.putUnit({imgRow: 7, speed: 2});
         me.game.ship.putUnit({imgRow: 12, speed: 3});
-        me.state.change(me.state.BATTLE);
+
+        console.log('Creating battle...');
+        $.post('/battles/create', function(data) {
+            console.log('Battle created');
+            me.state.change(me.state.BATTLE);
+        }, 'json');
+
     },
     mouseDbClick: function(e) {
         'use strict';

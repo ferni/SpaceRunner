@@ -1,0 +1,18 @@
+<div id="lobby-screen">
+    <div id="battle-selector">
+        <p>
+            Your name: <strong data-bind="text: playerName">(loading...)</strong>
+        </p>
+        <p>
+            <span class="button" data-bind="click: hostBattle">New battle</span>
+        </p>
+        <p>
+            <h3>Join an existing battle</h3>
+            <ul data-bind="foreach: battles">
+                <li class="button" data-bind="click: $parent.joinBattle">
+                    <span data-bind="text: id"></span>
+                </li>
+            </ul>
+        </p>
+    </div>
+</div>

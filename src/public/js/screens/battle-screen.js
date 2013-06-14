@@ -19,6 +19,7 @@ var BattleScreen = me.ScreenObject.extend({
     highlightedTiles: [],
     scripter: null,
     dragBox: null,
+    orders: [],
     init: function() {
         'use strict';
         this.parent(true);

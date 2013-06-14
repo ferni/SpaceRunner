@@ -14,10 +14,20 @@
 var express = require('express'),
     routes = require('./routes'),
     ship = require('./routes/ship'),
+    battles = require('./routes/battles'),
     http = require('http'),
     path = require('path'),
     shared = require('./public/js/shared'),
-    app = express();
+    app = express(),
+    //TODO: change for connect-redis store
+    store  = new express.session.MemoryStore;
+
+    app.use(express.cookieParser());
+    app.use(express.session({
+        secret: 'asdfqwerasdfaq34%RT·W4tSDFg345t3qS$T·' +
+            '345·FSdg32$1@E2345r·Tefg4Drsertq4tq4ohelfg' +
+            'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
+        store: store }));
 
 app.configure(function() {
     'use strict';
@@ -30,6 +40,7 @@ app.configure(function() {
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
+
 });
 
 app.configure('development', function() {
@@ -37,13 +48,20 @@ app.configure('development', function() {
      app.use(express.errorHandler());
 });
 
+
 //app.get('/', routes.index);
 
 app.post('/save', ship.save);
 app.post('/load', ship.load);
+app.get('/battles/get', battles.get);
+app.post('/battles/create', battles.create);
+
+//globals
+GLOBAL.battles = []; //filled with model.Battle
+GLOBAL.currentPlayers = []; //filled with model.Player
+
 http.createServer(app).listen(app.get('port'), function() {
     'use strict';
-  console.log('Express server listening on port ' + app.get('port'));
-   console.log(shared.test());
+    console.log('Express server listening on port ' + app.get('port'));
 });
 
