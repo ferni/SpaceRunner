@@ -9,6 +9,7 @@
 charMap, Unit*/
 
 var BattleScreen = me.ScreenObject.extend({
+    BattleID: null,
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
     name: 'battle-screen',
@@ -27,18 +28,27 @@ var BattleScreen = me.ScreenObject.extend({
     onResetEvent: function(settings) {
         'use strict';
         this.parent();
-
-        if(settings && settings.tmxName){
+        if(!settings && !settings.battleID) {
+            throw new Error('The battleID is mandatory for the battle-screen');
+        }
+        this.battleID = settings.battleID;
+        if(settings.tmxName){
             me.game.ship = new Ship({tmxName: settings.tmxName}, true);
         }
-        this.settings = this.completeSettings(settings);
-        me.video.clearSurface(me.video.getScreenContext(), 'black');
         //reset ship
         //TODO: make ship.toJsonString work with units
+        if(settings.shipJsonString) {
+            me.game.ship = new Ship({jsonString: settings.shipJsonString},
+                true);
+        }
         /*
-        me.game.ship = new Ship({
-            jsonString: me.game.ship.toJsonString()
-        }, true);*/
+         me.game.ship = new Ship({
+         jsonString: me.game.ship.toJsonString()
+         }, true);*/
+        this.settings = this.completeSettings(settings);
+        me.video.clearSurface(me.video.getScreenContext(), 'black');
+
+
         this.TURN_DURATION_SEC = this.settings.turnDuration;
         this.TURN_DURATION = this.settings.turnDuration * 1000;
 

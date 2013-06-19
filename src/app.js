@@ -15,6 +15,7 @@ var express = require('express'),
     routes = require('./routes'),
     ship = require('./routes/ship'),
     battles = require('./routes/battles'),
+    lobby = require('./routes/lobby'),
     http = require('http'),
     path = require('path'),
     shared = require('./public/js/shared'),
@@ -53,8 +54,10 @@ app.configure('development', function() {
 
 app.post('/save', ship.save);
 app.post('/load', ship.load);
-app.get('/battles/get', battles.get);
+app.get('/lobby/get', lobby.get);
+
 app.post('/battles/create', battles.create);
+app.post('/battles/join', battles.join);
 
 //globals
 GLOBAL.battles = []; //filled with model.Battle

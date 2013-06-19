@@ -217,11 +217,13 @@ function Ship(settings, syncWithGame) {
             'tmxName': this.tmxName,
             'buildings': _.map(this.buildings(), function(b) {
                             return {
+                                name: b.name,
                                 type: b.type,
                                 x: b.x(),
                                 y: b.y(),
                                 rotated: b.rotated()
                             };})
+            //TODO: clearly separate buildings and units
         });
     };
     this.fromJsonString = function(jsonString) {
@@ -230,11 +232,19 @@ function Ship(settings, syncWithGame) {
         obj = JSON.parse(jsonString);
         itemArray = obj.buildings;
         for (i = 0; i < itemArray.length; i++) {
-            item = utils.makeItem(itemArray[i].type);
-            item.x(itemArray[i].x)
-                .y(itemArray[i].y)
-                .rotated(itemArray[i].rotated);
-            this.add(item);
+            if(itemArray[i].name === 'item') {
+                item = utils.makeItem(itemArray[i].type);
+                item.x(itemArray[i].x)
+                    .y(itemArray[i].y)
+                    .rotated(itemArray[i].rotated);
+                this.add(item);
+            } else if(itemArray[i].name === 'unit'){
+                item = new Unit(itemArray[i].x, itemArray[i].y);
+                this.add(item);
+            } else{
+                console.error('Invalid item in jsonString: ' +
+                    JSON.stringify(itemArray[i]));
+            }
         }
         this.buildingsChanged();
     };

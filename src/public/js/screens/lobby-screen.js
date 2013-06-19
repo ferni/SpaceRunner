@@ -43,12 +43,17 @@ var LobbyScreen = me.ScreenObject.extend({
                 };
                 this.hostBattle = screen.hostBattle;
             };
-        $.get('/battles/get', function(data) {
+        $.get('/lobby/get', function(data) {
             ko.applyBindings(new HtmlViewModel(data));
         });
     },
-    joinBattle: function(battleId) {
-        alert('Join battle not available yet.');
+    joinBattle: function(battleID) {
+        console.log('Joining battle...');
+        $.post('/battles/join', {battleID: battleID},
+            function(data) {
+                me.state.change(me.state.BATTLE,
+                    {shipJsonString: data.shipJsonString});
+            }, 'json');
     },
     hostBattle: function() {
         me.state.change(me.state.SELECT);

@@ -7,9 +7,9 @@
 
 var _ = require('underscore')._;
 
-exports.Battle = function(id) {
+exports.Battle = function(id, shipJsonString) {
     this.id = id;
-
+    this.shipJsonString = shipJsonString;
 }
 
 exports.Player = function(params) {

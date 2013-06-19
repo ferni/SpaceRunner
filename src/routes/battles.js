@@ -7,37 +7,28 @@
 
 var model = require('../model'),
     _ = require('underscore')._;
-/**
- * sets the initial info for the player
- * and fetches the initial data
- */
-exports.get = function(req, res) {
-    var player;
-    console.log(req.session);
-    if (req.session.playerID === undefined) {
-        //create the player
-        player = model.createNewPlayer();
-        req.session.playerID = player.id;
-        currentPlayers.push(player);
 
-    } else {
-        player = _.find(currentPlayers, function(p){
-            return p.id === req.session.playerID;
-        });
-
-        if (!player) {
-            throw 'playerID stored in session not found among currentPlayers';
-        }
-    }
-    res.json({
-        playerName: player.name,
-        battles: battles
-    });
-};
 
 exports.create = function(req, res) {
-    //expecting the ship hull json as request data
+    var battleID = battles.length;
+    if(!req.body.shipJsonString) {
+        throw 'shipJsonString must be provided';
+    }
+    battles.push(new model.Battle(battleID, req.body.shipJsonString));
+    res.json({ok: true, battleID: battleID});
+};
 
-    battles.push(new model.Battle(battles.length));
-    res.json({ok: true});
+exports.join = function(req, res) {
+    var battleID = req.body.battleID,
+        battle;
+    if(battleID === undefined) {
+        throw 'battleID must be provided';
+    }
+    battle = _.find(battles, function(battle){
+        return battle.id == battleID;
+    });
+    if(!battle) {
+        throw 'battle ' + battleID +' not found';
+    }
+    res.json({shipJsonString: battle.shipJsonString});
 };

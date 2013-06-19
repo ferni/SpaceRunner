@@ -94,6 +94,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
                 this.choose();
             }
         }
+
+        //TODO: remove this and the bindings
         if (me.input.isKeyPressed('save')) {
             console.log(this.ship.toJsonString());
         }
@@ -101,6 +103,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             var data = window.prompt('enter ship json data');
             me.state.change(me.state.BUILD, {jsonString: data});
         }
+
         _.each(this.drawingScreen, function(item){
             item.update();
         });
@@ -173,9 +176,10 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.game.ship.putUnit({imgRow: 12, speed: 3});
 
         console.log('Creating battle...');
-        $.post('/battles/create', function(data) {
+        $.post('/battles/create',{shipJsonString: me.game.ship.toJsonString()},
+                    function(data) {
             console.log('Battle created');
-            me.state.change(me.state.BATTLE);
+            me.state.change(me.state.BATTLE, {battleID: data.battleID});
         }, 'json');
 
     },
