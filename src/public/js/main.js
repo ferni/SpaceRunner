@@ -294,6 +294,13 @@ var jsApp = {
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
             .on('selectstart', false);//disable selection
+
+
+                                            /*
+        var entity = new SharedEntityClient('ClientMan', 99,
+            navigator["userAgent"]);
+        console.log(entity.getDescription());
+                                          */
     },
     /*
     useful for testing

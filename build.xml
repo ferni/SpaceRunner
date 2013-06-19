@@ -176,8 +176,8 @@
 		    <arg line="-zxvf ${node-dir}.tar.gz"/>
         </exec>
 	<symlink link="tools/node" resource="${node-dir}/bin/node"/>
+	<symlink link="tools/npm" resource="${node-dir}/bin/npm"/>
     </target>
-
     <target name="check-redis">
         <condition property="redis-not-downloaded">
             <not>
