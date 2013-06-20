@@ -1,7 +1,8 @@
 //This file is for running with PhantomJS
+
 var page = require('webpage').create();
 var fs = require("fs");
-
+ 
 var rootUrl = require("system").args[1];
 if(rootUrl[rootUrl.length - 1] != "/")
     rootUrl = rootUrl + "/";
@@ -29,7 +30,6 @@ page.open(testsUrl, function () {
 
 //Creates the report file and returns its path
 function beginReport(){
-    var number = 1;
     var path = "build/report.html";
     console.log("Creating report ...");
     fs.copy("report-beginning.html", path);
@@ -75,7 +75,7 @@ function onTestsDone(page, callback){
 		QUnit.done(function(details){
 			_testDetails = details;
 		});
-		window._modulesDone = new Array();
+		window._modulesDone = [];
 		QUnit.moduleDone(function( details ) {
           _modulesDone.push(details);
         });

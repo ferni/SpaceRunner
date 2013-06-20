@@ -7,10 +7,51 @@
 
 /*global me, charMap, utils, _ */
 
-function Ship(settings, syncWithGame) {
-    'use strict';
+var Ship = Object.extend({
+    hullMap: {},
+    buildingsMap: {},
+    _map : null,
+    init : function(settings, syncWithGame) {
+        'use strict';
+        var ship = this;
+        this.hullMap = {
+            changed: true,
+            _hullMap: null,
+            update: function() {
+                this._hullMap = charMap.get(ship.tmxTileMap);
+                this.changed = true;
+            },
+            get: function() {
+                if (this._hullMap === null) {
+                    this.update();
+                }
+                return this._hullMap;
+            }
+        };
+        this.buildingsMap = {
+            changed: true,
+            _buildingsMap: null,
+            update: function() {
+                var self = this;
+                self._buildingsMap = utils.getEmptyMatrix(ship.width,
+                    ship.height, charMap.codes._cleared);
+                _.each(ship.buildings(), function(b) {
+                    if (!b.hidden()) {
+                        utils.itemTiles(b, function(x, y) {
+                            self._buildingsMap[y][x] = b;
+                        }, ship);
+                    }
+                });
 
-    this.init = function(settings, syncWithGame) {
+                this.changed = true;
+            },
+            get: function() {
+                if (this._buildingsMap === null) {
+                    this.update();
+                }
+                return this._buildingsMap;
+            }
+        };
         if (!settings.tmxName && !settings.jsonString) {
             throw 'Ship settings must have tmxName or jsonData';
         }
@@ -28,26 +69,26 @@ function Ship(settings, syncWithGame) {
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
         }
-    };
-    this.loadMap = function() {
+    },
+    loadMap : function() {
         this.tmxTileMap = new me.TMXTileMap(this.tmxName, 0, 0);
         this.tmxTileMap.load();
-    };
-    this.buildings = function() {
+    },
+    buildings : function() {
         return this._buildings;
-    };
-    this.units = function() {
+    },
+    units : function() {
         return _.filter(this._buildings, function(b){
             return b.name === 'unit';
         });
-    };
-    this.selected = function(){
+    },
+    selected : function(){
         return _.filter(this.units(), function(u){
             return u.selected;
         });
-    };
+    },
     //this should be called when the user builds something
-    this.buildAt = function(x, y, buildingType) {
+    buildAt : function(x, y, buildingType) {
         var self = this,
         building = utils.makeItem(buildingType),
         canBuild = building.canBuildAt(x, y, this),
@@ -69,40 +110,40 @@ function Ship(settings, syncWithGame) {
             return building; //building successful
         }
         return null; //building failed
-    };
-    this.putUnit = function(settings) {
+    },
+    putUnit : function(settings) {
         'use strict';
-                //find empty spot
-                var empty = null, ship = this, unit;
-                utils.matrixTiles(ship.width, ship.height,
-                    function(x, y) {
-                if (empty) {
-                    return;
-                }
-                if (ship.mapAt(x, y) === charMap.codes._cleared) {
-                    empty = {x: x, y: y};
-                }
-            });
+        //find empty spot
+        var empty = null, ship = this, unit;
+        utils.matrixTiles(ship.width, ship.height,
+            function(x, y) {
+            if (empty) {
+                return;
+            }
+            if (ship.mapAt(x, y) === charMap.codes._cleared) {
+                empty = {x: x, y: y};
+            }
+        });
         unit = new Unit(empty.x, empty.y, settings);
         this.add(unit);
         return unit;
-    };
+    },
     //Adds an item to the ship ignoring its placement rules
-    this.add = function(item) {
+    add: function(item) {
         if (this.syncWithGame) {
             me.game.add(item, item.zIndex);
         }
         this._buildings.push(item);
         item.onShip(this);
         this.buildingsChanged();
-    };
-    this.removeAt = function(x, y) {
+    },
+    removeAt: function(x, y) {
         //remove while is not string (is an item or unit)
         while (!(_.isString(this.mapAt(x, y)))) {
             this.remove(this.mapAt(x, y), true);
         }
-    };
-    this.remove = function(item, updateBuildings) {
+    },
+    remove: function(item, updateBuildings) {
         if (!item) {
             return;
         }
@@ -116,24 +157,24 @@ function Ship(settings, syncWithGame) {
         if (updateBuildings) {
             this.buildingsChanged();
         }
-    };
+    },
 
-    this.removeAll = function() {
+    removeAll: function() {
         var self = this,
             i;
         for (i = this.buildings().length - 1; i >= 0; i--) {
             self.remove(this.buildings()[i]);
         }
         this.buildingsChanged();
-    };
+    },
     //to call whenever buildings change
-    this.buildingsChanged = function() {
+    buildingsChanged: function() {
         this.buildingsMap.update();
         this.onBuildingsChanged();
-    };
-    this.onBuildingsChanged = function() {};
-    this._map = null;
-    this.map = function() {
+    },
+    onBuildingsChanged: function() {},
+
+    map : function() {
         if (this.buildingsMap.changed || this.hullMap.changed ||
             this._map === null) {
             this._map = this._getJointMap();
@@ -141,65 +182,27 @@ function Ship(settings, syncWithGame) {
             this.hullMap.changed = false;
         }
         return this._map;
-    };
-    this.mapAt = function(x, y) {
+    },
+    mapAt: function(x, y) {
         if (this.map()[y] !== undefined && this.map()[y][x] !== undefined) {
             return this.map()[y][x];
         }
         return null;
-    };
-    this.isAt = function(x, y, name){
+    },
+    isAt: function(x, y, name){
         var what = this.mapAt(x, y);
         return what && what.name === name;
-    };
-    this.isInside = function(x, y) {
+    },
+    isInside: function(x, y) {
         var tiles = charMap.codes,
             tile = this.mapAt(x, y);
         return tile !== tiles._solid && tile !== tiles._front &&
             tile !== tiles._back;
-    };
-    this.buildingsMap = {
-        thisShip: this,
-        changed: true,
-        _buildingsMap: null,
-        update: function() {
-            var self = this;
-            self._buildingsMap = utils.getEmptyMatrix(self.thisShip.width,
-                self.thisShip.height, charMap.codes._cleared);
-            _.each(self.thisShip.buildings(), function(b) {
-                if (!b.hidden()) {
-                    utils.itemTiles(b, function(x, y) {
-                        self._buildingsMap[y][x] = b;
-                    }, self.thisShip);
-                }
-            });
+    },
 
-            this.changed = true;
-        },
-        get: function() {
-            if (this._buildingsMap === null) {
-                this.update();
-            }
-            return this._buildingsMap;
-        }
-    };
-    this.hullMap = {
-        thisShip: this,
-        changed: true,
-        _hullMap: null,
-        update: function() {
-            this._hullMap = charMap.get(this.thisShip.tmxTileMap);
-            this.changed = true;
-        },
-        get: function() {
-            if (this._hullMap === null) {
-                this.update();
-            }
-            return this._hullMap;
-        }
-    };
+
     //joins hullMap and buildingsMap
-    this._getJointMap = function() {
+    _getJointMap: function() {
         var self = this,
         joint = utils.getEmptyMatrix(this.width, this.height,
             charMap.codes._cleared);
@@ -211,8 +214,8 @@ function Ship(settings, syncWithGame) {
                 }
         });
         return joint;
-    };
-    this.toJsonString = function() {
+    },
+    toJsonString: function() {
         return JSON.stringify({
             'tmxName': this.tmxName,
             'buildings': _.map(this.buildings(), function(b) {
@@ -225,8 +228,8 @@ function Ship(settings, syncWithGame) {
                             };})
             //TODO: clearly separate buildings and units
         });
-    };
-    this.fromJsonString = function(jsonString) {
+    },
+    fromJsonString: function(jsonString) {
         var obj, itemArray, item, i;
         this.removeAll();
         obj = JSON.parse(jsonString);
@@ -247,14 +250,14 @@ function Ship(settings, syncWithGame) {
             }
         }
         this.buildingsChanged();
-    };
-    this.showInScreen = function() {
+    },
+    showInScreen: function() {
       me.levelDirector.loadLevel(this.tmxName);
         _.each(this.buildings(), function(b) {
             me.game.add(b, b.zIndex);
       });
-    };
-    this.getPfMatrix = function() {
+    },
+    getPfMatrix: function() {
         var ship = this,
             pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
         utils.matrixTiles(this.width, this.height, function(x, y) {
@@ -264,7 +267,6 @@ function Ship(settings, syncWithGame) {
             }
         });
         return pfMatrix;
-    };
-    this.init(settings, syncWithGame);
-}
+    }
+});
 
