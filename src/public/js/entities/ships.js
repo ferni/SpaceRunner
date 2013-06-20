@@ -218,28 +218,26 @@ var Ship = Object.extend({
     toJsonString: function() {
         return JSON.stringify({
             'tmxName': this.tmxName,
-            'buildings': _.map(this.buildings(), function(b) {
-                            return b.toJson();})
+            'buildings': _.map(_.filter(this.buildings(), function(b) {
+                return b.name === 'item';
+            }), function(b) { return b.toJson();}),
+            'units': _.map(this.units(),
+                function(u) { return u.toJson();}
+            )
             //TODO: clearly separate buildings and units
         });
     },
     fromJsonString: function(jsonString) {
-        var obj, itemArray, item, i;
-        this.removeAll();
-        obj = JSON.parse(jsonString);
-        itemArray = obj.buildings;
-        for (i = 0; i < itemArray.length; i++) {
-            if(true || itemArray[i].name === 'item') {
-                item = make.itemFromJson(itemArray[i]);
-                this.add(item);
-            } else if(itemArray[i].name === 'unit'){
-                item = new Unit(itemArray[i].x, itemArray[i].y);
-                this.add(item);
-            } else{
-                console.error('Invalid item in jsonString: ' +
-                    JSON.stringify(itemArray[i]));
-            }
-        }
+        var json,
+            ship = this;
+        ship.removeAll();
+        json = JSON.parse(jsonString);
+        _.each(json.buildings, function(b){
+            ship.add(make.itemFromJson(b));
+        });
+        _.each(json.units, function(u){
+            ship.add(make.unitFromJson(u));
+        });
         this.buildingsChanged();
     },
     showInScreen: function() {

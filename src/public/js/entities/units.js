@@ -15,11 +15,13 @@ var Unit = ItemEntity.extend({
     selected: false,
     //TODO: maybe make setting the size more direct
     size:[0.5,0.5],
+    imgRow: 0,
     init: function(x, y, settings) {
         'use strict';
         var toImgRow;
         settings = this.completeSettings(settings);
         this.speed = settings.speed;
+        this.imgRow = settings.imgRow;
         if(settings.turnDuration) {
             this.turnDuration = settings.turnDuration;
         }
@@ -322,6 +324,17 @@ var Unit = ItemEntity.extend({
             to: this.script[scriptIndex + 1] ?
                 this.script[scriptIndex + 1].time :
                 this.turnDuration
+        }
+    },
+    toJson: function(){
+        var self = this;
+        return {
+            x: self.x(),
+            y: self.y(),
+            settings: {
+                imgRow: self.imgRow,
+                speed: self.speed
+            }
         }
     }
 });

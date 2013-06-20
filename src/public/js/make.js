@@ -8,7 +8,8 @@
 /**
  * Factories for entities
  */
-var make = (function(){
+var make = (function() {
+    'use strict';
     var api = {};
 
     //ITEMS
@@ -41,6 +42,10 @@ var make = (function(){
         var item = api.item(json.type, [json.x, json.y, json.settings]);
         item.rotated(json.rotated);
         return item;
+    };
+
+    api.unitFromJson = function(json) {
+        return new Unit(json.x, json.y, json.settings);
     };
     return api;
 })();
