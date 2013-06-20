@@ -102,16 +102,6 @@ var utils = {
         }
         return matrix;
     },
-    makeItem: function(type) {
-        'use strict';
-        var Constructor = items[type];
-        if (!Constructor) {
-            console.warn("No such item type '" + type +
-                "' (utils.makeItem)");
-            return null;
-        }
-        return new Constructor(-100, -100, {});
-    },
     //returns the tile position of the mouse
     getMouse: function(exact) {
         'use strict';
@@ -126,21 +116,13 @@ var utils = {
         'use strict';
         document.getElementById('jsapp').style.cursor = cursor;
     },
-    vectorAdd: function(v1, v2) {
-        'use strict';
-        return { x: v1.x + v2.x, y: v1.y + v2.y };
-    },
     vectorSub: function(v1, v2) {
         'use strict';
         return { x: v1.x - v2.x, y: v1.y - v2.y };
     },
-    vectorEqual: function(v1, v2) {
+    boolToInt: function(boole){
         'use strict';
-        return v1.x === v2.x && v1.y === v2.y;
-    },
-    boolToInt: function(boolean){
-        'use strict';
-        return boolean ? 1 : 0;
+        return boole ? 1 : 0;
     },
     pathToPixels: function(path) {
         'use strict';
@@ -176,7 +158,7 @@ var utils = {
                 throw 'Number of ticks exceeded expected count ' +
                     '(pendingCount).';
             }
-        }
+        };
         this.error = function(){
             errorThrown = true;
             _errorCallback();

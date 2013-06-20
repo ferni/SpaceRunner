@@ -183,7 +183,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         screen.mouseLockedOn = null;
         hWall1.update();
         hWall2.update(); //(for animations)
-        door = utils.makeItem('door');
+        door = make.item('door');
         ok(door.canBuildAt(hX, hY, screen.ship),
             'door can be built without rotation at horizontal wall');
 

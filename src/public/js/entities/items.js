@@ -260,7 +260,7 @@ var WallItem = ItemEntity.extend({
     },
     lockedMouseMove: function(mouseTile) {
         'use strict';
-        var t, finder, cloneGrid, i, f, ui;
+        var t, finder, cloneGrid, ui;
         this.parent();
         ui = me.state.current();
         t = this.temp;
@@ -283,14 +283,12 @@ var WallItem = ItemEntity.extend({
     },
     lockedMouseUp: function(mouseTile) {
         'use strict';
-        var t, lastPath, i,
-            ui = me.state.current();
+        var ui = me.state.current();
         this.parent();
         if (!this.canBuildAt(mouseTile.x, mouseTile.y,
             me.state.current().ship)) {
             return;
         }
-        t = this.temp;
         _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x(), wall.y(), 'wall');
         });
@@ -306,13 +304,3 @@ var WallItem = ItemEntity.extend({
         ui.ship.remove(this);
     }
 });
-
-var items = {
-    weapon: WeaponItem,
-    engine: EngineItem,
-    power: PowerItem,
-    console: ConsoleItem,
-    component: ComponentItem,
-    door: DoorItem,
-    wall: WallItem
-};

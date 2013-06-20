@@ -326,3 +326,6 @@ var Unit = ItemEntity.extend({
     }
 });
 
+var units = {
+    'default' : Unit
+};

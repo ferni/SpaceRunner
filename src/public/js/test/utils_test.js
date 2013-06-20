@@ -72,9 +72,9 @@ test('getEmptyMatrix', function() {
     equal(matrix[3], undefined);
 });
 
-test('makeItem: invalid item', function() {
+test('make.item: invalid item', function() {
     'use strict';
-    equal(utils.makeItem('asdf'), null);
+    equal(make.item('asdf'), null);
 });
 
 asyncTest('getMouse', function() {

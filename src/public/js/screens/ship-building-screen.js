@@ -276,9 +276,9 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         'use strict';
         var type, newItem;
         this.ghostItems = {};//Items to be used when choosing building location
-        for (type in items) {
-            if (items.hasOwnProperty(type)) {
-                newItem = utils.makeItem(type);
+        for (type in make.itemTypes) {
+            if (make.itemTypes.hasOwnProperty(type)) {
+                newItem = make.item(type);
                 this.ghostItems[type] = newItem;
                 newItem.hide();
                 me.game.add(newItem, newItem.zIndex + 1000);
@@ -414,7 +414,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     //draws arbitrary stuff
     drawItem: function(x, y, type) {
         'use strict';
-        var item = utils.makeItem(type).x(x).y(y);
+        var item = make.item(type, [x, y, {}]);
         this.drawingScreen.push(item);
         me.game.repaint();
     },

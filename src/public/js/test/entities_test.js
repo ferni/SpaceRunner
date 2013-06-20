@@ -11,7 +11,7 @@ me, utils, ui, Ship*/
 module('entities/core.js');
 test('ItemEntity.trueSize()', function() {
     'use strict';
-    var door = utils.makeItem('door');
+    var door = make.item('door');
     deepEqual(door.size, [2, 1]);
     deepEqual(door.trueSize(), [2, 1]);
 
@@ -23,7 +23,7 @@ test('ItemEntity.trueSize()', function() {
 
 test('ItemEntity onShip/offShip animations', function() {
     'use strict';
-    var door = utils.makeItem('door');
+    var door = make.item('door');
     deepEqual(door.offShipAnimations, ['idle', 'v_idle']);
     deepEqual(door.onShipAnimations, ['h_open_close', 'v_open_close']);
     ok(!door.onShip(), 'door is not on ship');

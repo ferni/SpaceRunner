@@ -90,7 +90,7 @@ var Ship = Object.extend({
     //this should be called when the user builds something
     buildAt : function(x, y, buildingType) {
         var self = this,
-        building = utils.makeItem(buildingType),
+        building = make.item(buildingType),
         canBuild = building.canBuildAt(x, y, this),
         canBuildRotated;
         if (!canBuild) {
@@ -236,7 +236,7 @@ var Ship = Object.extend({
         itemArray = obj.buildings;
         for (i = 0; i < itemArray.length; i++) {
             if(itemArray[i].name === 'item') {
-                item = utils.makeItem(itemArray[i].type);
+                item = make.item(itemArray[i].type);
                 item.x(itemArray[i].x)
                     .y(itemArray[i].y)
                     .rotated(itemArray[i].rotated);
