@@ -10,6 +10,9 @@
  */
 var make = (function(){
     var api = {};
+
+    //ITEMS
+
     api.itemTypes = {
         weapon: WeaponItem,
         engine: EngineItem,
@@ -34,6 +37,10 @@ var make = (function(){
         }
 
     };
-
+    api.itemFromJson = function(json){
+        var item = api.item(json.type, [json.x, json.y, json.settings]);
+        item.rotated(json.rotated);
+        return item;
+    };
     return api;
 })();

@@ -219,13 +219,7 @@ var Ship = Object.extend({
         return JSON.stringify({
             'tmxName': this.tmxName,
             'buildings': _.map(this.buildings(), function(b) {
-                            return {
-                                name: b.name,
-                                type: b.type,
-                                x: b.x(),
-                                y: b.y(),
-                                rotated: b.rotated()
-                            };})
+                            return b.toJson();})
             //TODO: clearly separate buildings and units
         });
     },
@@ -235,11 +229,8 @@ var Ship = Object.extend({
         obj = JSON.parse(jsonString);
         itemArray = obj.buildings;
         for (i = 0; i < itemArray.length; i++) {
-            if(itemArray[i].name === 'item') {
-                item = make.item(itemArray[i].type);
-                item.x(itemArray[i].x)
-                    .y(itemArray[i].y)
-                    .rotated(itemArray[i].rotated);
+            if(true || itemArray[i].name === 'item') {
+                item = make.itemFromJson(itemArray[i]);
                 this.add(item);
             } else if(itemArray[i].name === 'unit'){
                 item = new Unit(itemArray[i].x, itemArray[i].y);

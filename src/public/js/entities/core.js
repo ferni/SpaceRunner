@@ -235,6 +235,16 @@ var ItemEntity = TileEntity.extend({
             tiles.push({ x: x, y: y });
         });
         return tiles;
+    },
+    toJson: function(){
+        var self = this;
+        return {
+            type: self.type,
+            x: self.x(),
+            y: self.y(),
+            rotated: self.rotated(),
+            settings: {}
+        }
     }
 });
 
