@@ -29,7 +29,7 @@ var shared = require('./public/js/shared'),
 
 
 function getPath(mapName){
-    return 'public/data/outlines/' + mapName + '.tmx';
+    return __dirname + '/public/data/outlines/' + mapName + '.tmx';
 }
 
 function loadMap(maps, index, end) {
