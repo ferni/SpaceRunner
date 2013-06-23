@@ -80,7 +80,12 @@ Shared code between server and client
             return Class;
     };
 
+
+    //SHARED ENTITIES
     exports.TestSharedEntity = ExtendableShared.extendShared({});
+
+
+
 
     //should have access to the ship
     exports.verifyOrder = function(order, ship){

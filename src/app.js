@@ -19,7 +19,9 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     shared = require('./public/js/shared'),
+    shipMaps = require('./ship-maps'),
     app = express(),
+
     //TODO: change for connect-redis store
     store  = new express.session.MemoryStore;
 
@@ -67,5 +69,8 @@ http.createServer(app).listen(app.get('port'), function() {
     'use strict';
     console.log('Express server listening on port ' + app.get('port'));
 
+    shipMaps.loadMaps(function(maps){
+        console.log(maps);
+    });
 });
 

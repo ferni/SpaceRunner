@@ -10,7 +10,12 @@
             <h3>Join an existing battle</h3>
             <ul data-bind="foreach: battles">
                 <li class="button" data-bind="click: $parent.joinBattle">
-                    <span data-bind="text: id"></span>
+                    #<span data-bind="text: id"></span>
+                    <!--<p>
+                        <span class="player-name" data-bind="text: playerLeft"></span>
+                        vs
+                        <span class="player-name" data-bind="text: playerRight"></span>
+                    </p>  -->
                 </li>
             </ul>
         </p>

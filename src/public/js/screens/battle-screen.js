@@ -32,6 +32,10 @@ var BattleScreen = me.ScreenObject.extend({
             throw new Error('The battleID is mandatory for the battle-screen');
         }
         this.battleID = settings.battleID;
+
+        //get the ship from the server according to the battleID
+
+
         if(settings.tmxName){
             me.game.ship = new Ship({tmxName: settings.tmxName}, true);
         }

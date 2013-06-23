@@ -44,6 +44,7 @@ var make = (function() {
         return item;
     };
 
+    //UNITS
     api.unitFromJson = function(json) {
         return new Unit(json.x, json.y, json.settings);
     };
