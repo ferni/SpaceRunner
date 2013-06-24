@@ -65,13 +65,14 @@ app.post('/battles/join', battles.join);
 GLOBAL.battles = []; //filled with model.Battle
 GLOBAL.currentPlayers = []; //filled with model.Player
 
-http.createServer(app).listen(app.get('port'), function() {
+console.log('Loading maps...');
+shipMaps.loadMaps(function(maps){
     'use strict';
-    console.log('Express server listening on port ' + app.get('port'));
-
-    shipMaps.loadMaps(function(maps){
-        console.log(maps);
-        console.log(maps['cyborg_drone'].layers[2]);
+    console.log(maps);
+    http.createServer(app).listen(app.get('port'), function() {
+        'use strict';
+        console.log('Express server listening on port ' + app.get('port'));
     });
 });
+
 
