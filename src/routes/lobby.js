@@ -30,8 +30,11 @@ exports.get = function(req, res) {
             throw 'playerID stored in session not found among currentPlayers';
         }
     }
+    console.log((new model.Ship('asdf')).tmxName);
     res.json({
         playerName: player.name,
-        battles: battles
+        battles: _.map(battles, function(b){
+            return b.jsonForLobby();
+        })
     });
 };

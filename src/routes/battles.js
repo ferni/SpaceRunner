@@ -14,7 +14,7 @@ exports.create = function(req, res) {
     if(!req.body.shipJsonString) {
         throw 'shipJsonString must be provided';
     }
-    battles.push(new model.Battle(battleID, req.body.shipJsonString));
+    battles.push(new model.Battle({id: battleID, shipJsonString: req.body.shipJsonString}));
     res.json({ok: true, battleID: battleID});
 };
 
@@ -30,5 +30,11 @@ exports.join = function(req, res) {
     if(!battle) {
         throw 'battle ' + battleID +' not found';
     }
-    res.json({shipJsonString: battle.shipJsonString});
+    if(battle.isFull()) {
+        res.json({error: 'battle is full'});
+    } else{
+        battle.addPlayer(req.session.playerID);
+        res.json({shipJsonString: battle.shipJsonString});
+    }
+
 };

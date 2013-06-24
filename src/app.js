@@ -71,6 +71,7 @@ http.createServer(app).listen(app.get('port'), function() {
 
     shipMaps.loadMaps(function(maps){
         console.log(maps);
+        console.log(maps['cyborg_drone'].layers[2]);
     });
 });
 

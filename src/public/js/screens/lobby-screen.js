@@ -39,7 +39,13 @@ var LobbyScreen = me.ScreenObject.extend({
                 this.playerName = ko.observable(data.playerName);
                 this.battles = ko.observableArray(data.battles);
                 this.joinBattle = function(battle) {
-                    screen.joinBattle(battle.id);
+                    if(battle.playerLeft === null ||
+                        battle.playerRight === null){
+                        server.joinBattle(battle.id);
+                    }
+                    else{
+                        alert('That battle is full');
+                    }
                 };
                 this.hostBattle = screen.hostBattle;
             };
@@ -47,14 +53,7 @@ var LobbyScreen = me.ScreenObject.extend({
             ko.applyBindings(new HtmlViewModel(data));
         });
     },
-    joinBattle: function(battleID) {
-        console.log('Joining battle...');
-        $.post('/battles/join', {battleID: battleID},
-            function(data) {
-                me.state.change(me.state.BATTLE,
-                    {shipJsonString: data.shipJsonString});
-            }, 'json');
-    },
+
     hostBattle: function() {
         me.state.change(me.state.SELECT);
     }

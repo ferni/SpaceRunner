@@ -5,11 +5,46 @@
 * All rights reserved.
 */
 
-var _ = require('underscore')._;
+var _ = require('underscore')._,
+    Extendable = require('./extendable').Extendable;
 
-exports.Battle = function(id, shipJsonString) {
+
+exports.playerByID = function(id) {
+    return _.find(currentPlayers, function(p){
+        return p.id == id;
+    });
+}
+
+exports.Battle = function(parameters) {
+    var id = parameters.id;
+    var shipJsonString = parameters.shipJsonString;
     this.id = id;
     this.shipJsonString = shipJsonString;
+    //The ids of the players currently in this battle
+    this.playerLeft = null;
+    this.playerRight = null;
+    this.isFull = function() {
+        return this.playerLeft !== null
+            && this.playerRight !== null;
+    };
+    this.addPlayer = function(playerID){
+        if(this.playerLeft === null) {
+            this.playerLeft = playerID;
+        } else if(this.playerRight === null) {
+            this.playerRight = playerID;
+        } else{
+            throw 'Cannot add player, battle is full';
+        }
+    };
+    this.jsonForLobby = function(){
+        return {
+            id: this.id,
+            playerLeft: this.playerLeft,
+            playerRight: this.playerRight !== null ?
+                exports.playerByID(this.playerRight).name :
+                null
+        }
+    };
 }
 
 exports.Player = function(params) {
@@ -35,7 +70,11 @@ exports.createNewPlayer = function() {
         name: exports.toUniqueName('Player')
     });
     return player;
-
 }
 
+exports.Ship = Extendable.extend({
+    init: function(tmxName) {
+        this.tmxName = tmxName;
+    }
+});
 

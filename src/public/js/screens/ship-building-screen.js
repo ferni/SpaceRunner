@@ -179,7 +179,8 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         $.post('/battles/create',{shipJsonString: me.game.ship.toJsonString()},
                     function(data) {
             console.log('Battle created');
-            me.state.change(me.state.BATTLE, {battleID: data.battleID});
+            //TODO: maybe make all in one request instead of two
+            server.joinBattle(data.battleID);
         }, 'json');
 
     },

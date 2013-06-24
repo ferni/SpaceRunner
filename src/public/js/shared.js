@@ -84,7 +84,9 @@ Shared code between server and client
     //SHARED ENTITIES
     exports.TestSharedEntity = ExtendableShared.extendShared({});
 
+    exports.colMapCodes = {
 
+    }
 
 
     //should have access to the ship
