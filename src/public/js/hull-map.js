@@ -5,34 +5,28 @@
 * All rights reserved.
 */
 
-var charMap = {
-    codes: {
-        _solid: 's',
-        _front: 'f',
-        _back: 'b',
-        _cleared: '.'
-    },
+var hullMap = {
     getCollisionTileChar: function(tmxMap, x, y) {
         'use strict';
         var tileLayer, tileId, tileSet, tilePro;
         tileLayer = tmxMap.getLayerByName('collision');
         tileId = tileLayer.getTileId(x + 1, y + 1);
         if (tileId === null) {
-            return charMap.codes._cleared;
+            return shared.tiles.clear;
         }
         tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
         tilePro = tileSet.getTileProperties(tileId);
         if (tilePro.isSolid) {
-            return charMap.codes._solid;
+            return shared.tiles.solid;
         }
         if (tilePro.isPlatform) {
-            return charMap.codes._back;
+            return shared.tiles.back;
         }
         if (tilePro.isLeftSlope) {
-            return charMap.codes._front;
+            return shared.tiles.front;
         }
         if (tilePro.isRightSlope) {
-            return charMap.codes._front;
+            return shared.tiles.front;
         }
     },
     get: function(tmxMap) {

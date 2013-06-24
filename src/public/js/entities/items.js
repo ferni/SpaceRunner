@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemEntity, PF, charMap, utils, width, height*/
+/*global me, _, pr, ItemEntity, PF, hullMap, utils, width, height*/
 
 /* individual object class */
 var ItemEntity = TileEntity.extend({
@@ -49,7 +49,7 @@ var ItemEntity = TileEntity.extend({
     buildPlacementRules: function() {
         'use strict';
         this.placementRules = [];
-        this.placementRules.push(pr.make.spaceRule(charMap.codes._cleared,
+        this.placementRules.push(pr.make.spaceRule(shared.tiles.clear,
             this.size[0], this.size[1]));
     },
 
@@ -180,7 +180,7 @@ var WeaponItem = ItemEntity.extend({
         'use strict';
         this.parent();
         this.placementRules.push(new pr.PlacementRule({
-            tile: charMap.codes._front,
+            tile: shared.tiles.front,
             inAny: [{
                 x: 2,
                 y: 0
@@ -207,7 +207,7 @@ var EngineItem = ItemEntity.extend({
         'use strict';
         this.parent();
         this.placementRules.push(new pr.PlacementRule({
-            tile: charMap.codes._back,
+            tile: shared.tiles.back,
             inAll: [{
                 x: -1,
                 y: 0

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, charMap, utils, _ */
+/*global me, hullMap, utils, _ */
 
 var Ship = Object.extend({
     hullMap: {},
@@ -18,7 +18,7 @@ var Ship = Object.extend({
             changed: true,
             _hullMap: null,
             update: function() {
-                this._hullMap = charMap.get(ship.tmxTileMap);
+                this._hullMap = hullMap.get(ship.tmxTileMap);
                 this.changed = true;
             },
             get: function() {
@@ -34,7 +34,7 @@ var Ship = Object.extend({
             update: function() {
                 var self = this;
                 self._buildingsMap = utils.getEmptyMatrix(ship.width,
-                    ship.height, charMap.codes._cleared);
+                    ship.height, shared.tiles.clear);
                 _.each(ship.buildings(), function(b) {
                     if (!b.hidden()) {
                         utils.itemTiles(b, function(x, y) {
@@ -120,7 +120,7 @@ var Ship = Object.extend({
             if (empty) {
                 return;
             }
-            if (ship.mapAt(x, y) === charMap.codes._cleared) {
+            if (ship.mapAt(x, y) === shared.tiles.clear) {
                 empty = {x: x, y: y};
             }
         });
@@ -194,10 +194,10 @@ var Ship = Object.extend({
         return what && what.name === name;
     },
     isInside: function(x, y) {
-        var tiles = charMap.codes,
+        var tiles = shared.tiles,
             tile = this.mapAt(x, y);
-        return tile !== tiles._solid && tile !== tiles._front &&
-            tile !== tiles._back;
+        return tile !== tiles.solid && tile !== tiles.front &&
+            tile !== tiles.back;
     },
 
 
@@ -205,11 +205,11 @@ var Ship = Object.extend({
     _getJointMap: function() {
         var self = this,
         joint = utils.getEmptyMatrix(this.width, this.height,
-            charMap.codes._cleared);
+            shared.tiles.clear);
         utils.matrixTiles(this.width, this.height,
             function(x, y) {
                 joint[y][x] = self.hullMap.get()[y][x];
-                if (self.buildingsMap.get()[y][x] !== charMap.codes._cleared) {
+                if (self.buildingsMap.get()[y][x] !== shared.tiles.clear) {
                     joint[y][x] = self.buildingsMap.get()[y][x];
                 }
         });
@@ -250,9 +250,9 @@ var Ship = Object.extend({
         var ship = this,
             pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
         utils.matrixTiles(this.width, this.height, function(x, y) {
-            if (ship.map()[y][x] === charMap.codes._cleared ||
+            if (ship.map()[y][x] === shared.tiles.clear ||
                 ship.map()[y][x].name === 'unit') {
-                pfMatrix[y][x] = 0; //cleared tiles and units are walkable
+                pfMatrix[y][x] = 0; //clear tiles and units are walkable
             }
         });
         return pfMatrix;

@@ -6,7 +6,7 @@
 */
 
 /*global me, html, jsApp, ko, _, PF, $, utils, TILE_SIZE, HALF_TILE,
-charMap, Unit*/
+hullMap, Unit*/
 
 var BattleScreen = me.ScreenObject.extend({
     BattleID: null,

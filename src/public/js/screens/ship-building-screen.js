@@ -8,7 +8,7 @@
 
 /*global
 _, html, $, Ship, me, utils, jsApp, width, height, AjaxUpload,
-items, RedColorEntity, charMap */
+items, RedColorEntity, hullMap */
 
 /* Screen where one builds the ship */
 var ShipBuildingScreen = me.ScreenObject.extend({
@@ -439,7 +439,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
             this.ship.map()[y][x] !== undefined) {
             shipTile = this.ship.map()[y][x];
         }
-        if (shipTile === charMap.codes._cleared && this.chosen &&
+        if (shipTile === shared.tiles.clear && this.chosen &&
             this.chosen.occupies(x, y)) {
             return this.chosen;
         }

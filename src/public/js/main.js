@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, $, items, RedColorEntity, charMap,
+/*global me, _, utils, $, items, RedColorEntity, hullMap,
 html, ShipSelectScreen, ShipBuildingScreen, BattleScreen*/
 
 //sugar

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, charMap, pr, TILE_SIZE*/
+/*global me, _, utils, hullMap, pr, TILE_SIZE*/
 
 /* An object that has tile position (x and y),
     and row length and col length through "size"

@@ -84,8 +84,11 @@ Shared code between server and client
     //SHARED ENTITIES
     exports.TestSharedEntity = ExtendableShared.extendShared({});
 
-    exports.colMapCodes = {
-
+    exports.tiles = {
+        solid: 's',
+        front: 'f',
+        back: 'b',
+        clear: '.'
     }
 
 
