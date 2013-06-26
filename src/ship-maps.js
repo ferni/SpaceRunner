@@ -7,25 +7,7 @@
 
 var shared = require('./public/js/shared'),
     fs = require('fs'),
-    tmx = require('tmx'),
-    mapNames = [
-        'cyborg_battleship1',
-        'cyborg_cruiser',
-        'cyborg_drone',
-        'cyborg_frigate',
-        'humanoid_battleship',
-        'humanoid_cruiser',
-        'humanoid_drone',
-        'humanoid_frigate',
-        'liquid_battleship',
-        'liquid_cruiser',
-        'liquid_drone',
-        'liquid_frigate',
-        'mechanoid_battleship',
-        'mechanoid_cruiser',
-        'mechanoid_drone',
-        'mechanoid_frigate'
-    ];
+    tmx = require('tmx');
 
 
 function getPath(mapName){
@@ -80,13 +62,13 @@ function loadMap(maps, index, end) {
     'use strict';
     var file, parser,
         mapName;
-    mapName = mapNames[index];
+    mapName = shared.mapNames[index];
     file = fs.createReadStream(getPath(mapName));
     parser = tmx.createParser();
     parser.on('data', function(buffer){
         maps[mapName] = JSON.parse(buffer.toString());
         maps[mapName] = toMapWithHull(maps[mapName], mapName);
-        if(index < mapNames.length - 1) {
+        if(index < shared.mapNames.length - 1) {
             loadMap(maps, index + 1, end);
         } else{
             end(maps);

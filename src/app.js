@@ -16,6 +16,7 @@ var express = require('express'),
     ship = require('./routes/ship'),
     battles = require('./routes/battles'),
     lobby = require('./routes/lobby'),
+    ping = require('./routes/ping'),
     http = require('http'),
     path = require('path'),
     shared = require('./public/js/shared'),
@@ -56,19 +57,24 @@ app.configure('development', function() {
 
 app.post('/save', ship.save);
 app.post('/load', ship.load);
+app.post('/ship/gethulls', ship.gethulls);
+
 app.get('/lobby/get', lobby.get);
 
 app.post('/battles/create', battles.create);
 app.post('/battles/join', battles.join);
 
+app.post('/ping', ping.ping);
+
 //globals
 GLOBAL.battles = []; //filled with model.Battle
 GLOBAL.currentPlayers = []; //filled with model.Player
 
+
 console.log('Loading maps...');
 shipMaps.loadMaps(function(maps){
     'use strict';
-    console.log(maps);
+    GLOBAL.shipMaps = maps;
     http.createServer(app).listen(app.get('port'), function() {
         'use strict';
         console.log('Express server listening on port ' + app.get('port'));

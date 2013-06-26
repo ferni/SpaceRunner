@@ -42,3 +42,8 @@ exports.load = function(req, res) {
     });
 };
 
+exports.gethulls = function(req, res){
+    'use strict';
+    res.json(shipMaps);
+};
+

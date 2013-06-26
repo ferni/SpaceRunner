@@ -18,5 +18,17 @@ QUnit.done(function(e) {
 
 th.onGameReady(function() {
    'use strict';
-    QUnit.start();
+    var onNodeJS = false;
+    $.post('ping', function(data){
+        if(data.ok) {
+            onNodeJS = true;
+        }
+    }, 'json')
+        .always(function(){
+            if(onNodeJS) {
+                //nodejs is running
+                registerTestsRequiringNodeJS();
+            }
+            QUnit.start();
+        });
 });

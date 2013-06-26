@@ -139,7 +139,26 @@ Shared code between server and client
                 }
             });
         });
-    }
+    };
+
+    exports.mapNames = [
+        'cyborg_battleship1',
+        'cyborg_cruiser',
+        'cyborg_drone',
+        'cyborg_frigate',
+        'humanoid_battleship',
+        'humanoid_cruiser',
+        'humanoid_drone',
+        'humanoid_frigate',
+        'liquid_battleship',
+        'liquid_cruiser',
+        'liquid_drone',
+        'liquid_frigate',
+        'mechanoid_battleship',
+        'mechanoid_cruiser',
+        'mechanoid_drone',
+        'mechanoid_frigate'
+    ];
 
 
 
