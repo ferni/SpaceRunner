@@ -70,28 +70,12 @@ screens.register('battle', GameScreen.extend({
     },
     onHtmlLoaded: function() {
         'use strict';
-        var screen = this,
-            DebugSettingsPanelVM;
+        var screen = this;
         $('#resume-button').click(function() {
             screen.resume();
         });
 
-        DebugSettingsPanelVM = function(){
-            this.settings = ko.mapping.fromJS(screen.settings);
-            this.apply = function(){
-                //reload screen
-                if (screen.paused) {
-                    me.state.change('battle', ko.toJS(this.settings));
-                } else{
-                    alert('Can apply only when paused.');
-                }
-            };
-            this.toggle = function(){
-                this.settings.showSettings(!this.settings.showSettings());
-            };
-        };
-        ko.applyBindings(new DebugSettingsPanelVM(),
-            document.getElementById('debug-settings'));
+
     },
     update: function() {
         'use strict';

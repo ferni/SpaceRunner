@@ -73,8 +73,8 @@ var Unit = ItemEntity.extend({
             return true;
         }
         this.parent();
-        if (screen.name !== 'battle-screen') {
-            throw 'The unit should be on the battle_screen (update).';
+        if (screen.name !== 'battle') {
+            throw 'The unit should be on the battle screen (update).';
         }
         elapsed = screen.getElapsedTime();
         position = this.getPosGivenTime(elapsed);
