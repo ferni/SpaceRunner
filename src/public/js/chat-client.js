@@ -41,11 +41,13 @@ var chatClient = (function(){
     }
 
     client.start = function(nickname){
-        var $clientDom = $('#chat-client'),
-            vm = new ChatViewModel(nickname);
-        ko.applyBindings(vm, $clientDom.get(0));
-
-        $clientDom.find('input').focus();
+        var $clientDom = $('#chat-client');
+        if(typeof $clientDom[0] !== 'undefined'){
+            ko.applyBindings(new ChatViewModel(nickname), $clientDom.get(0));
+            $clientDom.find('input').focus();
+        }else{
+            console.warn('#chat-client div not found');
+        }
     };
     return client;
 })();

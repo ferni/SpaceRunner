@@ -8,12 +8,10 @@
 /*global me, html, jsApp, ko, _, PF, $, utils, TILE_SIZE, HALF_TILE,
 hullMap, Unit*/
 
-var BattleScreen = me.ScreenObject.extend({
+var BattleScreen = GameScreen.extend({
     BattleID: null,
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
-    name: 'battle-screen',
-    isReset: false,
     paused: true,
     turnBeginTime: null,
     settings:{},
@@ -23,11 +21,10 @@ var BattleScreen = me.ScreenObject.extend({
     orders: [],
     init: function() {
         'use strict';
-        this.parent(true);
+        this.parent('battle-screen');
     },
-    onResetEvent: function(settings) {
+    onReset: function(settings) {
         'use strict';
-        this.parent();
         if(!settings && !settings.battleID) {
             throw new Error('The battleID is mandatory for the battle-screen');
         }
@@ -50,15 +47,10 @@ var BattleScreen = me.ScreenObject.extend({
          jsonString: me.game.ship.toJsonString()
          }, true);*/
         this.settings = this.completeSettings(settings);
-        me.video.clearSurface(me.video.getScreenContext(), 'black');
-
-
         this.TURN_DURATION_SEC = this.settings.turnDuration;
         this.TURN_DURATION = this.settings.turnDuration * 1000;
 
         this.configureUnits();
-        html.load('battle-screen');
-        this.onHtmlLoaded();
         this.scripter = this.getScripter();
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
@@ -69,14 +61,9 @@ var BattleScreen = me.ScreenObject.extend({
         me.game.ship.showInScreen();
 
         this.pause();
-
-        this.isReset = true;
-        jsApp.onScreenReset();
     },
-    onDestroyEvent: function() {
+    onDestroy: function() {
         'use strict';
-        this.isReset = false;
-        html.clear();
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);

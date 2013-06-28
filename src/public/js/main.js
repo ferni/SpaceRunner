@@ -262,6 +262,7 @@ var jsApp = {
                 pendingCount: 4, //must be number of screen loaded
                 allDone: function(){
                     //start the game
+                    console.log('starting game...');
                     me.state.change(FIRST_SCREEN);
                     self.loadReady = true;
                     self.onAppLoaded();

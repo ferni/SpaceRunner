@@ -11,27 +11,22 @@ _, html, $, Ship, me, utils, jsApp, width, height, AjaxUpload,
 items, RedColorEntity, hullMap */
 
 /* Screen where one builds the ship */
-var ShipBuildingScreen = me.ScreenObject.extend({
-    name: 'ship-building-screen',
-    isReset: false,
+var ShipBuildingScreen = GameScreen.extend({
     ship: null,
     prevMouse: {},
     width: 0,
     height: 0,
     init: function() {
         'use strict';
-        this.parent(true);
+        this.parent('ship-building-screen');
     },
     /**
      *
      * @param {Object} settings has tmxName or jsonData.
      */
-    onResetEvent: function(settings) {
+    onReset: function(settings) {
         'use strict';
         var self = this;
-        this.parent(true);
-
-        me.video.clearSurface(me.video.getScreenContext(), 'black');
         // stuff to reset on state change
         this.ship = new Ship(settings, true);
         this.ship.showInScreen();
@@ -57,31 +52,22 @@ var ShipBuildingScreen = me.ScreenObject.extend({
         me.input.registerMouseEvent('dblclick', me.game.viewport,
             this.mouseDbClick.bind(this));
 
-
-        /*user interface stuff*/
-        html.load('ship-building-screen');
-        this.onHtmlLoaded();
-
         this.mouseLockedOn = null;
         this.prepareGhostItems();
         this.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
 
-        this.isReset = true;
-        jsApp.onScreenReset();
     },
 
     /* ---
     action to perform when game is finished (state change)
     --- */
-    onDestroyEvent: function() {
+    onDestroy: function() {
         'use strict';
         me.input.unbindKey(me.input.KEY.ESC);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('dblclick', me.game.viewport);
-        html.clear();
-        this.isReset = false;
     },
     update: function() {
         'use strict';
@@ -368,7 +354,7 @@ var ShipBuildingScreen = me.ScreenObject.extend({
     },
     clearRed: function() {
         'use strict';
-        var i = 0;
+        var i;
         for (i = this.redIndex; i > 0; i--) {
             me.game.remove(this.redScreen[i - 1]);
             this.redScreen.pop();

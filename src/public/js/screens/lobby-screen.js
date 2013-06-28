@@ -7,29 +7,17 @@
 
 /*global me*/
 
-var LobbyScreen = me.ScreenObject.extend({
-    name: 'template-screen',
-    isReset: false,
+var LobbyScreen = GameScreen.extend({
     init: function() {
         'use strict';
-        this.parent();
+        this.parent('lobby-screen');
     },
-    onResetEvent: function() {
+    onReset: function() {
         'use strict';
-        this.parent();
-        me.video.clearSurface(me.video.getScreenContext(), 'gray');
-        html.load('lobby-screen');
-        this.onHtmlLoaded();
-
         //do stuff here
-
-        this.isReset = true;
-        jsApp.onScreenReset();
     },
-    onDestroyEvent: function() {
+    onDestroy: function(){
         'use strict';
-        this.isReset = false;
-        html.clear();
     },
     onHtmlLoaded: function() {
         'use strict';

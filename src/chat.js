@@ -8,9 +8,9 @@
 
 /*global */
 
-var chatRoutes = require('./routes/chat');
 
-exports.init = function(app){
+
+exports.init = function(app, chatRoutes){
     GLOBAL.linesInServer = [{
         id:0,
         sender:'Server',
@@ -18,4 +18,8 @@ exports.init = function(app){
     }];
     app.get('/chat/getlines', chatRoutes.getlines);
     app.post('/chat/send', chatRoutes.send);
+};
+
+exports.getLines = function(params){
+
 };

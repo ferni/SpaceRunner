@@ -17,6 +17,7 @@ var express = require('express'),
     battles = require('./routes/battles'),
     lobby = require('./routes/lobby'),
     ping = require('./routes/ping'),
+    chatRoutes = require('./routes/chat'),
     http = require('http'),
     path = require('path'),
     shared = require('./public/js/shared'),
@@ -69,7 +70,7 @@ app.post('/ping', ping.ping);
 GLOBAL.battles = []; //filled with model.Battle
 GLOBAL.currentPlayers = []; //filled with model.Player
 
-require('./chat').init(app);
+require('./chat').init(app, chatRoutes);
 
 console.log('Loading maps...');
 shipMaps.loadMaps(function(maps){

@@ -7,26 +7,16 @@
 
 /*global me, html, jsApp, ko, _ */
 
-var ShipSelectScreen = me.ScreenObject.extend({
-    name: 'ship-select-screen',
-    isReset: false,
+var ShipSelectScreen = GameScreen.extend({
     init: function() {
         'use strict';
-        this.parent();
+        this.parent('ship-select-screen');
     },
-    onResetEvent: function() {
+    onReset: function() {
         'use strict';
-        this.parent();
-        me.video.clearSurface(me.video.getScreenContext(), 'gray');
-        html.load('ship-select-screen');
-        this.onHtmlLoaded();
-        this.isReset = true;
-        jsApp.onScreenReset();
     },
-    onDestroyEvent: function() {
+    onDestroy: function() {
         'use strict';
-        this.isReset = false;
-        html.clear();
     },
     onHtmlLoaded: function() {
         'use strict';
