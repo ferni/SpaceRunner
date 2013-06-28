@@ -257,35 +257,14 @@ var jsApp = {
     loaded: function() {
         'use strict';
         // set screens
-        var self = this,
-            tasks = new utils.TaskWait({
-                pendingCount: 4, //must be number of screen loaded
-                allDone: function(){
-                    //start the game
-                    console.log('starting game...');
-                    me.state.change(FIRST_SCREEN);
-                    self.loadReady = true;
-                    self.onAppLoaded();
-                },
-                error: function(){
-                    alert('An error has occurred attempting to load html templates.');
-                }
-            });
-        me.state.LOBBY = me.state.USER;
-        me.state.SELECT = me.state.USER + 1;
-        me.state.BUILD = me.state.USER + 2;
-        me.state.BATTLE = me.state.USER + 3;
-        window.FIRST_SCREEN = me.state.LOBBY;
-
-        me.state.set(me.state.LOBBY, new LobbyScreen());
-        me.state.set(me.state.SELECT, new ShipSelectScreen());
-        me.state.set(me.state.BUILD, new ShipBuildingScreen());
-        me.state.set(me.state.BATTLE, new BattleScreen());
-
-        html.store('lobby-screen', tasks.done, tasks.error);
-        html.store('ship-select-screen', tasks.done, tasks.error);
-        html.store('ship-building-screen', tasks.done, tasks.error);
-        html.store('battle-screen', tasks.done, tasks.error);
+        var self = this;
+        window.FIRST_SCREEN = 'lobby';
+        screens.loadAll(function(){
+            //start the game
+            me.state.change(FIRST_SCREEN);
+            self.loadReady = true;
+            self.onAppLoaded();
+        });
 
         chatClient.start();
         //prepare dom

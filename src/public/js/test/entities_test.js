@@ -92,7 +92,7 @@ asyncTest('Wall building', function() {
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
     th.loadScreen(function() {
-            me.state.change(me.state.BUILD, {tmxName: 'test'});
+            me.state.change('ship-building', {tmxName: 'test'});
         },
         function(screen) {
             screen.ship.buildAt(x, y, 'wall');
@@ -118,7 +118,7 @@ asyncTest('Wall building canceled by escape key', function() {
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, {tmxName: 'test'});
+        me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         screen.choose('wall');
         th.mouseBegin(screen);

@@ -14,7 +14,7 @@
          $.post('/battles/join', {battleID: battleID},
              function(data) {
                  if (!data.error) {
-                     me.state.change(me.state.BATTLE,
+                     me.state.change('battle',
                          {
                              battleID: battleID,
                              shipJsonString: data.shipJsonString
@@ -24,4 +24,4 @@
                  }
              }, 'json');
      }
- }
+ };

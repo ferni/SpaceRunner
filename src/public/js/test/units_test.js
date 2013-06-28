@@ -11,7 +11,7 @@
 module('units.js');
 asyncTest('cropScript', function(){
     th.loadScreen(function() {
-        me.state.change(me.state.BATTLE, {tmxName: 'test',
+        me.state.change('battle', {tmxName: 'test',
             turnDuration: 3,
             collisionResolution: collisionResolutions.none});
     }, function(screen) {

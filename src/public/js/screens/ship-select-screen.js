@@ -7,10 +7,10 @@
 
 /*global me, html, jsApp, ko, _ */
 
-var ShipSelectScreen = GameScreen.extend({
-    init: function() {
+screens.register('ship-select', GameScreen.extend({
+    init: function(name) {
         'use strict';
-        this.parent('ship-select-screen');
+        this.parent(name);
     },
     onReset: function() {
         'use strict';
@@ -48,7 +48,7 @@ var ShipSelectScreen = GameScreen.extend({
             };
             this.selectShip = function(shipType) {
                 var tmxName = screen.htmlVm.selectedRace() + '_' + shipType;
-                me.state.change(me.state.BUILD, {tmxName: tmxName});
+                me.state.change('ship-building', {tmxName: tmxName});
             };
             this.races = [
                 new RaceButtonSet('Cyborg',
@@ -85,5 +85,5 @@ var ShipSelectScreen = GameScreen.extend({
         ko.applyBindings(this.htmlVm,
             document.getElementById('screensUi'));
     }
-});
+}));
 

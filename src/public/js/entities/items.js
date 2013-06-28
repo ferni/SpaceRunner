@@ -106,7 +106,7 @@ var ItemEntity = TileEntity.extend({
     //onBuilt is called only when the user himself builds it
     onBuilt: function() {
         'use strict';
-        if (!me.state.isCurrent(me.state.BUILD)) {
+        if (!me.state.isCurrent('ship-building')) {
             console.error('item.onBuilt called when not building the ship');
             return;
         }
@@ -342,7 +342,7 @@ var WallItem = ItemEntity.extend({
         'use strict';
         var wallsAround, x, y, top, left, bot, right, animationName, ui;
         this.parent();
-        if (!me.state.isCurrent(me.state.BUILD) ||
+        if (!me.state.isCurrent('ship-building') ||
             !me.state.current().isReset) {
             return;
         }

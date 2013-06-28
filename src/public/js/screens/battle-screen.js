@@ -8,7 +8,7 @@
 /*global me, html, jsApp, ko, _, PF, $, utils, TILE_SIZE, HALF_TILE,
 hullMap, Unit*/
 
-var BattleScreen = GameScreen.extend({
+screens.register('battle', GameScreen.extend({
     BattleID: null,
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
@@ -19,9 +19,9 @@ var BattleScreen = GameScreen.extend({
     scripter: null,
     dragBox: null,
     orders: [],
-    init: function() {
+    init: function(name) {
         'use strict';
-        this.parent('battle-screen');
+        this.parent(name);
     },
     onReset: function(settings) {
         'use strict';
@@ -81,7 +81,7 @@ var BattleScreen = GameScreen.extend({
             this.apply = function(){
                 //reload screen
                 if (screen.paused) {
-                    me.state.change(me.state.BATTLE, ko.toJS(this.settings));
+                    me.state.change('battle', ko.toJS(this.settings));
                 } else{
                     alert('Can apply only when paused.');
                 }
@@ -315,5 +315,5 @@ var BattleScreen = GameScreen.extend({
         }
         return me.timer.getTime() - this.turnBeginTime;
     }
-});
+}));
 

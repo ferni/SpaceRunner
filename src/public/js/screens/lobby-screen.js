@@ -5,12 +5,12 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, screens, GameScreen*/
 
-var LobbyScreen = GameScreen.extend({
-    init: function() {
+screens.register('lobby', GameScreen.extend({
+    init: function(name) {
         'use strict';
-        this.parent('lobby-screen');
+        this.parent(name);
     },
     onReset: function() {
         'use strict';
@@ -44,6 +44,6 @@ var LobbyScreen = GameScreen.extend({
     },
 
     hostBattle: function() {
-        me.state.change(me.state.SELECT);
+        me.state.change('ship-select');
     }
-});
+}));

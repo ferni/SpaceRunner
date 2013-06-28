@@ -11,14 +11,14 @@ _, html, $, Ship, me, utils, jsApp, width, height, AjaxUpload,
 items, RedColorEntity, hullMap */
 
 /* Screen where one builds the ship */
-var ShipBuildingScreen = GameScreen.extend({
+screens.register('ship-building', GameScreen.extend({
     ship: null,
     prevMouse: {},
     width: 0,
     height: 0,
-    init: function() {
+    init: function(name) {
         'use strict';
-        this.parent('ship-building-screen');
+        this.parent(name);
     },
     /**
      *
@@ -87,7 +87,7 @@ var ShipBuildingScreen = GameScreen.extend({
         }
         if (me.input.isKeyPressed('load')) {
             var data = window.prompt('enter ship json data');
-            me.state.change(me.state.BUILD, {jsonString: data});
+            me.state.change('ship-building', {jsonString: data});
         }
 
         _.each(this.drawingScreen, function(item){
@@ -135,7 +135,7 @@ var ShipBuildingScreen = GameScreen.extend({
             var name = prompt('Enter the ship name you wish to load.');
             $.post('/load', {name: name},function(response) {
                 if (response) {
-                    me.state.change(me.state.BUILD, {jsonString: response});
+                    me.state.change('ship-building', {jsonString: response});
                 }else {
                     alert('Error: Could not load ship.');
                 }
@@ -431,5 +431,5 @@ var ShipBuildingScreen = GameScreen.extend({
         }
         return shipTile;
     }
-});
+}));
 

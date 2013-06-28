@@ -20,10 +20,10 @@ asyncTest('onGameReady', function() {
 asyncTest('restartGame', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, {tmxName: 'test'});
+        me.state.change('ship-building', {tmxName: 'test'});
     },
     function() {
-        ok(me.state.isCurrent(me.state.BUILD));
+        ok(me.state.isCurrent('ship-building'));
         jsApp.loadReady = false;
         th.restartGame(function() {
             ok(jsApp.loadReady);
@@ -36,7 +36,7 @@ asyncTest('restartGame', function() {
 asyncTest('setMouse #1', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.SELECT);
+        me.state.change('ship-select');
     },
     function(screen) {
         th.mouseBegin(screen);
@@ -51,7 +51,7 @@ asyncTest('setMouse #1', function() {
 asyncTest('setMouse (test ship)', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, {tmxName: 'test'});
+        me.state.change('ship-building', {tmxName: 'test'});
     },
         function(screen) {
             th.mouseBegin(screen);
@@ -66,7 +66,7 @@ asyncTest('setMouse (test ship)', function() {
 asyncTest('setMouse (cyborg_battleship1)', function() {
     'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, {tmxName: 'cyborg_battleship1'});
+        me.state.change('ship-building', {tmxName: 'cyborg_battleship1'});
     },
     function(screen) {
         th.mouseBegin(screen);
@@ -82,10 +82,10 @@ asyncTest('loadScreen #1', function() {
    'use strict';
     th.restartGame(function() {
         th.loadScreen(function() {
-            me.state.change(me.state.BUILD, {tmxName: 'test'});
+            me.state.change('ship-building', {tmxName: 'test'});
         }, function(screen) {
             ok(me.state.current().isReset);
-            ok(me.state.isCurrent(me.state.BUILD));
+            ok(me.state.isCurrent('ship-building'));
             ok(screen.isReset);
             strictEqual(me.state.current(), screen);
             start();
@@ -96,28 +96,28 @@ asyncTest('loadScreen #1', function() {
 asyncTest('loadScreen back and forth', function() {
    'use strict';
     th.loadScreen(function() {
-        me.state.change(me.state.BUILD, {tmxName: 'test'});
+        me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         ok(me.state.current().isReset);
-        ok(me.state.isCurrent(me.state.BUILD));
+        ok(me.state.isCurrent('ship-building'));
         ok(screen.isReset);
         strictEqual(me.state.current(), screen);
 
         th.loadScreen(function() {
-            me.state.change(me.state.SELECT);
+            me.state.change('ship-select');
         }, function(screen2) {
             ok(!screen.isReset);
             ok(me.state.current().isReset);
-            ok(me.state.isCurrent(me.state.SELECT));
+            ok(me.state.isCurrent('ship-select'));
             ok(screen2.isReset);
             strictEqual(me.state.current(), screen2);
 
             th.loadScreen(function() {
-                me.state.change(me.state.BUILD, {tmxName: 'test'});
+                me.state.change('ship-building', {tmxName: 'test'});
             }, function(screen3) {
                 ok(!screen2.isReset);
                 ok(me.state.current().isReset);
-                ok(me.state.isCurrent(me.state.BUILD));
+                ok(me.state.isCurrent('ship-building'));
                 ok(screen3.isReset);
                 strictEqual(me.state.current(), screen3);
                 start();

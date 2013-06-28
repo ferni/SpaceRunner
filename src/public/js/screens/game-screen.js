@@ -12,10 +12,10 @@
   * Parent of all the other screens.
   * Example implementation:
   *
-    var ExampleScreen = GameScreen.extend({
-      init: function() {
+    screens.register('example', GameScreen.extend({
+      init: function(name) {
           'use strict';
-          this.parent('example-screen');
+          this.parent(name);
       },
       onReset: function() {
           'use strict';
@@ -29,7 +29,7 @@
           'use strict';
           //Modify html and make html bindings here
       }
-  });
+  }));
   * @type {*}
   */
  var GameScreen = me.ScreenObject.extend({
@@ -48,7 +48,7 @@
          'use strict';
          this.parent(true);
          me.video.clearSurface(me.video.getScreenContext(), 'gray');
-         html.load(this.name);
+         html.load(this.name + '-screen');
          this.onHtmlLoaded();
 
          this.onReset(settings);
