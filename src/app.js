@@ -25,7 +25,6 @@ var express = require('express'),
 
     //TODO: change for connect-redis store
     store  = new express.session.MemoryStore;
-
     app.use(express.cookieParser());
     app.use(express.session({
         secret: 'asdfqwerasdfaq34%RT·W4tSDFg345t3qS$T·' +
@@ -70,6 +69,7 @@ app.post('/ping', ping.ping);
 GLOBAL.battles = []; //filled with model.Battle
 GLOBAL.currentPlayers = []; //filled with model.Player
 
+require('./chat').init(app);
 
 console.log('Loading maps...');
 shipMaps.loadMaps(function(maps){

@@ -59,7 +59,6 @@ textarea {
 
 
 #game{
-    width:640px;
     position: relative;
 }
 #screensPrebuiltUi {
@@ -118,3 +117,4 @@ textarea {
 .point{
     cursor: pointer;
 }
+

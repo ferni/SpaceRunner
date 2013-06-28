@@ -50,7 +50,8 @@ var LobbyScreen = me.ScreenObject.extend({
                 this.hostBattle = screen.hostBattle;
             };
         $.get('/lobby/get', function(data) {
-            ko.applyBindings(new HtmlViewModel(data));
+            ko.applyBindings(new HtmlViewModel(data),
+                document.getElementById('screensUi'));
         });
     },
 

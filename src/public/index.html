@@ -12,6 +12,7 @@
         <link href="css/screens/ship-select-screen.css" rel="stylesheet" type="text/css" />
         <link href="css/screens/ship-building-screen.css" rel="stylesheet" type="text/css" />
         <link href="css/screens/battle-screen.css" rel="stylesheet" type="text/css" />
+        <link href="css/chat-client.css" rel="stylesheet" type="text/css" />
 
         <script type="text/javascript" src="js/vendor/underscore.js"></script>
         <!-- This file is used by the sever as well -->
@@ -42,6 +43,7 @@
         <script type="text/javascript" src="js/screens/ship-building-screen.js"></script>
         <script type="text/javascript" src="js/screens/ship-select-screen.js"></script>
         <script type="text/javascript" src="js/screens/battle-screen.js"></script>
+        <script type="text/javascript" src="js/chat-client.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
         <script type="text/javascript">
             //bootstrap :)
@@ -56,6 +58,18 @@
         <div id="game">
             <div id="jsapp"></div>
             <div id="screensUi"></div>
+        </div>
+        <div id="chat-client">
+            <div id="lines" data-bind="foreach: lines">
+                <p>
+                    <span class="sender" data-bind="text: sender"></span>:
+                    <span class="message" data-bind="text: message"></span>
+                </p>
+            </div>
+            <form data-bind="submit:send">
+                <input type="text" data-bind="value: input"/>
+                <button type="submit">Send</button>
+            </form>
         </div>
     </body>
 </html>

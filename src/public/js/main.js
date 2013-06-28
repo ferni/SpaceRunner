@@ -262,7 +262,6 @@ var jsApp = {
                 pendingCount: 4, //must be number of screen loaded
                 allDone: function(){
                     //start the game
-
                     me.state.change(FIRST_SCREEN);
                     self.loadReady = true;
                     self.onAppLoaded();
@@ -277,7 +276,6 @@ var jsApp = {
         me.state.BATTLE = me.state.USER + 3;
         window.FIRST_SCREEN = me.state.LOBBY;
 
-        // start the game
         me.state.set(me.state.LOBBY, new LobbyScreen());
         me.state.set(me.state.SELECT, new ShipSelectScreen());
         me.state.set(me.state.BUILD, new ShipBuildingScreen());
@@ -288,19 +286,16 @@ var jsApp = {
         html.store('ship-building-screen', tasks.done, tasks.error);
         html.store('battle-screen', tasks.done, tasks.error);
 
+        chatClient.start();
         //prepare dom
-        $(document).bind('contextmenu', function(e) {
+        $('#jsapp').bind('contextmenu', function(e) {
             return false;//disable context menu
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
             .on('selectstart', false);//disable selection
 
 
-                                            /*
-        var entity = new SharedEntityClient('ClientMan', 99,
-            navigator["userAgent"]);
-        console.log(entity.getDescription());
-                                          */
+
     },
     /*
     useful for testing

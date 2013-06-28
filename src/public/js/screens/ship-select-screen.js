@@ -92,7 +92,8 @@ var ShipSelectScreen = me.ScreenObject.extend({
             ];
         };
         this.htmlVm = new HtmlViewModel(this);
-        ko.applyBindings(this.htmlVm);
+        ko.applyBindings(this.htmlVm,
+            document.getElementById('screensUi'));
     }
 });
 
