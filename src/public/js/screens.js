@@ -27,7 +27,7 @@ var screens = {
             }
         });
         for (i = 0; i < screens.all.length; i++) {
-            html.store(screens.all[i] + '-screen', tasks.done, tasks.error);
+            html.store(screens.all[i], tasks.done, tasks.error);
         }
     }
 };

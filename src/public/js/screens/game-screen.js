@@ -48,7 +48,7 @@
          'use strict';
          this.parent(true);
          me.video.clearSurface(me.video.getScreenContext(), 'gray');
-         html.load(this.name + '-screen');
+         html.load(this.name);
          this.onHtmlLoaded();
 
          this.onReset(settings);

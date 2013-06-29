@@ -9,7 +9,7 @@
 _, th, asyncTest, equal, ok, me, notEqual, strictEqual, start,
 utils, module */
 
-module('ship-building-screen.js');
+module('ship-building.js');
 
 asyncTest('ESC key un-chooses the item', function() {
     'use strict';

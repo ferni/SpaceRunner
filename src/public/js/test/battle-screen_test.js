@@ -8,4 +8,4 @@
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
  me, utils, ui, Ship*/
 
-module('battle-screen.js');
+module('battle.js');
