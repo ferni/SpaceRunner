@@ -15,8 +15,8 @@ test('waitForClearing: getTileClearStatus, check clear', function() {
         scripter,
         turnDuration = 10,
         clearStatus;
-    me.game.ship = new Ship({tmxName: 'test'});
-    ship = me.game.ship;
+    gameState.ship = new Ship({tmxName: 'test'});
+    ship = gameState.ship;
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
 
@@ -36,8 +36,8 @@ test('waitForClearing: getTileClearStatus, end of turn', function() {
         scripter,
         turnDuration = 10,
         clearStatus;
-    me.game.ship = new Ship({tmxName: 'test'});
-    ship = me.game.ship;
+    gameState.ship = new Ship({tmxName: 'test'});
+    ship = gameState.ship;
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
 
@@ -53,8 +53,8 @@ test('waitForClearing: getTileClearStatus, repeated frame', function() {
         scripter,
         turnDuration = 10,
         clearStatus;
-    me.game.ship = new Ship({tmxName: 'test'});
-    ship = me.game.ship;
+    gameState.ship = new Ship({tmxName: 'test'});
+    ship = gameState.ship;
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
 
@@ -74,8 +74,8 @@ test('waitForClearing: getTileClearStatus, repeated frame 2', function() {
         scripter,
         turnDuration = 10,
         clearStatus;
-    me.game.ship = new Ship({tmxName: 'test'});
-    ship = me.game.ship;
+    gameState.ship = new Ship({tmxName: 'test'});
+    ship = gameState.ship;
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
 
@@ -94,8 +94,8 @@ test('waitForClearing: getTileClearStatus, narrow window', function() {
         scripter,
         turnDuration = 10,
         clearStatus;
-    me.game.ship = new Ship({tmxName: 'test'});
-    ship = me.game.ship;
+    gameState.ship = new Ship({tmxName: 'test'});
+    ship = gameState.ship;
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
 
@@ -116,8 +116,8 @@ test('waitForClearing: getTileClearStatus, multiple units', function() {
         scripter,
         turnDuration = 10,
         clearStatus;
-    me.game.ship = new Ship({tmxName: 'test'});
-    ship = me.game.ship;
+    gameState.ship = new Ship({tmxName: 'test'});
+    ship = gameState.ship;
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
     u3 = ship.putUnit({turnDuration: turnDuration});

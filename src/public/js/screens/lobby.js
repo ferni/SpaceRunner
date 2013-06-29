@@ -38,6 +38,7 @@ screens.register('lobby', GameScreen.extend({
                 this.hostBattle = screen.hostBattle;
             };
         $.get('/lobby/get', function(data) {
+            gameState.playerName = data.playerName;
             ko.applyBindings(new HtmlViewModel(data),
                 document.getElementById('screensUi'));
         });

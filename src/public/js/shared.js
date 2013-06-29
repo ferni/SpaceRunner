@@ -108,7 +108,7 @@ Shared code between server and client
         //TODO: convert to shared function (this function was directly copied from public)
 
         var grid, path,
-            ship = me.game.ship;
+            ship = gameState.ship;
         if (mouse.x === unit.x() && mouse.y === unit.y()) {
             unit.path = [];
         } else {

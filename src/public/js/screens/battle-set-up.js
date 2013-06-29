@@ -9,5 +9,15 @@
 /*global */
 
  screens.register('battle-set-up', GameScreen.extend({
+    onHtmlLoaded : function(){
+        var ViewModel = function(){
+            this.playerLeft = ko.observable();
+            this.playerRight = ko.observable();
+            this.ready = function(){
 
+            };
+        };
+
+        ko.applyBindings(vm, document.getElementById('battle-set-up-screen'));
+    }
  }));

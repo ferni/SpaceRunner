@@ -15,7 +15,7 @@ asyncTest('cropScript', function(){
             turnDuration: 3,
             collisionResolution: collisionResolutions.none});
     }, function(screen) {
-        var ship = me.game.ship,
+        var ship = gameState.ship,
             unit;
         unit = ship.putUnit({speed: 1});
         screen.generateScripts(unit, {x: unit.x() + 3, y: unit.y()});

@@ -153,16 +153,16 @@ screens.register('ship-building', GameScreen.extend({
     finishShip: function(){
         //put the ship in global context
 
-        me.game.ship = this.ship;
+        gameState.ship = this.ship;
         //TODO: since units are configured, battle screen start up time has
         //todo: been slower
-        me.game.ship.putUnit({imgRow: 0, speed: 0.5});
-        me.game.ship.putUnit({imgRow: 6, speed: 1});
-        me.game.ship.putUnit({imgRow: 7, speed: 2});
-        me.game.ship.putUnit({imgRow: 12, speed: 3});
+        gameState.ship.putUnit({imgRow: 0, speed: 0.5});
+        gameState.ship.putUnit({imgRow: 6, speed: 1});
+        gameState.ship.putUnit({imgRow: 7, speed: 2});
+        gameState.ship.putUnit({imgRow: 12, speed: 3});
 
         console.log('Creating battle...');
-        $.post('/battles/create',{shipJsonString: me.game.ship.toJsonString()},
+        $.post('/battles/create',{shipJsonString: gameState.ship.toJsonString()},
                     function(data) {
             console.log('Battle created');
             //TODO: maybe make all in one request instead of two

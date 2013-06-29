@@ -259,6 +259,7 @@ var jsApp = {
         // set screens
         var self = this;
         window.FIRST_SCREEN = 'lobby';
+        window.gameState = new GameState();
         screens.loadAll(function(){
             //start the game
             me.state.change(FIRST_SCREEN);
@@ -267,6 +268,7 @@ var jsApp = {
         });
 
         chatClient.start();
+
         //prepare dom
         $('#jsapp').bind('contextmenu', function(e) {
             return false;//disable context menu
