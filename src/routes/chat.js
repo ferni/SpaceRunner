@@ -9,7 +9,7 @@
 /*global */
 
  var url = require('url'),
-     model = require('../model');
+     auth = require('../auth');
 
  exports.getlines = function(req, res){
      var queryData = url.parse(req.url, true).query;
@@ -35,13 +35,10 @@
 
  exports.send = function(req, res){
      var line = req.body.line;
-     if(typeof req.session.playerID === 'undefined') {
-         //warn the player
-     } else{
-         line.id = linesInServer.length;
-         line.sender = model.playerByID(req.session.playerID).name;
-         linesInServer.push(line);
-     }
+
+     line.id = linesInServer.length;
+     line.sender = auth.getPlayer(req).name;
+     linesInServer.push(line);
 
      res.json({});
  };
