@@ -35,6 +35,10 @@
  var GameScreen = me.ScreenObject.extend({
      init: function(name) {
          'use strict';
+         if(!name) {
+             throw 'The screen should have a name. If overriding init,' +
+                 ' call this.parent(<name>)';
+         }
          this.isReset = false;
          this.parent(true);
          this.name = name;
