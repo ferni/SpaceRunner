@@ -1,8 +1,9 @@
 var chatClient = (function(){
     var client = {};
-    function ChatViewModel(nickname){
-        var self = this;
-        this.nickname = nickname;
+    function ChatViewModel(){
+        var self = this,
+            fetchIntervalID;
+
         //array of: {id:<num>, sender:<string>, message:<string>}
         this.lines = ko.observableArray([{
             id:0,
@@ -10,6 +11,7 @@ var chatClient = (function(){
             message:'Welcome to the chat.'
         }]);
         this.input = ko.observable('');
+        this.enabled = ko.observable(false);
         this.fetch = function(){
             var $linesDom = $('#lines');
             $.getJSON('chat/getlines', {
@@ -28,22 +30,28 @@ var chatClient = (function(){
         this.send = function(){
             $.post('chat/send',
                 {line: {
-                    sender: this.nickname,
                     message: this.input()
                 }}, 'json');
             this.input('');
         };
+        this.enable = function(){
+            //start fetching
+            fetchIntervalID = setInterval(function(){
+                self.fetch();
+            },400);
+            this.enabled(true);
+        };
+        this.disable = function(){
+            clearInterval(fetchIntervalID);
+            this.enabled(false);
+        };
 
-        //start fetching
-        setInterval(function(){
-            self.fetch();
-        },200);
     }
 
-    client.start = function(nickname){
+    client.start = function(){
         var $clientDom = $('#chat-client');
         if(typeof $clientDom[0] !== 'undefined'){
-            ko.applyBindings(new ChatViewModel(nickname), $clientDom.get(0));
+            ko.applyBindings(new ChatViewModel(), $clientDom.get(0));
             $clientDom.find('input').focus();
         }else{
             console.warn('#chat-client div not found');

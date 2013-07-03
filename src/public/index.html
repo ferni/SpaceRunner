@@ -57,23 +57,31 @@
         </script>
     </head>
 
-    <body bgcolor="black">
+    <body>
         
         <div id="game">
             <div id="jsapp"></div>
             <div id="screensUi"></div>
         </div>
         <div id="chat-client">
-            <div id="lines" data-bind="foreach: lines">
-                <p>
-                    <span class="sender" data-bind="text: sender"></span>:
-                    <span class="message" data-bind="text: message"></span>
-                </p>
+            <h3>Chat</h3>
+            <div data-bind="if: enabled">
+                <button type="button" data-bind="click:disable">Disable</button>
+                <div id="lines" data-bind="foreach: lines">
+                    <p>
+                        <span class="sender" data-bind="text: sender"></span>:
+                        <span class="message" data-bind="text: message"></span>
+                    </p>
+                </div>
+                <form data-bind="submit:send">
+                    <input type="text" data-bind="value: input"/>
+                    <button type="submit">Send</button>
+                </form>
             </div>
-            <form data-bind="submit:send">
-                <input type="text" data-bind="value: input"/>
-                <button type="submit">Send</button>
-            </form>
+            <div data-bind="ifnot: enabled">
+                <button type="button" data-bind="click:enable">Enable</button>
+            </div>
+
         </div>
     </body>
 </html>
