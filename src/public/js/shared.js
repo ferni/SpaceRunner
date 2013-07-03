@@ -105,6 +105,9 @@ Shared code between server and client
      */
     exports.pack = function(packable){
         var json;
+        if (!packable) {
+            return null;
+        }
         if (typeof packable.toJson === 'undefined') {
             throw 'packable should implement toJson';
         }

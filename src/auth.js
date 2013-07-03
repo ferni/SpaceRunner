@@ -9,7 +9,8 @@
 /*global */
 
  var _ = require('underscore')._,
-     model = require('./model');
+     model = require('./model'),
+     chat = require('./chat');
 
  exports.getID = function(req) {
      //check that there's a player
@@ -43,8 +44,19 @@
  };
 
  exports.createNewPlayer = function() {
-     return new model.Player({
+     var player = new model.Player({
          id: currentPlayers.length,
          name: exports.toUniqueName('Player')
      });
+     chat.log('Player "'+ player.name +'" connected to server.');
+     return player;
+ };
+
+ exports.disconnect = function(req) {
+    var player = exports.getPlayer(req),
+        index = currentPlayers.indexOf(player);
+     currentPlayers.splice(index, 1);
+     req.session.playerID = undefined;
+     chat.log('Player "'+ player.name +'" has been disconnected' +
+         ' from the server.');
  };

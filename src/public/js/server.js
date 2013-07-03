@@ -23,5 +23,9 @@
                     console.error('Attempted to join a full battle');
                  }
              }, 'json');
+     },
+     disconnect: function(){
+         $.post('/general/disconnect', function(data){
+         }, 'json');
      }
  };

@@ -16,7 +16,7 @@ var express = require('express'),
     ship = require('./routes/ship'),
     battles = require('./routes/battles'),
     lobby = require('./routes/lobby'),
-    ping = require('./routes/ping'),
+    general = require('./routes/general'),
     chatRoutes = require('./routes/chat'),
     http = require('http'),
     path = require('path'),
@@ -64,9 +64,11 @@ app.get('/lobby/get', lobby.get);
 app.post('/battles/create', battles.create);
 app.post('/battles/join', battles.join);
 
-app.post('/ping', ping.ping);
+app.post('/general/ping', general.ping);
+app.post('/general/disconnect', general.disconnect);
 
 //globals
+GLOBAL.battleSetUps = []; //filled with model.BattleSetUp
 GLOBAL.battles = []; //filled with model.Battle
 GLOBAL.currentPlayers = []; //filled with model.Player
 

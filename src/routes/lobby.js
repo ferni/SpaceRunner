@@ -23,9 +23,8 @@ exports.get = function(req, res) {
         currentPlayers.push(player);
 
     } else {
-        player = auth.getPlayer();
+        player = auth.getPlayer(req);
     }
-    console.log((new model.Ship('asdf')).tmxName);
     res.json({
         playerName: player.name,
         battles: _.map(battles, function(b){

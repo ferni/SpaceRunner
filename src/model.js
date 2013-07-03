@@ -5,7 +5,8 @@
 * All rights reserved.
 */
 
-var Extendable = require('./extendable').Extendable;
+var Extendable = require('./extendable').Extendable,
+    shared = require('./public/js/shared');
 
 
 exports.BattleSetUp = function(params) {
@@ -13,6 +14,23 @@ exports.BattleSetUp = function(params) {
     this.creator = params.creator;//the player id
     this.shipJsonString = params.shipJsonString;
     this.challenger = null; //player that joins
+    this.toJson = function(){
+        return {
+            id: this.id,
+            creator: shared.pack(this.creator),
+            challenger: shared.pack(this.challenger)
+        }
+    };
+    this.isFull = function() {
+        return this.challenger !== null;
+    };
+    this.addPlayer = function(playerID){
+        if(!this.isFull()){
+            this.playerRight = playerID;
+        } else{
+            throw 'Cannot add player, battle is full';
+        }
+    };
 };
 
 exports.Battle = function(parameters) {
@@ -23,34 +41,12 @@ exports.Battle = function(parameters) {
     //The ids of the players currently in this battle
     this.playerLeft = null;
     this.playerRight = null;
-    this.isFull = function() {
-        return this.playerLeft !== null
-            && this.playerRight !== null;
-    };
-    this.addPlayer = function(playerID){
-        if(this.playerLeft === null) {
-            this.playerLeft = playerID;
-        } else if(this.playerRight === null) {
-            this.playerRight = playerID;
-        } else{
-            throw 'Cannot add player, battle is full';
-        }
-    };
-    this.jsonForLobby = function(){
-        return {
-            id: this.id,
-            playerLeft: this.playerLeft,
-            playerRight: this.playerRight !== null ?
-                exports.playerByID(this.playerRight).name :
-                null
-        }
-    };
+
+
 };
 
-exports.Player = function(params) {
-    this.id = params.id;
-    this.name = params.name;
-};
+exports.Player = shared.Player.extendShared({
+});
 
 
 

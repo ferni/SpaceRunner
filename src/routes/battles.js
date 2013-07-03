@@ -6,19 +6,27 @@
 */
 
 var model = require('../model'),
+    auth = require('../auth'),
     _ = require('underscore')._;
 
 
 exports.create = function(req, res) {
-    var battleID = battles.length;
+    'use strict';
+    var id = battleSetUps.length;
     if(!req.body.shipJsonString) {
         throw 'shipJsonString must be provided';
     }
-    battles.push(new model.Battle({id: battleID, shipJsonString: req.body.shipJsonString}));
-    res.json({ok: true, battleID: battleID});
+    var bsu = new model.BattleSetUp({
+        id: id,
+        creator: auth.getPlayer(req),
+        shipJsonString: req.body.shipJsonString});
+    battleSetUps.push(bsu);
+    res.json(bsu.toJson());
 };
 
+
 exports.join = function(req, res) {
+    'use strict';
     var battleID = req.body.battleID,
         battle;
     if(battleID === undefined) {

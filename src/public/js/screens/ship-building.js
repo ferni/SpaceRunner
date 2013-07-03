@@ -163,10 +163,10 @@ screens.register('ship-building', GameScreen.extend({
 
         console.log('Creating battle...');
         $.post('/battles/create',{shipJsonString: gameState.ship.toJsonString()},
-                    function(data) {
+                    function(settings) {
             console.log('Battle created');
-            //TODO: maybe make all in one request instead of two
-            server.joinBattle(data.battleID);
+            settings.creator = shared.unpack(settings.creator);
+            me.state.change('battle-set-up', settings);
         }, 'json');
 
     },

@@ -19,7 +19,7 @@ QUnit.done(function(e) {
 th.onGameReady(function() {
    'use strict';
     var onNodeJS = false;
-    $.post('ping', function(data){
+    $.post('general/ping', function(data){
         if(data.ok) {
             onNodeJS = true;
         }

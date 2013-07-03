@@ -8,7 +8,13 @@
 
 /*global */
 
- screens.register('battle-set-up', GameScreen.extend({
+screens.register('battle-set-up', GameScreen.extend({
+
+    onReset: function(settings) {
+        this.id = settings.id;
+        this.creator = settings.creator;
+        alert('the creator name is '+ this.creator.name);
+    },
     onHtmlLoaded : function(){
         var ViewModel = function(){
             this.playerLeft = ko.observable();
@@ -17,7 +23,6 @@
 
             };
         };
-
-        ko.applyBindings(vm, document.getElementById('battle-set-up-screen'));
+        ko.applyBindings(new ViewModel(), document.getElementById('battle-set-up-screen'));
     }
- }));
+}));
