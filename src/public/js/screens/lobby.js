@@ -25,15 +25,17 @@ screens.register('lobby', GameScreen.extend({
         var screen = this,
             HtmlViewModel = function(data) {
                 this.playerName = ko.observable(data.playerName);
-                this.battles = ko.observableArray(data.battles);
-                this.joinBattle = function(battle) {
-                    if(battle.playerLeft === null ||
-                        battle.playerRight === null){
-                        server.joinBattle(battle.id);
-                    }
-                    else{
-                        alert('That battle is full');
-                    }
+                this.battleSetUps = ko.observableArray(data.battleSetUps);
+                this.joinBattle = function(battleSetUp) {
+                    console.log('Joining battle...');
+                    $.post('/battles/join', {battleID: battleSetUp.id},
+                        function(data) {
+                            if (!data.error) {
+                                me.state.change('battle-set-up', battleSetUp);
+                            } else {
+                                console.error('Attempted to join a full battle');
+                            }
+                        }, 'json');
                 };
                 this.hostBattle = screen.hostBattle;
             };

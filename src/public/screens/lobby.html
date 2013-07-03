@@ -8,14 +8,12 @@
         </p>
         <p>
             <h3>Join an existing battle</h3>
-            <ul data-bind="foreach: battles">
+            <ul data-bind="foreach: battleSetUps">
                 <li class="button" data-bind="click: $parent.joinBattle">
-                    #<span data-bind="text: id"></span>
-                    <!--<p>
-                        <span class="player-name" data-bind="text: playerLeft"></span>
-                        vs
-                        <span class="player-name" data-bind="text: playerRight"></span>
-                    </p>  -->
+                    #<span data-bind="text: id"></span><br/>
+                    Left (creator): <span data-bind="text: creator.name"></span><br/>
+                    Right: <span data-bind="text: challenger !== null ?
+                        challenger.name : '<empty>'"></span>
                 </li>
             </ul>
         </p>

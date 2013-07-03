@@ -10,11 +10,12 @@ var model = require('../model'),
     _ = require('underscore')._;
 
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
     'use strict';
     var id = battleSetUps.length;
+    console.log('creating...');
     if(!req.body.shipJsonString) {
-        throw 'shipJsonString must be provided';
+        next(new Error('shipJsonString must be provided'));
     }
     var bsu = new model.BattleSetUp({
         id: id,
@@ -25,24 +26,23 @@ exports.create = function(req, res) {
 };
 
 
-exports.join = function(req, res) {
+exports.join = function(req, res, next) {
     'use strict';
     var battleID = req.body.battleID,
         battle;
-    if(battleID === undefined) {
-        throw 'battleID must be provided';
+    if(typeof battleID === 'undefined') {
+        return next(new Error('battleID must be provided'));
     }
-    battle = _.find(battles, function(battle){
-        return battle.id == battleID;
+    battle = _.find(battleSetUps, function(b){
+        return b.id == battleID;
     });
     if(!battle) {
-        throw 'battle ' + battleID +' not found';
+        return next(new Error('battle ' + battleID +' not found'));
     }
     if(battle.isFull()) {
         res.json({error: 'battle is full'});
     } else{
-        battle.addPlayer(req.session.playerID);
-        res.json({shipJsonString: battle.shipJsonString});
+        battle.addPlayer(auth.getPlayer(req));
+        res.json(battle.toJson());
     }
-
 };

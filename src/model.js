@@ -24,9 +24,9 @@ exports.BattleSetUp = function(params) {
     this.isFull = function() {
         return this.challenger !== null;
     };
-    this.addPlayer = function(playerID){
+    this.addPlayer = function(player){
         if(!this.isFull()){
-            this.playerRight = playerID;
+            this.challenger = player;
         } else{
             throw 'Cannot add player, battle is full';
         }

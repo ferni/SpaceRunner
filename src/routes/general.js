@@ -13,7 +13,11 @@ exports.ping = function(req, res) {
   res.json({ ok: true });
 };
 
-exports.disconnect = function(req, res) {
-    auth.disconnect(req);
-    res.json({ok:true});
+exports.disconnect = function(req, res, next) {
+    try{
+        auth.disconnect(req);
+        res.json({ok:true});
+    }catch(e) {
+        next(new Error('Error while trying to disconnect'));
+    }
 };

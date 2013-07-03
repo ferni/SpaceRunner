@@ -32,4 +32,6 @@
         console.log(message);
         chat.addLine('Server', message);
     };
+
+    chat.error = chat.log;
 })(exports);

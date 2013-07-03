@@ -17,6 +17,7 @@ var express = require('express'),
     battles = require('./routes/battles'),
     lobby = require('./routes/lobby'),
     general = require('./routes/general'),
+    chat =require('./chat'),
     chatRoutes = require('./routes/chat'),
     http = require('http'),
     path = require('path'),
@@ -45,6 +46,15 @@ app.configure(function() {
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
 
+
+});
+
+app.configure('production', function(){
+    //error handler
+    app.use(function(err, req, res, next){
+        chat.error('Error');
+        res.send(500, 'Something broke!');
+    });
 });
 
 app.configure('development', function() {
@@ -72,7 +82,7 @@ GLOBAL.battleSetUps = []; //filled with model.BattleSetUp
 GLOBAL.battles = []; //filled with model.Battle
 GLOBAL.currentPlayers = []; //filled with model.Player
 
-require('./chat').init(app, chatRoutes);
+chat.init(app, chatRoutes);
 
 console.log('Loading maps...');
 shipMaps.loadMaps(function(maps){
