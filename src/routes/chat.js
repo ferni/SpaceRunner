@@ -9,7 +9,8 @@
 /*global */
 
  var url = require('url'),
-     auth = require('../auth');
+     auth = require('../auth'),
+     chat = require('../chat');
 
  exports.getlines = function(req, res){
      var queryData = url.parse(req.url, true).query;
@@ -35,10 +36,7 @@
 
  exports.send = function(req, res){
      var line = req.body.line;
-
-     line.id = linesInServer.length;
-     line.sender = auth.getPlayer(req).name;
-     linesInServer.push(line);
+     chat.addLine(auth.getPlayer(req).name, line.message);
 
      res.json({});
  };

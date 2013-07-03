@@ -9,17 +9,27 @@
 /*global */
 
 
+(function(chat){
+    chat.init = function(app, chatRoutes){
+        GLOBAL.linesInServer = [{
+            id:0,
+            sender:'Server',
+            message:'Logged into chat'
+        }];
+        app.get('/chat/getlines', chatRoutes.getlines);
+        app.post('/chat/send', chatRoutes.send);
+    };
 
-exports.init = function(app, chatRoutes){
-    GLOBAL.linesInServer = [{
-        id:0,
-        sender:'Server',
-        message:'Logged into chat'
-    }];
-    app.get('/chat/getlines', chatRoutes.getlines);
-    app.post('/chat/send', chatRoutes.send);
-};
+    chat.addLine = function(sender, message){
+        linesInServer.push({
+            sender: sender,
+            message: message,
+            id: linesInServer.length
+        });
+    };
 
-exports.getLines = function(params){
-
-};
+    chat.log = function(message){
+        console.log(message);
+        chat.addLine('Server', message);
+    };
+})(exports);
