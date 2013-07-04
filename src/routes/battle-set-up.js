@@ -36,17 +36,15 @@ exports.start = function(req, res, next) {
         bsu = _.find(battleSetUps, function(bsu) {
             return bsu.id == id;
         }),
-        playerID = auth.getID(req),
-        battle;
+        playerID = auth.getID(req);
     if(!bsu.isFull()) {
         next(new Error("Battle can't start unless both players are present."));
         return;
     }
     if(bsu.creator.id == playerID ||
         (bsu.challenger && bsu.challenger.id == playerID)) {
-        battle = bsu.createBattle();
-        bsu.battleID = battle.id;
-        return res.json({id: battle.id});
+        bsu.createBattle();
+        return res.json({});
     }else{
         next(new Error('Only a player from within the battle can request' +
             ' battle start.'));

@@ -84,49 +84,28 @@ Shared code between server and client
 
     //SHARED ENTITIES
     exports.TestSharedEntity = ExtendableShared.extendShared({});
+
     exports.Player = ExtendableShared.extendShared({
         init: function(settings) {
-            this.settings = settings;
             this.id = settings.id;
             this.name = settings.name;
         },
         toJson: function(){
-            var json = this.settings;
-            json.type = 'Player';
-            return json;
+            return {
+                type: 'Player',
+                id: this.id,
+                name: this.name
+            };
         }
     });
     packables.push('Player');
-
-    /**
-     * Prepares an entity to be sent over the wire.
-     * @param packable
-     * @returns {*}
-     */
-    exports.pack = function(packable){
-        var json;
-        if (!packable) {
-            return null;
-        }
-        if (typeof packable.toJson === 'undefined') {
-            throw 'packable should implement toJson';
-        }
-        json = packable.toJson();
-        if (typeof json.type === 'undefined') {
-            throw 'packable.toJson() should contain "type" property';
-        }
-        if (!_.contains(packables, json.type)) {
-            throw 'type "'+json.type+'" not registered in packables array';
-        }
-        return json;
-    };
 
     /**
      * Reconstructs an entity packed with shared.pack()
      * @param json
      * @returns {Constructor}
      */
-    exports.unpack = function(json) {
+    exports.fromJson = function(json) {
         var Constructor;
         if (!_.contains(packables, json.type)) {
             throw 'type "'+json.type+'" not registered in packables array';

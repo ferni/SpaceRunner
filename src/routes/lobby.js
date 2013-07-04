@@ -34,7 +34,7 @@ exports.get = function(req, res, next) {
         }
     }
     res.json({
-        player: shared.pack(player),
+        player: player.toJson(),
         battleSetUps: _.map(battleSetUps, function(b){
             return b.toJson();
         })

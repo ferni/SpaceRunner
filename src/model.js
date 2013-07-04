@@ -7,18 +7,67 @@
 
 var Extendable = require('./extendable').Extendable,
     shared = require('./public/js/shared'),
-    auth = require('./auth');
+    auth = require('./auth'),
+    _ = require('underscore');
 
+exports.Ship = Extendable.extend({
+    init: function(jsonString) {
+        this.buildings = [];
+        this.units = [];
+        this.fromJsonString(jsonString);
+    },
+    addBuilding: function(building){
+        this.buildings.push(building);
+    },
+    addUnit: function(unit) {
+        this.units.push(unit);
+    },
+    toJsonString: function() {
+        return JSON.stringify({
+            'tmxName': this.tmxName,
+            'buildings': this.buildings,
+            'units': this.units
+        });
+    },
+    fromJsonString: function(jsonString) {
+        var json,
+            ship = this;
+        //ship.removeAll();
+        json = JSON.parse(jsonString);
+        this.tmxName = json.tmxName.toLowerCase();
+        this.loadMap();
+        _.each(json.buildings, function(b){
+            ship.addBuilding(b);
+        });
+        _.each(json.units, function(u){
+            ship.addUnit(u);
+        });
+    },
+    loadMap : function(){
+        var map = shipMaps[this.tmxName];
+        if(typeof map === 'undefined') {
+            throw new Error('tmx not found: '+ this.tmxName);
+        }
+        this.hullMap = map.hull;
+        this.width = map.width;
+        this.height = map.height;
+    }
+});
 
 exports.Battle = function(parameters) {
-    var id = parameters.id;
-    var shipJsonString = parameters.shipJsonString;
-    this.id = id;
-    this.shipJsonString = shipJsonString;
-    //The ids of the players currently in this battle
+    this.id = parameters.id;
+    this.ship = parameters.ship;
+    //The players currently in this battle
     this.playerLeft = null;
     this.playerRight = null;
-
+    this.toJson = function(){
+        return {
+            id: this.id,
+            ship: this.ship.toJsonString(),
+            playerLeft: this.playerLeft.toJson(),
+            playerRight: this.playerRight.toJson()
+        }
+    }
 
 };
 
@@ -27,17 +76,16 @@ exports.BattleSetUp = function(params) {
     this.creator = params.creator;//the player id
     this.shipJsonString = params.shipJsonString;
     this.challenger = null; //player that joins
-    this.battleID = null;
+    this.battle = null;
     this.toJson = function(){
         return {
             id: this.id,
-            battleID: this.battleID,
+            battle: this.battle ?
+                this.battle.toJson() : null,
             creator: this.creator ?
-                shared.pack(this.creator) :
-                {name: '<empty>'},
+                this.creator.toJson() : {name: '<empty>'},
             challenger: this.challenger ?
-                shared.pack(this.challenger) :
-                {name: '<empty>'}
+                this.challenger.toJson() : {name: '<empty>'}
         }
     };
     this.isFull = function() {
@@ -62,10 +110,12 @@ exports.BattleSetUp = function(params) {
      * Returns the battle.
      */
     this.createBattle = function(){
-        var battle = new exports.Battle({id: battles.length,
-            shipJsonString: this.shipJsonString});
-        battle.playerLeft = this.creator.id;
-        battles.push(battle);
+        var ship = new exports.Ship(this.shipJsonString),
+            battle = new exports.Battle({id: battles.length, ship: ship});
+        battle.playerLeft = this.creator;
+        battle.playerRight = this.challenger;
+        battles.push(battle)
+        this.battle = battle;
         return battle;
     };
 };
@@ -74,11 +124,15 @@ exports.BattleSetUp = function(params) {
 exports.Player = shared.Player.extendShared({
 });
 
+exports.Building = Extendable.extend({
+    init: function(x, y){
 
-
-exports.Ship = Extendable.extend({
-    init: function(tmxName) {
-        this.tmxName = tmxName;
+    },
+    toJson: function(){
+        return {
+            type: 'Building'
+        }
     }
 });
+
 

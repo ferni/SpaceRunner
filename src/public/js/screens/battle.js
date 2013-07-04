@@ -30,14 +30,10 @@ screens.register('battle', GameScreen.extend({
         }
         this.battleID = settings.battleID;
 
-        //get the ship from the server according to the battleID
-
-
         if(settings.tmxName){
             gameState.ship = new Ship({tmxName: settings.tmxName}, true);
         }
         //reset ship
-        //TODO: make ship.toJsonString work with units
         if(settings.shipJsonString) {
             gameState.ship = new Ship({jsonString: settings.shipJsonString},
                 true);
