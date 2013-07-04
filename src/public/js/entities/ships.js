@@ -14,20 +14,6 @@ var Ship = Object.extend({
     init : function(settings, syncWithGame) {
         'use strict';
         var ship = this;
-        this.hullMap = {
-            changed: true,
-            _hullMap: null,
-            update: function() {
-                this._hullMap = hullMap.get(ship.tmxTileMap);
-                this.changed = true;
-            },
-            get: function() {
-                if (this._hullMap === null) {
-                    this.update();
-                }
-                return this._hullMap;
-            }
-        };
         this.buildingsMap = {
             changed: true,
             _buildingsMap: null,
@@ -73,6 +59,7 @@ var Ship = Object.extend({
     loadMap : function() {
         this.tmxTileMap = new me.TMXTileMap(this.tmxName, 0, 0);
         this.tmxTileMap.load();
+        this.hullMap = hullMap.get(this.tmxTileMap);
     },
     buildings : function() {
         return this._buildings;
@@ -175,11 +162,10 @@ var Ship = Object.extend({
     onBuildingsChanged: function() {},
 
     map : function() {
-        if (this.buildingsMap.changed || this.hullMap.changed ||
+        if (this.buildingsMap.changed  ||
             this._map === null) {
             this._map = this._getJointMap();
             this.buildingsMap.changed = false;
-            this.hullMap.changed = false;
         }
         return this._map;
     },
@@ -208,7 +194,7 @@ var Ship = Object.extend({
             shared.tiles.clear);
         utils.matrixTiles(this.width, this.height,
             function(x, y) {
-                joint[y][x] = self.hullMap.get()[y][x];
+                joint[y][x] = self.hullMap[y][x];
                 if (self.buildingsMap.get()[y][x] !== shared.tiles.clear) {
                     joint[y][x] = self.buildingsMap.get()[y][x];
                 }
