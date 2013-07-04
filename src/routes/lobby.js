@@ -6,7 +6,8 @@
  */
 
 var _ = require('underscore')._,
-    auth = require('../auth');
+    auth = require('../auth'),
+    shared = require('../public/js/shared');
 
 /**
  * sets the initial info for the player
@@ -33,7 +34,7 @@ exports.get = function(req, res, next) {
         }
     }
     res.json({
-        playerName: player.name,
+        player: shared.pack(player),
         battleSetUps: _.map(battleSetUps, function(b){
             return b.toJson();
         })

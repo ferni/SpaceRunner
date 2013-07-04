@@ -60,3 +60,9 @@
      chat.log('Player "'+ player.name +'" has been disconnected' +
          ' from the server.');
  };
+
+ exports.isOnline = function(playerID) {
+     return _.any(currentPlayers, function(p){
+         return p.id == playerID;
+     });
+ };

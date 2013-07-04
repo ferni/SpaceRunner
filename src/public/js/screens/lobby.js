@@ -24,7 +24,7 @@ screens.register('lobby', GameScreen.extend({
         //get battle info from server
         var screen = this,
             HtmlViewModel = function(data) {
-                this.playerName = ko.observable(data.playerName);
+                this.playerName = ko.observable(data.player.name);
                 this.battleSetUps = ko.observableArray(data.battleSetUps);
                 this.joinBattle = function(battleSetUp) {
                     console.log('Joining battle...');
@@ -40,7 +40,7 @@ screens.register('lobby', GameScreen.extend({
                 this.hostBattle = screen.hostBattle;
             };
         $.get('/lobby/get', function(data) {
-            gameState.playerName = data.playerName;
+            gameState.player = shared.unpack(data.player);
             ko.applyBindings(new HtmlViewModel(data),
                 document.getElementById('screensUi'));
         });

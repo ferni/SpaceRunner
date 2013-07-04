@@ -6,32 +6,9 @@
 */
 
 var Extendable = require('./extendable').Extendable,
-    shared = require('./public/js/shared');
+    shared = require('./public/js/shared'),
+    auth = require('./auth');
 
-
-exports.BattleSetUp = function(params) {
-    this.id = params.id;
-    this.creator = params.creator;//the player id
-    this.shipJsonString = params.shipJsonString;
-    this.challenger = null; //player that joins
-    this.toJson = function(){
-        return {
-            id: this.id,
-            creator: shared.pack(this.creator),
-            challenger: shared.pack(this.challenger)
-        }
-    };
-    this.isFull = function() {
-        return this.challenger !== null;
-    };
-    this.addPlayer = function(player){
-        if(!this.isFull()){
-            this.challenger = player;
-        } else{
-            throw 'Cannot add player, battle is full';
-        }
-    };
-};
 
 exports.Battle = function(parameters) {
     var id = parameters.id;
@@ -44,6 +21,55 @@ exports.Battle = function(parameters) {
 
 
 };
+
+exports.BattleSetUp = function(params) {
+    this.id = params.id;
+    this.creator = params.creator;//the player id
+    this.shipJsonString = params.shipJsonString;
+    this.challenger = null; //player that joins
+    this.battleID = null;
+    this.toJson = function(){
+        return {
+            id: this.id,
+            battleID: this.battleID,
+            creator: this.creator ?
+                shared.pack(this.creator) :
+                {name: '<empty>'},
+            challenger: this.challenger ?
+                shared.pack(this.challenger) :
+                {name: '<empty>'}
+        }
+    };
+    this.isFull = function() {
+        return this.challenger && this.creator;
+    };
+    this.addPlayer = function(player){
+        if(!this.isFull()){
+            this.challenger = player;
+        } else{
+            throw 'Cannot add player, battle is full';
+        }
+    };
+    this.updatePlayers = function(){
+        if(this.creator && !auth.isOnline(this.creator.id)) {
+            this.creator = null;
+        }
+        if(this.challenger && !auth.isOnline(this.challenger.id)) {
+            this.challenger = null;
+        }
+    };
+    /**
+     * Returns the battle.
+     */
+    this.createBattle = function(){
+        var battle = new exports.Battle({id: battles.length,
+            shipJsonString: this.shipJsonString});
+        battle.playerLeft = this.creator.id;
+        battles.push(battle);
+        return battle;
+    };
+};
+
 
 exports.Player = shared.Player.extendShared({
 });

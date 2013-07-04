@@ -14,7 +14,7 @@
 var express = require('express'),
     routes = require('./routes'),
     ship = require('./routes/ship'),
-    battles = require('./routes/battles'),
+    battles = require('./routes/battle-set-up'),
     lobby = require('./routes/lobby'),
     general = require('./routes/general'),
     chat =require('./chat'),
@@ -71,6 +71,8 @@ app.post('/ship/gethulls', ship.gethulls);
 
 app.get('/lobby/get', lobby.get);
 
+app.post('/battle-set-up/get', battles.get);
+app.post('/battle-set-up/start', battles.start);
 app.post('/battles/create', battles.create);
 app.post('/battles/join', battles.join);
 

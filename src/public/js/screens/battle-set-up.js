@@ -8,21 +8,42 @@
 
 /*global */
 
-screens.register('battle-set-up', GameScreen.extend({
+screens.register('battle-set-up', ConnectedScreen.extend({
 
     onReset: function(settings) {
+        this.parent(settings);
         this.id = settings.id;
         this.creator = settings.creator;
-        alert('the creator name is '+ this.creator.name);
     },
     onHtmlLoaded : function(){
-        var ViewModel = function(){
-            this.playerLeft = ko.observable();
-            this.playerRight = ko.observable();
-            this.ready = function(){
 
-            };
+    },
+    onDataInit: function(){
+        var screen = this;
+        this.vm = ko.mapping.fromJS(this.data);
+        this.vm.imCreator = ko.computed(function(){
+            return this.creator.id() == gameState.player.id;
+        }, this.vm);
+        this.vm.start = function(){
+            //both players present
+            if(typeof screen.data.creator.id !== 'undefined'
+                && typeof screen.data.challenger.id !== 'undefined') {
+                $.post(screen.name + '/start', {id: this.id()},
+                function(data){
+                    //nothing (battle starts in onDataUpdated )
+                },'json');
+            }else{
+                alert('More players are required to start.');
+            }
         };
-        ko.applyBindings(new ViewModel(), document.getElementById('battle-set-up-screen'));
+        ko.applyBindings(this.vm,
+            document.getElementById('battle-set-up-screen'));
+    },
+    onDataUpdated: function(){
+        ko.mapping.fromJS(this.data, this.vm);
+        if(this.data.battleID) {
+            //this means it started!
+            me.state.change('battle', {battleID: this.data.battleID});
+        }
     }
 }));

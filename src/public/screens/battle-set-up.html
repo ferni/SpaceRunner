@@ -1,6 +1,10 @@
 <div id="battle-set-up-screen">
-    <h3>Players</h3>
-    <p>Left: <span></span></p>
-    <p>Right: <span></span></p>
-    <button type="button" class="button">Ready</button>
+    <div class="menu-container">
+        <h3>Battle #<span data-bind="text: id()"></span></h3>
+        Left (creator): <span data-bind="text: creator.name()"></span><br/>
+        Right: <span data-bind="text: challenger.name()"></span>
+        <h3 data-bind="if: imCreator()">
+            <button type="button" class="button" data-bind="click:start">Start</button>
+        </h3>
+    </div>
 </div>

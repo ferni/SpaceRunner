@@ -6,6 +6,6 @@
  */
 
 var GameState = function(){
-    this.playerName = '';
-
-}
+    //shared.Player
+    this.player = null;
+};

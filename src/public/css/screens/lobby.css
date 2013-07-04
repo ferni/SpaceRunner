@@ -3,13 +3,5 @@
 }
 
 #lobby-screen #battle-selector{
-    width: 400px;
-    padding: 14px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    border: solid 1px black;
-    background-color: #eeeeee;
 
-    margin-left: 100px;
-    margin-top: 50px;
 }
