@@ -9,7 +9,7 @@
 
 /*For handling the screens' html*/
 var html = {
-    load: function(screenId) {
+    display: function(screenId) {
         'use strict';
         if (!this.stored[screenId]) {
             throw 'Could not find preloaded html for ' + screenId;

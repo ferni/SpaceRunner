@@ -16,7 +16,7 @@ var screens = {
         me.state.set(screenName, new Constructor(screenName));
         screens.all.push(screenName);
     },
-    loadAll: function(callback) {
+    loadHtmls: function(callback) {
         'use strict';
         var i, tasks = new utils.TaskWait({
             pendingCount: screens.all.length,

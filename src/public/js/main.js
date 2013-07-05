@@ -260,12 +260,6 @@ var jsApp = {
         var self = this;
         window.FIRST_SCREEN = 'lobby';
         window.gameState = new GameState();
-        screens.loadAll(function(){
-            //start the game
-            me.state.change(FIRST_SCREEN);
-            self.loadReady = true;
-            self.onAppLoaded();
-        });
 
         chatClient.start();
 
@@ -279,6 +273,13 @@ var jsApp = {
             server.disconnect();
         });
 
+
+        screens.loadHtmls(function(){
+            //start the game
+            me.state.change(FIRST_SCREEN);
+            self.loadReady = true;
+            self.onAppLoaded();
+        });
 
     },
     /*

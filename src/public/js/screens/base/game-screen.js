@@ -53,8 +53,7 @@
          this.parent(true);
          me.video.clearSurface(me.video.getScreenContext(), 'gray');
 
-         html.load(this.name);
-         //TODO: change html.load name to convey that it's synchronous
+         html.display(this.name);
          this.onHtmlLoaded();
 
          this.onReset(settings);
