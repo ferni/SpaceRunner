@@ -82,7 +82,7 @@ asyncTest('drag and drop', function() {
         notEqual(screen.ship.mapAt(3, 4).type, 'power',
             'power is not on original position');
         power = screen.ship.mapAt(5, 4);
-        equal(power.x(), 5, 'power is at new position');
+        equal(power.x, 5, 'power is at new position');
         th.mouseEnd();
         start();
     });
@@ -108,12 +108,12 @@ asyncTest('moveGhost', function() {
         equal(screen.chosen.type, 'power');
 
         screen.moveGhost(12, 13);
-        equal(screen.chosen.x(), 12);
-        equal(screen.chosen.y(), 13);
+        equal(screen.chosen.x, 12);
+        equal(screen.chosen.y, 13);
 
         screen.moveGhost(4, 3);
-        equal(screen.chosen.x(), 4);
-        equal(screen.chosen.y(), 3);
+        equal(screen.chosen.x, 4);
+        equal(screen.chosen.y, 3);
         start();
     });
 });
@@ -129,8 +129,8 @@ asyncTest('beginDrag/endDrag', function() {
         y = th.shipPositions.free.y;
         power = screen.ship.buildAt(x, y, 'power');
         ok(power, 'power built');
-        equal(power.x(), x, 'x before dragging');
-        equal(power.y(), y, 'y before dragging');
+        equal(power.x, x, 'x before dragging');
+        equal(power.y, y, 'y before dragging');
 
         screen.beginDrag(power);
         equal(screen.chosen.type, 'power');
@@ -141,8 +141,8 @@ asyncTest('beginDrag/endDrag', function() {
         screen.endDrag();
         strictEqual(screen.dragging, null);
         strictEqual(screen.chosen, null);
-        equal(power.x(), x + 1, 'x after dragging');
-        equal(power.y(), y, 'y after dragging');
+        equal(power.x, x + 1, 'x after dragging');
+        equal(power.y, y, 'y after dragging');
         th.mouseEnd();
         start();
     });
@@ -158,7 +158,7 @@ asyncTest('printRed/clearRed', function() {
         screen.printRed(4, 5);
         reds = me.game.getEntityByName('red');
         redsInX4Y5 = _.filter(reds, function(r) {
-            return r.x() === 4 && r.y() === 5;
+            return r.x === 4 && r.y === 5;
         }).length;
         ok(redsInX4Y5 > 0, 'There are red objects in the printed position');
         screen.clearRed();
@@ -223,7 +223,7 @@ asyncTest('draw/mapAt', function() {
         screen.drawItem(4, 5, 'engine');
         items = screen.drawingScreen;
         ok(_.some(items, function(item) {
-            return item.type === 'engine' && item.x() === 4 && item.y() === 5;
+            return item.type === 'engine' && item.x === 4 && item.y === 5;
         }), 'Engine drawn at correct position');
 
         equal(screen.mapAt(4, 5).type, 'engine', 'mapAt(4,5) is engine');

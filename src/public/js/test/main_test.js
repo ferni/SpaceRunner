@@ -163,14 +163,14 @@ asyncTest('fromJsonString', function() {
 
         power = screen.ship.mapAt(0, 0);
         equal(power.type, 'power', 'power successfully added to the ship');
-        equal(power.x(), 0, 'it has correct x position');
-        equal(power.y(), 0, 'it has correct y position');
+        equal(power.x, 0, 'it has correct x position');
+        equal(power.y, 0, 'it has correct y position');
         ok(!power.rotated(), 'power is not rotated');
 
         door = screen.ship.mapAt(2, 3);
         equal(door.type, 'door', 'door successfully added to the ship');
-        equal(door.x(), 2, 'it has correct x position');
-        equal(door.y(), 3, 'it has correct y position');
+        equal(door.x, 2, 'it has correct x position');
+        equal(door.y, 3, 'it has correct y position');
         ok(door.rotated(), 'door is rotated');
 
         equal(screen.ship.buildings().length, 2, 'ship has 2 buildings added');

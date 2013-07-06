@@ -152,8 +152,8 @@ var ItemEntity = TileEntity.extend({
         var self = this;
         return {
             type: self.type,
-            x: self.x(),
-            y: self.y(),
+            x: self.x,
+            y: self.y,
             rotated: self.rotated(),
             settings: {}
         }
@@ -348,27 +348,27 @@ var WallItem = ItemEntity.extend({
         }
         ui = me.state.current();
         wallsAround = [];
-        x = this._x;
-        y = this._y;
+        x = this.x;
+        y = this.y;
         top = ui.mapAt(x, y - 1);
         left = ui.mapAt(x - 1, y);
         bot = ui.mapAt(x, y + 1);
         right = ui.mapAt(x + 1, y);
         if (top !== null && (top.type === 'wall' ||
-            (top.type === 'door' && top.rotated() && top.y() === y - 2))) {
+            (top.type === 'door' && top.rotated() && top.y === y - 2))) {
             wallsAround.push('t');
         }
         if (left !== null && (left.type === 'wall' ||
-            (left.type === 'door' && !left.rotated() && left.x() === x - 2))) {
+            (left.type === 'door' && !left.rotated() && left.x === x - 2))) {
             wallsAround.push('l');
         }
         if (bot !== null && (bot.type === 'wall' ||
-            (bot.type === 'door' && bot.rotated() && bot.y() === y + 1))) {
+            (bot.type === 'door' && bot.rotated() && bot.y === y + 1))) {
             wallsAround.push('b');
         }
         if (right !== null && (right.type === 'wall' ||
             (right.type === 'door' && !right.rotated() &&
-            right.x() === x + 1))) {
+            right.x === x + 1))) {
             wallsAround.push('r');
         }
         if (wallsAround.length === 0) {
@@ -403,14 +403,14 @@ var WallItem = ItemEntity.extend({
         }
         pfMatrix = ui.ship.getPfMatrix();
         //self tile will be walkable for pathfinding purposes
-        pfMatrix[this.y()][this.x()] = 0;
+        pfMatrix[this.y][this.x] = 0;
 
         t = this.temp;
         t.grid = new PF.Grid(width(), height(), pfMatrix);
-        t.preMouseX = this.x();
-        t.preMouseY = this.y();
-        t.pivotX = this.x();
-        t.pivotY = this.y();
+        t.preMouseX = this.x;
+        t.preMouseY = this.y;
+        t.pivotX = this.x;
+        t.pivotY = this.y;
         t.path = null;
         ui.mouseLockedOn = this;
     },
@@ -446,7 +446,7 @@ var WallItem = ItemEntity.extend({
             return;
         }
         _.each(ui.drawingScreen, function(wall) {
-            ui.ship.buildAt(wall.x(), wall.y(), 'wall');
+            ui.ship.buildAt(wall.x, wall.y, 'wall');
         });
         ui.clear();
         ui.mouseLockedOn = null;

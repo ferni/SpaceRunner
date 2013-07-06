@@ -80,8 +80,8 @@ var Unit = ItemEntity.extend({
         position = this.getPosGivenTime(elapsed);
 
         //TODO: set the pixel position, and calculate the tile position
-        this.x(position.x);
-        this.y(position.y);
+        this.setX(position.x);
+        this.setY(position.y);
         return true;
     },
     completeSettings: function(settings){
@@ -178,7 +178,7 @@ var Unit = ItemEntity.extend({
         if (this.script.length > 0) {
             return this.script[this.script.length - 1].pos;
         } else {
-            return {x: this.x(), y: this.y()};
+            return {x: this.x, y: this.y};
         }
     },
     willMove: function(){
@@ -206,7 +206,7 @@ var Unit = ItemEntity.extend({
             interpolationY,
             position;
         if (this.script.length === 0) {
-            return {x: this.x(), y: this.y()};
+            return {x: this.x, y: this.y};
         }
         //find first frame
         for (i = 0; i < this.script.length; i++) {
@@ -329,8 +329,8 @@ var Unit = ItemEntity.extend({
     toJson: function(){
         var self = this;
         return {
-            x: self.x(),
-            y: self.y(),
+            x: self.x,
+            y: self.y,
             settings: {
                 imgRow: self.imgRow,
                 speed: self.speed

@@ -289,8 +289,8 @@ screens.register('ship-building', GameScreen.extend({
             return;
         }
         var mouse = utils.getMouse();
-        this.chosen.x(mouse.x)
-            .y(mouse.y)
+        this.chosen.setX(mouse.x)
+            .setY(mouse.y)
             .show();
         this.updateGreenSpots();
 
@@ -300,7 +300,7 @@ screens.register('ship-building', GameScreen.extend({
     },
     moveGhost: function(x, y) {
         'use strict';
-        this.chosen.x(x).y(y);
+        this.chosen.setX(x).setY(y);
         //Rotate if it fits somewhere
         if (!this.chosen.rotated() &&
                 this.chosen.canBuildRotated(x, y, this.ship)) {
@@ -331,7 +331,7 @@ screens.register('ship-building', GameScreen.extend({
         }
         var mouse = utils.getMouse();
         if (this.dragging.canBuildAt(mouse.x, mouse.y, this.ship)) {
-            this.dragging.x(mouse.x).y(mouse.y);
+            this.dragging.setX(mouse.x).setY(mouse.y);
         }
         this.dragging.show();
         this.ship.buildingsMap.update();

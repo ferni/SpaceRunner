@@ -21,13 +21,13 @@ var Scripter = Object.extend({
         'use strict';
         var grid, path,
             ship = gameState.ship;
-        if (mouse.x === unit.x() && mouse.y === unit.y()) {
+        if (mouse.x === unit.x && mouse.y === unit.y) {
             unit.path = [];
         } else {
             grid = new PF.Grid(ship.width, ship.height,
                 ship.getPfMatrix());
             grid = this.processGrid(grid, unit, mouse);
-            path = this.pfFinder.findPath(unit.x(), unit.y(),
+            path = this.pfFinder.findPath(unit.x, unit.y,
                 mouse.x, mouse.y, grid);
             console.log('path length: ' + (path.length - 1));
             if(path.length > 1) {
@@ -132,7 +132,7 @@ var AvoidOtherPathsScripter = Scripter.extend({
                     }
                 } else {
                     //if the unit would not move, it blocks
-                    grid.setWalkableAt(u.x(), u.y(), false);
+                    grid.setWalkableAt(u.x, u.y, false);
                 }
             }
         });
@@ -252,7 +252,7 @@ var WaitForClearingScripter = Scripter.extend({
                             frames.push({unit: u, frameIndex: index, f: f});
                         }
                     });
-                } else if(u.x() === pos.x && u.y() === pos.y) {
+                } else if(u.x === pos.x && u.y === pos.y) {
                     clearStatus.isClear = false;
                     clearStatus.when = false;
                     return clearStatus;

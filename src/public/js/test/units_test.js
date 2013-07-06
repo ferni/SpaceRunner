@@ -18,7 +18,7 @@ asyncTest('cropScript', function(){
         var ship = gameState.ship,
             unit;
         unit = ship.putUnit({speed: 1});
-        screen.generateScripts(unit, {x: unit.x() + 3, y: unit.y()});
+        screen.generateScripts(unit, {x: unit.x + 3, y: unit.y});
         equal(unit.script.length, 4);
         equal(unit.script[1].time, 1000);
         unit.cropScript(1000);

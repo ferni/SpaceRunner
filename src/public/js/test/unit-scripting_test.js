@@ -121,11 +121,11 @@ test('waitForClearing: getTileClearStatus, multiple units', function() {
     u1 = ship.putUnit({turnDuration: turnDuration});
     u2 = ship.putUnit({turnDuration: turnDuration});
     u3 = ship.putUnit({turnDuration: turnDuration});
-    u1.x(1).y(1)
+    u1.setX(1).setY(1)
         .script = [{pos:{x:1, y:1}, time:3},
                     {pos:{x:2, y:1}, time:4},//4 - 5
                     {pos:{x:1, y:1}, time:5}];
-    u2.x(2).y(2)
+    u2.setX(2).setY(2)
         .script = [{pos:{x:2, y:2}, time:3},
                     {pos:{x:2, y:1}, time:5.4},//5.4 - 7
                     {pos:{x:2, y:2}, time:7}];

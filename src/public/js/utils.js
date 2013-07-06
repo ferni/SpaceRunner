@@ -83,9 +83,9 @@ var utils = {
         if (!item) {
             return;
         }
-        for (x = item.x(); x < item.trueSize(0) + item.x() &&
+        for (x = item.x; x < item.trueSize(0) + item.x &&
             (!withinSize || x < withinSize.width) && x >= 0; x++) {
-            for (y = item.y(); y < item.trueSize(1) + item.y() &&
+            for (y = item.y; y < item.trueSize(1) + item.y &&
                 (!withinSize || y < withinSize.height) && y >= 0; y++) {
                 callback(x, y);
             }

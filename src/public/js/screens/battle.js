@@ -95,7 +95,7 @@ screens.register('battle', GameScreen.extend({
                 u.drawPath(ctx);
                 if (u.selected) {
                     //draw rectangle around each selected unit
-                    screen.drawTileHighlight(ctx, u.x(), u.y(),
+                    screen.drawTileHighlight(ctx, u.x, u.y,
                         'limegreen', 2);
                 }
             });

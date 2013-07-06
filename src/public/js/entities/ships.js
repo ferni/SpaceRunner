@@ -87,7 +87,7 @@ var Ship = Object.extend({
             }
         }
         if (canBuild || canBuildRotated) {
-            building.x(x).y(y);
+            building.setX(x).setY(y);
             //remove anything in its way
             utils.itemTiles(building, function(iX, iY) {
                 self.removeAt(iX, iY);

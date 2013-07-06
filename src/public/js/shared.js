@@ -139,13 +139,13 @@ Shared code between server and client
 
         var grid, path,
             ship = gameState.ship;
-        if (mouse.x === unit.x() && mouse.y === unit.y()) {
+        if (mouse.x === unit.x && mouse.y === unit.y) {
             unit.path = [];
         } else {
             grid = new PF.Grid(ship.width, ship.height,
                 ship.getPfMatrix());
             grid = this.processGrid(grid, unit, mouse);
-            path = this.pfFinder.findPath(unit.x(), unit.y(),
+            path = this.pfFinder.findPath(unit.x, unit.y,
                 mouse.x, mouse.y, grid);
             console.log('path length: ' + (path.length - 1));
             if(path.length > 1) {
