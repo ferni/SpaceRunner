@@ -20,7 +20,7 @@ var Ship = Object.extend({
             update: function() {
                 var self = this;
                 self._buildingsMap = utils.getEmptyMatrix(ship.width,
-                    ship.height, shared.tiles.clear);
+                    ship.height, sh.tiles.clear);
                 _.each(ship.buildings(), function(b) {
                     if (!b.hidden()) {
                         utils.itemTiles(b, function(x, y) {
@@ -98,6 +98,7 @@ var Ship = Object.extend({
         }
         return null; //building failed
     },
+    //finds a clear spot and creates a new unit there
     putUnit : function(settings) {
         'use strict';
         //find empty spot
@@ -107,7 +108,7 @@ var Ship = Object.extend({
             if (empty) {
                 return;
             }
-            if (ship.mapAt(x, y) === shared.tiles.clear) {
+            if (ship.mapAt(x, y) === sh.tiles.clear) {
                 empty = {x: x, y: y};
             }
         });
@@ -180,7 +181,7 @@ var Ship = Object.extend({
         return what && what.name === name;
     },
     isInside: function(x, y) {
-        var tiles = shared.tiles,
+        var tiles = sh.tiles,
             tile = this.mapAt(x, y);
         return tile !== tiles.solid && tile !== tiles.front &&
             tile !== tiles.back;
@@ -191,11 +192,11 @@ var Ship = Object.extend({
     _getJointMap: function() {
         var self = this,
         joint = utils.getEmptyMatrix(this.width, this.height,
-            shared.tiles.clear);
+            sh.tiles.clear);
         utils.matrixTiles(this.width, this.height,
             function(x, y) {
                 joint[y][x] = self.hullMap[y][x];
-                if (self.buildingsMap.get()[y][x] !== shared.tiles.clear) {
+                if (self.buildingsMap.get()[y][x] !== sh.tiles.clear) {
                     joint[y][x] = self.buildingsMap.get()[y][x];
                 }
         });
@@ -236,7 +237,7 @@ var Ship = Object.extend({
         var ship = this,
             pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
         utils.matrixTiles(this.width, this.height, function(x, y) {
-            if (ship.map()[y][x] === shared.tiles.clear ||
+            if (ship.map()[y][x] === sh.tiles.clear ||
                 ship.map()[y][x].name === 'unit') {
                 pfMatrix[y][x] = 0; //clear tiles and units are walkable
             }

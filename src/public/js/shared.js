@@ -101,7 +101,7 @@ Shared code between server and client
     packables.push('Player');
 
     /**
-     * Reconstructs an entity packed with shared.pack()
+     * Reconstructs an entity packed with sh.pack()
      * @param json
      * @returns {Constructor}
      */
@@ -192,6 +192,6 @@ Shared code between server and client
 
 
 
-}(typeof exports === 'undefined' ? window.shared = {
+}(typeof exports === 'undefined' ? window.sh = {
         onClient: true
     } : exports));

@@ -49,7 +49,7 @@ var ItemEntity = TileEntity.extend({
     buildPlacementRules: function() {
         'use strict';
         this.placementRules = [];
-        this.placementRules.push(pr.make.spaceRule(shared.tiles.clear,
+        this.placementRules.push(pr.make.spaceRule(sh.tiles.clear,
             this.size[0], this.size[1]));
     },
 
@@ -180,7 +180,7 @@ var WeaponItem = ItemEntity.extend({
         'use strict';
         this.parent();
         this.placementRules.push(new pr.PlacementRule({
-            tile: shared.tiles.front,
+            tile: sh.tiles.front,
             inAny: [{
                 x: 2,
                 y: 0
@@ -207,7 +207,7 @@ var EngineItem = ItemEntity.extend({
         'use strict';
         this.parent();
         this.placementRules.push(new pr.PlacementRule({
-            tile: shared.tiles.back,
+            tile: sh.tiles.back,
             inAll: [{
                 x: -1,
                 y: 0
@@ -412,11 +412,12 @@ var WallItem = ItemEntity.extend({
         t.pivotX = this.x;
         t.pivotY = this.y;
         t.path = null;
+        t.finder = new PF.BestFirstFinder();
         ui.mouseLockedOn = this;
     },
     lockedMouseMove: function(mouseTile) {
         'use strict';
-        var t, finder, cloneGrid, ui;
+        var t, cloneGrid, ui;
         this.parent();
         ui = me.state.current();
         t = this.temp;
@@ -428,10 +429,9 @@ var WallItem = ItemEntity.extend({
         t.preMouseX = mouseTile.x;
         t.preMouseY = mouseTile.y;
         ui.clear();
-        //TODO: init finder at onBuilt
-        finder = new PF.BestFirstFinder();
+
         cloneGrid = t.grid.clone();
-        t.path = finder.findPath(t.pivotX, t.pivotY,
+        t.path = t.finder.findPath(t.pivotX, t.pivotY,
             mouseTile.x, mouseTile.y, cloneGrid);
         _.each(t.path, function(p){
             ui.drawItem(p[0], p[1], 'wall');

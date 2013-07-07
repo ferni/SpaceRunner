@@ -9,11 +9,11 @@ function registerTestsRequiringNodeJS(){
     module('INTEGRATION');
     asyncTest('hullMaps generated in server identical to client', function() {
         var shipsClient = {}, i, tmxTileMap;
-        for (i = 0; i < shared.mapNames.length; i++) {
+        for (i = 0; i < sh.mapNames.length; i++) {
 
-            tmxTileMap = new me.TMXTileMap(shared.mapNames[i], 0, 0);
+            tmxTileMap = new me.TMXTileMap(sh.mapNames[i], 0, 0);
             tmxTileMap.load();
-            shipsClient[shared.mapNames[i]] = {
+            shipsClient[sh.mapNames[i]] = {
                 hull: hullMap.get(tmxTileMap)
             };
         }
@@ -24,9 +24,9 @@ function registerTestsRequiringNodeJS(){
             console.log('ships client');
             console.log(shipsClient);
 
-            for (i = 0; i < shared.mapNames.length; i++) {
-                deepEqual(shipsClient[shared.mapNames[i]].hull,
-                    shipsServer[shared.mapNames[i]].hull, shared.mapNames[i] +
+            for (i = 0; i < sh.mapNames.length; i++) {
+                deepEqual(shipsClient[sh.mapNames[i]].hull,
+                    shipsServer[sh.mapNames[i]].hull, sh.mapNames[i] +
                         "'s hull identical on server and client.");
             }
 

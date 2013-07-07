@@ -12,21 +12,21 @@ var hullMap = {
         tileLayer = tmxMap.getLayerByName('collision');
         tileId = tileLayer.getTileId(x + 1, y + 1);
         if (tileId === null) {
-            return shared.tiles.clear;
+            return sh.tiles.clear;
         }
         tileSet = tileLayer.tilesets.getTilesetByGid(tileId);
         tilePro = tileSet.getTileProperties(tileId);
         if (tilePro.isSolid) {
-            return shared.tiles.solid;
+            return sh.tiles.solid;
         }
         if (tilePro.isPlatform) {
-            return shared.tiles.back;
+            return sh.tiles.back;
         }
         if (tilePro.isLeftSlope) {
-            return shared.tiles.front;
+            return sh.tiles.front;
         }
         if (tilePro.isRightSlope) {
-            return shared.tiles.front;
+            return sh.tiles.front;
         }
     },
     get: function(tmxMap) {

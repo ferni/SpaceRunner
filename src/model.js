@@ -6,7 +6,7 @@
 */
 
 var Extendable = require('./extendable').Extendable,
-    shared = require('./public/js/shared'),
+    sh = require('./public/js/shared'),
     auth = require('./auth'),
     _ = require('underscore');
 
@@ -121,7 +121,7 @@ exports.BattleSetUp = function(params) {
 };
 
 
-exports.Player = shared.Player.extendShared({
+exports.Player = sh.Player.extendShared({
 });
 
 exports.Building = Extendable.extend({

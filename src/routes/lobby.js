@@ -6,8 +6,7 @@
  */
 
 var _ = require('underscore')._,
-    auth = require('../auth'),
-    shared = require('../public/js/shared');
+    auth = require('../auth');
 
 /**
  * sets the initial info for the player

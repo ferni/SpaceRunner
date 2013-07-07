@@ -9,7 +9,7 @@ module('shared-inheritance');
 
 test('Basic stuff', function(){
     var Parent, Child, parent, child;
-    Parent = shared.TestSharedEntity.extendShared({
+    Parent = sh.TestSharedEntity.extendShared({
         init: function(id) {
             this.id = id;
         },
@@ -50,7 +50,7 @@ test('Basic stuff', function(){
 
 
 test('Invalid usage of extend instead of extendShared', function(){
-    var Person = shared.TestSharedEntity.extendShared({
+    var Person = sh.TestSharedEntity.extendShared({
         init: function(name) {
             this.name = name;
         }

@@ -161,7 +161,7 @@ screens.register('ship-building', GameScreen.extend({
         $.post('/battles/create',{shipJsonString: ship.toJsonString()},
                     function(settings) {
             console.log('Battle created');
-            settings.creator = shared.fromJson(settings.creator);
+            settings.creator = sh.fromJson(settings.creator);
             me.state.change('battle-set-up', settings);
         }, 'json');
 
@@ -421,7 +421,7 @@ screens.register('ship-building', GameScreen.extend({
             this.ship.map()[y][x] !== undefined) {
             shipTile = this.ship.map()[y][x];
         }
-        if (shipTile === shared.tiles.clear && this.chosen &&
+        if (shipTile === sh.tiles.clear && this.chosen &&
             this.chosen.occupies(x, y)) {
             return this.chosen;
         }
