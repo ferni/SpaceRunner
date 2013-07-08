@@ -6,12 +6,19 @@
 */
 
 /*global exports*/
-var auth = require('../auth');
+var auth = require('../auth'),
+    sh = require('../public/js/shared');
 
 exports.ping = function(req, res) {
   'use strict';
   res.json({ ok: true });
 };
+
+//used for testing
+exports.sharedprops = function(req, res) {
+    'use strict';
+    res.json({properties: sh.getProperties(sh)});
+}
 
 exports.disconnect = function(req, res, next) {
     try{

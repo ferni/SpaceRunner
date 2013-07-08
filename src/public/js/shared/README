@@ -1,0 +1,13 @@
+The scripts in this folder are used by server and client, they are in the "sh" namespace.
+
+IMPORTANT
+
+1) The client should reference the scripts in alphabetical order (index.js last).
+2) Each file except 00_init.js must start with the following code,
+    were previous-file-name is the alphabetically previous file name:
+
+var sh = require('./previous-file-name'), _ = sh._;
+if(typeof exports !== 'undefined'){
+   sh = module.exports = sh;
+}
+

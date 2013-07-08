@@ -35,4 +35,18 @@ function registerTestsRequiringNodeJS(){
                 start();
             });
     });
+    asyncTest('"sh" object has the same' +
+        ' properties in server and client.', function() {
+        var propsClient = sh.getProperties(sh);
+        expect(1);
+        $.post('/general/sharedprops', function(data){
+            var propsServer = data.properties;
+            deepEqual(propsServer, propsClient, JSON.stringify(propsServer) +
+                ' in server and client.');
+        }, 'json')
+            .always(function(){
+                start();
+            });
+    });
+
 }

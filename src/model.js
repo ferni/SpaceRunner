@@ -10,50 +10,6 @@ var Extendable = require('./extendable').Extendable,
     auth = require('./auth'),
     _ = require('underscore');
 
-exports.Ship = Extendable.extend({
-    init: function(jsonString) {
-        this.buildings = [];
-        this.units = [];
-        this.fromJsonString(jsonString);
-    },
-    addBuilding: function(building){
-        this.buildings.push(building);
-    },
-    addUnit: function(unit) {
-        this.units.push(unit);
-    },
-    toJsonString: function() {
-        return JSON.stringify({
-            'tmxName': this.tmxName,
-            'buildings': this.buildings,
-            'units': this.units
-        });
-    },
-    fromJsonString: function(jsonString) {
-        var json,
-            ship = this;
-        //ship.removeAll();
-        json = JSON.parse(jsonString);
-        this.tmxName = json.tmxName.toLowerCase();
-        this.loadMap();
-        _.each(json.buildings, function(b){
-            ship.addBuilding(b);
-        });
-        _.each(json.units, function(u){
-            ship.addUnit(u);
-        });
-    },
-    loadMap : function(){
-        var map = shipMaps[this.tmxName];
-        if(typeof map === 'undefined') {
-            throw new Error('tmx not found: '+ this.tmxName);
-        }
-        this.hullMap = map.hull;
-        this.width = map.width;
-        this.height = map.height;
-    }
-});
-
 exports.Battle = function(parameters) {
     this.id = parameters.id;
     this.ship = parameters.ship;
@@ -110,7 +66,7 @@ exports.BattleSetUp = function(params) {
      * Returns the battle.
      */
     this.createBattle = function(){
-        var ship = new exports.Ship(this.shipJsonString),
+        var ship = new sh.Ship(this.shipJsonString),
             battle = new exports.Battle({id: battles.length, ship: ship});
         battle.playerLeft = this.creator;
         battle.playerRight = this.challenger;

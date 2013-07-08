@@ -77,6 +77,7 @@ app.post('/battles/create', battles.create);
 app.post('/battles/join', battles.join);
 
 app.post('/general/ping', general.ping);
+app.post('/general/sharedprops', general.sharedprops);
 app.post('/general/disconnect', general.disconnect);
 
 //globals
@@ -93,6 +94,7 @@ shipMaps.loadMaps(function(maps){
     http.createServer(app).listen(app.get('port'), function() {
         'use strict';
         console.log('Express server listening on port ' + app.get('port'));
+        console.log(sh);
     });
 });
 

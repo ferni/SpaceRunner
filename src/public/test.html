@@ -6,9 +6,12 @@
   	<link rel="stylesheet" href="css/qunit-1.11.0.css">
 
     <script type="text/javascript" src="js/vendor/underscore.js" ></script>
-    <!-- This file shouldn't be compressed with the rest because
-        it needs to be found by NodeJS -->
-    <script type="text/javascript" src="js/shared.js"></script>
+
+    <!-- This files are used by the sever as well -->
+    <script type="text/javascript" src="js/shared/00_init.js"></script>
+    <script type="text/javascript" src="js/shared/10_general-stuff.js"></script>
+    <script type="text/javascript" src="js/shared/21_ship.js"></script>
+    <script type="text/javascript" src="js/shared/index.js"></script>
 
     <script type="text/javascript" src="js/vendor/ajaxupload.3.5.js" ></script>
 	<script type="text/javascript" src="js/vendor/jquery-1.9.1.js"></script>
