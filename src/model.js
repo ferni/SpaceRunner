@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-var Class = require('./class').Class,
+var Class = require('./class'),
     sh = require('./public/js/shared'),
     auth = require('./auth'),
     _ = require('underscore');
