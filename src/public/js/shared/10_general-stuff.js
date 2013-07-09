@@ -74,18 +74,18 @@ if(typeof exports !== 'undefined'){
         return Class;
     };
 
-
     //SHARED ENTITIES
     sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
     sh.Player = sh.SharedClass.extendShared({
         init: function(settings) {
+            this.type = 'Player';
             this.id = settings.id;
             this.name = settings.name;
         },
         toJson: function(){
             return {
-                type: 'Player',
+                type: this.type,
                 id: this.id,
                 name: this.name
             };
@@ -112,7 +112,7 @@ if(typeof exports !== 'undefined'){
         front: 'f',
         back: 'b',
         clear: '.'
-    }
+    };
 
 
     //should have access to the ship

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, TileEntity, _*/
+/*global me, ItemEntity, _*/
 
 var Unit = ItemEntity.extend({
     _paused: true,

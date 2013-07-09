@@ -50,22 +50,6 @@ var utils = {
         utils.matrixTiles(me.game.currentLevel.width,
             me.game.currentLevel.height, callback);
     },
-    //traverses every tile coordinate inside the level of an item
-    //callback must have x and y
-    itemTiles: function(item, callback, withinSize) {
-        'use strict';
-        var x, y;
-        if (!item) {
-            return;
-        }
-        for (x = item.x; x < item.trueSize(0) + item.x &&
-            (!withinSize || x < withinSize.width) && x >= 0; x++) {
-            for (y = item.y; y < item.trueSize(1) + item.y &&
-                (!withinSize || y < withinSize.height) && y >= 0; y++) {
-                callback(x, y);
-            }
-        }
-    },
     getEmptyMatrix: function(width, height, initialValue) {
         'use strict';
         var matrix = [], i, j;

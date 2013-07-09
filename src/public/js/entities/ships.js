@@ -23,7 +23,7 @@ var Ship = Object.extend({
                     ship.height, sh.tiles.clear);
                 _.each(ship.buildings(), function(b) {
                     if (!b.hidden()) {
-                        utils.itemTiles(b, function(x, y) {
+                        b.tiles(function(x, y) {
                             self._buildingsMap[y][x] = b;
                         }, ship);
                     }
@@ -89,7 +89,7 @@ var Ship = Object.extend({
         if (canBuild || canBuildRotated) {
             building.setX(x).setY(y);
             //remove anything in its way
-            utils.itemTiles(building, function(iX, iY) {
+            building.tiles(function(iX, iY) {
                 self.removeAt(iX, iY);
             }, this);
             this.add(building);

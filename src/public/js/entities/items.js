@@ -92,11 +92,23 @@ var ItemEntity = TileEntity.extend({
         }
         return this.size[index];
     },
+    //callback must have x and y. withinSize is optional
+    tiles: function(callback ,withinSize) {
+        'use strict';
+        var x, y;
+        for (x = this.x; x < this.trueSize(0) + this.x &&
+            (!withinSize || x < withinSize.width) && x >= 0; x++) {
+            for (y = this.y; y < this.trueSize(1) + this.y &&
+                (!withinSize || y < withinSize.height) && y >= 0; y++) {
+                callback(x, y);
+            }
+        }
+    },
     //returns true is some part of the item is occupying the tile
     occupies: function(x, y) {
         'use strict';
         var occupies = false;
-        utils.itemTiles(this, function(tX, tY) {
+        this.tiles(function(tX, tY) {
             if (x === tX && y === tY) {
                 occupies = true;
             }
@@ -140,14 +152,7 @@ var ItemEntity = TileEntity.extend({
         'use strict';
     },
 
-    tiles: function() {
-        'use strict';
-        var tiles = [];
-        utils.matrixTiles(this.trueSize(0), this.trueSize(1), function(x, y) {
-            tiles.push({ x: x, y: y });
-        });
-        return tiles;
-    },
+
     toJson: function(){
         var self = this;
         return {

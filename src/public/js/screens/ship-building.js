@@ -252,7 +252,7 @@ screens.register('ship-building', GameScreen.extend({
     },
 
     /* User Interface Stuff*/
-    chosen: null, //the chosen object from the panel (an ItemEntity)
+    chosen: null, //the chosen object from the panel (an Item)
     mouseLockedOn: null, //who the mouse actions pertain to.
     ghostItems: {}, //Items that exist for the sole purpose of...
     prepareGhostItems: function() {
@@ -361,7 +361,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         this.clearRed();
         var self = this;
-        utils.itemTiles(this.chosen, function(iX, iY) {
+        this.chosen.tiles(function(iX, iY) {
             if (self.greenSpots[iY][iX] === 0) {
                 self.printRed(iX, iY);
             }
