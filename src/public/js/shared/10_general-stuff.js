@@ -14,13 +14,13 @@ if(typeof exports !== 'undefined'){
 
 (function(sh){
     var packables = [],
-        initializing = false; //for ExtendableShared
+        initializing = false; //for SharedClass
     /**
      * JavaScript Inheritance Helper
      * (the same as in melonJS)
      * */
-    sh.ExtendableShared = function(){};
-    sh.ExtendableShared.extendShared = function(prop) {
+    sh.SharedClass = function(){};
+    sh.SharedClass.extendShared = function(prop) {
         // _super rename to parent to ease code reading
         var parent = this.prototype,
             fnTest = /xyz/.test(function() {xyz;}) ? /\bparent\b/ : /.*/;
@@ -66,7 +66,7 @@ if(typeof exports !== 'undefined'){
         // Enforce the constructor to be what we expect
         Class.constructor = Class;
         // And make this class extendable
-        Class.extendShared = sh.ExtendableShared.extendShared;//arguments.callee;
+        Class.extendShared = sh.SharedClass.extendShared;//arguments.callee;
         Class.extend = function(){
             throw new Error('"extendShared" should be called instead of "extend"' +
                 ' on a shared entity.');
@@ -76,9 +76,9 @@ if(typeof exports !== 'undefined'){
 
 
     //SHARED ENTITIES
-    sh.TestSharedEntity = sh.ExtendableShared.extendShared({});
+    sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
-    sh.Player = sh.ExtendableShared.extendShared({
+    sh.Player = sh.SharedClass.extendShared({
         init: function(settings) {
             this.id = settings.id;
             this.name = settings.name;

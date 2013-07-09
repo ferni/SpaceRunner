@@ -12,7 +12,7 @@ if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
-sh.Ship = sh.ExtendableShared.extendShared({
+sh.Ship = sh.SharedClass.extendShared({
     init: function(jsonString) {
         this.buildings = [];
         this.units = [];

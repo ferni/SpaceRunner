@@ -9,8 +9,8 @@
  * JavaScript Inheritance Helper
  * (the same as in melonJS)
  * */
-var Extendable = function(){};
-Extendable.extend = function(prop) {
+var Class = function(){};
+Class.extend = function(prop) {
     // _super rename to parent to ease code reading
     var parent = this.prototype,
         fnTest = /xyz/.test(function() {xyz;}) ? /\bparent\b/ : /.*/;
@@ -56,11 +56,11 @@ Extendable.extend = function(prop) {
     // Enforce the constructor to be what we expect
     Class.constructor = Class;
     // And make this class extendable
-    Class.extend = Extendable.extend;//arguments.callee;
+    Class.extend = Class.extend;//arguments.callee;
     Class.extendShared = function(){
         throw new Error('"extendShared" is only for shared entities,' +
             ' use "extend" instead.');
     };
     return Class;
 };
-exports.Extendable = Extendable;
+exports.Class = Class;

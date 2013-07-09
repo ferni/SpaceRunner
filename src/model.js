@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-var Extendable = require('./extendable').Extendable,
+var Class = require('./class').Class,
     sh = require('./public/js/shared'),
     auth = require('./auth'),
     _ = require('underscore');
@@ -22,7 +22,7 @@ exports.Battle = function(parameters) {
             ship: this.ship.toJsonString(),
             playerLeft: this.playerLeft.toJson(),
             playerRight: this.playerRight.toJson()
-        }
+        };
     }
 
 };
@@ -80,7 +80,7 @@ exports.BattleSetUp = function(params) {
 exports.Player = sh.Player.extendShared({
 });
 
-exports.Building = Extendable.extend({
+exports.Building = Class.extend({
     init: function(x, y){
 
     },
