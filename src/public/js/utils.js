@@ -27,31 +27,6 @@ if (!(window.console && console.log)) {
 }
 
 var utils = {
-    getParameterByName: function(name) {
-        'use strict';
-        var match = new RegExp('[?&]' + name + '=([^&]*)')
-            .exec(window.location.search);
-        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-    },
-    //For loading different ships by adding ship=<name> in the query string.
-    getQueriedShip: function() {
-        'use strict';
-        var defaultShip, ship, i;
-        defaultShip = 'area_01';
-        ship = utils.getParameterByName('ship');
-        if (ship === null) {
-            return defaultShip;
-        }
-        for (i = 0; i < g_resources.length; i++) {
-            if (g_resources[i].name === ship &&
-                g_resources[i].type === 'tmx') {
-                return ship;
-            }
-        }
-        console.log('Ship "' + ship + '" doesn\'t exist. Loading "' +
-            defaultShip + '" instead.');
-        return defaultShip;
-    },
     toTileVector: function(vector2D) {
         'use strict';
         var v = new me.Vector2d();

@@ -9,34 +9,6 @@
 me, utils, TILE_SIZE*/
 
 module('utils.js');
-test('getParameterByName', function() {
-    'use strict';
-    equal(utils.getParameterByName('asdf'), null,
-        "'asdf' not in query string");
-});
-
-test('getQueriedShip: queried ship not found', function() {
-    'use strict';
-    var originalFunction = utils.getParameterByName;
-    utils.getParameterByName = function() {
-        return 'unknownShip';
-    };
-    equal(utils.getQueriedShip(), 'area_01',
-        "'unknownShip' not found, returns default ship");
-    utils.getParameterByName = originalFunction;
-});
-
-test('getQueriedShip', function() {
-    'use strict';
-    var originalFunction = utils.getParameterByName;
-    utils.getParameterByName = function() {
-        return 'test';
-    };
-    equal(utils.getQueriedShip(), 'test');
-    utils.getParameterByName = originalFunction;
-
-});
-
 asyncTest('toTileVector', function() {
     'use strict';
     th.loadScreen(function() {
