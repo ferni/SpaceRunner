@@ -181,10 +181,9 @@ var Ship = Object.extend({
         return what && what.name === name;
     },
     isInside: function(x, y) {
-        var tiles = sh.tiles,
-            tile = this.mapAt(x, y);
-        return tile !== tiles.solid && tile !== tiles.front &&
-            tile !== tiles.back;
+        var tile = this.mapAt(x, y);
+        return tile !== sh.tiles.solid && tile !== sh.tiles.front &&
+            tile !== sh.tiles.back;
     },
 
 
