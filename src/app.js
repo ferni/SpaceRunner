@@ -94,7 +94,6 @@ shipMaps.loadMaps(function(maps){
     http.createServer(app).listen(app.get('port'), function() {
         'use strict';
         console.log('Express server listening on port ' + app.get('port'));
-        console.log(sh);
     });
 });
 
