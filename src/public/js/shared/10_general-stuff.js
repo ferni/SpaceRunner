@@ -7,7 +7,7 @@
 
 /*global */
 
-var sh = require('./00_init'), _ = sh._;
+var sh = require('./08_placement-rules'), _ = sh._;
 if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }

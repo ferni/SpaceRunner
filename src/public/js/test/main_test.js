@@ -40,7 +40,7 @@ asyncTest('add/mapAt/removeAt', function() {
     }, function(screen) {
         var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y,
-        engine = new EngineItem(x, y);
+        engine = make.item('engine', [x, y]);
         screen.ship.removeAll();
         //(ignores placement rules)
         screen.ship.add(engine);
@@ -108,7 +108,7 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         var x, y, door;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
-        door = new DoorItem();
+        door = make.item('door');
         ok(!door.canBuildAt(x, y, screen.ship),
             "Cannot build at x,y (there's no wall)");
         ok(!door.canBuildRotated(x, y, screen.ship),

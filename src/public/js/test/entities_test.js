@@ -9,7 +9,7 @@
 me, utils, ui, Ship*/
 
 module('entities/tile-entity.js');
-test('ItemEntity.trueSize()', function() {
+test('Item.trueSize()', function() {
     'use strict';
     var door = make.item('door');
     deepEqual(door.size, [2, 1]);
@@ -21,7 +21,7 @@ test('ItemEntity.trueSize()', function() {
     equal(door.trueSize(1), 2);
 });
 
-test('ItemEntity onShip/offShip animations', function() {
+test('Item onShip/offShip animations', function() {
     'use strict';
     var door = make.item('door');
     deepEqual(door.offShipAnimations, ['idle', 'v_idle']);

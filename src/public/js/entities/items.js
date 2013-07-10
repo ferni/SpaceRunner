@@ -174,12 +174,12 @@ var ItemEntity = TileEntity.extend({
 // weapon object
 var WeaponItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(weaponModel) {
         'use strict';
         this.type = 'weapon';
         this.size = [2, 2];
         this.totalSize = [3, 2];
-        this.parent(x, y, settings, true);
+        this.parent(weaponModel.x, weaponModel.y, {});
     },
     buildPlacementRules: function() {
         'use strict';
@@ -200,13 +200,13 @@ var WeaponItem = ItemEntity.extend({
 // engine object
 var EngineItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(engineModel) {
         'use strict';
         this.type = 'engine';
         this.size = [2, 2];
         this.totalSize = [3, 2];
         this.cannonTile = [1, 0];
-        this.parent(x, y, settings);
+        this.parent(engineModel.x, engineModel.y, {});
     },
     buildPlacementRules: function() {
         'use strict';
@@ -228,22 +228,22 @@ var EngineItem = ItemEntity.extend({
 // power object
 var PowerItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(powerModel) {
         'use strict';
         this.type = 'power';
         this.size = [2, 2];
-        this.parent(x, y, settings);
+        this.parent(powerModel.x, powerModel.y, {});
     }
 });
 
 // console object class
 var ConsoleItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(consoleModel) {
         'use strict';
         this.type = 'console';
         this.size = [1, 1];
-        this.parent(x, y, settings);
+        this.parent(consoleModel.x, consoleModel.y, {});
     },
     buildPlacementRules: function() {
         'use strict';
@@ -258,11 +258,11 @@ var ConsoleItem = ItemEntity.extend({
 // component object class
 var ComponentItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(componentModel) {
         'use strict';
         this.type = 'component';
         this.size = [2, 2];
-        this.parent(x, y, settings, this.mResource);
+        this.parent(componentModel.x, componentModel.y, {});
         // add animation
         this.addAnimation('idle', [3]);
         this.addAnimation('charge', [0, 1, 2, 3, 4, 5, 5]);
@@ -278,11 +278,11 @@ var ComponentItem = ItemEntity.extend({
 // door object class
 var DoorItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(doorModel) {
         'use strict';
         this.type = 'door';
         this.size = [2, 1];
-        this.parent(x, y, settings);
+        this.parent(doorModel.x, doorModel.y, {});
 
         // add animation
         this.addAnimation('idle', [2]);
@@ -321,11 +321,11 @@ var DoorItem = ItemEntity.extend({
 // wall object class
 var WallItem = ItemEntity.extend({
     // init function
-    init: function(x, y, settings) {
+    init: function(wallModel) {
         'use strict';
         this.type = 'wall';
         this.size = [1, 1];
-        this.parent(x, y, settings);
+        this.parent(wallModel.x, wallModel.y, {});
         // add animation
         //Wall connects: t=top, l=left, b=bottom, r=right
         this.addAnimation('lrWall', [0]);
