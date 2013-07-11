@@ -253,14 +253,18 @@ sh.items.Wall = sh.Item.extendShared({
     },
     onBuilt: function() {
         'use strict';
+
+        var top = this.ship.mapAt(this.x, this.y - 1),
+            left = this.ship.mapAt(this.x - 1, this.y),
+            bot = this.ship.mapAt(this.x, this.y + 1),
+            right = this.ship.mapAt(this.x + 1, this.y);
+        this.updateConnections(top, left, bot, right);
+    },
+    updateConnections: function(top, left, bot, right){
+        'use strict';
         //modify self and surrounding walls' connections
-        var top, left, bot, right,
-            it = sh.items,
+        var it = sh.items,
             x = this.x, y = this.y;
-        top = this.ship.mapAt(x, y - 1);
-        left = this.ship.mapAt(x - 1, y);
-        bot = this.ship.mapAt(x, y + 1);
-        right = this.ship.mapAt(x + 1, y);
         //reset
         this.connected.top = false;
         this.connected.left = false;

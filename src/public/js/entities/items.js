@@ -396,6 +396,17 @@ var WallItem = ItemEntity.extend({
     },
     update: function() {
         'use strict';
+        //TODO: update only when necessary, right now it's running all the time
+        var screen = me.state.current(),
+            top = screen.mapAt(this.x, this.y - 1),
+            left = screen.mapAt(this.x - 1, this.y),
+            bot = screen.mapAt(this.x, this.y + 1),
+            right = screen.mapAt(this.x + 1, this.y);
+        top = utils.getModel(top);
+        left = utils.getModel(left);
+        bot = utils.getModel(bot);
+        right = utils.getModel(right);
+        this.m.updateConnections(top, left, bot, right);
         this.updateAnimation();
     },
     onBuilt: function() {

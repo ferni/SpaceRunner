@@ -141,6 +141,19 @@ var utils = {
         }
         return {from: w1.from < w2.from ? w1.from : w2.from,
                 to: w1.to > w2.to ? w1.to : w2.to};
+    },
+    /**
+     * Returns the model of the object if it's a viewmodel,
+     * or returns the object itself if it's a model.
+     * @param object
+     */
+    getModel: function(object) {
+        if(object instanceof sh.Item) {
+            return object;
+        }
+        if(object instanceof ItemEntity){
+            return object.m;
+        }
     }
 
 };

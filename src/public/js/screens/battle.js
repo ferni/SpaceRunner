@@ -294,6 +294,9 @@ screens.register('battle', GameScreen.extend({
             throw 'Should only call getElapsedTime when resumed.';
         }
         return me.timer.getTime() - this.turnBeginTime;
+    },
+    mapAt: function(x, y) {
+        return gameState.ship.mapAt(x, y);
     }
 }));
 
