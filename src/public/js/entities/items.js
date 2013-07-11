@@ -189,6 +189,7 @@ var WeaponItem = ItemEntity.extend({
         this.type = 'weapon';
         this.size = [2, 2];
         this.totalSize = [3, 2];
+        this.m = weaponModel;
         this.parent(weaponModel.x, weaponModel.y, {});
     },
     buildPlacementRules: function() {
@@ -216,6 +217,7 @@ var EngineItem = ItemEntity.extend({
         this.size = [2, 2];
         this.totalSize = [3, 2];
         this.cannonTile = [1, 0];
+        this.m = engineModel;
         this.parent(engineModel.x, engineModel.y, {});
     },
     buildPlacementRules: function() {
@@ -242,6 +244,7 @@ var PowerItem = ItemEntity.extend({
         'use strict';
         this.type = 'power';
         this.size = [2, 2];
+        this.m = powerModel;
         this.parent(powerModel.x, powerModel.y, {});
     }
 });
@@ -253,6 +256,7 @@ var ConsoleItem = ItemEntity.extend({
         'use strict';
         this.type = 'console';
         this.size = [1, 1];
+        this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});
     },
     buildPlacementRules: function() {
@@ -272,6 +276,7 @@ var ComponentItem = ItemEntity.extend({
         'use strict';
         this.type = 'component';
         this.size = [2, 2];
+        this.m = componentModel;
         this.parent(componentModel.x, componentModel.y, {});
         // add animation
         this.addAnimation('idle', [3]);
@@ -291,6 +296,7 @@ var DoorItem = ItemEntity.extend({
         'use strict';
         this.type = 'door';
         this.size = [2, 1];
+        this.m = doorModel;
         this.parent(doorModel.x, doorModel.y, {});
 
         // add animation
