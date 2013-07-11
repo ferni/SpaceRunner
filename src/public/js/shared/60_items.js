@@ -91,6 +91,17 @@ sh.Item = sh.SharedClass.extendShared({
         'use strict';
         //abstract method
     },
+    onShip: function(ship){
+        if(ship === undefined) {
+            return this.ship;
+        }
+        this.ship = ship;
+        return this;
+    },
+    hidden: function(){
+        //TODO: safely remove this stub function
+        return false;
+    },
     toJson: function(){
         var self = this;
         return {

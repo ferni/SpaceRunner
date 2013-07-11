@@ -77,7 +77,7 @@ var Ship = Object.extend({
     //this should be called when the user builds something
     buildAt : function(x, y, buildingType) {
         var self = this,
-        building = make.item(buildingType),
+        building = make.itemModel(buildingType),
         canBuild = building.canBuildAt(x, y, this),
         canBuildRotated;
         if (!canBuild) {
@@ -87,7 +87,8 @@ var Ship = Object.extend({
             }
         }
         if (canBuild || canBuildRotated) {
-            building.setX(x).setY(y);
+            building.x = x;
+            building.y = y;
             //remove anything in its way
             building.tiles(function(iX, iY) {
                 self.removeAt(iX, iY);
@@ -118,8 +119,14 @@ var Ship = Object.extend({
     },
     //Adds an item to the ship ignoring its placement rules
     add: function(item) {
+        var VMConstructor, vm;
         if (this.syncWithGame) {
-            me.game.add(item, item.zIndex);
+            VMConstructor = make.itemTypes[item.type];
+            if (!VMConstructor) {
+                throw 'Could not find view model of type ' + item.type;
+            }
+            vm = new VMConstructor(item);
+            me.game.add(vm, vm.zIndex);
         }
         this._buildings.push(item);
         item.onShip(this);
@@ -138,9 +145,11 @@ var Ship = Object.extend({
         if (updateBuildings === undefined) {
             updateBuildings = true; //updates by default
         }
+        //(disable remove from MelonJS for now)
+        /*
         if (this.syncWithGame) {
             me.game.remove(item, true);
-        }
+        } */
         this._buildings.remove(item);
         if (updateBuildings) {
             this.buildingsChanged();
@@ -151,6 +160,7 @@ var Ship = Object.extend({
         var self = this,
             i;
         for (i = this.buildings().length - 1; i >= 0; i--) {
+            //TODO: don't update buildings here (pass false as 2nd parameter)
             self.remove(this.buildings()[i]);
         }
         this.buildingsChanged();
