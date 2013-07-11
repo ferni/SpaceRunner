@@ -130,6 +130,9 @@ var Ship = Object.extend({
         }
         this._buildings.push(item);
         item.onShip(this);
+        //the following two lines are just for the wall
+        vm.onShip(this);
+        vm.onBuilt();
         this.buildingsChanged();
     },
     removeAt: function(x, y) {
