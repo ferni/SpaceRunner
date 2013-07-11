@@ -221,10 +221,10 @@ sh.items.Door = sh.Item.extendShared({
         'use strict';
         //doesn't use inherited placementRules
         this.placementRules = [sh.pr.make.spaceRule(function(tile) {
-            return tile.type === 'wall' && tile.isCurrentAnimation('lrWall');
+            return tile instanceof sh.items.Wall && tile.isHorizontal();
         }, 2, 1)];
         this.rotatedPlacementRules = [sh.pr.make.spaceRule(function(tile) {
-            return tile.type === 'wall' && tile.isCurrentAnimation('tbWall');
+            return tile instanceof sh.items.Wall && tile.isVertical();
         }, 1, 2)];
     },
     canBuildRotated: function(x, y, ship) {
@@ -295,5 +295,13 @@ sh.items.Wall = sh.Item.extendShared({
             right.x === x + 1) {
             this.connected.right = true;
         }
+    },
+    isHorizontal: function(){
+        return this.connected.left && this.connected.right &&
+            !this.connected.top && !this.connected.bottom;
+    },
+    isVertical: function(){
+        return !this.connected.left && !this.connected.right &&
+            this.connected.top && this.connected.bottom;
     }
 });
