@@ -225,7 +225,6 @@ screens.register('ship-building', GameScreen.extend({
         me.game.sort();
         me.game.repaint();
         this.prevMouse = mouseTile;
-
     },
     mouseUp: function(e) {
         'use strict';
@@ -303,10 +302,10 @@ screens.register('ship-building', GameScreen.extend({
         this.chosen.setX(x).setY(y);
         //Rotate if it fits somewhere
         if (!this.chosen.rotated() &&
-                this.chosen.canBuildRotated(x, y, this.ship)) {
+                this.chosen.m.canBuildRotated(x, y, this.ship)) {
             this.chosen.rotated(true);
         }
-        if (this.chosen.rotated() && this.chosen.canBuildAt(x, y, this.ship)) {
+        if (this.chosen.rotated() && this.chosen.m.canBuildAt(x, y, this.ship)) {
             this.chosen.rotated(false);
         }
         this.updateRed();
@@ -378,11 +377,11 @@ screens.register('ship-building', GameScreen.extend({
         self.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
         utils.levelTiles(function(x, y) {
             var i, j, cWidth, cHeight;
-            if (self.chosen.canBuildAt(x, y, self.ship)) {
+            if (self.chosen.m.canBuildAt(x, y, self.ship)) {
                 cWidth = self.chosen.size[0];
                 cHeight = self.chosen.size[1];
             }
-            if (self.chosen.canBuildRotated(x, y, self.ship)) {
+            if (self.chosen.m.canBuildRotated(x, y, self.ship)) {
                 cWidth = self.chosen.size[1];
                 cHeight = self.chosen.size[0];
             }
