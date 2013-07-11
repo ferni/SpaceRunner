@@ -24,8 +24,6 @@ test('Item.trueSize()', function() {
 test('Item onShip/offShip animations', function() {
     'use strict';
     var door = make.item('door');
-    deepEqual(door.offShipAnimations, ['idle', 'v_idle']);
-    deepEqual(door.onShipAnimations, ['h_open_close', 'v_open_close']);
     ok(!door.onShip(), 'door is not on ship');
     ok(!door.rotated(), 'door is not rotated');
 

@@ -9,13 +9,18 @@
 
 /* individual object class */
 var ItemEntity = TileEntity.extend({
-    onShipAnimations: [], //0: not rotated, 1: rotated
-    offShipAnimations: [], //0: not rotated, 1: rotated
-    //2x2 grid
-    animationGrid: [], //0: offShip, 1: onShip
+
 
     init: function(x, y, settings) {
         'use strict';
+        this.onShipAnimations = {
+            normal: null,
+            rotated: null
+        };
+        this.offShipAnimations = {
+            normal: null,
+            rotated: null
+        };
         if (settings === undefined) {
             settings = {};
         }
@@ -27,15 +32,22 @@ var ItemEntity = TileEntity.extend({
     },
 
     updateAnimation: function() {
-        var animRow, anim, rowIndex, colIndex;
-        rowIndex = utils.boolToInt(this._onShip);
-        colIndex = utils.boolToInt(this._rotated);
-        animRow = this.animationGrid[rowIndex];
-        if (animRow) {
-            anim = animRow[colIndex];
-            if (anim) {
-                this.setCurrentAnimation(anim);
+        var anim;
+        if(this._onShip){
+            if(this._rotated){
+                anim = this.onShipAnimations.rotated;
+            }else{
+                anim = this.onShipAnimations.normal;
             }
+        }else{
+            if(this._rotated){
+                anim = this.offShipAnimations.rotated;
+            }else{
+                anim = this.offShipAnimations.normal;
+            }
+        }
+        if (anim) {
+            this.setCurrentAnimation(anim);
         }
     },
     /*functions to do when mouse-locked (override in each item)
@@ -267,9 +279,8 @@ var ComponentItem = ItemEntity.extend({
         this.addAnimation('idle', [3]);
         this.addAnimation('charge', [0, 1, 2, 3, 4, 5, 5]);
         // set animation
-        this.offShipAnimations = ['idle', 'idle'];
-        this.onShipAnimations = ['charge', 'charge'];
-        this.animationGrid = [this.offShipAnimations, this.onShipAnimations];
+        this.offShipAnimations.normal = 'idle';
+        this.onShipAnimations.normal = 'charge';
         this.animationspeed = 15;
         this.setCurrentAnimation('idle');
     }
@@ -294,10 +305,12 @@ var DoorItem = ItemEntity.extend({
         this.anchorPoint.x = 0.25;
         this.anchorPoint.y = 0.5;
         // set animation
-        this.offShipAnimations = ['idle', 'v_idle'];
-        this.onShipAnimations = ['h_open_close', 'v_open_close'];
-        this.animationGrid = [this.offShipAnimations, this.onShipAnimations];
+        this.offShipAnimations.normal = 'idle';
+        this.offShipAnimations.rotated = 'v_idle';
+        this.onShipAnimations.normal = 'h_open_close';
+        this.onShipAnimations.rotated = 'v_open_close';
         this.animationspeed = 10;
+        this.setCurrentAnimation('idle');
         this.zIndex = 110;
     },
     buildPlacementRules: function() {
@@ -346,7 +359,6 @@ var WallItem = ItemEntity.extend({
     updateAnimation: function() {
         'use strict';
         var wallsAround, x, y, top, left, bot, right, animationName, ui;
-        this.parent();
         if (!me.state.isCurrent('ship-building') ||
             !me.state.current().isReset) {
             return;
