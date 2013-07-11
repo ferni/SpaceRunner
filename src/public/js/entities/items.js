@@ -9,8 +9,6 @@
 
 /* individual object class */
 var ItemEntity = TileEntity.extend({
-
-
     init: function(x, y, settings) {
         'use strict';
         this.onShipAnimations = {
@@ -338,71 +336,55 @@ var WallItem = ItemEntity.extend({
         'use strict';
         this.type = 'wall';
         this.size = [1, 1];
+        this.m = wallModel;
         this.parent(wallModel.x, wallModel.y, {});
         // add animation
         //Wall connects: t=top, l=left, b=bottom, r=right
-        this.addAnimation('lrWall', [0]);
-        this.addAnimation('tbWall', [1]);
-        this.addAnimation('trWall', [2]);
-        this.addAnimation('tlrWall', [3]);
-        this.addAnimation('tlbrWall', [4]);
-        this.addAnimation('tlWall', [5]);
-        this.addAnimation('brWall', [6]);
-        this.addAnimation('lbrWall', [7]);
-        this.addAnimation('lbWall', [8]);
-        this.addAnimation('tlbWall', [9]);
-        this.addAnimation('tbrWall', [10]);
+        this.addAnimation('lr', [0]);
+        this.addAnimation('tb', [1]);
+        this.addAnimation('tr', [2]);
+        this.addAnimation('tlr', [3]);
+        this.addAnimation('tlbr', [4]);
+        this.addAnimation('tl', [5]);
+        this.addAnimation('br', [6]);
+        this.addAnimation('lbr', [7]);
+        this.addAnimation('lb', [8]);
+        this.addAnimation('tlb', [9]);
+        this.addAnimation('tbr', [10]);
         // set animation
-        this.setCurrentAnimation('lrWall');
+        this.setCurrentAnimation('lr');
         this.animationspeed = 6;
     },
     updateAnimation: function() {
         'use strict';
-        var wallsAround, x, y, top, left, bot, right, animationName, ui;
-        if (!me.state.isCurrent('ship-building') ||
-            !me.state.current().isReset) {
-            return;
-        }
-        ui = me.state.current();
+        var wallsAround, animationName;
         wallsAround = [];
-        x = this.x;
-        y = this.y;
-        top = ui.mapAt(x, y - 1);
-        left = ui.mapAt(x - 1, y);
-        bot = ui.mapAt(x, y + 1);
-        right = ui.mapAt(x + 1, y);
-        if (top !== null && (top.type === 'wall' ||
-            (top.type === 'door' && top.rotated() && top.y === y - 2))) {
+        if (this.m.connected.top) {
             wallsAround.push('t');
         }
-        if (left !== null && (left.type === 'wall' ||
-            (left.type === 'door' && !left.rotated() && left.x === x - 2))) {
+        if (this.m.connected.left) {
             wallsAround.push('l');
         }
-        if (bot !== null && (bot.type === 'wall' ||
-            (bot.type === 'door' && bot.rotated() && bot.y === y + 1))) {
+        if (this.m.connected.bottom) {
             wallsAround.push('b');
         }
-        if (right !== null && (right.type === 'wall' ||
-            (right.type === 'door' && !right.rotated() &&
-            right.x === x + 1))) {
+        if (this.m.connected.right) {
             wallsAround.push('r');
         }
         if (wallsAround.length === 0) {
-            this.setCurrentAnimation('lrWall'); //default
+            this.setCurrentAnimation('lr'); //default
             return;
         }
         if (wallsAround.length === 1) { //just one connection
             if (wallsAround[0] === 't' || wallsAround[0] === 'b') {
-                this.setCurrentAnimation('tbWall');
+                this.setCurrentAnimation('tb');
                 return;
             }
             if (wallsAround[0] === 'l' || wallsAround[0] === 'r') {
-                this.setCurrentAnimation('lrWall');
+                this.setCurrentAnimation('lr');
                 return;
             }
         }
-        wallsAround.push('Wall');
         animationName = wallsAround.join('');
         this.setCurrentAnimation(animationName);
     },

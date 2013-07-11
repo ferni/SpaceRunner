@@ -253,6 +253,47 @@ sh.items.Wall = sh.Item.extendShared({
     },
     onBuilt: function() {
         'use strict';
+        //modify self and surrounding walls' connections
+        var top, left, bot, right,
+            it = sh.items,
+            x = this.x, y = this.y;
+        top = this.ship.mapAt(x, y - 1);
+        left = this.ship.mapAt(x - 1, y);
+        bot = this.ship.mapAt(x, y + 1);
+        right = this.ship.mapAt(x + 1, y);
+        //reset
+        this.connected.top = false;
+        this.connected.left = false;
+        this.connected.bottom = false;
+        this.connected.right = false;
 
+        if (top instanceof it.Wall) {
+            top.connected.bottom = true;
+            this.connected.top = true;
+        } else if(top instanceof it.Door && top.rotated() &&
+            top.y === y - 2) {
+            this.connected.top = true;
+        }
+        if (left instanceof it.Wall) {
+            left.connected.right = true;
+            this.connected.left = true;
+        }else if(left instanceof it.Door && !left.rotated() &&
+            left.x === x - 2) {
+            this.connected.left = true;
+        }
+        if (bot instanceof it.Wall) {
+            bot.connected.top = true;
+            this.connected.bottom = true;
+        }else if(bot instanceof it.Door && bot.rotated() &&
+            bot.y === y + 1) {
+            this.connected.bottom = true;
+        }
+        if (right instanceof it.Wall) {
+            right.connected.left = true;
+            this.connected.right = true;
+        }else if(right instanceof it.Door && !right.rotated() &&
+            right.x === x + 1) {
+            this.connected.right = true;
+        }
     }
 });
