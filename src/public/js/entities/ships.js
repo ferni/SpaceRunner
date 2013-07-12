@@ -83,7 +83,7 @@ var Ship = Object.extend({
         if (!canBuild) {
             canBuildRotated = building.canBuildRotated(x, y, this);
             if (canBuildRotated) {
-                building.rotated(true);
+                building.rotated = true;
             }
         }
         if (canBuild || canBuildRotated) {

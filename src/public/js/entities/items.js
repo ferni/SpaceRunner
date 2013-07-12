@@ -32,13 +32,13 @@ var ItemEntity = TileEntity.extend({
     updateAnimation: function() {
         var anim;
         if(this._onShip){
-            if(this._rotated){
+            if(this.m.rotated){
                 anim = this.onShipAnimations.rotated;
             }else{
                 anim = this.onShipAnimations.normal;
             }
         }else{
-            if(this._rotated){
+            if(this.m.rotated){
                 anim = this.offShipAnimations.rotated;
             }else{
                 anim = this.offShipAnimations.normal;
@@ -73,20 +73,19 @@ var ItemEntity = TileEntity.extend({
         'use strict';
         return false;
     },
-    _rotated: false,
     rotated: function(rotated) {
         'use strict';
-        var prev = this._rotated;
+        var prev = this.m.rotated;
         if (rotated === undefined) {
-            return this._rotated;
+            return this.m.rotated;
         }
         if (rotated) {
             this.angle = Math.PI / 2;
         } else {
             this.angle = 0;
         }
-        this._rotated = rotated;
-        if (prev !== this._rotated) {
+        this.m.rotated = rotated;
+        if (prev !== this.m.rotated) {
             this.updateAnimation();
         }
         return this;

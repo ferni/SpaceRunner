@@ -40,26 +40,14 @@ sh.Item = sh.SharedClass.extendShared({
         'use strict';
         return false;
     },
-    _rotated: false,
-    rotated: function(rotated) {
-        'use strict';
-        var prev = this._rotated;
-        if (rotated === undefined) {
-            return this._rotated;
-        }
-        this._rotated = rotated;
-        if (prev !== this._rotated) {
-            //rotation changed
-        }
-        return this;
-    },
+    rotated: false,
     //takes rotation into account
     trueSize: function(index) {
         'use strict';
         if (index === undefined) { //can pass an index: 0= width, 1= height
-            return this.rotated() ? [this.size[1], this.size[0]] : this.size;
+            return this.rotated ? [this.size[1], this.size[0]] : this.size;
         }
-        if (this.rotated()) {
+        if (this.rotated) {
             index = (index === 1) ? 0 : 1; //toggles 1 and 0
         }
         return this.size[index];
@@ -108,7 +96,7 @@ sh.Item = sh.SharedClass.extendShared({
             type: self.type,
             x: self.x,
             y: self.y,
-            rotated: self.rotated(),
+            rotated: self.rotated,
             settings: {}
         }
     }
@@ -274,28 +262,28 @@ sh.items.Wall = sh.Item.extendShared({
         if (top instanceof it.Wall) {
             top.connected.bottom = true;
             this.connected.top = true;
-        } else if(top instanceof it.Door && top.rotated() &&
+        } else if(top instanceof it.Door && top.rotated &&
             top.y === y - 2) {
             this.connected.top = true;
         }
         if (left instanceof it.Wall) {
             left.connected.right = true;
             this.connected.left = true;
-        }else if(left instanceof it.Door && !left.rotated() &&
+        }else if(left instanceof it.Door && !left.rotated &&
             left.x === x - 2) {
             this.connected.left = true;
         }
         if (bot instanceof it.Wall) {
             bot.connected.top = true;
             this.connected.bottom = true;
-        }else if(bot instanceof it.Door && bot.rotated() &&
+        }else if(bot instanceof it.Door && bot.rotated &&
             bot.y === y + 1) {
             this.connected.bottom = true;
         }
         if (right instanceof it.Wall) {
             right.connected.left = true;
             this.connected.right = true;
-        }else if(right instanceof it.Door && !right.rotated() &&
+        }else if(right instanceof it.Door && !right.rotated &&
             right.x === x + 1) {
             this.connected.right = true;
         }
