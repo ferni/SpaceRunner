@@ -301,8 +301,15 @@ var WallItem = ItemEntity.extend({
     },
     updateAnimation: function() {
         'use strict';
-        var wallsAround, animationName;
-        wallsAround = [];
+        var wallsAround = [], animationName;
+        if (this.m.isHorizontal()) {
+            this.setCurrentAnimation('lr');
+            return;
+        }
+        if (this.m.isVertical()) {
+            this.setCurrentAnimation('tb');
+            return;
+        }
         if (this.m.connected.top) {
             wallsAround.push('t');
         }
@@ -314,20 +321,6 @@ var WallItem = ItemEntity.extend({
         }
         if (this.m.connected.right) {
             wallsAround.push('r');
-        }
-        if (wallsAround.length === 0) {
-            this.setCurrentAnimation('lr'); //default
-            return;
-        }
-        if (wallsAround.length === 1) { //just one connection
-            if (wallsAround[0] === 't' || wallsAround[0] === 'b') {
-                this.setCurrentAnimation('tb');
-                return;
-            }
-            if (wallsAround[0] === 'l' || wallsAround[0] === 'r') {
-                this.setCurrentAnimation('lr');
-                return;
-            }
         }
         animationName = wallsAround.join('');
         this.setCurrentAnimation(animationName);

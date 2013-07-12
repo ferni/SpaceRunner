@@ -296,11 +296,11 @@ sh.items.Wall = sh.Item.extendShared({
         }
     },
     isHorizontal: function(){
-        return this.connected.left && this.connected.right &&
-            !this.connected.top && !this.connected.bottom;
+        return !this.connected.top && !this.connected.bottom;
+        //(because it's the default state)
     },
     isVertical: function(){
         return !this.connected.left && !this.connected.right &&
-            this.connected.top && this.connected.bottom;
+            (this.connected.top || this.connected.bottom);
     }
 });
