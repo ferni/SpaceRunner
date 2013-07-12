@@ -94,7 +94,6 @@ var Ship = Object.extend({
                 self.removeAt(iX, iY);
             }, this);
             this.add(building);
-            building.onBuilt();
             return building; //building successful
         }
         return null; //building failed
@@ -127,13 +126,10 @@ var Ship = Object.extend({
             }
             vm = new VMConstructor(item);
             me.game.add(vm, vm.zIndex);
+            vm.onShip(this);
         }
         this._buildings.push(item);
         item.onShip(this);
-        //the following two lines are just for the wall
-        vm.onShip(this);
-        vm.onBuilt();
-
         this.buildingsChanged();
     },
     removeAt: function(x, y) {
@@ -224,7 +220,7 @@ var Ship = Object.extend({
         return JSON.stringify({
             'tmxName': this.tmxName,
             'buildings': _.map(_.filter(this.buildings(), function(b) {
-                return b.name === 'item';
+                return b instanceof sh.Item;
             }), function(b) { return b.toJson();}),
             'units': _.map(this.units(),
                 function(u) { return u.toJson();}

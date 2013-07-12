@@ -228,7 +228,7 @@ screens.register('ship-building', GameScreen.extend({
     },
     mouseUp: function(e) {
         'use strict';
-        var mouseTile, which;
+        var mouseTile, which, built;
         which = e.which - 1; //workaround for melonJS mismatch
         mouseTile = utils.getMouse();
         if (this.mouseLockedOn) { //the mouse is involved in a specific object
@@ -238,8 +238,13 @@ screens.register('ship-building', GameScreen.extend({
         }
 
         if (this.chosen && !this.dragging) {
-            if (which !== me.input.mouse.RIGHT) {
-                this.ship.buildAt(mouseTile.x, mouseTile.y, this.chosen.type);
+            if (which === me.input.mouse.LEFT) {
+                built = this.ship.buildAt(mouseTile.x, mouseTile.y,
+                    this.chosen.type);
+                if (built) {
+                    //TODO: create vms here instead of in ship
+                    utils.findVM(built).onBuilt();
+                }
             }
         } else if (this.dragging) {
             this.endDrag();
