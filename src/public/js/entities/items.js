@@ -296,6 +296,7 @@ var DoorItem = ItemEntity.extend({
         this.type = 'door';
         this.size = [2, 1];
         this.m = doorModel;
+        this.rotated(this.m.rotated); //force change angle
         this.parent(doorModel.x, doorModel.y, {});
 
         // add animation

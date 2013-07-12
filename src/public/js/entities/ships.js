@@ -133,6 +133,7 @@ var Ship = Object.extend({
         //the following two lines are just for the wall
         vm.onShip(this);
         vm.onBuilt();
+
         this.buildingsChanged();
     },
     removeAt: function(x, y) {
