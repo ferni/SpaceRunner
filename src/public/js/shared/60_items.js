@@ -119,9 +119,9 @@ sh.items.Weapon = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'weapon';
         this.size = [2, 2];
+        this.parent(ship, x, y);
     },
     buildPlacementRules: function() {
         'use strict';
@@ -168,9 +168,9 @@ sh.items.Power = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'power';
         this.size = [2, 2];
+        this.parent(ship, x, y);
     }
 });
 
@@ -178,9 +178,9 @@ sh.items.Console = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'console';
         this.size = [1, 1];
+        this.parent(ship, x, y)
     },
     buildPlacementRules: function() {
         'use strict';
@@ -197,9 +197,9 @@ sh.items.Component = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'component';
         this.size = [2, 2];
+        this.parent(ship, x, y);
     }
 });
 
@@ -208,9 +208,9 @@ sh.items.Door = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'door';
         this.size = [2, 1];
+        this.parent(ship, x, y);
     },
     buildPlacementRules: function() {
         'use strict';
@@ -235,9 +235,9 @@ sh.items.Wall = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'wall';
         this.size = [1, 1];
+        this.parent(ship, x, y);
         this.connected = {
             top: false,
             left: true,
