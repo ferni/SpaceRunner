@@ -144,9 +144,9 @@ sh.items.Engine = sh.Item.extendShared({
     // init function
     init: function(ship, x, y) {
         'use strict';
-        this.parent(ship, x, y);
         this.type = 'engine';
         this.size = [2, 2];
+        this.parent(ship, x, y);
     },
     buildPlacementRules: function() {
         'use strict';

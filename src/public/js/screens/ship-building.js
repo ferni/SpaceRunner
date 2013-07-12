@@ -361,11 +361,13 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         this.clearRed();
         var self = this;
-        this.chosen.tiles(function(iX, iY) {
-            if (self.greenSpots[iY][iX] === 0) {
-                self.printRed(iX, iY);
-            }
-        }, me.game.currentLevel);
+        if(this.chosen) {
+            this.chosen.tiles(function(iX, iY) {
+                if (self.greenSpots[iY][iX] === 0) {
+                    self.printRed(iX, iY);
+                }
+            }, me.game.currentLevel);
+        }
     },
     //A matrix of 1 and 0. In 0 should be red overlay when trying to build
     greenSpots: null,
