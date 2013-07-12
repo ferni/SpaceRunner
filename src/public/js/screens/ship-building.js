@@ -105,7 +105,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var screen = this,
             loadingNextScreen = false;
-        $('.items').click(function() {
+        $('.item').click(function() {
             var idItem, itemName;
             if (me.state.isCurrent(me.state.LOADING)) {
                 return;
