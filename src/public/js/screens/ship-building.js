@@ -318,7 +318,7 @@ screens.register('ship-building', GameScreen.extend({
             console.log('There should be nothing chosen when drag begins. ' +
                 '(this.beginDrag)');
         }
-        building.hide();
+        this.ship.remove(building);
         this.ship.buildingsMap.update();
         this.choose(building.type);
         this.dragging = building;
@@ -330,9 +330,10 @@ screens.register('ship-building', GameScreen.extend({
         }
         var mouse = utils.getMouse();
         if (this.dragging.canBuildAt(mouse.x, mouse.y, this.ship)) {
-            this.dragging.setX(mouse.x).setY(mouse.y);
+            this.dragging.x = mouse.x;
+            this.dragging.y = mouse.y;
         }
-        this.dragging.show();
+        this.ship.add(this.dragging);
         this.ship.buildingsMap.update();
         this.choose();
         this.dragging = null;
