@@ -154,6 +154,17 @@ var utils = {
         if(object instanceof ItemEntity){
             return object.m;
         }
+    },
+    /**
+     * Finds an item viewmodel associated with the item model.
+     * @param model {sh.items.Item} the model.
+     * @returns {*}
+     */
+    findVM: function(model) {
+        //TODO: make an index
+        return _.find(me.game.getEntityByName('item'), function(item) {
+            return item.m === model;
+        });
     }
 
 };
