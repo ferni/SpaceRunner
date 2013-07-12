@@ -143,17 +143,22 @@ var Ship = Object.extend({
         }
     },
     remove: function(item, updateBuildings) {
+        var itemVM;
         if (!item) {
             return;
         }
         if (updateBuildings === undefined) {
             updateBuildings = true; //updates by default
         }
-        //(disable remove from MelonJS for now)
-        /*
         if (this.syncWithGame) {
-            me.game.remove(item, true);
-        } */
+            itemVM = utils.findVM(item);
+            if(!itemVM) {
+                console.warn('The item to be removed did not have a VM.');
+            }else{
+                me.game.remove(itemVM, true);
+            }
+
+        }
         this._buildings.remove(item);
         if (updateBuildings) {
             this.buildingsChanged();
