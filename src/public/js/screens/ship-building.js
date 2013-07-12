@@ -192,7 +192,7 @@ screens.register('ship-building', GameScreen.extend({
         }
 
         item = this.ship.mapAt(mouseTile.x, mouseTile.y);
-        if (item !== null && item.name === 'item') {
+        if (item !== null && item instanceof sh.Item) {
             if (which === me.input.mouse.RIGHT) {
                 this.ship.remove(item);
                 this.updateRed();
