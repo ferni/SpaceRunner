@@ -26,19 +26,18 @@ var ItemEntity = TileEntity.extend({
             settings.name = 'item';
         }
         this.parent(x, y, settings);
-        this.buildPlacementRules();
     },
 
     updateAnimation: function() {
         var anim;
         if(this._onShip){
-            if(this.m.rotated){
+            if(this.m.rotated()){
                 anim = this.onShipAnimations.rotated;
             }else{
                 anim = this.onShipAnimations.normal;
             }
         }else{
-            if(this.m.rotated){
+            if(this.m.rotated()){
                 anim = this.offShipAnimations.rotated;
             }else{
                 anim = this.offShipAnimations.normal;
@@ -55,37 +54,27 @@ var ItemEntity = TileEntity.extend({
     lockedMouseDown: function(mouseTile) { 'use strict'; },
     lockedMouseMove: function(mouseTile) { 'use strict'; },
     lockedMouseDbClick: function(mouseTile) { 'use strict'; },
-    placementRules: [],
-    buildPlacementRules: function() {
-        'use strict';
-        this.placementRules = [];
-        this.placementRules.push(pr.make.spaceRule(sh.tiles.clear,
-            this.size[0], this.size[1]));
-    },
-
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return _.every(this.placementRules, function(r) {
-            return r.compliesAt(x, y, ship.map());
-        });
+        return this.m.canBuildAt(x, y, ship);
     },
     canBuildRotated: function(x, y, ship) {
         'use strict';
-        return false;
+        return this.m.canBuildRotated(x, y, ship);
     },
     rotated: function(rotated) {
         'use strict';
-        var prev = this.m.rotated;
+        var prev = this.m.rotated();
         if (rotated === undefined) {
-            return this.m.rotated;
+            return this.m.rotated();
         }
         if (rotated) {
             this.angle = Math.PI / 2;
         } else {
             this.angle = 0;
         }
-        this.m.rotated = rotated;
-        if (prev !== this.m.rotated) {
+        this.m.rotated(rotated);
+        if (prev !== this.m.rotated()) {
             this.updateAnimation();
         }
         return this;
@@ -190,20 +179,6 @@ var WeaponItem = ItemEntity.extend({
         this.totalSize = [3, 2];
         this.m = weaponModel;
         this.parent(weaponModel.x, weaponModel.y, {});
-    },
-    buildPlacementRules: function() {
-        'use strict';
-        this.parent();
-        this.placementRules.push(new pr.PlacementRule({
-            tile: sh.tiles.front,
-            inAny: [{
-                x: 2,
-                y: 0
-            }, {
-                x: 2,
-                y: 1
-            }]
-        }));
     }
 });
 
@@ -218,20 +193,6 @@ var EngineItem = ItemEntity.extend({
         this.cannonTile = [1, 0];
         this.m = engineModel;
         this.parent(engineModel.x, engineModel.y, {});
-    },
-    buildPlacementRules: function() {
-        'use strict';
-        this.parent();
-        this.placementRules.push(new pr.PlacementRule({
-            tile: sh.tiles.back,
-            inAll: [{
-                x: -1,
-                y: 0
-            }, {
-                x: -1,
-                y: 1
-            }]
-        }));
     }
 });
 
@@ -257,14 +218,6 @@ var ConsoleItem = ItemEntity.extend({
         this.size = [1, 1];
         this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});
-    },
-    buildPlacementRules: function() {
-        'use strict';
-        this.parent();
-        this.placementRules.push(pr.make.nextToRule(function(tile) {
-            return tile.type === 'weapon' || tile.type === 'engine' ||
-            tile.type === 'power';
-        }, this.size[0], this.size[1]));
     }
 });
 
@@ -296,7 +249,7 @@ var DoorItem = ItemEntity.extend({
         this.type = 'door';
         this.size = [2, 1];
         this.m = doorModel;
-        this.rotated(this.m.rotated); //force change angle
+
         this.parent(doorModel.x, doorModel.y, {});
 
         // add animation
@@ -315,23 +268,8 @@ var DoorItem = ItemEntity.extend({
         this.onShipAnimations.rotated = 'v_open_close';
         this.animationspeed = 10;
         this.setCurrentAnimation('idle');
+        this.rotated(this.m.rotated()); //force change angle
         this.zIndex = 110;
-    },
-    buildPlacementRules: function() {
-        'use strict';
-        //doesn't use inherited placementRules
-        this.placementRules = [pr.make.spaceRule(function(tile) {
-            return tile.type === 'wall' && tile.isCurrentAnimation('lrWall');
-        }, 2, 1)];
-        this.rotatedPlacementRules = [pr.make.spaceRule(function(tile) {
-            return tile.type === 'wall' && tile.isCurrentAnimation('tbWall');
-        }, 1, 2)];
-    },
-    canBuildRotated: function(x, y, ship) {
-        'use strict';
-        return _.every(this.rotatedPlacementRules, function(r) {
-            return r.compliesAt(x, y, ship.map());
-        });
     }
 
 });
@@ -457,7 +395,7 @@ var WallItem = ItemEntity.extend({
         'use strict';
         var ui = me.state.current();
         this.parent();
-        if (!this.canBuildAt(mouseTile.x, mouseTile.y,
+        if (!this.m.canBuildAt(mouseTile.x, mouseTile.y,
             me.state.current().ship)) {
             return;
         }
