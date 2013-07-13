@@ -406,6 +406,6 @@ var WallItem = ItemEntity.extend({
         ui.clear();
 
         ui.mouseLockedOn = null;
-        ui.ship.remove(this);
+        ui.ship.remove(this.m);
     }
 });
