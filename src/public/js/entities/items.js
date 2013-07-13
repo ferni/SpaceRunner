@@ -82,13 +82,7 @@ var ItemEntity = TileEntity.extend({
     //takes rotation into account
     trueSize: function(index) {
         'use strict';
-        if (index === undefined) { //can pass an index: 0= width, 1= height
-            return this.rotated() ? [this.size[1], this.size[0]] : this.size;
-        }
-        if (this.rotated()) {
-            index = (index === 1) ? 0 : 1; //toggles 1 and 0
-        }
-        return this.size[index];
+        return this.m.trueSize(index);
     },
     //callback must have x and y. withinSize is optional
     tiles: function(callback ,withinSize) {
@@ -175,7 +169,7 @@ var WeaponItem = ItemEntity.extend({
     init: function(weaponModel) {
         'use strict';
         this.type = 'weapon';
-        this.size = [2, 2];
+        this.size = weaponModel.size;
         this.totalSize = [3, 2];
         this.m = weaponModel;
         this.parent(weaponModel.x, weaponModel.y, {});
@@ -188,7 +182,7 @@ var EngineItem = ItemEntity.extend({
     init: function(engineModel) {
         'use strict';
         this.type = 'engine';
-        this.size = [2, 2];
+        this.size = engineModel.size;
         this.totalSize = [3, 2];
         this.cannonTile = [1, 0];
         this.m = engineModel;
@@ -203,7 +197,7 @@ var PowerItem = ItemEntity.extend({
     init: function(powerModel) {
         'use strict';
         this.type = 'power';
-        this.size = [2, 2];
+        this.size = powerModel.size;
         this.m = powerModel;
         this.parent(powerModel.x, powerModel.y, {});
     }
@@ -215,7 +209,7 @@ var ConsoleItem = ItemEntity.extend({
     init: function(consoleModel) {
         'use strict';
         this.type = 'console';
-        this.size = [1, 1];
+        this.size = consoleModel.size;
         this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});
     }
@@ -227,7 +221,7 @@ var ComponentItem = ItemEntity.extend({
     init: function(componentModel) {
         'use strict';
         this.type = 'component';
-        this.size = [2, 2];
+        this.size = componentModel.size;
         this.m = componentModel;
         this.parent(componentModel.x, componentModel.y, {});
         // add animation
@@ -247,7 +241,7 @@ var DoorItem = ItemEntity.extend({
     init: function(doorModel) {
         'use strict';
         this.type = 'door';
-        this.size = [2, 1];
+        this.size = doorModel.size;
         this.m = doorModel;
 
         this.parent(doorModel.x, doorModel.y, {});
@@ -279,7 +273,7 @@ var WallItem = ItemEntity.extend({
     init: function(wallModel) {
         'use strict';
         this.type = 'wall';
-        this.size = [1, 1];
+        this.size = wallModel.size;
         this.m = wallModel;
         this.parent(wallModel.x, wallModel.y, {});
         // add animation
@@ -393,7 +387,7 @@ var WallItem = ItemEntity.extend({
             return;
         }
         _.each(ui.drawingScreen, function(wall) {
-            ui.ship.buildAt(wall.x, wall.y, 'wall');
+            ui.buildItem(wall.x, wall.y, 'wall');
         });
         ui.clear();
         ui.mouseLockedOn = null;
