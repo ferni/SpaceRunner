@@ -93,7 +93,7 @@ asyncTest('Wall building', function() {
             me.state.change('ship-building', {tmxName: 'test'});
         },
         function(screen) {
-            screen.ship.buildAt(x, y, 'wall');
+            screen.buildItem(x, y, 'wall');
             ok(screen.mouseLockedOn, 'Mouse locked on something');
             equal(screen.mouseLockedOn.type, 'wall', 'Mouse locked on wall');
 
