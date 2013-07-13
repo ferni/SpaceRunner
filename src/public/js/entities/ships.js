@@ -93,6 +93,7 @@ var Ship = Object.extend({
                 self.removeAt(iX, iY);
             }, this);
             this.add(building);
+            building.onBuilt();
             return building; //building successful
         }
         return null; //building failed
@@ -117,7 +118,6 @@ var Ship = Object.extend({
     },
     //Adds an item to the ship ignoring its placement rules
     add: function(item) {
-        var VMConstructor, vm;
         this._buildings.push(item);
         item.onShip(this);
         this.buildingsChanged();

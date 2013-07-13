@@ -162,9 +162,13 @@ var utils = {
      */
     findVM: function(model) {
         //TODO: make an index
-        return _.find(me.game.getEntityByName('item'), function(item) {
+        var vm = _.find(me.game.getEntityByName('item'), function(item) {
             return item.m === model;
         });
+        if (!vm) {
+            console.warn('Could not find vm of ' + model.type);
+        }
+        return vm;
     }
 
 };

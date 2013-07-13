@@ -173,6 +173,7 @@ var WeaponItem = ItemEntity.extend({
         this.totalSize = [3, 2];
         this.m = weaponModel;
         this.parent(weaponModel.x, weaponModel.y, {});
+        this.onShip(weaponModel.onShip());
     }
 });
 
@@ -187,6 +188,7 @@ var EngineItem = ItemEntity.extend({
         this.cannonTile = [1, 0];
         this.m = engineModel;
         this.parent(engineModel.x, engineModel.y, {});
+        this.onShip(engineModel.onShip());
     }
 });
 
@@ -200,6 +202,7 @@ var PowerItem = ItemEntity.extend({
         this.size = powerModel.size;
         this.m = powerModel;
         this.parent(powerModel.x, powerModel.y, {});
+        this.onShip(powerModel.onShip());
     }
 });
 
@@ -212,6 +215,7 @@ var ConsoleItem = ItemEntity.extend({
         this.size = consoleModel.size;
         this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});
+        this.onShip(consoleModel.onShip());
     }
 });
 
@@ -232,6 +236,8 @@ var ComponentItem = ItemEntity.extend({
         this.onShipAnimations.normal = 'charge';
         this.animationspeed = 15;
         this.setCurrentAnimation('idle');
+        this.onShip(componentModel.onShip());
+
     }
 });
 
@@ -243,7 +249,6 @@ var DoorItem = ItemEntity.extend({
         this.type = 'door';
         this.size = doorModel.size;
         this.m = doorModel;
-
         this.parent(doorModel.x, doorModel.y, {});
 
         // add animation
@@ -264,6 +269,8 @@ var DoorItem = ItemEntity.extend({
         this.setCurrentAnimation('idle');
         this.rotated(this.m.rotated()); //force change angle
         this.zIndex = 110;
+        this.onShip(doorModel.onShip());
+
     }
 
 });
@@ -292,6 +299,7 @@ var WallItem = ItemEntity.extend({
         // set animation
         this.setCurrentAnimation('lr');
         this.animationspeed = 6;
+        this.onShip(wallModel.onShip());
     },
     updateAnimation: function() {
         'use strict';
@@ -387,7 +395,7 @@ var WallItem = ItemEntity.extend({
             return;
         }
         _.each(ui.drawingScreen, function(wall) {
-            ui.buildItem(wall.x, wall.y, 'wall');
+            ui.ship.buildAt(wall.x, wall.y, 'wall');
         });
         ui.clear();
         ui.mouseLockedOn = null;

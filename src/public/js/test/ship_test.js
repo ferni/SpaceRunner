@@ -17,8 +17,7 @@ test('Globals are set', function() {
 
 
 
-module('main.js/ship');
-
+module('ship-building/ship');
 asyncTest('buildAt', function() {
     'use strict';
     th.loadScreen(function() {
@@ -108,7 +107,7 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         var x, y, door;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
-        door = make.item('door');
+        door = make.itemModel('door');
         ok(!door.canBuildAt(x, y, screen.ship),
             "Cannot build at x,y (there's no wall)");
         ok(!door.canBuildRotated(x, y, screen.ship),
@@ -116,8 +115,13 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
 
         screen.ship.buildAt(x, y, 'wall');
         screen.ship.buildAt(x, y + 1, 'wall');
-        //update wall animations, important for door placement rules
-        me.game.update();
+
+        ok(screen.ship.mapAt(x, y) instanceof sh.items.Wall,
+            'wall built at x, y');
+        ok(screen.ship.mapAt(x, y + 1) instanceof sh.items.Wall,
+            'wall built at x, y + 1');
+        ok(screen.ship.mapAt(x, y).isVertical());
+        ok(screen.ship.mapAt(x, y + 1).isVertical());
         ok(!door.canBuildAt(x, y, screen.ship),
             'After building vertical wall,' +
             'door still cannot be built at x,y...');

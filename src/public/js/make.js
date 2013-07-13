@@ -60,6 +60,17 @@ var make = (function() {
         }
         return new Constructor(model);
     };
+    /**
+     *
+     * @param itemModel {sh.Item} the item.
+     */
+    make.vm = function(itemModel) {
+        var VMConstructor = make.itemTypes[itemModel.type];
+        if (!VMConstructor) {
+            throw 'Could not find view model of type ' + itemModel.type;
+        }
+        return new VMConstructor(itemModel);
+    };
     make.itemFromJson = function(json){
         var item = make.item(json.type, [json.x, json.y, json.settings]);
         item.rotated(json.rotated);

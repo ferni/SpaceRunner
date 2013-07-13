@@ -175,25 +175,21 @@ asyncTest('rotate ghost when it could be built rotated', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        var hX, hY, hWall1, hWall2, door, vX, vY, vWall1, vWall2;
+        var hX, hY, door, vX, vY;
         hX = th.shipPositions.engine.x;
         hY = th.shipPositions.engine.y;
-        hWall1 = screen.ship.buildAt(hX, hY, 'wall');
-        hWall2 = screen.ship.buildAt(hX + 1, hY, 'wall');
+        screen.ship.buildAt(hX, hY, 'wall');
+         screen.ship.buildAt(hX + 1, hY, 'wall');
         screen.mouseLockedOn = null;
-        hWall1.update();
-        hWall2.update(); //(for animations)
-        door = make.item('door');
+        door = make.itemModel('door');
         ok(door.canBuildAt(hX, hY, screen.ship),
             'door can be built without rotation at horizontal wall');
 
         vX = th.shipPositions.free.x;
         vY = th.shipPositions.free.y;
-        vWall1 = screen.ship.buildAt(vX, vY, 'wall');
-        vWall2 = screen.ship.buildAt(vX, vY + 1, 'wall');
+        screen.ship.buildAt(vX, vY, 'wall');
+        screen.ship.buildAt(vX, vY + 1, 'wall');
         screen.mouseLockedOn = null;
-        vWall1.update();
-        vWall2.update(); //(for animations)
         ok(door.canBuildRotated(vX, vY, screen.ship),
             'door can be built rotated at vertical wall');
 
@@ -227,6 +223,39 @@ asyncTest('draw/mapAt', function() {
         }), 'Engine drawn at correct position');
 
         equal(screen.mapAt(4, 5).type, 'engine', 'mapAt(4,5) is engine');
+        start();
+    });
+});
+
+asyncTest('updateShip', function() {
+    'use strict';
+    th.loadScreen(function() {
+        me.state.change('ship-building', {tmxName: 'test'});
+    }, function(screen) {
+        var ship = screen.ship, aux,
+            engine = new sh.items.Engine(),
+            weapon = new sh.items.Weapon();
+        screen.updateShip();
+        equal(screen.shipItemVMs.length, 0, 'No vms yet');
+        ship.add(engine);
+        screen.updateShip();
+        equal(screen.shipItemVMs.length, 1, 'A vm added...');
+        equal(screen.shipItemVMs[0].m, engine, "... it's the engine.");
+        ship.add(weapon);
+        screen.updateShip();
+        equal(screen.shipItemVMs.length, 2, 'Another vm added...');
+        equal(screen.shipItemVMs[1].m, weapon, "... it's the weapon.");
+        aux = ship._buildings[0];
+        ship._buildings[0] = ship._buildings[1];
+        ship._buildings[1] = aux;
+        screen.updateShip();
+        equal(screen.shipItemVMs.length, 2, 'Length remains the same...');
+        equal(screen.shipItemVMs[0].m, weapon, '...but VMs switched positions.');
+        ship.remove(weapon, true);
+        screen.updateShip();
+        equal(screen.shipItemVMs.length, 1, 'VM removed...');
+        equal(screen.shipItemVMs[0].m, engine, "... the engine remains.");
+
         start();
     });
 });

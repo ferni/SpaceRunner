@@ -89,10 +89,45 @@ screens.register('ship-building', GameScreen.extend({
             var data = window.prompt('enter ship json data');
             me.state.change('ship-building', {jsonString: data});
         }
-
+        this.updateShip();
         _.each(this.drawingScreen, function(item){
             item.update();
         });
+    },
+
+    shipItemVMs: [],
+    updateShip: function(){
+        var i, v, items, vms, hasVM, aux;
+        if (!this.ship) {
+            return;
+        }
+        items = this.ship.buildings();
+        vms = this.shipItemVMs;
+
+        for(i = 0; i < items.length; i++) {
+            hasVM = false;
+            for(v = i; v < vms.length; v++) {
+                if(items[i] === vms[v].m) {
+                    hasVM = true;
+                    break;
+                }
+            }
+            if (hasVM) {
+                //put vm at item's index position
+                aux = vms[v];
+                vms[v] = vms[i];
+                vms[i] = aux;
+            }else {
+                //new vm
+                vms.splice(i, 0, make.vm(items[i]));
+                me.game.add(vms[i], vms[i].zIndex);
+            }
+        }
+        //remove extra vms
+        for(v = items.length; v < vms.length; v++) {
+            me.game.remove(vms[v], true);
+        }
+        vms.splice(items.length, vms.length - items.length);
     },
     draw: function(ctx) {
         'use strict';
@@ -249,35 +284,17 @@ screens.register('ship-building', GameScreen.extend({
         me.game.repaint();
 
     },
-    buildItem: function(x, y, type, silent) {
+    buildItem: function(x, y, type) {
         'use strict';
-        var item = this.ship.buildAt(x, y, type),
-            vm, VMConstructor;
-        if (!item) {
-            return;
-        }
-        VMConstructor = make.itemTypes[type];
-        if (!VMConstructor) {
-            throw 'Could not find view model of type ' + item.type;
-        }
-        vm = new VMConstructor(item);
-        me.game.add(vm, vm.zIndex);
-        vm.onShip(this.ship);
-        if(!silent) {
-            vm.onBuilt();
+        var built = this.ship.buildAt(x, y, type);
+        if(built) {
+            this.updateShip();
+            utils.findVM(built).onBuilt();
         }
     },
     deleteItem: function (item) {
         'use strict';
-        var itemVM;
-        this.ship.remove(item);
-        itemVM = utils.findVM(item);
-        if(!itemVM) {
-            console.warn('The item to be removed did not have a VM.');
-        }else{
-            me.game.remove(itemVM, true);
-        }
-
+        this.ship.remove(item, true);
         this.updateRed();
     },
     /* User Interface Stuff*/
@@ -342,15 +359,15 @@ screens.register('ship-building', GameScreen.extend({
     },
     //Dragging
     dragging: null,
-    beginDrag: function(item) {
+    beginDrag: function(building) {
         'use strict';
         if (this.chosen) {
             console.log('There should be nothing chosen when drag begins. ' +
                 '(this.beginDrag)');
         }
-        this.deleteItem(item);
-        this.choose(item.type);
-        this.dragging = item;
+        this.ship.remove(building, true);
+        this.choose(building.type);
+        this.dragging = building;
     },
     endDrag: function() {
         'use strict';
@@ -362,10 +379,10 @@ screens.register('ship-building', GameScreen.extend({
             this.dragging.x = mouse.x;
             this.dragging.y = mouse.y;
         }
-        this.buildItem(this.dragging.x, this.dragging.y, this.dragging.type,
-            true);
+        this.ship.add(this.dragging);
         this.choose();
         this.dragging = null;
+        this.updateShip();
     },
     //Red overlay
     redScreen: [],
