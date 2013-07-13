@@ -249,7 +249,7 @@ screens.register('ship-building', GameScreen.extend({
         me.game.repaint();
 
     },
-    buildItem: function(x, y, type) {
+    buildItem: function(x, y, type, silent) {
         'use strict';
         var item = this.ship.buildAt(x, y, type),
             vm, VMConstructor;
@@ -263,7 +263,9 @@ screens.register('ship-building', GameScreen.extend({
         vm = new VMConstructor(item);
         me.game.add(vm, vm.zIndex);
         vm.onShip(this.ship);
-        vm.onBuilt();
+        if(!silent) {
+            vm.onBuilt();
+        }
     },
     deleteItem: function (item) {
         'use strict';
@@ -340,16 +342,15 @@ screens.register('ship-building', GameScreen.extend({
     },
     //Dragging
     dragging: null,
-    beginDrag: function(building) {
+    beginDrag: function(item) {
         'use strict';
         if (this.chosen) {
             console.log('There should be nothing chosen when drag begins. ' +
                 '(this.beginDrag)');
         }
-        this.ship.remove(building);
-        this.ship.buildingsMap.update();
-        this.choose(building.type);
-        this.dragging = building;
+        this.deleteItem(item);
+        this.choose(item.type);
+        this.dragging = item;
     },
     endDrag: function() {
         'use strict';
@@ -361,8 +362,8 @@ screens.register('ship-building', GameScreen.extend({
             this.dragging.x = mouse.x;
             this.dragging.y = mouse.y;
         }
-        this.ship.add(this.dragging);
-        this.ship.buildingsMap.update();
+        this.buildItem(this.dragging.x, this.dragging.y, this.dragging.type,
+            true);
         this.choose();
         this.dragging = null;
     },
