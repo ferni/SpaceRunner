@@ -239,7 +239,7 @@ screens.register('ship-building', GameScreen.extend({
 
         if (this.chosen && !this.dragging) {
             if (which === me.input.mouse.LEFT) {
-                this.buildItem(mouseTile, this.chosen.type);
+                this.buildItem(mouseTile.x, mouseTile.y, this.chosen.type);
             }
         } else if (this.dragging) {
             this.endDrag();
@@ -249,9 +249,9 @@ screens.register('ship-building', GameScreen.extend({
         me.game.repaint();
 
     },
-    buildItem: function(mouseTile, type) {
+    buildItem: function(x, y, type) {
         'use strict';
-        var item = this.ship.buildAt(mouseTile.x, mouseTile.y, type),
+        var item = this.ship.buildAt(x, y, type),
             vm, VMConstructor;
         if (!item) {
             return;
