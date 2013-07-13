@@ -180,6 +180,7 @@ screens.register('ship-building', GameScreen.extend({
         me.game.sort();
         me.game.repaint();
     },
+
     mouseDown: function(e) {
         'use strict';
         var mouseTile, item, which;
@@ -194,8 +195,7 @@ screens.register('ship-building', GameScreen.extend({
         item = this.ship.mapAt(mouseTile.x, mouseTile.y);
         if (item !== null && item instanceof sh.Item) {
             if (which === me.input.mouse.RIGHT) {
-                this.ship.remove(item);
-                this.updateRed();
+                this.deleteItem(item);
             } else {
                 this.selected = item;
                 if (!this.chosen) {
@@ -239,12 +239,7 @@ screens.register('ship-building', GameScreen.extend({
 
         if (this.chosen && !this.dragging) {
             if (which === me.input.mouse.LEFT) {
-                built = this.ship.buildAt(mouseTile.x, mouseTile.y,
-                    this.chosen.type);
-                if (built) {
-                    //TODO: create vms here instead of in ship
-                    utils.findVM(built).onBuilt();
-                }
+                this.buildItem(mouseTile, this.chosen.type);
             }
         } else if (this.dragging) {
             this.endDrag();
@@ -254,7 +249,35 @@ screens.register('ship-building', GameScreen.extend({
         me.game.repaint();
 
     },
+    buildItem: function(mouseTile, type) {
+        'use strict';
+        var item = this.ship.buildAt(mouseTile.x, mouseTile.y, type),
+            vm, VMConstructor;
+        if (!item) {
+            return;
+        }
+        VMConstructor = make.itemTypes[type];
+        if (!VMConstructor) {
+            throw 'Could not find view model of type ' + item.type;
+        }
+        vm = new VMConstructor(item);
+        me.game.add(vm, vm.zIndex);
+        vm.onShip(this.ship);
+        vm.onBuilt();
+    },
+    deleteItem: function (item) {
+        'use strict';
+        var itemVM;
+        this.ship.remove(item);
+        itemVM = utils.findVM(item);
+        if(!itemVM) {
+            console.warn('The item to be removed did not have a VM.');
+        }else{
+            me.game.remove(itemVM, true);
+        }
 
+        this.updateRed();
+    },
     /* User Interface Stuff*/
     chosen: null, //the chosen object from the panel (an Item)
     mouseLockedOn: null, //who the mouse actions pertain to.

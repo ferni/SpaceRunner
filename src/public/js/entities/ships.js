@@ -11,7 +11,7 @@ var Ship = Object.extend({
     hullMap: {},
     buildingsMap: {},
     _map : null,
-    init : function(settings, syncWithGame) {
+    init : function(settings) {
         'use strict';
         var ship = this;
         this.buildingsMap = {
@@ -50,7 +50,6 @@ var Ship = Object.extend({
 
         this.width = this.tmxTileMap.width;
         this.height = this.tmxTileMap.height;
-        this.syncWithGame = syncWithGame;
         this._buildings = [];
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
@@ -119,15 +118,6 @@ var Ship = Object.extend({
     //Adds an item to the ship ignoring its placement rules
     add: function(item) {
         var VMConstructor, vm;
-        if (this.syncWithGame) {
-            VMConstructor = make.itemTypes[item.type];
-            if (!VMConstructor) {
-                throw 'Could not find view model of type ' + item.type;
-            }
-            vm = new VMConstructor(item);
-            me.game.add(vm, vm.zIndex);
-            vm.onShip(this);
-        }
         this._buildings.push(item);
         item.onShip(this);
         this.buildingsChanged();
@@ -139,33 +129,22 @@ var Ship = Object.extend({
         }
     },
     remove: function(item, updateBuildings) {
-        var itemVM;
         if (!item) {
             return;
         }
         if (updateBuildings === undefined) {
             updateBuildings = true; //updates by default
         }
-        if (this.syncWithGame) {
-            itemVM = utils.findVM(item);
-            if(!itemVM) {
-                console.warn('The item to be removed did not have a VM.');
-            }else{
-                me.game.remove(itemVM, true);
-            }
-
-        }
         this._buildings.remove(item);
         if (updateBuildings) {
             this.buildingsChanged();
         }
     },
-
     removeAll: function() {
         var self = this,
             i;
         for (i = this.buildings().length - 1; i >= 0; i--) {
-            //TODO: don't update buildings here (pass false as 2nd parameter)
+        //TODO: try don't update buildings here (pass false as 2nd parameter)
             self.remove(this.buildings()[i]);
         }
         this.buildingsChanged();
