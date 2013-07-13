@@ -16,14 +16,21 @@ asyncTest('cropScript', function(){
             collisionResolution: collisionResolutions.none});
     }, function(screen) {
         var ship = gameState.ship,
-            unit;
-        unit = ship.putUnit({speed: 1});
-        screen.generateScripts(unit, {x: unit.x + 3, y: unit.y});
-        equal(unit.script.length, 4);
-        equal(unit.script[1].time, 1000);
-        unit.cropScript(1000);
-        equal(unit.script.length, 2);
-        equal(unit.script[1].time, 1000);
+            unit, withoutExceptions = true;
+        try{
+            unit = ship.putUnit({speed: 1});
+            screen.generateScripts(unit, {x: unit.x + 3, y: unit.y});
+            equal(unit.script.length, 4);
+            equal(unit.script[1].time, 1000);
+            unit.cropScript(1000);
+            equal(unit.script.length, 2);
+            equal(unit.script[1].time, 1000);
+
+        }
+        catch(e){
+            withoutExceptions = false;
+        }
+        ok(withoutExceptions, 'free of exceptions');
         start();
     });
 });
