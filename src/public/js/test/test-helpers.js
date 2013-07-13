@@ -115,10 +115,10 @@ var th = {
             this.moveMouse(x, y);
         }
         me.state.current().mouseDown({
-            which: which
+            which: which + 1 //taking into account the adjustment made inside
         });
         me.state.current().mouseUp({
-            which: which
+            which: which + 1 //taking into account the adjustment made inside
         });
     },
     leftClick: function(x, y) {
