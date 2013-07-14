@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-var hullMap = {
+var hullMapGenerator = {
     getCollisionTileChar: function(tmxMap, x, y) {
         'use strict';
         var tileLayer, tileId, tileSet, tilePro;
@@ -51,7 +51,11 @@ var hullMap = {
             map[y] = row.join('');
             pixelPos.y += tileHeight;
         }
-        return map;
+        return {
+            width: tmxMap.width,
+            height: tmxMap.height,
+            map: map
+        };
     }
 };
 

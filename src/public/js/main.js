@@ -251,6 +251,15 @@ var jsApp = {
         // load everything & display a loading screen
         me.state.change(me.state.LOADING);
     },
+    generateHullMaps: function(){
+        var i, tmxTileMap;
+        window.hullMaps = {};
+        for (i = 0; i < sh.mapNames.length; i++) {
+            tmxTileMap = new me.TMXTileMap(sh.mapNames[i], 0, 0);
+            tmxTileMap.load();
+            hullMaps[sh.mapNames[i]] = hullMapGenerator.get(tmxTileMap);
+        }
+    },
     /* ---
     callback when everything is loaded
     --- */
@@ -261,6 +270,7 @@ var jsApp = {
         window.FIRST_SCREEN = 'lobby';
         window.gameState = new GameState();
 
+        this.generateHullMaps();
         chatClient.start();
 
         //prepare dom

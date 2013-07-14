@@ -8,15 +8,8 @@
 function registerTestsRequiringNodeJS(){
     module('INTEGRATION');
     asyncTest('hullMaps generated in server identical to client', function() {
-        var shipsClient = {}, i, tmxTileMap;
-        for (i = 0; i < sh.mapNames.length; i++) {
+        var shipsClient = hullMaps, i;
 
-            tmxTileMap = new me.TMXTileMap(sh.mapNames[i], 0, 0);
-            tmxTileMap.load();
-            shipsClient[sh.mapNames[i]] = {
-                hull: hullMap.get(tmxTileMap)
-            };
-        }
         $.post('ship/gethulls', function(shipsServer){
 
             console.log('shipsServer');
@@ -25,10 +18,19 @@ function registerTestsRequiringNodeJS(){
             console.log(shipsClient);
 
             for (i = 0; i < sh.mapNames.length; i++) {
-                deepEqual(shipsClient[sh.mapNames[i]].hull,
-                    shipsServer[sh.mapNames[i]].hull, sh.mapNames[i] +
+                deepEqual(shipsClient[sh.mapNames[i]].map,
+                    shipsServer[sh.mapNames[i]].map, sh.mapNames[i] +
                         "'s hull identical on server and client.");
+                equal(shipsClient[sh.mapNames[i]].width,
+                    shipsServer[sh.mapNames[i]].width, 'width');
+                equal(shipsClient[sh.mapNames[i]].height,
+                    shipsServer[sh.mapNames[i]].height, 'height');
             }
+            shipsServer[sh.mapNames[0]].map[0] ='asdfasdfsdaf';
+            notDeepEqual(shipsClient[sh.mapNames[0]].map,
+                shipsServer[sh.mapNames[0]].map,
+                'test fails if a map is changed'
+            );
 
         }, 'json')
             .always(function(){

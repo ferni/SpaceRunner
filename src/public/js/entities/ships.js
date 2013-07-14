@@ -48,17 +48,23 @@ var Ship = Object.extend({
         }
         this.loadMap();
 
-        this.width = this.tmxTileMap.width;
-        this.height = this.tmxTileMap.height;
         this._buildings = [];
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
         }
     },
     loadMap : function() {
-        this.tmxTileMap = new me.TMXTileMap(this.tmxName, 0, 0);
-        this.tmxTileMap.load();
-        this.hullMap = hullMap.get(this.tmxTileMap);
+        var hull;
+        if (!hullMaps) {
+            throw 'hullMaps global object not found';
+        }
+        hull = hullMaps[this.tmxName.toLowerCase()];
+        if (!hull) {
+            throw 'hullMap "' + this.tmxName.toLowerCase() + '" not found';
+        }
+        this.hullMap = hull.map;
+        this.width = hull.width;
+        this.height = hull.height;
     },
     buildings : function() {
         return this._buildings;
