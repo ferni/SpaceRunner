@@ -165,6 +165,7 @@ if(typeof exports !== 'undefined'){
     };
 
     sh.mapNames = [
+        'test',
         'cyborg_battleship1',
         'cyborg_cruiser',
         'cyborg_drone',
