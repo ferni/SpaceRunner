@@ -54,7 +54,7 @@ screens.register('battle', GameScreen.extend({
             this.mouseDown.bind(this));
         me.input.registerMouseEvent('mousemove', me.game.viewport,
             this.mouseMove.bind(this));
-        gameState.ship.showInScreen();
+        me.levelDirector.loadLevel(gameState.ship.tmxName);
 
         this.pause();
     },

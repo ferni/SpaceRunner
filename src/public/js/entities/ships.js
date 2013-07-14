@@ -220,12 +220,6 @@ var Ship = Object.extend({
         });
         this.buildingsChanged();
     },
-    showInScreen: function() {
-      me.levelDirector.loadLevel(this.tmxName);
-        _.each(this.buildings(), function(b) {
-            me.game.add(b, b.zIndex);
-      });
-    },
     getPfMatrix: function() {
         var ship = this,
             pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
