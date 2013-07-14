@@ -90,7 +90,7 @@ chat.init(app, chatRoutes);
 console.log('Loading maps...');
 shipMaps.loadMaps(function(maps){
     'use strict';
-    GLOBAL.shipMaps = maps;
+    GLOBAL.hullMaps = maps;
     http.createServer(app).listen(app.get('port'), function() {
         'use strict';
         console.log('Express server listening on port ' + app.get('port'));
