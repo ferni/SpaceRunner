@@ -98,7 +98,7 @@ var Ship = Object.extend({
             building.tiles(function(iX, iY) {
                 self.removeAt(iX, iY);
             }, this);
-            this.add(building);
+            this.addItem(building);
             building.onBuilt();
             return building; //building successful
         }
@@ -119,11 +119,11 @@ var Ship = Object.extend({
             }
         });
         unit = new Unit(empty.x, empty.y, settings);
-        this.add(unit);
+        this.addItem(unit);
         return unit;
     },
     //Adds an item to the ship ignoring its placement rules
-    add: function(item) {
+    addItem: function(item) {
         this._buildings.push(item);
         item.onShip(this);
         this.buildingsChanged();
@@ -219,7 +219,7 @@ var Ship = Object.extend({
         ship.removeAll();
         json = JSON.parse(jsonString);
         _.each(json.buildings, function(b){
-            ship.add(make.itemFromJson(b));
+            ship.addItem(make.itemFromJson(b));
         });
         _.each(json.units, function(u){
             ship.add(make.unitFromJson(u));

@@ -379,7 +379,7 @@ screens.register('ship-building', GameScreen.extend({
             this.dragging.x = mouse.x;
             this.dragging.y = mouse.y;
         }
-        this.ship.add(this.dragging);
+        this.ship.addItem(this.dragging);
         this.choose();
         this.dragging = null;
         this.updateShip();

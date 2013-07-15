@@ -237,11 +237,11 @@ asyncTest('updateShip', function() {
             weapon = new sh.items.Weapon();
         screen.updateShip();
         equal(screen.shipItemVMs.length, 0, 'No vms yet');
-        ship.add(engine);
+        ship.addItem(engine);
         screen.updateShip();
         equal(screen.shipItemVMs.length, 1, 'A vm added...');
         equal(screen.shipItemVMs[0].m, engine, "... it's the engine.");
-        ship.add(weapon);
+        ship.addItem(weapon);
         screen.updateShip();
         equal(screen.shipItemVMs.length, 2, 'Another vm added...');
         equal(screen.shipItemVMs[1].m, weapon, "... it's the weapon.");

@@ -42,7 +42,7 @@ asyncTest('add/mapAt/removeAt', function() {
         engine = make.item('engine', [x, y]);
         screen.ship.removeAll();
         //(ignores placement rules)
-        screen.ship.add(engine);
+        screen.ship.addItem(engine);
         equal(screen.ship.buildings()[0].type, 'engine',
             'First building is engine after adding');
 
