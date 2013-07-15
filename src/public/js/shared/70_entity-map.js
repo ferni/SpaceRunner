@@ -12,40 +12,70 @@ if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
-sh.EntityMap = function(width, height, entityArray){
-    this.changed = true;
-    this.map = null;
-    this.width = width;
-    this.height = height;
-    this.update = function(entityArray) {
-        var self = this;
-
-        if(!entityArray) {
-            throw 'entityArray parameter mandatory.';
-        }
-        self.map = sh.utils.getEmptyMatrix(this.width,
-            this.height, 0);
-        _.each(entityArray, function(e) {
-            e.tiles(function(x, y) {
-                self.map[y][x] = e;
-            }, {width: self.width, height: self.height});
-        });
-
-        this.changed = true;
-    };
-    this.update(entityArray);
-};
-
 /**
- * Does pretty much nothing but implement the EntityMap interface
- * (For using in CompoundMap).
- * @param map {Array} the map.
- * @constructor
+ * An Array2d.
+ * @type {*}
  */
-sh.StaticMap = function(map) {
-    this.map = map;
-    this.width = map[0].length;
-    this.height = map.length;
-    this.update = function(){};
-    this.changed = false;
-};
+sh.Map = sh.SharedClass.extendShared({
+    init: function(raw){
+        //check consistent width
+        var i, width;
+        if (!raw) {
+            throw 'raw parameter mandatory.';
+        }
+        width = raw[0].length;
+        for(i = raw.length - 2; i >= 0; i--) {
+            if(raw[i].length !== width) {
+                throw 'the raw map has not consistent width';
+            }
+        }
+        this.width = width;
+        this.height = raw.length;
+        this.at = function(x, y) {
+            return raw[y] !== undefined ? raw[y][x]: undefined;
+        };
+        this.set = function(x, y, value) {
+            if(this.isInBounds(x, y)) {
+                raw[y][x] = value;
+            }else{
+                throw 'Cannot set map at ' + x +',' + y+': out of bounds.';
+            }
+        };
+        this.clear = function(){
+            this.tiles(function(x, y){
+                raw[y][x] = 0;
+            });
+        };
+    },
+    isInBounds: function(x, y){
+        return x >= 0 && x < this.width && y >= 0 && y < this.height;
+    },
+    tiles: function(callback){
+        var y, x;
+        for(y = this.height - 1; y >= 0; y--) {
+            for(x = this.width - 1; x >= 0; x--) {
+                callback(x, y);
+            }
+        }
+    }
+});
+
+sh.EntityMap = sh.Map.extendShared({
+    init: function(width, height, entityArray){
+        this.parent(sh.utils.getEmptyMatrix(width, height, 0));
+        this.changed = true;
+        this.entities = entityArray;
+        this.update();
+    },
+    update: function() {
+        var self = this;
+        this.clear();
+        _.each(this.entities, function(e) {
+            e.tiles(function(x, y) {
+                self.set(x, y, e);
+            }, self);
+        });
+        this.changed = true;
+    }
+});
+
