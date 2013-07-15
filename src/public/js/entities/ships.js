@@ -22,11 +22,9 @@ var Ship = Object.extend({
                 self._buildingsMap = utils.getEmptyMatrix(ship.width,
                     ship.height, sh.tiles.clear);
                 _.each(ship.buildings(), function(b) {
-                    if (!b.hidden()) {
-                        b.tiles(function(x, y) {
-                            self._buildingsMap[y][x] = b;
-                        }, ship);
-                    }
+                    b.tiles(function(x, y) {
+                        self._buildingsMap[y][x] = b;
+                    }, ship);
                 });
 
                 this.changed = true;

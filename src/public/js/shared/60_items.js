@@ -93,10 +93,6 @@ sh.Item = sh.SharedClass.extendShared({
         this.ship = ship;
         return this;
     },
-    hidden: function(){
-        //TODO: safely remove this stub function
-        return false;
-    },
     toJson: function(){
         var self = this;
         return {
