@@ -27,6 +27,9 @@ var Ship = Object.extend({
         this._buildings = [];
         this.buildingsMap = new sh.EntityMap(this.width, this.height,
             this.buildings());
+        this._map = new sh.CompoundMap([
+            new sh.StaticMap(this.hullMap), this.buildingsMap
+        ]);
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
         }
@@ -141,12 +144,8 @@ var Ship = Object.extend({
     onBuildingsChanged: function() {},
 
     map : function() {
-        if (this.buildingsMap.changed  ||
-            this._map === null) {
-            this._map = this._getJointMap();
-            this.buildingsMap.changed = false;
-        }
-        return this._map;
+        this._map.update();
+        return this._map.map;
     },
     mapAt: function(x, y) {
         if (this.map()[y] !== undefined && this.map()[y][x] !== undefined) {
@@ -162,22 +161,6 @@ var Ship = Object.extend({
         var tile = this.mapAt(x, y);
         return tile !== sh.tiles.solid && tile !== sh.tiles.front &&
             tile !== sh.tiles.back;
-    },
-
-
-    //joins hullMap and buildingsMap
-    _getJointMap: function() {
-        var self = this,
-        joint = sh.utils.getEmptyMatrix(this.width, this.height,
-            sh.tiles.clear);
-        sh.utils.matrixTiles(this.width, this.height,
-            function(x, y) {
-                joint[y][x] = self.hullMap[y][x];
-                if (self.buildingsMap.map[y][x] !== sh.tiles.clear) {
-                    joint[y][x] = self.buildingsMap.map[y][x];
-                }
-        });
-        return joint;
     },
     toJsonString: function() {
         return JSON.stringify({

@@ -12,21 +12,19 @@ if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
-sh.EntityMap = sh.SharedClass.extendShared({
-    changed: true,
-    map: null,
-    init: function(width, height, entityArray){
-        this.width = width;
-        this.height = height;
-        this.update(entityArray);
-    },
-    update: function(entityArray) {
+sh.EntityMap = function(width, height, entityArray){
+    this.changed = true;
+    this.map = null;
+    this.width = width;
+    this.height = height;
+    this.update = function(entityArray) {
         var self = this;
+
         if(!entityArray) {
             throw 'entityArray parameter mandatory.';
         }
         self.map = sh.utils.getEmptyMatrix(this.width,
-            this.height, sh.tiles.clear);
+            this.height, 0);
         _.each(entityArray, function(e) {
             e.tiles(function(x, y) {
                 self.map[y][x] = e;
@@ -34,5 +32,20 @@ sh.EntityMap = sh.SharedClass.extendShared({
         });
 
         this.changed = true;
-    }
-});
+    };
+    this.update(entityArray);
+};
+
+/**
+ * Does pretty much nothing but implement the EntityMap interface
+ * (For using in CompoundMap).
+ * @param map {Array} the map.
+ * @constructor
+ */
+sh.StaticMap = function(map) {
+    this.map = map;
+    this.width = map[0].length;
+    this.height = map.length;
+    this.update = function(){};
+    this.changed = false;
+};
