@@ -28,10 +28,10 @@ sh.pr = {
             };
         }
         this.compliesAt = function(x, y, map) {
-            return pr.utils.checkAny(map, this.tileCondition, this.inAny, {
+            return sh.pr.utils.checkAny(map, this.tileCondition, this.inAny, {
                 x: x,
                 y: y
-            }) && pr.utils.checkAll(map, this.tileCondition, this.inAll, {
+            }) && sh.pr.utils.checkAll(map, this.tileCondition, this.inAll, {
                 x: x,
                 y: y
             });
@@ -59,7 +59,7 @@ sh.pr = {
             else {
                 settings.tile = tileCondition; //tileCondition is just a tile
             }
-            return new pr.PlacementRule(settings);
+            return new sh.pr.PlacementRule(settings);
         },
         //has to be next to something
         nextToRule: function(tileCondition, width, height) {
@@ -94,20 +94,20 @@ sh.pr = {
             else {
                 settings.tile = tileCondition; //tileCondition is just a tile
             }
-            return new pr.PlacementRule(settings);
+            return new sh.pr.PlacementRule(settings);
         }
     },
     utils: {
         //check if a tile is at any of the positions in "relativeCoords"
         checkAny: function(tileMap, condition, relativeCoords, currentCoord) {
             'use strict';
-            return pr.utils.checkAnyOrAll(tileMap, condition, relativeCoords,
+            return sh.pr.utils.checkAnyOrAll(tileMap, condition, relativeCoords,
                 currentCoord, true);
         },
         //check if a tile is at all of the positions in "relativeCoords"
         checkAll: function(tileMap, condition, relativeCoords, currentCoord) {
             'use strict';
-            return pr.utils.checkAnyOrAll(tileMap, condition, relativeCoords,
+            return sh.pr.utils.checkAnyOrAll(tileMap, condition, relativeCoords,
                 currentCoord, false);
         },
         checkAnyOrAll: function(tileMap, tileCondition, relativeCoordinates,
