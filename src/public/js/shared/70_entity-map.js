@@ -54,7 +54,7 @@ sh.Map = sh.SharedClass.extendShared({
         var y, x;
         for(y = this.height - 1; y >= 0; y--) {
             for(x = this.width - 1; x >= 0; x--) {
-                callback(x, y);
+                callback(x, y, this.at(x, y));
             }
         }
     }
