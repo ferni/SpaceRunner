@@ -33,7 +33,7 @@ asyncTest('toTileVector', function() {
 
 test('getEmptyMatrix', function() {
     'use strict';
-    var matrix = utils.getEmptyMatrix(2, 3, 0);
+    var matrix = sh.utils.getEmptyMatrix(2, 3, 0);
     equal(matrix[0][0], 0);
     equal(matrix[0][1], 0);
     equal(matrix[1][0], 0);

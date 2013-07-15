@@ -50,17 +50,6 @@ var utils = {
         utils.matrixTiles(me.game.currentLevel.width,
             me.game.currentLevel.height, callback);
     },
-    getEmptyMatrix: function(width, height, initialValue) {
-        'use strict';
-        var matrix = [], i, j;
-        for (i = 0; i < height; i++) {
-            matrix.push([]);
-            for (j = 0; j < width; j++) {
-                matrix[i].push(initialValue);
-            }
-        }
-        return matrix;
-    },
     //returns the tile position of the mouse
     getMouse: function(exact) {
         'use strict';

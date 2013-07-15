@@ -54,7 +54,7 @@ screens.register('ship-building', GameScreen.extend({
 
         this.mouseLockedOn = null;
         this.prepareGhostItems();
-        this.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
+        this.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 0);
 
     },
 
@@ -423,7 +423,7 @@ screens.register('ship-building', GameScreen.extend({
         if (!this.chosen) {
             return;
         }
-        self.greenSpots = utils.getEmptyMatrix(width(), height(), 0);
+        self.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 0);
         utils.levelTiles(function(x, y) {
             var i, j, cWidth, cHeight;
             if (self.chosen.m.canBuildAt(x, y, self.ship)) {

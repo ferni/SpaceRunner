@@ -14,28 +14,7 @@ var Ship = Object.extend({
     init : function(settings) {
         'use strict';
         var ship = this;
-        this.buildingsMap = {
-            changed: true,
-            _buildingsMap: null,
-            update: function() {
-                var self = this;
-                self._buildingsMap = utils.getEmptyMatrix(ship.width,
-                    ship.height, sh.tiles.clear);
-                _.each(ship.buildings(), function(b) {
-                    b.tiles(function(x, y) {
-                        self._buildingsMap[y][x] = b;
-                    }, ship);
-                });
 
-                this.changed = true;
-            },
-            get: function() {
-                if (this._buildingsMap === null) {
-                    this.update();
-                }
-                return this._buildingsMap;
-            }
-        };
         if (!settings.tmxName && !settings.jsonString) {
             throw 'Ship settings must have tmxName or jsonData';
         }
@@ -45,8 +24,9 @@ var Ship = Object.extend({
             this.tmxName = settings.tmxName;
         }
         this.loadMap();
-
         this._buildings = [];
+        this.buildingsMap = new sh.EntityMap(this.width, this.height,
+            this.buildings());
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
         }
@@ -155,7 +135,7 @@ var Ship = Object.extend({
     },
     //to call whenever buildings change
     buildingsChanged: function() {
-        this.buildingsMap.update();
+        this.buildingsMap.update(this.buildings());
         this.onBuildingsChanged();
     },
     onBuildingsChanged: function() {},
@@ -188,13 +168,13 @@ var Ship = Object.extend({
     //joins hullMap and buildingsMap
     _getJointMap: function() {
         var self = this,
-        joint = utils.getEmptyMatrix(this.width, this.height,
+        joint = sh.utils.getEmptyMatrix(this.width, this.height,
             sh.tiles.clear);
         utils.matrixTiles(this.width, this.height,
             function(x, y) {
                 joint[y][x] = self.hullMap[y][x];
-                if (self.buildingsMap.get()[y][x] !== sh.tiles.clear) {
-                    joint[y][x] = self.buildingsMap.get()[y][x];
+                if (self.buildingsMap.map[y][x] !== sh.tiles.clear) {
+                    joint[y][x] = self.buildingsMap.map[y][x];
                 }
         });
         return joint;
@@ -226,7 +206,7 @@ var Ship = Object.extend({
     },
     getPfMatrix: function() {
         var ship = this,
-            pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
+            pfMatrix = sh.utils.getEmptyMatrix(this.width, this.height, 1);
         utils.matrixTiles(this.width, this.height, function(x, y) {
             if (ship.map()[y][x] === sh.tiles.clear ||
                 ship.map()[y][x].name === 'unit') {
