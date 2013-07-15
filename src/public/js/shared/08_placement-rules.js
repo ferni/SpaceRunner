@@ -28,6 +28,9 @@ sh.pr = {
             };
         }
         this.compliesAt = function(x, y, map) {
+            if(!(map instanceof sh.Map)){
+                throw 'map should be an instance of sh.Map';
+            }
             return sh.pr.utils.checkAny(map, this.tileCondition, this.inAny, {
                 x: x,
                 y: y
@@ -119,12 +122,8 @@ sh.pr = {
             }
             for (coor = 0; coor < relativeCoordinates.length; coor++) {
                 wantedTileCoordinate = relativeCoordinates[coor];
-                row = tileMap[currentCoordinate.y + wantedTileCoordinate.y];
-                tileAtCoordinate = null;
-                if (row) {
-                    tileAtCoordinate =
-                        row[currentCoordinate.x + wantedTileCoordinate.x];
-                }
+                tileAtCoordinate = tileMap.at(currentCoordinate.x + wantedTileCoordinate.x,
+                    currentCoordinate.y + wantedTileCoordinate.y);
                 if (inAny && tileAtCoordinate &&
                     tileCondition(tileAtCoordinate)) {
                     return true;

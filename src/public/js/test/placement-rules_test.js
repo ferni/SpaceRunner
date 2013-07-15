@@ -13,7 +13,7 @@ module('placement-rules.js');
 test('Empty PlacementRule always complies', function() {
     'use strict';
     var tileMap, rule0;
-    tileMap = ['112o', 'o#oo', '3o3o'];
+    tileMap = new sh.Map(['112o', 'o#oo', '3o3o']);
     rule0 = new sh.pr.PlacementRule({});
     ok(rule0.compliesAt(1, 1, tileMap));
 });
@@ -21,7 +21,7 @@ test('Empty PlacementRule always complies', function() {
 test('sh.pr.PlacementRule', function() {
     'use strict';
     var tileMap, current, rule1;
-    tileMap = ['112o', 'o#oo', '3o3o'];
+    tileMap = new sh.Map(['112o', 'o#oo', '3o3o']);
     current = {
         x: 1,
         y: 1
@@ -43,7 +43,7 @@ test('sh.pr.PlacementRule', function() {
 test('sh.pr.make.spaceRule', function() {
     'use strict';
     var tileMap, spaceRule;
-    tileMap = ['112o', 'o#oo', '3o3o'];
+    tileMap = new sh.Map(['112o', 'o#oo', '3o3o']);
 
     spaceRule = sh.pr.make.spaceRule('o', 1, 3);
     equal(spaceRule.compliesAt(3, 0, tileMap), true);
@@ -56,7 +56,7 @@ test('sh.pr.make.spaceRule', function() {
 test('sh.pr.make.nextToRule', function() {
     'use strict';
     var tileMap, nextToRule;
-    tileMap = ['112o', 'o#oo', '3o3o'];
+    tileMap = new sh.Map(['112o', 'o#oo', '3o3o']);
     nextToRule = sh.pr.make.nextToRule('3', 1, 2);
     ok(_.some(nextToRule.inAny, function(c) { //left
         return c.x === -1 && c.y === 0;
@@ -83,7 +83,7 @@ test('sh.pr.make.nextToRule', function() {
 test('sh.pr.utils.checkAny', function() {
     'use strict';
     var tileMap, current, condition;
-    tileMap = ['112o', 'o#oo', '3o3o'];
+    tileMap = new sh.Map(['112o', 'o#oo', '3o3o']);
     current = {
         x: 1,
         y: 1
@@ -110,7 +110,7 @@ test('sh.pr.utils.checkAny', function() {
 test('sh.pr.utils.checkAll', function() {
     'use strict';
     var tileMap, current, condition;
-    tileMap = ['112o', 'o#oo', '3o3o'];
+    tileMap = new sh.Map(['112o', 'o#oo', '3o3o']);
     current = {
         x: 1,
         y: 1
