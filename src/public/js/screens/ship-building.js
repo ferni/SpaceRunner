@@ -101,7 +101,7 @@ screens.register('ship-building', GameScreen.extend({
         if (!this.ship) {
             return;
         }
-        items = this.ship.buildings();
+        items = this.ship.built;
         vms = this.shipItemVMs;
 
         for(i = 0; i < items.length; i++) {
@@ -459,16 +459,13 @@ screens.register('ship-building', GameScreen.extend({
     //combines the ship map with the drawing screen
     mapAt: function(x, y) {
         'use strict';
-        var i, shipTile = null;
+        var i, shipTile;
         for (i = 0; i < this.drawingScreen.length; i++) {
             if (this.drawingScreen[i].occupies(x, y)) {
                 return this.drawingScreen[i];
             }
         }
-        if (this.ship.map()[y] !== undefined &&
-            this.ship.map()[y][x] !== undefined) {
-            shipTile = this.ship.map()[y][x];
-        }
+        shipTile = this.ship.map.at(x, y);
         if (shipTile === sh.tiles.clear && this.chosen &&
             this.chosen.occupies(x, y)) {
             return this.chosen;

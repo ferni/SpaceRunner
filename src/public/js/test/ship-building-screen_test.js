@@ -245,9 +245,9 @@ asyncTest('updateShip', function() {
         screen.updateShip();
         equal(screen.shipItemVMs.length, 2, 'Another vm added...');
         equal(screen.shipItemVMs[1].m, weapon, "... it's the weapon.");
-        aux = ship._buildings[0];
-        ship._buildings[0] = ship._buildings[1];
-        ship._buildings[1] = aux;
+        aux = ship.built[0];
+        ship.built[0] = ship.built[1];
+        ship.built[1] = aux;
         screen.updateShip();
         equal(screen.shipItemVMs.length, 2, 'Length remains the same...');
         equal(screen.shipItemVMs[0].m, weapon, '...but VMs switched positions.');

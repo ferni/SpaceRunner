@@ -10,11 +10,8 @@
 var Ship = Object.extend({
     hullMap: {},
     buildingsMap: {},
-    _map : null,
     init : function(settings) {
         'use strict';
-        var ship = this;
-
         if (!settings.tmxName && !settings.jsonString) {
             throw 'Ship settings must have tmxName or jsonData';
         }
@@ -24,11 +21,12 @@ var Ship = Object.extend({
             this.tmxName = settings.tmxName;
         }
         this.loadMap();
-        this._buildings = [];
+        //Array of items built
+        this.built = [];
         this.buildingsMap = new sh.EntityMap(this.width, this.height,
-            this.buildings());
-        this._map = new sh.CompoundMap([
-            new sh.StaticMap(this.hullMap), this.buildingsMap
+            this.built);
+        this.map = new sh.CompoundMap([
+            new sh.Map(this.hullMap), this.buildingsMap
         ]);
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
@@ -47,11 +45,8 @@ var Ship = Object.extend({
         this.width = hull.width;
         this.height = hull.height;
     },
-    buildings : function() {
-        return this._buildings;
-    },
     units : function() {
-        return _.filter(this._buildings, function(b){
+        return _.filter(this.built, function(b){
             return b.name === 'unit';
         });
     },
@@ -105,7 +100,7 @@ var Ship = Object.extend({
     },
     //Adds an item to the ship ignoring its placement rules
     addItem: function(item) {
-        this._buildings.push(item);
+        this.built.push(item);
         item.onShip(this);
         this.buildingsChanged();
     },
@@ -122,7 +117,7 @@ var Ship = Object.extend({
         if (updateBuildings === undefined) {
             updateBuildings = true; //updates by default
         }
-        this._buildings.remove(item);
+        this.built.remove(item);
         if (updateBuildings) {
             this.buildingsChanged();
         }
@@ -130,28 +125,20 @@ var Ship = Object.extend({
     removeAll: function() {
         var self = this,
             i;
-        for (i = this.buildings().length - 1; i >= 0; i--) {
+        for (i = this.built.length - 1; i >= 0; i--) {
         //TODO: try don't update buildings here (pass false as 2nd parameter)
-            self.remove(this.buildings()[i]);
+            self.remove(this.built[i]);
         }
         this.buildingsChanged();
     },
     //to call whenever buildings change
     buildingsChanged: function() {
-        this.buildingsMap.update(this.buildings());
+        this.buildingsMap.update(this.built);
         this.onBuildingsChanged();
     },
     onBuildingsChanged: function() {},
-
-    map : function() {
-        this._map.update();
-        return this._map.map;
-    },
     mapAt: function(x, y) {
-        if (this.map()[y] !== undefined && this.map()[y][x] !== undefined) {
-            return this.map()[y][x];
-        }
-        return null;
+        return this.map.at(x, y);
     },
     isAt: function(x, y, name){
         var what = this.mapAt(x, y);
@@ -165,7 +152,7 @@ var Ship = Object.extend({
     toJsonString: function() {
         return JSON.stringify({
             'tmxName': this.tmxName,
-            'buildings': _.map(_.filter(this.buildings(), function(b) {
+            'buildings': _.map(_.filter(this.built, function(b) {
                 return b instanceof sh.Item;
             }), function(b) { return b.toJson();}),
             'units': _.map(this.units(),
@@ -190,9 +177,9 @@ var Ship = Object.extend({
     getPfMatrix: function() {
         var ship = this,
             pfMatrix = sh.utils.getEmptyMatrix(this.width, this.height, 1);
-        sh.utils.matrixTiles(this.width, this.height, function(x, y) {
-            if (ship.map()[y][x] === sh.tiles.clear ||
-                ship.map()[y][x].name === 'unit') {
+        ship.map.tiles(function(x, y) {
+            if (ship.map.at(x, y) === sh.tiles.clear ||
+                ship.map.at(x, y) instanceof Unit) {
                 pfMatrix[y][x] = 0; //clear tiles and units are walkable
             }
         });

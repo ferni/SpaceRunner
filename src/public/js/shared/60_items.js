@@ -33,7 +33,7 @@ sh.Item = sh.SharedClass.extendShared({
     canBuildAt: function(x, y, ship) {
         'use strict';
         return _.every(this.placementRules, function(r) {
-            return r.compliesAt(x, y, ship.map());
+            return r.compliesAt(x, y, ship.map);
         });
     },
     canBuildRotated: function(x, y, ship) {
@@ -221,7 +221,7 @@ sh.items.Door = sh.Item.extendShared({
     canBuildRotated: function(x, y, ship) {
         'use strict';
         return _.every(this.rotatedPlacementRules, function(r) {
-            return r.compliesAt(x, y, ship.map());
+            return r.compliesAt(x, y, ship.map);
         });
     }
 });
