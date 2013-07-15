@@ -34,20 +34,11 @@ var utils = {
         v.y = Math.floor(vector2D.y / TILE_SIZE);
         return v;
     },
-    //useful when wanting to do something at every coordinate of a matrix
-    matrixTiles: function(width, height, callback) { // callback(x, y)
-        'use strict';
-        var x, y;
-        for (x = 0; x < width; x++) {
-            for (y = 0; y < height; y++) {
-                callback(x, y);
-            }
-        }
-    },
+
     //useful when wanting to do something at every coordinate of the level
     levelTiles: function(callback) { //the callback must have x and y
         'use strict';
-        utils.matrixTiles(me.game.currentLevel.width,
+        sh.utils.matrixTiles(me.game.currentLevel.width,
             me.game.currentLevel.height, callback);
     },
     //returns the tile position of the mouse

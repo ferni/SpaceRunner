@@ -87,7 +87,7 @@ var Ship = Object.extend({
         'use strict';
         //find empty spot
         var empty = null, ship = this, unit;
-        utils.matrixTiles(ship.width, ship.height,
+        sh.utils.matrixTiles(ship.width, ship.height,
             function(x, y) {
             if (empty) {
                 return;
@@ -170,7 +170,7 @@ var Ship = Object.extend({
         var self = this,
         joint = sh.utils.getEmptyMatrix(this.width, this.height,
             sh.tiles.clear);
-        utils.matrixTiles(this.width, this.height,
+        sh.utils.matrixTiles(this.width, this.height,
             function(x, y) {
                 joint[y][x] = self.hullMap[y][x];
                 if (self.buildingsMap.map[y][x] !== sh.tiles.clear) {
@@ -207,7 +207,7 @@ var Ship = Object.extend({
     getPfMatrix: function() {
         var ship = this,
             pfMatrix = sh.utils.getEmptyMatrix(this.width, this.height, 1);
-        utils.matrixTiles(this.width, this.height, function(x, y) {
+        sh.utils.matrixTiles(this.width, this.height, function(x, y) {
             if (ship.map()[y][x] === sh.tiles.clear ||
                 ship.map()[y][x].name === 'unit') {
                 pfMatrix[y][x] = 0; //clear tiles and units are walkable

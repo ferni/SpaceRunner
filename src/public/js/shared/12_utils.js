@@ -23,3 +23,14 @@ sh.utils.getEmptyMatrix = function(width, height, initialValue) {
     }
     return matrix;
 };
+
+//useful when wanting to do something at every coordinate of a matrix
+sh.utils.matrixTiles = function(width, height, callback) { // callback(x, y)
+    'use strict';
+    var x, y;
+    for (x = 0; x < width; x++) {
+        for (y = 0; y < height; y++) {
+            callback(x, y);
+        }
+    }
+};
