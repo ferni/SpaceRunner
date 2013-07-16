@@ -114,9 +114,11 @@ screens.register('ship-building', GameScreen.extend({
             }
             if (hasVM) {
                 //put vm at item's index position
-                aux = vms[v];
-                vms[v] = vms[i];
-                vms[i] = aux;
+                if(v != i){
+                    aux = vms[v];
+                    vms[v] = vms[i];
+                    vms[i] = aux;
+                }
             }else {
                 //new vm
                 vms.splice(i, 0, make.vm(items[i]));
