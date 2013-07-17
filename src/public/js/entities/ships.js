@@ -88,7 +88,7 @@ var Ship = Object.extend({
             if (empty) {
                 return;
             }
-            if (ship.mapAt(x, y) === sh.tiles.clear) {
+            if (ship.at(x, y) === sh.tiles.clear) {
                 empty = {x: x, y: y};
             }
         });
@@ -104,8 +104,8 @@ var Ship = Object.extend({
     },
     removeAt: function(x, y) {
         //remove while is not string (is an item or unit)
-        while (!(_.isString(this.mapAt(x, y)))) {
-            this.remove(this.mapAt(x, y), true);
+        while (!(_.isString(this.at(x, y)))) {
+            this.remove(this.at(x, y), true);
         }
     },
     remove: function(item, updateBuildings) {
@@ -135,15 +135,15 @@ var Ship = Object.extend({
         this.onBuildingsChanged();
     },
     onBuildingsChanged: function() {},
-    mapAt: function(x, y) {
+    at: function(x, y) {
         return this.map.at(x, y);
     },
     isAt: function(x, y, name){
-        var what = this.mapAt(x, y);
+        var what = this.at(x, y);
         return what && what.name === name;
     },
     isInside: function(x, y) {
-        var tile = this.mapAt(x, y);
+        var tile = this.at(x, y);
         return tile !== sh.tiles.solid && tile !== sh.tiles.front &&
             tile !== sh.tiles.back;
     },

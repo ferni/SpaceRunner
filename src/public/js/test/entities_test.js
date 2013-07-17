@@ -100,11 +100,11 @@ asyncTest('Wall building', function() {
             th.mouseBegin(screen);
             th.leftClick(x + 2, y + 2);
             ok(!screen.mouseLockedOn, 'Mouse unlocked after click');
-            equal(screen.ship.mapAt(x, y).type, 'wall');
-            equal(screen.ship.mapAt(x + 1, y).type, 'wall');
-            equal(screen.ship.mapAt(x + 2, y).type, 'wall');
-            equal(screen.ship.mapAt(x + 2, y + 1).type, 'wall');
-            equal(screen.ship.mapAt(x + 2, y + 2).type, 'wall');
+            equal(screen.ship.at(x, y).type, 'wall');
+            equal(screen.ship.at(x + 1, y).type, 'wall');
+            equal(screen.ship.at(x + 2, y).type, 'wall');
+            equal(screen.ship.at(x + 2, y + 1).type, 'wall');
+            equal(screen.ship.at(x + 2, y + 2).type, 'wall');
 
             th.mouseEnd();
             start();
@@ -126,17 +126,17 @@ asyncTest('Wall building canceled by escape key', function() {
         th.moveMouse(x + 2, y + 2);
         th.mouseEnd();
         //entire wall is seen on the screen...
-        equal(screen.mapAt(x, y).type, 'wall', 'wall appears at x,y');
-        equal(screen.mapAt(x + 1, y).type, 'wall');
-        equal(screen.mapAt(x + 2, y).type, 'wall');
-        equal(screen.mapAt(x + 2, y + 1).type, 'wall');
-        equal(screen.mapAt(x + 2, y + 2).type, 'wall');
+        equal(screen.at(x, y).type, 'wall', 'wall appears at x,y');
+        equal(screen.at(x + 1, y).type, 'wall');
+        equal(screen.at(x + 2, y).type, 'wall');
+        equal(screen.at(x + 2, y + 1).type, 'wall');
+        equal(screen.at(x + 2, y + 2).type, 'wall');
         //...but only the first one is built
-        equal(screen.ship.mapAt(x, y).type, 'wall');
-        notEqual(screen.ship.mapAt(x + 1, y).type, 'wall');
-        notEqual(screen.ship.mapAt(x + 2, y).type, 'wall');
-        notEqual(screen.ship.mapAt(x + 2, y + 1).type, 'wall');
-        notEqual(screen.ship.mapAt(x + 2, y + 2).type, 'wall');
+        equal(screen.ship.at(x, y).type, 'wall');
+        notEqual(screen.ship.at(x + 1, y).type, 'wall');
+        notEqual(screen.ship.at(x + 2, y).type, 'wall');
+        notEqual(screen.ship.at(x + 2, y + 1).type, 'wall');
+        notEqual(screen.ship.at(x + 2, y + 2).type, 'wall');
 
         me.input.triggerKeyEvent(me.input.KEY.ESC, true);
         screen.update();
@@ -145,15 +145,15 @@ asyncTest('Wall building canceled by escape key', function() {
         ok(!screen.mouseLockedOn,
             'Mouse no longer locked on wall after ESC key');
         //wall does no longer appear on the screen (except the cursor)
-        equal(screen.mapAt(x, y).type, 'wall',
+        equal(screen.at(x, y).type, 'wall',
             'Cursor still appears on the screen');
-        notEqual(screen.mapAt(x + 1, y).type, 'wall',
+        notEqual(screen.at(x + 1, y).type, 'wall',
             'The rest of the wall is gone');
-        notEqual(screen.mapAt(x + 2, y).type, 'wall');
-        notEqual(screen.mapAt(x + 2, y + 1).type, 'wall');
-        notEqual(screen.mapAt(x + 2, y + 2).type, 'wall');
+        notEqual(screen.at(x + 2, y).type, 'wall');
+        notEqual(screen.at(x + 2, y + 1).type, 'wall');
+        notEqual(screen.at(x + 2, y + 2).type, 'wall');
         //the first wall has been removed
-        notEqual(screen.ship.mapAt(x, y).type, 'wall');
+        notEqual(screen.ship.at(x, y).type, 'wall');
         start();
     });
 });

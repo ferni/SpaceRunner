@@ -229,7 +229,7 @@ screens.register('ship-building', GameScreen.extend({
             return;
         }
 
-        item = this.ship.mapAt(mouseTile.x, mouseTile.y);
+        item = this.ship.at(mouseTile.x, mouseTile.y);
         if (item !== null && item instanceof sh.Item) {
             if (which === me.input.mouse.RIGHT) {
                 this.deleteItem(item);
@@ -459,7 +459,7 @@ screens.register('ship-building', GameScreen.extend({
     },
 
     //combines the ship map with the drawing screen
-    mapAt: function(x, y) {
+    at: function(x, y) {
         'use strict';
         var i, shipTile;
         for (i = 0; i < this.drawingScreen.length; i++) {

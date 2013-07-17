@@ -32,7 +32,7 @@ asyncTest('buildAt', function() {
     });
 });
 
-asyncTest('add/mapAt/removeAt', function() {
+asyncTest('add/at/removeAt', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
@@ -46,31 +46,31 @@ asyncTest('add/mapAt/removeAt', function() {
         equal(screen.ship.built[0].type, 'engine',
             'First building is engine after adding');
 
-        //mapAt
-        equal(screen.ship.mapAt(x, y).type, 'engine', 'mapAt(x, y) is engine');
-        equal(screen.ship.mapAt(x + 1, y).type, 'engine',
-            'mapAt(x + 1, y) is engine');
-        equal(screen.ship.mapAt(x, y + 1).type, 'engine',
-            'mapAt(x, y + 1) is engine');
-        equal(screen.ship.mapAt(x + 1, y + 1).type, 'engine',
-            'mapAt(x + 1, y + 1) is engine');
-        notEqual(screen.ship.mapAt(x + 2, y + 1).type, 'engine',
-            'mapAt(x + 2, y + 1) is not engine');
-        notEqual(screen.ship.mapAt(x, y - 1).type, 'engine',
-            'mapAt(x, y - 1) is not engine');
+        //at
+        equal(screen.ship.at(x, y).type, 'engine', 'at(x, y) is engine');
+        equal(screen.ship.at(x + 1, y).type, 'engine',
+            'at(x + 1, y) is engine');
+        equal(screen.ship.at(x, y + 1).type, 'engine',
+            'at(x, y + 1) is engine');
+        equal(screen.ship.at(x + 1, y + 1).type, 'engine',
+            'at(x + 1, y + 1) is engine');
+        notEqual(screen.ship.at(x + 2, y + 1).type, 'engine',
+            'at(x + 2, y + 1) is not engine');
+        notEqual(screen.ship.at(x, y - 1).type, 'engine',
+            'at(x, y - 1) is not engine');
 
         //removeAt
         screen.ship.removeAt(x + 1, y); //random engine tile
         equal(screen.ship.built.length, 0,
             'Ship has 0 buildings after removing');
-        notEqual(screen.ship.mapAt(x, y), 'engine',
-            'mapAt(x, y) no longer engine');
-        notEqual(screen.ship.mapAt(x, y + 1), 'engine',
-            'mapAt(x, y + 1) no longer engine');
-        notEqual(screen.ship.mapAt(x + 1, y), 'engine',
-            'mapAt(x+1, y) no longer engine');
-        notEqual(screen.ship.mapAt(x + 1, y + 1), 'engine',
-            'mapAt(x+1, y + 1) no longer engine');
+        notEqual(screen.ship.at(x, y), 'engine',
+            'at(x, y) no longer engine');
+        notEqual(screen.ship.at(x, y + 1), 'engine',
+            'at(x, y + 1) no longer engine');
+        notEqual(screen.ship.at(x + 1, y), 'engine',
+            'at(x+1, y) no longer engine');
+        notEqual(screen.ship.at(x + 1, y + 1), 'engine',
+            'at(x+1, y + 1) no longer engine');
         start();
     });
 });
@@ -88,12 +88,12 @@ asyncTest('remove', function() {
         screen.ship.buildAt(x, y, 'component');
         equal(screen.ship.built[0].type, 'component',
             'Ship has component built');
-        equal(screen.ship.mapAt(x, y).type, 'component',
-            'mapAt(x,y) is component');
+        equal(screen.ship.at(x, y).type, 'component',
+            'at(x,y) is component');
         item = screen.ship.built[0];
         screen.ship.remove(item);
-        notEqual(screen.ship.mapAt(x, y).type, 'component',
-            'mapAt(x,y) is no longer component after removing');
+        notEqual(screen.ship.at(x, y).type, 'component',
+            'at(x,y) is no longer component after removing');
         equal(screen.ship.built.length, 0, 'ship has no buildings');
         start();
     });
@@ -116,28 +116,28 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         screen.ship.buildAt(x, y, 'wall');
         screen.ship.buildAt(x, y + 1, 'wall');
 
-        ok(screen.ship.mapAt(x, y) instanceof sh.items.Wall,
+        ok(screen.ship.at(x, y) instanceof sh.items.Wall,
             'wall built at x, y');
-        ok(screen.ship.mapAt(x, y + 1) instanceof sh.items.Wall,
+        ok(screen.ship.at(x, y + 1) instanceof sh.items.Wall,
             'wall built at x, y + 1');
-        ok(screen.ship.mapAt(x, y).isVertical());
-        ok(screen.ship.mapAt(x, y + 1).isVertical());
+        ok(screen.ship.at(x, y).isVertical());
+        ok(screen.ship.at(x, y + 1).isVertical());
         ok(!door.canBuildAt(x, y, screen.ship),
             'After building vertical wall,' +
             'door still cannot be built at x,y...');
         ok(door.canBuildRotated(x, y, screen.ship), '... but it can rotated.');
 
         screen.ship.buildAt(x, y, 'door');
-        equal(screen.ship.mapAt(x, y + 1).type, 'door',
-            'mapAt(x, y+1) is door (it should be rotated, that is, vertical)');
-        notEqual(screen.ship.mapAt(x + 1, y).type, 'door',
-            'mapAt(x+1,y) is not door');
-        ok(screen.ship.mapAt(x, y + 1).rotated(), "Door has 'rotated' status");
+        equal(screen.ship.at(x, y + 1).type, 'door',
+            'at(x, y+1) is door (it should be rotated, that is, vertical)');
+        notEqual(screen.ship.at(x + 1, y).type, 'door',
+            'at(x+1,y) is not door');
+        ok(screen.ship.at(x, y + 1).rotated(), "Door has 'rotated' status");
         start();
     });
 });
 
-asyncTest('mapAt out of bounds', function() {
+asyncTest('at out of bounds', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
@@ -162,13 +162,13 @@ asyncTest('fromJsonString', function() {
             '"buildings":[{"type":"power", "x":0, "y":0},' +
             '{"type":"door", "x":2, "y":3, "rotated":true}]}');
 
-        power = screen.ship.mapAt(0, 0);
+        power = screen.ship.at(0, 0);
         equal(power.type, 'power', 'power successfully added to the ship');
         equal(power.x, 0, 'it has correct x position');
         equal(power.y, 0, 'it has correct y position');
         ok(!power.rotated(), 'power is not rotated');
 
-        door = screen.ship.mapAt(2, 3);
+        door = screen.ship.at(2, 3);
         equal(door.type, 'door', 'door successfully added to the ship');
         equal(door.x, 2, 'it has correct x position');
         equal(door.y, 3, 'it has correct y position');
@@ -215,7 +215,7 @@ asyncTest('toJsonString', function() {
             th.shipPositions.free.y, 'power'), 'power successfully built');
         ok(screen.ship.buildAt(th.shipPositions.engine.x,
             th.shipPositions.engine.y, 'engine'), 'engine succesfully built');
-        screen.ship.mapAt(th.shipPositions.engine.x, th.shipPositions.engine.y)
+        screen.ship.at(th.shipPositions.engine.x, th.shipPositions.engine.y)
             .rotated(true);
 
         jsonObject = JSON.parse(screen.ship.toJsonString());

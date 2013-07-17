@@ -50,11 +50,11 @@ asyncTest('right click removes item', function() {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y;
         screen.ship.buildAt(x, y, 'component');
-        equal(screen.ship.mapAt(x, y).type, 'component', 'Component built');
+        equal(screen.ship.at(x, y).type, 'component', 'Component built');
         th.mouseBegin(screen);
         th.rightClick(x + 1, y + 1); //botton right of component
         th.mouseEnd();
-        notEqual(screen.ship.mapAt(x, y).type, 'component',
+        notEqual(screen.ship.at(x, y).type, 'component',
             'Component removed');
         start();
     });
@@ -79,9 +79,9 @@ asyncTest('drag and drop', function() {
             which: me.input.mouse.LEFT
         });
         ok(!screen.dragging, 'not dragging after mouse up');
-        notEqual(screen.ship.mapAt(3, 4).type, 'power',
+        notEqual(screen.ship.at(3, 4).type, 'power',
             'power is not on original position');
-        power = screen.ship.mapAt(5, 4);
+        power = screen.ship.at(5, 4);
         equal(power.x, 5, 'power is at new position');
         th.mouseEnd();
         start();
@@ -210,7 +210,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
     });
 });
 
-asyncTest('draw/mapAt', function() {
+asyncTest('draw/at', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
@@ -222,7 +222,7 @@ asyncTest('draw/mapAt', function() {
             return item.type === 'engine' && item.x === 4 && item.y === 5;
         }), 'Engine drawn at correct position');
 
-        equal(screen.mapAt(4, 5).type, 'engine', 'mapAt(4,5) is engine');
+        equal(screen.at(4, 5).type, 'engine', 'at(4,5) is engine');
         start();
     });
 });

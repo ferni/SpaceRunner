@@ -255,7 +255,7 @@ screens.register('battle', GameScreen.extend({
     selectUnit: function(x, y) {
         'use strict';
         var ship = gameState.ship,
-            unit = ship.mapAt(x, y);
+            unit = ship.at(x, y);
         this.unselectAll();
         if (unit && unit.name === 'unit') {
             unit.selected = true;
@@ -295,8 +295,8 @@ screens.register('battle', GameScreen.extend({
         }
         return me.timer.getTime() - this.turnBeginTime;
     },
-    mapAt: function(x, y) {
-        return gameState.ship.mapAt(x, y);
+    at: function(x, y) {
+        return gameState.ship.at(x, y);
     }
 }));
 
