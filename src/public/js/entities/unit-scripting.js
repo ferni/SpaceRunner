@@ -46,7 +46,7 @@ var DefaultScripter = Scripter.extend({
     generateScripts: function(unit, mouse){
         'use strict';
         var ship = gameState.ship,
-            units = ship.units(),
+            units = ship.units,
             self = this;
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
@@ -66,7 +66,7 @@ var EndOfTurnScripter = Scripter.extend({
         'use strict';
         var self = this,
             ship = gameState.ship,
-            units = ship.units(),
+            units = ship.units,
             someScriptChanged;
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
@@ -94,7 +94,7 @@ var EndOfTurnScripter = Scripter.extend({
     posConflictsWithOtherEndPos: function(unit, pos) {
         'use strict';
         var ship = gameState.ship;
-        return _.any(ship.units(), function(u){
+        return _.any(ship.units, function(u){
             var unitEndPos;
             if (unit === u) {
                 return false;
@@ -109,7 +109,7 @@ var AvoidOtherPathsScripter = Scripter.extend({
     generateScripts: function(unit, mouse) {
         'use strict';
         var ship = gameState.ship,
-            units = ship.units(),
+            units = ship.units,
             self = this;
         if (unit && mouse) {
             this.setUnitPath(unit, mouse);
@@ -120,7 +120,7 @@ var AvoidOtherPathsScripter = Scripter.extend({
     },
     processGrid: function(grid, unit, mouse) {
         'use strict';
-        var units = gameState.ship.units(),
+        var units = gameState.ship.units,
             i;
         _.each(units, function(u){
             if(u !== unit){
@@ -146,7 +146,7 @@ var WaitForClearingScripter = Scripter.extend({
         'use strict';
         var self = this,
             ship = gameState.ship,
-            units = ship.units(),
+            units = ship.units,
             someScriptChanged = true,
         //when a unit blocks another (the other is waiting)
             unitBlockings = {};
@@ -244,7 +244,7 @@ var WaitForClearingScripter = Scripter.extend({
             throw 'getTileClearStatus should not process instant timeWindow ' +
                 '(from = to)';
         }
-        _.each(gameState.ship.units(), function(u){
+        _.each(gameState.ship.units, function(u){
             if (u !== excludedUnit) {
                 if (u.willMove()) {
                     _.each(u.script, function (f, index) {

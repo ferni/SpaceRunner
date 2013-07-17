@@ -91,7 +91,7 @@ screens.register('battle', GameScreen.extend({
         this.parent(ctx);
         if (this.paused) {
 
-            _.each(gameState.ship.units(), function(u) {
+            _.each(gameState.ship.units, function(u) {
                 u.drawPath(ctx);
                 if (u.selected) {
                     //draw rectangle around each selected unit
@@ -141,7 +141,7 @@ screens.register('battle', GameScreen.extend({
     },
     completeSettings: function(settings) {
         //set default settings
-        var units = gameState.ship.units(),
+        var units = gameState.ship.units,
             i;
         if (!settings) {
             settings = {};
@@ -165,7 +165,7 @@ screens.register('battle', GameScreen.extend({
     },
     configureUnits: function() {
         'use strict';
-        var units = gameState.ship.units(),
+        var units = gameState.ship.units,
             i;
         for(i = 0; i < units.length; i++) {
             //temporary workaround to reset units
@@ -220,7 +220,7 @@ screens.register('battle', GameScreen.extend({
     releaseDragBox: function() {
         var self = this;
         if (this.dragBox) {
-            _.each(gameState.ship.units(), function(u){
+            _.each(gameState.ship.units, function(u){
                 var unitRect = new me.Rect(u.pos, TILE_SIZE, TILE_SIZE);
                 if(self.dragBox.overlaps(unitRect)) {
                     u.selected = true;
@@ -265,14 +265,14 @@ screens.register('battle', GameScreen.extend({
     },
     unselectAll: function() {
         'use strict';
-        _.each(gameState.ship.units(), function(u) {
+        _.each(gameState.ship.units, function(u) {
             return u.selected = false;
         });
     },
     pause: function() {
         'use strict';
         $('#paused-indicator, #resume-button').show();
-        _.each(gameState.ship.units(), function(u) {
+        _.each(gameState.ship.units, function(u) {
             u.pause();
         });
         this.generateScripts();
@@ -283,7 +283,7 @@ screens.register('battle', GameScreen.extend({
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
-        _.each(gameState.ship.units(), function(u) {
+        _.each(gameState.ship.units, function(u) {
             u.resume();
         });
         this.paused = false;

@@ -9,7 +9,7 @@
 
 var Ship = Object.extend({
     hullMap: {},
-    buildingsMap: {},
+    itemsMap: {},
     init : function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.jsonString) {
@@ -23,10 +23,13 @@ var Ship = Object.extend({
         this.loadMap();
         //Array of items built
         this.built = [];
-        this.buildingsMap = new sh.EntityMap(this.width, this.height,
+        this.itemsMap = new sh.EntityMap(this.width, this.height,
             this.built);
+        this.units = [];
+        this.unitsMap = new sh.EntityMap(this.width, this.height,
+            this.units);
         this.map = new sh.CompoundMap([
-            new sh.Map(this.hullMap), this.buildingsMap
+            new sh.Map(this.hullMap), this.itemsMap, this.unitsMap
         ]);
         if (settings.jsonString) {
             this.fromJsonString(settings.jsonString);
@@ -45,13 +48,8 @@ var Ship = Object.extend({
         this.width = hull.width;
         this.height = hull.height;
     },
-    units : function() {
-        return _.filter(this.built, function(b){
-            return b.name === 'unit';
-        });
-    },
     selected : function(){
-        return _.filter(this.units(), function(u){
+        return _.filter(this.units, function(u){
             return u.selected;
         });
     },
@@ -133,7 +131,7 @@ var Ship = Object.extend({
     },
     //to call whenever buildings change
     buildingsChanged: function() {
-        this.buildingsMap.update();
+        this.itemsMap.update();
         this.onBuildingsChanged();
     },
     onBuildingsChanged: function() {},
@@ -155,7 +153,7 @@ var Ship = Object.extend({
             'buildings': _.map(_.filter(this.built, function(b) {
                 return b instanceof sh.Item;
             }), function(b) { return b.toJson();}),
-            'units': _.map(this.units(),
+            'units': _.map(this.units,
                 function(u) { return u.toJson();}
             )
             //TODO: clearly separate buildings and units
