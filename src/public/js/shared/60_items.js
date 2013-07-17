@@ -99,7 +99,7 @@ sh.Item = sh.SharedClass.extendShared({
             type: self.type,
             x: self.x,
             y: self.y,
-            rotated: self.rotated,
+            rotated: self.rotated(),
             settings: {}
         }
     }
