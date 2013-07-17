@@ -20,7 +20,8 @@
         window.require = function(file) {
             var prevFile = sh.onClient.files[sh.onClient.files.length - 1];
             if(sh.onClient.files.length > 0  && prevFile >= file) {
-                throw 'The shared files are not loaded in alphabetical order.';
+                console.error('The shared files are not loaded' +
+                    ' in alphabetical order.');
             }
             sh.onClient.files.push(file);
             return sh;
