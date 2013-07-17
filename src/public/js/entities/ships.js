@@ -133,7 +133,7 @@ var Ship = Object.extend({
     },
     //to call whenever buildings change
     buildingsChanged: function() {
-        this.buildingsMap.update(this.built);
+        this.buildingsMap.update();
         this.onBuildingsChanged();
     },
     onBuildingsChanged: function() {},

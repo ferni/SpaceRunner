@@ -7,7 +7,7 @@
 
 /*global */
 
-var sh = require('./72_compound-map'), _ = sh._;
+var sh = require('./70_map'), _ = sh._;
 if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
