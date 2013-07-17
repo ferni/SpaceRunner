@@ -10,35 +10,9 @@
  */
 var make = (function() {
     'use strict';
-    var make = {};
+    var make = {}, p;
 
-    //ITEMS
-
-    make.itemModels = {
-        weapon: sh.items.Weapon,
-        engine: sh.items.Engine,
-        power: sh.items.Power,
-        console: sh.items.Console,
-        component: sh.items.Component,
-        door: sh.items.Door,
-        wall: sh.items.Wall
-    };
-
-    make.itemModel = function(type, params) {
-        var Constructor;
-        Constructor = make.itemModels[type];
-        if (!Constructor) {
-            console.warn("No such item type '" + type +
-                "' (utils.makeItem)");
-            return null;
-        }
-        if(params) {
-            return new Constructor(params[0], params[1], params[2]);
-        } else {
-            return new Constructor(null, 0, 0);
-        }
-    };
-
+    //ITEMS VMS
     make.itemTypes = {
         weapon: WeaponItem,
         engine: EngineItem,
@@ -50,7 +24,7 @@ var make = (function() {
     };
     make.item = function(type, params){
         var Constructor,
-            model = make.itemModel(type,
+            model = sh.make.itemModel(type,
                 [null, params ? params[0] : 0, params ? params[1] : 0]);
         Constructor = make.itemTypes[type];
         if (!Constructor) {
@@ -71,16 +45,23 @@ var make = (function() {
         }
         return new VMConstructor(itemModel);
     };
+
     make.itemFromJson = function(json){
         var item = make.item(json.type, [json.x, json.y, json.settings]);
         item.rotated(json.rotated);
         return item;
     };
 
-
-    //UNITS
-    make.unitFromJson = function(json) {
-        return new Unit(json.x, json.y, json.settings);
-    };
+    //add props from sh.make checking that none are being overwritten.
+    for(p in sh.make){
+        if(sh.make.hasOwnProperty(p)){
+            if(typeof make[p] !== 'undefined'){
+                console.error('Attempted to overwrite property "' + p +
+                    '" in sh.make');
+            }else{
+                make[p] = sh.make[p];
+            }
+        }
+    }
     return make;
 })();
