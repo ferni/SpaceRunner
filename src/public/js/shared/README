@@ -6,6 +6,7 @@ IMPORTANT
 2) Each file except 00_init.js must start with the following code,
     were previous-file-name is the alphabetically previous file name:
 
+/*global require, exports, module*/
 var sh = require('./previous-file-name'), _ = sh._;
 if(typeof exports !== 'undefined'){
    sh = module.exports = sh;

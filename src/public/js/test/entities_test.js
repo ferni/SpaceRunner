@@ -27,7 +27,7 @@ test('Item onShip/offShip animations', function() {
     ok(!door.onShip(), 'door is not on ship');
     ok(!door.rotated(), 'door is not rotated');
 
-    door.onShip(new Ship({tmxName: 'test'})); //not really ;)
+    door.onShip(new sh.Ship({tmxName: 'test'})); //not really ;)
     ok(door.isCurrentAnimation('h_open_close'),
         "on ship it has 'h_open_close' animation");
 
@@ -41,7 +41,7 @@ module('entities/items.js');
 test('engine proper placement', function() {
     'use strict';
     var ship;
-    ship = new Ship({tmxName: 'test'});
+    ship = new sh.Ship({tmxName: 'test'});
     ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y,
         'engine'), 'building succeeds');
 });
@@ -49,7 +49,7 @@ test('engine proper placement', function() {
 test('engine invalid placement', function() {
     'use strict';
     var ship;
-    ship = new Ship({tmxName: 'test'});
+    ship = new sh.Ship({tmxName: 'test'});
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
         'engine'), 'building fails');
 });
@@ -57,7 +57,7 @@ test('engine invalid placement', function() {
 test('weapon proper placement', function() {
     'use strict';
     var ship;
-    ship = new Ship({tmxName: 'test'});
+    ship = new sh.Ship({tmxName: 'test'});
     ok(ship.buildAt(th.shipPositions.weapon.x, th.shipPositions.weapon.y,
         'weapon'), 'building succeeds');
 });
@@ -65,7 +65,7 @@ test('weapon proper placement', function() {
 test('weapon invalid placement', function() {
     'use strict';
     var ship;
-    ship = new Ship({tmxName: 'test'});
+    ship = new sh.Ship({tmxName: 'test'});
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
         'weapon'), 'building fails');
 });
@@ -73,7 +73,7 @@ test('weapon invalid placement', function() {
 test('Console placement', function() {
     'use strict';
     var x, y, ship;
-    ship = new Ship({tmxName: 'test'});
+    ship = new sh.Ship({tmxName: 'test'});
     x = th.shipPositions.free.x;
     y = th.shipPositions.free.y;
 

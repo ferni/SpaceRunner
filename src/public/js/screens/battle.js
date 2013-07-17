@@ -31,15 +31,15 @@ screens.register('battle', GameScreen.extend({
         this.battleID = settings.battleID;
 
         if(settings.tmxName){
-            gameState.ship = new Ship({tmxName: settings.tmxName}, true);
+            gameState.ship = new sh.Ship({tmxName: settings.tmxName}, true);
         }
         //reset ship
         if(settings.shipJsonString) {
-            gameState.ship = new Ship({jsonString: settings.shipJsonString},
+            gameState.ship = new sh.Ship({jsonString: settings.shipJsonString},
                 true);
         }
         /*
-         gameState.ship = new Ship({
+         gameState.ship = new sh.Ship({
          jsonString: gameState.ship.toJsonString()
          }, true);*/
         this.settings = this.completeSettings(settings);

@@ -7,7 +7,7 @@
 
 /*global me, ItemEntity, _*/
 
-var Unit = ItemEntity.extend({
+var Unit = TileEntity.extend({
     _paused: true,
     speed: 1, //tiles per second
     path: [],

@@ -28,7 +28,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var self = this;
         // stuff to reset on state change
-        this.ship = new Ship(settings, true);
+        this.ship = new sh.Ship(settings, true);
         me.levelDirector.loadLevel(this.ship.tmxName);
         this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();

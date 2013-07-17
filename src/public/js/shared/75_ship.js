@@ -5,9 +5,14 @@
 * All rights reserved.
 */
 
-/*global me, hullMap, utils, _ */
+/*global require, exports, module*/
 
-var Ship = Object.extend({
+var sh = require('./70_map'), _ = sh._;
+if(typeof exports !== 'undefined'){
+    sh = module.exports = sh;
+}
+
+sh.Ship = sh.SharedClass.extendShared({
     hullMap: {},
     itemsMap: {},
     init : function(settings) {

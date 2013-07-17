@@ -43,7 +43,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         ko.mapping.fromJS(this.data, this.vm);
         if(this.data.battle) {
             //this means it started!
-            gameState.ship =  new Ship({jsonString: this.data.battle.ship});
+            gameState.ship =  new sh.Ship({jsonString: this.data.battle.ship});
             me.state.change('battle', {battleID: this.data.battleID});
         }
     }
