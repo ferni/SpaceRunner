@@ -150,13 +150,12 @@ var Ship = Object.extend({
     toJsonString: function() {
         return JSON.stringify({
             'tmxName': this.tmxName,
-            'buildings': _.map(_.filter(this.built, function(b) {
-                return b instanceof sh.Item;
-            }), function(b) { return b.toJson();}),
-            'units': _.map(this.units,
-                function(u) { return u.toJson();}
+            'buildings': _.map(this.built, function(b) {
+                return b.toJson();
+            }),
+            'units': _.map(this.units, function(u) {
+                return u.toJson();}
             )
-            //TODO: clearly separate buildings and units
         });
     },
     fromJsonString: function(jsonString) {
