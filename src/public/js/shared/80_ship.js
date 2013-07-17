@@ -18,7 +18,7 @@ sh.Ship = sh.SharedClass.extendShared({
         this.units = [];
         this.fromJsonString(jsonString);
     },
-    addBuilding: function(building){
+    addItem: function(building){
         this.buildings.push(building);
     },
     addUnit: function(unit) {
@@ -39,7 +39,7 @@ sh.Ship = sh.SharedClass.extendShared({
         this.tmxName = json.tmxName.toLowerCase();
         this.loadMap();
         _.each(json.buildings, function(b){
-            ship.addBuilding(b);
+            ship.addItem(b);
         });
         _.each(json.units, function(u){
             ship.addUnit(u);
