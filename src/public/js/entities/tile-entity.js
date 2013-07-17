@@ -36,9 +36,7 @@ var TileEntity = me.ObjectEntity.extend({
         if (x === this.x) {
             return this;
         }
-        if (!this.hidden()) {
-            this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
-        }
+        this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
         this.x = x;
         this.onPositionChange();
         return this;
@@ -48,9 +46,7 @@ var TileEntity = me.ObjectEntity.extend({
         if (y === this.y) {
             return this;
         }
-        if (!this.hidden()) {
-            this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
-        }
+        this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
         this.y = y;
         this.onPositionChange();
         return this;
@@ -62,11 +58,9 @@ var TileEntity = me.ObjectEntity.extend({
             return this._hidden;
         }
         if (hide) {
-            this.pos.x = -400;
-            this.pos.y = 0;
+            this.alpha = 0;
         } else {
-            this.pos.x = this.x * TILE_SIZE;
-            this.pos.y = this.y * TILE_SIZE;
+            this.alpha = 1;
         }
         this._hidden = hide;
         return this;

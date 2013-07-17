@@ -337,7 +337,8 @@ screens.register('ship-building', GameScreen.extend({
             return;
         }
         var mouse = utils.getMouse();
-        this.chosen.setX(mouse.x)
+        this.chosen
+            .setX(mouse.x)
             .setY(mouse.y)
             .show();
         this.updateGreenSpots();
