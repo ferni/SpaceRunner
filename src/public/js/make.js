@@ -46,11 +46,6 @@ var make = (function() {
         return new VMConstructor(itemModel);
     };
 
-    make.itemFromJson = function(json){
-        var item = make.item(json.type, [json.x, json.y, json.settings]);
-        item.rotated(json.rotated);
-        return item;
-    };
 
     //add props from sh.make checking that none are being overwritten.
     for(p in sh.make){

@@ -42,6 +42,12 @@ sh.make = (function() {
         }
     };
 
+    make.itemFromJson = function(json){
+        var item = make.itemModel(json.type, [null, json.x, json.y]);
+        item.rotated(json.rotated);
+        return item;
+    };
+
     //UNITS
     make.unitFromJson = function(json) {
         return new Unit(json.x, json.y, json.settings);
