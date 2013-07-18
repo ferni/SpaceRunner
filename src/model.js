@@ -68,7 +68,7 @@ exports.BattleSetUp = function(params) {
     this.createBattle = function(done){
         var err = null;
         try{
-            var ship = new sh.Ship(this.shipJsonString),
+            var ship = new sh.Ship({jsonString: this.shipJsonString}),
                 battle = new exports.Battle({id: battles.length, ship: ship});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
