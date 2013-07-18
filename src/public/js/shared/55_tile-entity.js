@@ -26,10 +26,12 @@ sh.TileEntity = sh.SharedClass.extendShared({
     //callback must have x and y. withinSize is optional
     tiles: function(callback ,withinSize) {
         'use strict';
-        var x, y;
-        for (x = this.x; x < this.trueSize(0) + this.x &&
+        var x, y,
+            width = this.trueSize(0),
+            height = this.trueSize(1);
+        for (x = this.x; x < width + this.x &&
             (!withinSize || x < withinSize.width) && x >= 0; x++) {
-            for (y = this.y; y < this.trueSize(1) + this.y &&
+            for (y = this.y; y < height + this.y &&
                 (!withinSize || y < withinSize.height) && y >= 0; y++) {
                 callback(x, y);
             }
