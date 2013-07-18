@@ -97,7 +97,7 @@ sh.Ship = sh.SharedClass.extendShared({
                 empty = {x: x, y: y};
             }
         });
-        unit = new sh.Unit(empty.x, empty.y);
+        unit = new sh.Unit(empty.x, empty.y, settings);
         this.addUnit(unit);
         return unit;
     },
@@ -185,7 +185,7 @@ sh.Ship = sh.SharedClass.extendShared({
             pfMatrix = sh.utils.getEmptyMatrix(this.width, this.height, 1);
         ship.map.tiles(function(x, y) {
             if (ship.map.at(x, y) === sh.tiles.clear ||
-                ship.map.at(x, y) instanceof Unit) {
+                ship.map.at(x, y) instanceof sh.Unit) {
                 pfMatrix[y][x] = 0; //clear tiles and units are walkable
             }
         });
