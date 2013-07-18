@@ -96,6 +96,9 @@ screens.register('ship-building', GameScreen.extend({
     },
 
     shipItemVMs: [],
+    /**
+     * Updates melonJS objects for items to be drawn on the screen
+     */
     updateShip: function(){
         var i, v, items, vms, hasVM, aux;
         if (!this.ship) {
