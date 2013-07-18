@@ -98,7 +98,7 @@ sh.Ship = sh.SharedClass.extendShared({
             }
         });
         unit = new Unit(empty.x, empty.y, settings);
-        this.addItem(unit);
+        this.addUnit(unit);
         return unit;
     },
     //Adds an item to the ship ignoring its placement rules
@@ -106,6 +106,10 @@ sh.Ship = sh.SharedClass.extendShared({
         this.built.push(item);
         item.onShip(this);
         this.buildingsChanged();
+    },
+    addUnit: function(unit) {
+        this.units.push(unit);
+        this.unitsMap.update();
     },
     removeAt: function(x, y) {
         //remove while is not string (is an item or unit)
