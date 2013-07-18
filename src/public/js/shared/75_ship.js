@@ -61,7 +61,7 @@ sh.Ship = sh.SharedClass.extendShared({
     //this should be called when the user builds something
     buildAt : function(x, y, buildingType) {
         var self = this,
-        building = make.itemModel(buildingType),
+        building = sh.make.itemModel(buildingType),
         canBuild = building.canBuildAt(x, y, this),
         canBuildRotated;
         if (!canBuild) {
@@ -173,10 +173,10 @@ sh.Ship = sh.SharedClass.extendShared({
         ship.removeAll();
         json = JSON.parse(jsonString);
         _.each(json.buildings, function(b){
-            ship.addItem(make.itemFromJson(b));
+            ship.addItem(sh.make.itemFromJson(b));
         });
         _.each(json.units, function(u){
-            ship.add(make.unitFromJson(u));
+            ship.addUnit(sh.make.unitFromJson(u));
         });
         this.buildingsChanged();
     },
