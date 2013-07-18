@@ -7,19 +7,19 @@
 
 /*global me*/
 
-var sh = require('./12_utils'), _ = sh._;
+var sh = require('./55_tile-entity'), _ = sh._;
 if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
 /* individual object class */
-sh.Item = sh.SharedClass.extendShared({
+sh.Item = sh.TileEntity.extendShared({
     size: [1, 1],
     init: function(ship, x, y) {
         'use strict';
+        this.parent(x, y);
         this.ship = ship;
-        this.x = x;
-        this.y = y;
+
         this.buildPlacementRules();
     },
     placementRules: [],
@@ -59,29 +59,7 @@ sh.Item = sh.SharedClass.extendShared({
         }
         return this.size[index];
     },
-    //callback must have x and y. withinSize is optional
-    tiles: function(callback ,withinSize) {
-        'use strict';
-        var x, y;
-        for (x = this.x; x < this.trueSize(0) + this.x &&
-            (!withinSize || x < withinSize.width) && x >= 0; x++) {
-            for (y = this.y; y < this.trueSize(1) + this.y &&
-                (!withinSize || y < withinSize.height) && y >= 0; y++) {
-                callback(x, y);
-            }
-        }
-    },
-    //returns true is some part of the item is occupying the tile
-    occupies: function(x, y) {
-        'use strict';
-        var occupies = false;
-        this.tiles(function(tX, tY) {
-            if (x === tX && y === tY) {
-                occupies = true;
-            }
-        });
-        return occupies;
-    },
+
     onBuilt: function() {
         'use strict';
         //abstract method
