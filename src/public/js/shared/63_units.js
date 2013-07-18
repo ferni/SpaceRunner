@@ -12,3 +12,16 @@ if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
+sh.Unit = sh.TileEntity.extendShared({
+    init: function(x, y){
+        this.size = [1, 1];
+        this.type = 'unit';
+        this.parent(x, y);
+    },
+    toJson: function(){
+        return {
+            x: this.x,
+            y: this.y
+        };
+    }
+});

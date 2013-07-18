@@ -97,7 +97,7 @@ sh.Ship = sh.SharedClass.extendShared({
                 empty = {x: x, y: y};
             }
         });
-        unit = new Unit(empty.x, empty.y, settings);
+        unit = new sh.Unit(empty.x, empty.y);
         this.addUnit(unit);
         return unit;
     },
