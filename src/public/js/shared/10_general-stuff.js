@@ -121,7 +121,11 @@ if(typeof exports !== 'undefined'){
             case 'move' : {
                 var dest = order.data.destination;
                 //is destination a walkable area
-
+                if(ship.at(dest.x, dest.y) === sh.tiles.clear){
+                    return true;
+                }else{
+                    return false;
+                }
             }
         }
     };
