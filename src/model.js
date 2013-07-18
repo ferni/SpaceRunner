@@ -65,14 +65,20 @@ exports.BattleSetUp = function(params) {
     /**
      * Returns the battle.
      */
-    this.createBattle = function(){
-        var ship = new sh.Ship(this.shipJsonString),
-            battle = new exports.Battle({id: battles.length, ship: ship});
-        battle.playerLeft = this.creator;
-        battle.playerRight = this.challenger;
-        battles.push(battle)
-        this.battle = battle;
-        return battle;
+    this.createBattle = function(done){
+        var err = null;
+        try{
+            var ship = new sh.Ship(this.shipJsonString),
+                battle = new exports.Battle({id: battles.length, ship: ship});
+            battle.playerLeft = this.creator;
+            battle.playerRight = this.challenger;
+            battles.push(battle);
+            this.battle = battle;
+        }
+        catch(e){
+            err = new Error(e);
+        }
+        done(err);
     };
 };
 

@@ -23,8 +23,12 @@ exports.get = function(req, res, next) {
     //authenticate
     if(bsu.creator.id == playerID ||
         (bsu.challenger && bsu.challenger.id == playerID)) {
-        bsu.updatePlayers();
-        res.json(bsu.toJson());
+        try{
+            bsu.updatePlayers();
+            res.json(bsu.toJson());
+        }catch(e) {
+            next(e);
+        }
     }else {
         next(new Error('Only a player from within the battle can request' +
             ' battle details.'));
@@ -43,8 +47,13 @@ exports.start = function(req, res, next) {
     }
     if(bsu.creator.id == playerID ||
         (bsu.challenger && bsu.challenger.id == playerID)) {
-        bsu.createBattle();
-        return res.json({});
+        bsu.createBattle(function(err){
+            if(err) {
+                next(err);
+            }else{
+                res.json({});
+            }
+        });
     }else{
         next(new Error('Only a player from within the battle can request' +
             ' battle start.'));
