@@ -70,6 +70,10 @@ exports.BattleSetUp = function(params) {
         try{
             var ship = new sh.Ship({jsonString: this.shipJsonString}),
                 battle = new exports.Battle({id: battles.length, ship: ship});
+            ship.putUnit({type: 0, speed: 0.5});
+            ship.putUnit({type: 6, speed: 1});
+            ship.putUnit({type: 7, speed: 2});
+            ship.putUnit({type: 12, speed: 3});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
             battles.push(battle);

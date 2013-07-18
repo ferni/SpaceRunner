@@ -192,10 +192,6 @@ screens.register('ship-building', GameScreen.extend({
     },
     finishShip: function(){
         var ship = this.ship;
-        ship.putUnit({imgRow: 0, speed: 0.5});
-        ship.putUnit({imgRow: 6, speed: 1});
-        ship.putUnit({imgRow: 7, speed: 2});
-        ship.putUnit({imgRow: 12, speed: 3});
 
         console.log('Creating battle...');
         $.post('/battles/create',{shipJsonString: ship.toJsonString()},
