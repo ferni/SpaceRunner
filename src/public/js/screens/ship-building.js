@@ -29,7 +29,8 @@ screens.register('ship-building', GameScreen.extend({
         var self = this;
         // stuff to reset on state change
         this.ship = new sh.Ship(settings, true);
-        me.levelDirector.loadLevel(this.ship.tmxName);
+        this.shipVM = new ShipVM(this.ship);
+        this.shipVM.showInScreen();
         this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();
         };
@@ -89,51 +90,12 @@ screens.register('ship-building', GameScreen.extend({
             var data = window.prompt('enter ship json data');
             me.state.change('ship-building', {jsonString: data});
         }
-        this.updateShip();
         _.each(this.drawingScreen, function(item){
             item.update();
         });
     },
 
-    shipItemVMs: [],
-    /**
-     * Updates melonJS objects for items to be drawn on the screen
-     */
-    updateShip: function(){
-        var i, v, items, vms, hasVM, aux;
-        if (!this.ship) {
-            return;
-        }
-        items = this.ship.built;
-        vms = this.shipItemVMs;
 
-        for(i = 0; i < items.length; i++) {
-            hasVM = false;
-            for(v = i; v < vms.length; v++) {
-                if(items[i] === vms[v].m) {
-                    hasVM = true;
-                    break;
-                }
-            }
-            if (hasVM) {
-                //put vm at item's index position
-                if(v != i){
-                    aux = vms[v];
-                    vms[v] = vms[i];
-                    vms[i] = aux;
-                }
-            }else {
-                //new vm
-                vms.splice(i, 0, make.vm(items[i]));
-                me.game.add(vms[i], vms[i].zIndex);
-            }
-        }
-        //remove extra vms
-        for(v = items.length; v < vms.length; v++) {
-            me.game.remove(vms[v], true);
-        }
-        vms.splice(items.length, vms.length - items.length);
-    },
     draw: function(ctx) {
         'use strict';
         this.parent(ctx);
@@ -289,7 +251,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var built = this.ship.buildAt(x, y, type);
         if(built) {
-            this.updateShip();
+            this.shipVM.update();
             utils.findVM(built).onBuilt();
         }
     },
@@ -384,7 +346,7 @@ screens.register('ship-building', GameScreen.extend({
         this.ship.addItem(this.dragging);
         this.choose();
         this.dragging = null;
-        this.updateShip();
+        this.shipVM.update();
     },
     //Red overlay
     redScreen: [],

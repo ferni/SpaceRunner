@@ -227,7 +227,7 @@ asyncTest('draw/at', function() {
     });
 });
 
-asyncTest('updateShip', function() {
+asyncTest('shipVM.update', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
@@ -235,26 +235,26 @@ asyncTest('updateShip', function() {
         var ship = screen.ship, aux,
             engine = new sh.items.Engine(),
             weapon = new sh.items.Weapon();
-        screen.updateShip();
-        equal(screen.shipItemVMs.length, 0, 'No vms yet');
+        screen.shipVM.update();
+        equal(screen.shipVM.itemVMs.length, 0, 'No vms yet');
         ship.addItem(engine);
-        screen.updateShip();
-        equal(screen.shipItemVMs.length, 1, 'A vm added...');
-        equal(screen.shipItemVMs[0].m, engine, "... it's the engine.");
+        screen.shipVM.update();
+        equal(screen.shipVM.itemVMs.length, 1, 'A vm added...');
+        equal(screen.shipVM.itemVMs[0].m, engine, "... it's the engine.");
         ship.addItem(weapon);
-        screen.updateShip();
-        equal(screen.shipItemVMs.length, 2, 'Another vm added...');
-        equal(screen.shipItemVMs[1].m, weapon, "... it's the weapon.");
+        screen.shipVM.update();
+        equal(screen.shipVM.itemVMs.length, 2, 'Another vm added...');
+        equal(screen.shipVM.itemVMs[1].m, weapon, "... it's the weapon.");
         aux = ship.built[0];
         ship.built[0] = ship.built[1];
         ship.built[1] = aux;
-        screen.updateShip();
-        equal(screen.shipItemVMs.length, 2, 'Length remains the same...');
-        equal(screen.shipItemVMs[0].m, weapon, '...but VMs switched positions.');
+        screen.shipVM.update();
+        equal(screen.shipVM.itemVMs.length, 2, 'Length remains the same...');
+        equal(screen.shipVM.itemVMs[0].m, weapon, '...but VMs switched positions.');
         ship.remove(weapon, true);
-        screen.updateShip();
-        equal(screen.shipItemVMs.length, 1, 'VM removed...');
-        equal(screen.shipItemVMs[0].m, engine, "... the engine remains.");
+        screen.shipVM.update();
+        equal(screen.shipVM.itemVMs.length, 1, 'VM removed...');
+        equal(screen.shipVM.itemVMs[0].m, engine, "... the engine remains.");
 
         start();
     });
