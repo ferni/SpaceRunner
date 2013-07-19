@@ -13,10 +13,25 @@ if(typeof exports !== 'undefined'){
 }
 
 sh.Unit = sh.TileEntity.extendShared({
-    init: function(x, y){
+    init: function(x, y, settings){
         this.size = [1, 1];
-        this.type = 'unit';
+        settings = this.completeSettings(settings);
+        this.speed = settings.speed;
+        this.type = settings.type;
         this.parent(x, y);
+    },
+    completeSettings: function(settings){
+        'use strict';
+        if (!settings) {
+            settings = {};
+        }
+        if (!settings.type) {
+            settings.type = 0;
+        }
+        if(!settings.speed){
+            settings.speed = 1;
+        }
+        return settings;
     },
     toJson: function(){
         return {
