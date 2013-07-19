@@ -53,11 +53,6 @@ sh.Ship = sh.SharedClass.extendShared({
         this.width = hull.width;
         this.height = hull.height;
     },
-    selected : function(){
-        return _.filter(this.units, function(u){
-            return u.selected;
-        });
-    },
     //this should be called when the user builds something
     buildAt : function(x, y, buildingType) {
         var self = this,
