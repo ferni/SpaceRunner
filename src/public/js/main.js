@@ -268,7 +268,7 @@ var jsApp = {
         // set screens
         var self = this;
         window.FIRST_SCREEN = 'lobby';
-        window.gameState = new GameState();
+        window.gs = new GameState();
 
         this.generateHullMaps();
         chatClient.start();

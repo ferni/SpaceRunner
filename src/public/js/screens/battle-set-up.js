@@ -22,7 +22,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         var screen = this;
         this.vm = ko.mapping.fromJS(this.data);
         this.vm.imCreator = ko.computed(function(){
-            return this.creator.id() == gameState.player.id;
+            return this.creator.id() == gs.player.id;
         }, this.vm);
         this.vm.start = function(){
             //both players present
@@ -43,7 +43,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         ko.mapping.fromJS(this.data, this.vm);
         if(this.data.battle) {
             //this means it started!
-            gameState.ship =  new sh.Ship({jsonString: this.data.battle.ship});
+            gs.ship =  new sh.Ship({jsonString: this.data.battle.ship});
             me.state.change('battle', {battleID: this.data.battleID});
         }
     }

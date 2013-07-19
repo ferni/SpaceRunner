@@ -8,4 +8,6 @@
 var GameState = function(){
     //sh.Player
     this.player = null;
+    //sh.Ship
+    this.ship = null;
 };

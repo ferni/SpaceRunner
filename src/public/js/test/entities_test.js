@@ -37,7 +37,7 @@ test('Item onShip/offShip animations', function() {
 
 });
 
-module('entities/items.js');
+module('entities/item-vms.js');
 test('engine proper placement', function() {
     'use strict';
     var ship;

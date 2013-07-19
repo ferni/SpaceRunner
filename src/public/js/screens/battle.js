@@ -30,18 +30,14 @@ screens.register('battle', GameScreen.extend({
         }
         this.battleID = settings.battleID;
 
-        if(settings.tmxName){
-            gameState.ship = new sh.Ship({tmxName: settings.tmxName}, true);
-        }
-        //reset ship
         if(settings.shipJsonString) {
-            gameState.ship = new sh.Ship({jsonString: settings.shipJsonString},
+            gs.ship = new sh.Ship({jsonString: settings.shipJsonString},
                 true);
         }
-        /*
-         gameState.ship = new sh.Ship({
-         jsonString: gameState.ship.toJsonString()
-         }, true);*/
+        else if(settings.tmxName) {
+            gs.ship = new sh.Ship({tmxName: settings.tmxName}, true);
+        }
+
         this.settings = this.completeSettings(settings);
         this.TURN_DURATION_SEC = this.settings.turnDuration;
         this.TURN_DURATION = this.settings.turnDuration * 1000;
@@ -54,7 +50,7 @@ screens.register('battle', GameScreen.extend({
             this.mouseDown.bind(this));
         me.input.registerMouseEvent('mousemove', me.game.viewport,
             this.mouseMove.bind(this));
-        me.levelDirector.loadLevel(gameState.ship.tmxName);
+        me.levelDirector.loadLevel(gs.ship.tmxName);
 
         this.pause();
     },
@@ -91,7 +87,7 @@ screens.register('battle', GameScreen.extend({
         this.parent(ctx);
         if (this.paused) {
 
-            _.each(gameState.ship.units, function(u) {
+            _.each(gs.ship.units, function(u) {
                 u.drawPath(ctx);
                 if (u.selected) {
                     //draw rectangle around each selected unit
@@ -99,15 +95,15 @@ screens.register('battle', GameScreen.extend({
                         'limegreen', 2);
                 }
             });
-            if (gameState.ship.isAt(mouse.x, mouse.y, 'unit')) {
+            if (gs.ship.isAt(mouse.x, mouse.y, 'unit')) {
                 utils.setCursor('pointer');
             } else if(!this.dragBox){
                 utils.setCursor('default')
             }
 
             //highlight where the mouse is pointing if it's a unit
-            if (gameState.ship.isAt(mouse.x, mouse.y, 'unit') ||
-                gameState.ship.selected().length > 0) {
+            if (gs.ship.isAt(mouse.x, mouse.y, 'unit') ||
+                gs.ship.selected().length > 0) {
                 this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
             }
             if (this.dragBox) {
@@ -141,7 +137,7 @@ screens.register('battle', GameScreen.extend({
     },
     completeSettings: function(settings) {
         //set default settings
-        var units = gameState.ship.units,
+        var units = gs.ship.units,
             i;
         if (!settings) {
             settings = {};
@@ -165,7 +161,7 @@ screens.register('battle', GameScreen.extend({
     },
     configureUnits: function() {
         'use strict';
-        var units = gameState.ship.units,
+        var units = gs.ship.units,
             i;
         for(i = 0; i < units.length; i++) {
             //temporary workaround to reset units
@@ -193,7 +189,7 @@ screens.register('battle', GameScreen.extend({
         var screen = this,
             mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
-            ship = gameState.ship;
+            ship = gs.ship;
         if (!this.paused) {
             return;
         }
@@ -220,7 +216,7 @@ screens.register('battle', GameScreen.extend({
     releaseDragBox: function() {
         var self = this;
         if (this.dragBox) {
-            _.each(gameState.ship.units, function(u){
+            _.each(gs.ship.units, function(u){
                 var unitRect = new me.Rect(u.pos, TILE_SIZE, TILE_SIZE);
                 if(self.dragBox.overlaps(unitRect)) {
                     u.selected = true;
@@ -254,7 +250,7 @@ screens.register('battle', GameScreen.extend({
     },
     selectUnit: function(x, y) {
         'use strict';
-        var ship = gameState.ship,
+        var ship = gs.ship,
             unit = ship.at(x, y);
         this.unselectAll();
         if (unit && unit.name === 'unit') {
@@ -265,14 +261,14 @@ screens.register('battle', GameScreen.extend({
     },
     unselectAll: function() {
         'use strict';
-        _.each(gameState.ship.units, function(u) {
+        _.each(gs.ship.units, function(u) {
             return u.selected = false;
         });
     },
     pause: function() {
         'use strict';
         $('#paused-indicator, #resume-button').show();
-        _.each(gameState.ship.units, function(u) {
+        _.each(gs.ship.units, function(u) {
             u.pause();
         });
         this.generateScripts();
@@ -283,7 +279,7 @@ screens.register('battle', GameScreen.extend({
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
-        _.each(gameState.ship.units, function(u) {
+        _.each(gs.ship.units, function(u) {
             u.resume();
         });
         this.paused = false;
@@ -296,7 +292,7 @@ screens.register('battle', GameScreen.extend({
         return me.timer.getTime() - this.turnBeginTime;
     },
     at: function(x, y) {
-        return gameState.ship.at(x, y);
+        return gs.ship.at(x, y);
     }
 }));
 

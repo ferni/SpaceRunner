@@ -76,7 +76,7 @@ if(typeof exports !== 'undefined'){
         //TODO: convert to shared function (this function was directly copied from public)
 
         var grid, path,
-            ship = gameState.ship;
+            ship = gs.ship;
         if (mouse.x === unit.x && mouse.y === unit.y) {
             unit.path = [];
         } else {
