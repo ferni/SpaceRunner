@@ -10,7 +10,7 @@
 /* An object that has tile position (x and y),
  and row length and col length through "size"
  */
-var TileEntity = me.ObjectEntity.extend({
+var TileEntityVM = me.ObjectEntity.extend({
     x: 0, //column
     y: 0, //row
     size: [1, 1],

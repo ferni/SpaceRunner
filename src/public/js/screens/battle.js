@@ -37,6 +37,8 @@ screens.register('battle', GameScreen.extend({
         else if(settings.tmxName) {
             gs.ship = new sh.Ship({tmxName: settings.tmxName}, true);
         }
+        this.shipVM = new ShipVM(gs.ship);
+        this.shipVM.showInScreen();
 
         this.settings = this.completeSettings(settings);
         this.TURN_DURATION_SEC = this.settings.turnDuration;

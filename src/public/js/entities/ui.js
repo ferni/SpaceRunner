@@ -5,10 +5,10 @@
 * All rights reserved.
 */
 
-/*global TileEntity*/
+/*global TileEntityVM*/
 
 /* The red overlay */
-var RedColorEntity = TileEntity.extend({
+var RedColorEntity = TileEntityVM.extend({
     init: function(x, y) {
         'use strict';
         this.size = [1, 1];

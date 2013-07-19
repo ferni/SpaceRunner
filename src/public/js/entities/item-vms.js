@@ -8,7 +8,7 @@
 /*global me, _, pr, ItemVM, PF, hullMap, utils, width, height*/
 
 /* individual object class */
-var ItemVM = TileEntity.extend({
+var ItemVM = TileEntityVM.extend({
     init: function(x, y, settings) {
         'use strict';
         this.onShipAnimations = {

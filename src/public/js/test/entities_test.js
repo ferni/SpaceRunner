@@ -8,7 +8,7 @@
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
 me, utils, ui, Ship*/
 
-module('entities/tile-entity.js');
+module('entities/tile-entity-vm.js');
 test('Item.trueSize()', function() {
     'use strict';
     var door = make.item('door');
