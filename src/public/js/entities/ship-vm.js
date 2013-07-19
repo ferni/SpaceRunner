@@ -29,14 +29,17 @@ var ShipVM = Object.extend({
      */
     update: function(){
         'use strict';
-        var i, v, items, vms, hasVM, aux;
-        items = this.m.built;
-        vms = this.itemVMs;
-
-        for(i = 0; i < items.length; i++) {
+        this.updateVMs(this.m.built, this.itemVMs);
+        this.updateVMs(this.m.units, this.unitVMs);
+        return true;//true, to make MelonJS happy
+    },
+    updateVMs: function(models, vms) {
+        'use strict';
+        var i, v, hasVM, aux;
+        for(i = 0; i < models.length; i++) {
             hasVM = false;
             for(v = i; v < vms.length; v++) {
-                if(items[i] === vms[v].m) {
+                if(models[i] === vms[v].m) {
                     hasVM = true;
                     break;
                 }
@@ -50,16 +53,15 @@ var ShipVM = Object.extend({
                 }
             }else {
                 //new vm
-                vms.splice(i, 0, make.vm(items[i]));
+                vms.splice(i, 0, make.vm(models[i]));
                 me.game.add(vms[i], vms[i].zIndex);
             }
         }
         //remove extra vms
-        for(v = items.length; v < vms.length; v++) {
+        for(v = models.length; v < vms.length; v++) {
             me.game.remove(vms[v], true);
         }
-        vms.splice(items.length, vms.length - items.length);
-        return true;//true, to make MelonJS happy
+        vms.splice(models.length, vms.length - models.length);
     },
     draw: function(ctx) {
         'use strict';
