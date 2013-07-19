@@ -14,13 +14,13 @@ var make = (function() {
 
     //ITEMS VMS
     make.itemTypes = {
-        weapon: WeaponItem,
-        engine: EngineItem,
-        power: PowerItem,
-        console: ConsoleItem,
-        component: ComponentItem,
-        door: DoorItem,
-        wall: WallItem
+        weapon: WeaponVM,
+        engine: EngineVM,
+        power: PowerVM,
+        console: ConsoleVM,
+        component: ComponentVM,
+        door: DoorVM,
+        wall: WallVM
     };
     make.item = function(type, params){
         var Constructor,

@@ -131,7 +131,7 @@ var utils = {
         if(object instanceof sh.Item) {
             return object;
         }
-        if(object instanceof ItemEntity){
+        if(object instanceof ItemVM){
             return object.m;
         }
     },

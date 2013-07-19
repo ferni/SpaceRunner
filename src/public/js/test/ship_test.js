@@ -6,7 +6,7 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-strictEqual, me, _, utils, TILE_SIZE, EngineItem, DoorItem,
+strictEqual, me, _, utils, TILE_SIZE, EngineVM, DoorVM,
 FIRST_SCREEN, width, height */
 
 module('main.js');

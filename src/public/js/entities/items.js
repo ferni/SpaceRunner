@@ -5,10 +5,10 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemEntity, PF, hullMap, utils, width, height*/
+/*global me, _, pr, ItemVM, PF, hullMap, utils, width, height*/
 
 /* individual object class */
-var ItemEntity = TileEntity.extend({
+var ItemVM = TileEntity.extend({
     init: function(x, y, settings) {
         'use strict';
         this.onShipAnimations = {
@@ -164,7 +164,7 @@ var ItemEntity = TileEntity.extend({
     In each item, set size and type before calling parent()
 */
 // weapon object
-var WeaponItem = ItemEntity.extend({
+var WeaponVM = ItemVM.extend({
     // init function
     init: function(weaponModel) {
         'use strict';
@@ -178,7 +178,7 @@ var WeaponItem = ItemEntity.extend({
 });
 
 // engine object
-var EngineItem = ItemEntity.extend({
+var EngineVM = ItemVM.extend({
     // init function
     init: function(engineModel) {
         'use strict';
@@ -194,7 +194,7 @@ var EngineItem = ItemEntity.extend({
 
 
 // power object
-var PowerItem = ItemEntity.extend({
+var PowerVM = ItemVM.extend({
     // init function
     init: function(powerModel) {
         'use strict';
@@ -207,7 +207,7 @@ var PowerItem = ItemEntity.extend({
 });
 
 // console object class
-var ConsoleItem = ItemEntity.extend({
+var ConsoleVM = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';
@@ -220,7 +220,7 @@ var ConsoleItem = ItemEntity.extend({
 });
 
 // component object class
-var ComponentItem = ItemEntity.extend({
+var ComponentVM = ItemVM.extend({
     // init function
     init: function(componentModel) {
         'use strict';
@@ -242,7 +242,7 @@ var ComponentItem = ItemEntity.extend({
 });
 
 // door object class
-var DoorItem = ItemEntity.extend({
+var DoorVM = ItemVM.extend({
     // init function
     init: function(doorModel) {
         'use strict';
@@ -275,7 +275,7 @@ var DoorItem = ItemEntity.extend({
 
 });
 // wall object class
-var WallItem = ItemEntity.extend({
+var WallVM = ItemVM.extend({
     // init function
     init: function(wallModel) {
         'use strict';
