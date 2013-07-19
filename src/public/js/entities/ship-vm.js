@@ -9,14 +9,17 @@
 
 var ShipVM = Object.extend({
     itemVMs: [],
+    unitVMs: [],
     /**
      *
      * @param shipModel {sh.Ship} the ship model.
      */
     init: function(shipModel) {
+        'use strict';
         this.m = shipModel;
     },
     showInScreen: function() {
+        'use strict';
         me.levelDirector.loadLevel(this.m.tmxName);
         me.game.add(this, 1);
     },
@@ -25,6 +28,7 @@ var ShipVM = Object.extend({
      * according to the ship model.
      */
     update: function(){
+        'use strict';
         var i, v, items, vms, hasVM, aux;
         items = this.m.built;
         vms = this.itemVMs;
@@ -58,6 +62,13 @@ var ShipVM = Object.extend({
         return true;//true, to make MelonJS happy
     },
     draw: function(ctx) {
+        'use strict';
         return true;
+    },
+    selected : function(){
+        'use strict';
+        return _.filter(this.unitVMs, function(u){
+            return u.selected;
+        });
     }
 });
