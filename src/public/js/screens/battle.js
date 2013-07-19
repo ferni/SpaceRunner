@@ -188,20 +188,13 @@ screens.register('battle', GameScreen.extend({
     },
     mouseDown: function(e) {
         'use strict';
-        var screen = this,
-            mouse = utils.getMouse(),
-            which = e.which - 1, //workaround for melonJS mismatch
-            ship = gs.ship;
+        var mouse = utils.getMouse(),
+            which = e.which - 1; //workaround for melonJS mismatch
         if (!this.paused) {
             return;
         }
         if (which === me.input.mouse.RIGHT) {
-            if (ship.selected().length > 0) {//there is a selected unit
-                _.each(ship.selected(), function(unit){
-                    screen.generateScripts(unit, mouse);
-                });
-
-            }
+            this.giveMoveOrder(this.shipVM.selected(), mouse);
         } else if (which === me.input.mouse.LEFT){
             this.startDragBox(utils.getMouse(true));
         }
@@ -210,6 +203,13 @@ screens.register('battle', GameScreen.extend({
         'use strict';
         if (this.dragBox) {
             this.dragBox.updateFromMouse(utils.getMouse(true));
+        }
+    },
+    giveMoveOrder: function(units, destination){
+        if (units.length > 0) {//there is a selected unit
+            _.each(units, function(unit){
+                screen.generateScripts(unit, destination);
+            });
         }
     },
     startDragBox: function(pos) {
