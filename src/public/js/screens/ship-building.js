@@ -252,7 +252,7 @@ screens.register('ship-building', GameScreen.extend({
         var built = this.ship.buildAt(x, y, type);
         if(built) {
             this.shipVM.update();
-            utils.findVM(built).onBuilt();
+            this.shipVM.getVM(built).onBuilt();
         }
     },
     deleteItem: function (item) {

@@ -67,10 +67,28 @@ var ShipVM = Object.extend({
         'use strict';
         return true;
     },
-    selected : function(){
+    selected: function(){
         'use strict';
         return _.filter(this.unitVMs, function(u){
             return u.selected;
         });
+    },
+    getVM: function(model) {
+        'use strict';
+        var index;
+        function getMatch(modelArray, vmArray){
+            index = modelArray.indexOf(model);
+            if(index !== null && typeof index !== 'undefined') {
+                return vmArray[index];
+            }
+            throw 'Did not find view model, try calling update first.';
+        }
+        if(model instanceof sh.Item) {
+            return getMatch(this.m.built, this.itemVMs);
+        }else if(model instanceof sh.Unit){
+            return getMatch(this.m.units, this.unitVMs);
+        }else{
+            throw 'Invalid type of model.';
+        }
     }
 });

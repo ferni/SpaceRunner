@@ -134,22 +134,6 @@ var utils = {
         if(object instanceof ItemVM){
             return object.m;
         }
-    },
-    /**
-     * Finds an item viewmodel associated with the item model.
-     * @param model {sh.items.Item} the model.
-     * @returns {*}
-     */
-    findVM: function(model) {
-        //TODO: make an index
-        var vm = _.find(me.game.getEntityByName('item'), function(item) {
-            return item.m === model;
-        });
-        if (!vm) {
-            console.warn('Could not find vm of ' + model.type);
-        }
-        return vm;
     }
-
 };
 
