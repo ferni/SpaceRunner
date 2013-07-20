@@ -254,22 +254,23 @@ screens.register('battle', GameScreen.extend({
         var ship = gs.ship,
             unit = ship.at(x, y);
         this.unselectAll();
-        if (unit && unit.name === 'unit') {
-            unit.selected = true;
+        if (unit instanceof sh.Unit) {
+            this.shipVM.updateUnits();
+            this.shipVM.getVM(unit).selected = true;
             return true;
         }
         return false;
     },
     unselectAll: function() {
         'use strict';
-        _.each(gs.ship.units, function(u) {
+        _.each(this.shipVM.unitVMs, function(u) {
             return u.selected = false;
         });
     },
     pause: function() {
         'use strict';
         $('#paused-indicator, #resume-button').show();
-        _.each(gs.ship.units, function(u) {
+        _.each(this.shipVM.unitVMs, function(u) {
             u.pause();
         });
         this.generateScripts();
@@ -280,7 +281,7 @@ screens.register('battle', GameScreen.extend({
         $('#paused-indicator, #resume-button').hide();
         //reset time
         this.turnBeginTime = me.timer.getTime();
-        _.each(gs.ship.units, function(u) {
+        _.each(this.shipVM.unitVMs, function(u) {
             u.resume();
         });
         this.paused = false;

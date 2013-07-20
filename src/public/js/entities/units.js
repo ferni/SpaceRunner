@@ -16,23 +16,17 @@ var Unit = TileEntityVM.extend({
     //TODO: maybe make setting the size more direct
     size:[0.5,0.5],
     imgRow: 0,
-    init: function(x, y, settings) {
-        'use strict';
-        var toImgRow;
-        settings = this.completeSettings(settings);
-        this.speed = settings.speed;
-        this.imgRow = settings.imgRow;
-        if(settings.turnDuration) {
-            this.turnDuration = settings.turnDuration;
-        }
-
-        this.parent(x, y, {
+    init: function(unitModel) {
+        this.m = unitModel;
+        this.size = unitModel.size;
+        this.speed = unitModel.speed;
+        this.parent(unitModel.x, unitModel.y, {
             name: 'unit',
             image: 'creatures_16x16'
         });
-        toImgRow = function(array){
+        function toImgRow(array){
             for(var i = 0; i < array.length; i++){
-                array[i] += settings.imgRow * 4;
+                array[i] += unitModel.type * 4;
             }
             return array;
         };
@@ -83,19 +77,6 @@ var Unit = TileEntityVM.extend({
         this.setX(position.x);
         this.setY(position.y);
         return true;
-    },
-    completeSettings: function(settings){
-        'use strict';
-        if (!settings) {
-            settings = {};
-        }
-        if (!settings.imgRow) {
-            settings.imgRow = 0;
-        }
-        if(!settings.speed){
-            settings.speed = 1;
-        }
-        return settings;
     },
     drawPath: function(ctx){
         'use strict';

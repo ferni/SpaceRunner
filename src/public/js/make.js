@@ -36,14 +36,21 @@ var make = (function() {
     };
     /**
      *
-     * @param itemModel {sh.Item} the item.
+     * @param model {sh.Item} the item.
      */
-    make.vm = function(itemModel) {
-        var VMConstructor = make.itemTypes[itemModel.type];
-        if (!VMConstructor) {
-            throw 'Could not find view model of type ' + itemModel.type;
+    make.vm = function(model) {
+        var VMConstructor;
+        if (model instanceof sh.Item) {
+            VMConstructor = make.itemTypes[model.type];
+        } else if (model instanceof sh.Unit){
+            VMConstructor = new Unit(model);
+        } else {
+            throw 'Model not valid.';
         }
-        return new VMConstructor(itemModel);
+        if (!VMConstructor) {
+            throw 'Could not find view model of type ' + model.type;
+        }
+        return new VMConstructor(model);
     };
 
 
