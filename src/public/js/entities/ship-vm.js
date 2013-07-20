@@ -7,33 +7,32 @@
 
 /*global */
 
-var ShipVM = Object.extend({
-    itemVMs: [],
-    unitVMs: [],
-    /**
-     *
-     * @param shipModel {sh.Ship} the ship model.
-     */
-    init: function(shipModel) {
-        'use strict';
-        this.m = shipModel;
-    },
-    showInScreen: function() {
+/**
+ *
+ * @param shipModel {sh.Ship} the ship model.
+ */
+var ShipVM = function(shipModel) {
+    'use strict';
+    this.itemVMs = [],
+    this.unitVMs = [],
+
+    this.m = shipModel;
+    this.showInScreen = function() {
         'use strict';
         me.levelDirector.loadLevel(this.m.tmxName);
         me.game.add(this, 1);
-    },
+    };
     /**
      * Updates melonJS objects for items to be drawn on the screen
      * according to the ship model.
      */
-    update: function(){
+    this.update = function(){
         'use strict';
         this.updateVMs(this.m.built, this.itemVMs);
         this.updateVMs(this.m.units, this.unitVMs);
         return true;//true, to make MelonJS happy
-    },
-    updateVMs: function(models, vms) {
+    };
+    this.updateVMs = function(models, vms) {
         'use strict';
         var i, v, hasVM, aux;
         for(i = 0; i < models.length; i++) {
@@ -62,33 +61,35 @@ var ShipVM = Object.extend({
             me.game.remove(vms[v], true);
         }
         vms.splice(models.length, vms.length - models.length);
-    },
-    draw: function(ctx) {
+    };
+    this.draw = function(ctx) {
         'use strict';
         return true;
-    },
-    selected: function(){
+    };
+    this.selected = function(){
         'use strict';
         return _.filter(this.unitVMs, function(u){
             return u.selected;
         });
-    },
-    getVM: function(model) {
-        'use strict';
-        var index;
-        function getMatch(modelArray, vmArray){
-            index = modelArray.indexOf(model);
-            if(index !== null && typeof index !== 'undefined') {
-                return vmArray[index];
-            }
-            throw 'Did not find view model, try calling update first.';
+    };
+
+    //internal function used by getVM
+    function getMatch(model, modelArray, vmArray){
+        var index = modelArray.indexOf(model);
+        if(index !== null && typeof index !== 'undefined') {
+            return vmArray[index];
         }
+        throw 'Did not find view model, try calling update first.';
+    }
+
+    this.getVM = function(model) {
+        'use strict';
         if(model instanceof sh.Item) {
-            return getMatch(this.m.built, this.itemVMs);
+            return getMatch(model, this.m.built, this.itemVMs);
         }else if(model instanceof sh.Unit){
-            return getMatch(this.m.units, this.unitVMs);
+            return getMatch(model, this.m.units, this.unitVMs);
         }else{
             throw 'Invalid type of model.';
         }
-    }
-});
+    };
+};
