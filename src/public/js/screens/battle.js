@@ -88,7 +88,7 @@ screens.register('battle', GameScreen.extend({
         this.parent(ctx);
         if (this.paused) {
 
-            _.each(gs.ship.units, function(u) {
+            _.each(this.shipVM.unitVMs, function(u) {
                 u.drawPath(ctx);
                 if (u.selected) {
                     //draw rectangle around each selected unit
@@ -104,7 +104,7 @@ screens.register('battle', GameScreen.extend({
 
             //highlight where the mouse is pointing if it's a unit
             if (gs.ship.isAt(mouse.x, mouse.y, 'unit') ||
-                gs.ship.selected().length > 0) {
+                this.shipVM.selected().length > 0) {
                 this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
             }
             if (this.dragBox) {
@@ -205,6 +205,7 @@ screens.register('battle', GameScreen.extend({
         }
     },
     giveMoveOrder: function(units, destination){
+        var screen = this;
         if (units.length > 0) {//there is a selected unit
             _.each(units, function(unit){
                 screen.generateScripts(unit, destination);
@@ -217,7 +218,7 @@ screens.register('battle', GameScreen.extend({
     releaseDragBox: function() {
         var self = this;
         if (this.dragBox) {
-            _.each(gs.ship.units, function(u){
+            _.each(this.shipVM.unitVMs, function(u){
                 var unitRect = new me.Rect(u.pos, TILE_SIZE, TILE_SIZE);
                 if(self.dragBox.overlaps(unitRect)) {
                     u.selected = true;
@@ -240,13 +241,13 @@ screens.register('battle', GameScreen.extend({
     getScripter: function(){
         switch(this.settings.collisionResolution){
             case collisionResolutions.endOfTurn:
-                return new EndOfTurnScripter(this.TURN_DURATION);
+                return new EndOfTurnScripter(this.TURN_DURATION, this.shipVM);
             case collisionResolutions.avoidOtherPaths:
-                return new AvoidOtherPathsScripter(this.TURN_DURATION);
+                return new AvoidOtherPathsScripter(this.TURN_DURATION, this.shipVM);
             case collisionResolutions.waitForClearing:
-                return new WaitForClearingScripter(this.TURN_DURATION);
+                return new WaitForClearingScripter(this.TURN_DURATION, this.shipVM);
             default : //collisionResolutions.none
-                return new DefaultScripter(this.TURN_DURATION);
+                return new DefaultScripter(this.TURN_DURATION, this.shipVM);
         }
     },
     selectUnit: function(x, y) {

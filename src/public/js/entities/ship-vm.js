@@ -33,12 +33,12 @@ var ShipVM = function(shipModel) {
         return true;//true, to make MelonJS happy
     };
     this.updateItems = function(){
-        this.updateVMs(this.m.built, this.itemVMs);
+        this.updateVMs(this.m.built, this.itemVMs, 100);
     };
     this.updateUnits = function(){
-        this.updateVMs(this.m.units, this.unitVMs);
+        this.updateVMs(this.m.units, this.unitVMs, 200);
     };
-    this.updateVMs = function(models, vms) {
+    this.updateVMs = function(models, vms, zIndex) {
         'use strict';
         var i, v, hasVM, aux;
         for(i = 0; i < models.length; i++) {
@@ -59,7 +59,7 @@ var ShipVM = function(shipModel) {
             }else {
                 //new vm
                 vms.splice(i, 0, make.vm(models[i]));
-                me.game.add(vms[i], vms[i].zIndex);
+                me.game.add(vms[i], zIndex);
             }
         }
         //remove extra vms

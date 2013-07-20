@@ -35,17 +35,17 @@ var Unit = TileEntityVM.extend({
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
     },
+    onShip: function(){
+        return this.m.ship;
+    },
     pause: function() {
         'use strict';
         this._paused = true;
         this.adjustPath();
         this.script = [];
         //update position on ship
-        if(this.onShip()){
-            if(this.onShip() === true){
-                throw "onShip shouldn't be true, it should be a Ship";
-            }
-            this.onShip().buildingsChanged();
+        if(this.m.ship){
+            this.m.ship.unitsMap.update();
         }
     },
     resume: function() {
