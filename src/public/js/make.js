@@ -43,7 +43,7 @@ var make = (function() {
         if (model instanceof sh.Item) {
             VMConstructor = make.itemTypes[model.type];
         } else if (model instanceof sh.Unit){
-            VMConstructor = new Unit(model);
+            VMConstructor = Unit;
         } else {
             throw 'Model not valid.';
         }
