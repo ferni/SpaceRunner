@@ -128,8 +128,7 @@ sh.Ship = sh.SharedClass.extendShared({
         var self = this,
             i;
         for (i = this.built.length - 1; i >= 0; i--) {
-        //TODO: try don't update buildings here (pass false as 2nd parameter)
-            self.remove(this.built[i]);
+            self.remove(this.built[i], false);
         }
         this.buildingsChanged();
     },
