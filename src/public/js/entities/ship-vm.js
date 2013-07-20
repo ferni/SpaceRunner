@@ -28,9 +28,15 @@ var ShipVM = function(shipModel) {
      */
     this.update = function(){
         'use strict';
-        this.updateVMs(this.m.built, this.itemVMs);
-        this.updateVMs(this.m.units, this.unitVMs);
+        this.updateItems();
+        this.updateUnits();
         return true;//true, to make MelonJS happy
+    };
+    this.updateItems = function(){
+        this.updateVMs(this.m.built, this.itemVMs);
+    };
+    this.updateUnits = function(){
+        this.updateVMs(this.m.units, this.unitVMs);
     };
     this.updateVMs = function(models, vms) {
         'use strict';
