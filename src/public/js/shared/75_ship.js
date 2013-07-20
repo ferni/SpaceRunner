@@ -104,6 +104,7 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     addUnit: function(unit) {
         this.units.push(unit);
+        unit.ship = this;
         this.unitsMap.update();
     },
     removeAt: function(x, y) {
