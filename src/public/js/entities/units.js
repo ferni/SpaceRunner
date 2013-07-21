@@ -22,7 +22,9 @@ var Unit = TileEntityVM.extend({
         this.speed = unitModel.speed;
         this.parent(unitModel.x, unitModel.y, {
             name: 'unit',
-            image: 'creatures_16x16'
+            image: 'creatures_16x16',
+            spritewidth: 16,
+            spriteheight: 16
         });
         function toImgRow(array){
             for(var i = 0; i < array.length; i++){

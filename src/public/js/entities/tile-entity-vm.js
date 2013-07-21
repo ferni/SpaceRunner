@@ -23,8 +23,12 @@ var TileEntityVM = me.ObjectEntity.extend({
         if (!this.totalSize) {
             this.totalSize = [this.size[0], this.size[1]];
         }
-        settings.spritewidth = this.totalSize[0] * TILE_SIZE;
-        settings.spriteheight = this.totalSize[1] * TILE_SIZE;
+        if (typeof settings.spritewidth === 'undefined') {
+            settings.spritewidth = this.totalSize[0] * TILE_SIZE;
+        }
+        if (typeof settings.spriteheight === 'undefined') {
+            settings.spriteheight = this.totalSize[1] * TILE_SIZE;
+        }
         this.parent(x, y, settings);
         //restore type reset on this.parent()
         this.type = settings.image;
