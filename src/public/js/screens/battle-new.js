@@ -14,7 +14,6 @@ screens.register('battle', GameScreen.extend({
         this.id = settings.battleID;
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
-
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -41,7 +40,9 @@ screens.register('battle', GameScreen.extend({
     update: function() {
         'use strict';
         this.parent();
-        this.shipVM.update();
+        if(this.shipVM.update()){
+            me.game.sort();
+        }
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
             //update counter
@@ -66,7 +67,7 @@ screens.register('battle', GameScreen.extend({
                 }
             });
 
-            if (gs.ship.isAt(mouse.x, mouse.y, 'unit')) {
+            if (gs.ship.at(mouse.x, mouse.y) instanceof sh.Unit) {
                 utils.setCursor('pointer');
             } else if(!this.dragBox){
                 utils.setCursor('default')
@@ -89,6 +90,7 @@ screens.register('battle', GameScreen.extend({
         /*_.each(this.highlightedTiles, function(t){
             screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
         });*/
+
     },
 
     drawTileHighlight: function(ctx, x, y, color, thickness) {
@@ -108,7 +110,7 @@ screens.register('battle', GameScreen.extend({
             return;
         }
         if (which === me.input.mouse.LEFT) {
-            //this.selectUnit(mouse.x, mouse.y);
+            this.selectUnit(mouse.x, mouse.y);
             this.releaseDragBox();
         }
     },
@@ -125,14 +127,29 @@ screens.register('battle', GameScreen.extend({
             this.startDragBox(utils.getMouse(true));
         }
 
-        me.game.sort();
-        me.game.repaint();
     },
     mouseMove: function(e) {
         'use strict';
         if (this.dragBox) {
             this.dragBox.updateFromMouse(utils.getMouse(true));
         }
+    },
+    selectUnit: function(x, y) {
+        'use strict';
+        var unit = gs.ship.at(x, y);
+        this.unselectAll();
+        if (unit instanceof sh.Unit) {
+            this.shipVM.updateUnits();
+            this.shipVM.getVM(unit).selected = true;
+            return true;
+        }
+        return false;
+    },
+    unselectAll: function() {
+        'use strict';
+        _.each(this.shipVM.unitVMs, function(u) {
+            return u.selected = false;
+        });
     },
     startDragBox: function(pos) {
         this.dragBox = new DragBox(pos);
