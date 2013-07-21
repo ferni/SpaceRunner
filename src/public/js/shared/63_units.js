@@ -35,6 +35,7 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     toJson: function(){
         return {
+            id: this.id,
             x: this.x,
             y: this.y
         };

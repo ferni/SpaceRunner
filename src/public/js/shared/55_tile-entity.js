@@ -13,6 +13,7 @@ if(typeof exports !== 'undefined'){
 }
 
 sh.TileEntity = sh.SharedClass.extendShared({
+    id: null,
     init: function(x, y){
         this.x = x;
         this.y = y;
