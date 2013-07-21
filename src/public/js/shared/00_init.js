@@ -27,10 +27,12 @@
             return sh;
         };
         sh._ = _;
+        sh.PF = PF;
     } else{
         //so they would have the same properties server and client
         sh.onClient = false;
         sh._ = require('underscore');
+        sh.PF = require('pathfinding');
     }
 
 }(typeof exports === 'undefined' ?

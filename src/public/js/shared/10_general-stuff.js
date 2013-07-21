@@ -7,7 +7,8 @@
 
 /*global */
 
-var sh = require('./09_shared-class'), _ = sh._;
+var sh = require('./09_shared-class'), _ = sh._,
+    PF = sh.PF;
 if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
