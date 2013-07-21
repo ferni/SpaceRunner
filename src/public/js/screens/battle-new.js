@@ -41,6 +41,7 @@ screens.register('battle', GameScreen.extend({
     update: function() {
         'use strict';
         this.parent();
+        this.shipVM.update();
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
             //update counter
@@ -49,6 +50,55 @@ screens.register('battle', GameScreen.extend({
                 this.pause();
             }
         }
+    },
+    draw: function(ctx) {
+        'use strict';
+        var mouse = utils.getMouse(),
+            screen = this;
+        this.parent(ctx);
+        if (this.paused) {
+            _.each(this.shipVM.unitVMs, function(u) {
+                //u.drawPath(ctx);
+                if (u.selected) {
+                    //draw rectangle around each selected unit
+                    screen.drawTileHighlight(ctx, u.x, u.y,
+                        'limegreen', 2);
+                }
+            });
+
+            if (gs.ship.isAt(mouse.x, mouse.y, 'unit')) {
+                utils.setCursor('pointer');
+            } else if(!this.dragBox){
+                utils.setCursor('default')
+            }
+
+            //highlight where the mouse is pointing if it's a unit
+            if (gs.ship.isAt(mouse.x, mouse.y, 'unit') ||
+                this.shipVM.selected().length > 0) {
+                this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
+            }
+            if (this.dragBox) {
+                this.dragBox.draw(ctx);
+                utils.setCursor('crosshair');
+            }
+        } else {
+            utils.setCursor('default');
+        }
+
+        //highlight highlighted tiles
+        /*_.each(this.highlightedTiles, function(t){
+            screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
+        });*/
+    },
+
+    drawTileHighlight: function(ctx, x, y, color, thickness) {
+        'use strict';
+        var pixelPos = {x: x * TILE_SIZE,
+            y: y * TILE_SIZE};
+        ctx.strokeStyle = color;
+        ctx.lineWidth = thickness;
+        ctx.moveTo(pixelPos.x, pixelPos.y);
+        ctx.strokeRect(pixelPos.x, pixelPos.y, TILE_SIZE, TILE_SIZE);
     },
     mouseUp: function(e) {
         'use strict';
@@ -74,6 +124,9 @@ screens.register('battle', GameScreen.extend({
         } else if (which === me.input.mouse.LEFT){
             this.startDragBox(utils.getMouse(true));
         }
+
+        me.game.sort();
+        me.game.repaint();
     },
     mouseMove: function(e) {
         'use strict';
