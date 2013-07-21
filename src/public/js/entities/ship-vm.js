@@ -28,19 +28,22 @@ var ShipVM = function(shipModel) {
      */
     this.update = function(){
         'use strict';
-        this.updateItems();
-        this.updateUnits();
+        if(this.updateItems() || this.updateUnits()){
+            //something changed, give pending repaint order
+            me.game.sort();
+            me.game.repaint();
+        }
         return true;//true, to make MelonJS happy
     };
     this.updateItems = function(){
-        this.updateVMs(this.m.built, this.itemVMs, 100);
+        return this.updateVMs(this.m.built, this.itemVMs, 100);
     };
     this.updateUnits = function(){
-        this.updateVMs(this.m.units, this.unitVMs, 200);
+        return this.updateVMs(this.m.units, this.unitVMs, 200);
     };
     this.updateVMs = function(models, vms, zIndex) {
         'use strict';
-        var i, v, hasVM, aux;
+        var i, v, hasVM, aux, somethingChanged = false;
         for(i = 0; i < models.length; i++) {
             hasVM = false;
             for(v = i; v < vms.length; v++) {
@@ -60,13 +63,16 @@ var ShipVM = function(shipModel) {
                 //new vm
                 vms.splice(i, 0, make.vm(models[i]));
                 me.game.add(vms[i], zIndex);
+                somethingChanged = true;
             }
         }
         //remove extra vms
         for(v = models.length; v < vms.length; v++) {
             me.game.remove(vms[v], true);
+            somethingChanged = true;
         }
         vms.splice(models.length, vms.length - models.length);
+        return somethingChanged;
     };
     this.draw = function(ctx) {
         'use strict';
