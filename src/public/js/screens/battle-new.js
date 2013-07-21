@@ -164,6 +164,9 @@ screens.register('battle', GameScreen.extend({
         //reset time
         this.turnBeginTime = me.timer.getTime();
         this.paused = false;
+    },
+    at: function(x, y) {
+        return gs.ship.at(x, y);
     }
 
 
