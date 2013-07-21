@@ -14,7 +14,7 @@ var Unit = TileEntityVM.extend({
     script: [],
     selected: false,
     //TODO: maybe make setting the size more direct
-    size:[0.5,0.5],
+    size: [1, 1],
     imgRow: 0,
     init: function(unitModel) {
         this.m = unitModel;
