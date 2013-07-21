@@ -72,6 +72,7 @@ screens.register('ship-building', GameScreen.extend({
     },
     update: function() {
         'use strict';
+        this.shipVM.update();
         if (me.input.isKeyPressed('escape')) {
             if (this.mouseLockedOn) {
                 this.mouseLockedOn.lockedEscape();

@@ -20,7 +20,6 @@ var ShipVM = function(shipModel) {
     this.showInScreen = function() {
         'use strict';
         me.levelDirector.loadLevel(this.m.tmxName);
-        me.game.add(this, 1);
     };
     /**
      * Updates melonJS objects for items to be drawn on the screen
@@ -28,12 +27,7 @@ var ShipVM = function(shipModel) {
      */
     this.update = function(){
         'use strict';
-        if(this.updateItems() || this.updateUnits()){
-            //something changed, give pending repaint order
-            me.game.sort();
-            me.game.repaint();
-        }
-        return true;//true, to make MelonJS happy
+        return (this.updateItems() || this.updateUnits());
     };
     this.updateItems = function(){
         return this.updateVMs(this.m.built, this.itemVMs, 100);
