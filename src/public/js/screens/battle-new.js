@@ -62,7 +62,7 @@ screens.register('battle', GameScreen.extend({
                 //u.drawPath(ctx);
                 if (u.selected) {
                     //draw rectangle around each selected unit
-                    screen.drawTileHighlight(ctx, u.x, u.y,
+                    draw.tileHighlight(ctx, u.x, u.y,
                         'limegreen', 2);
                 }
             });
@@ -76,7 +76,7 @@ screens.register('battle', GameScreen.extend({
             //highlight where the mouse is pointing if it's a unit
             if (gs.ship.isAt(mouse.x, mouse.y, 'unit') ||
                 this.shipVM.selected().length > 0) {
-                this.drawTileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
+                draw.tileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
             }
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
@@ -91,16 +91,6 @@ screens.register('battle', GameScreen.extend({
             screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
         });*/
 
-    },
-
-    drawTileHighlight: function(ctx, x, y, color, thickness) {
-        'use strict';
-        var pixelPos = {x: x * TILE_SIZE,
-            y: y * TILE_SIZE};
-        ctx.strokeStyle = color;
-        ctx.lineWidth = thickness;
-        ctx.moveTo(pixelPos.x, pixelPos.y);
-        ctx.strokeRect(pixelPos.x, pixelPos.y, TILE_SIZE, TILE_SIZE);
     },
     mouseUp: function(e) {
         'use strict';
