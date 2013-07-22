@@ -108,6 +108,11 @@ sh.Ship = sh.SharedClass.extendShared({
         unit.id = this.units.length;
         this.unitsMap.update();
     },
+    getUnitByID: function(id) {
+        return _.find(this.units, function(u){
+            return u.id == id;
+        });
+    },
     removeAt: function(x, y) {
         //remove while is not string (is an item or unit)
         while (!(_.isString(this.at(x, y)))) {
