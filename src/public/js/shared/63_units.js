@@ -19,6 +19,7 @@ sh.Unit = sh.TileEntity.extendShared({
         this.speed = settings.speed;
         this.type = settings.type;
         this.owner = settings.owner;
+        this.settings = settings;
         this.parent(x, y);
     },
     completeSettings: function(settings){
@@ -38,7 +39,9 @@ sh.Unit = sh.TileEntity.extendShared({
         return {
             id: this.id,
             x: this.x,
-            y: this.y
+            y: this.y,
+            settings: this.settings
+
         };
     }
 });

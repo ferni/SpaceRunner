@@ -50,7 +50,7 @@ sh.make = (function() {
 
     //UNITS
     make.unitFromJson = function(json) {
-        return new sh.Unit(json.x, json.y);
+        return new sh.Unit(json.x, json.y, json.settings);
     };
 
     return make;
