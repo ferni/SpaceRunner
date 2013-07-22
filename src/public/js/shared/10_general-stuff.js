@@ -14,8 +14,6 @@ if(typeof exports !== 'undefined'){
 }
 
 (function(sh){
-    var packables = [];
-
     //SHARED ENTITIES
     sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
@@ -33,21 +31,6 @@ if(typeof exports !== 'undefined'){
             };
         }
     });
-    packables.push('Player');
-
-    /**
-     * Reconstructs an entity packed with sh.pack()
-     * @param json
-     * @returns {Constructor}
-     */
-    sh.fromJson = function(json) {
-        var Constructor;
-        if (!_.contains(packables, json.type)) {
-            throw 'type "'+json.type+'" not registered in packables array';
-        }
-        Constructor = sh[json.type];
-        return new Constructor(json);
-    };
 
     sh.tiles = {
         solid: 's',

@@ -19,7 +19,6 @@ sh.Unit = sh.TileEntity.extendShared({
         this.speed = settings.speed;
         this.type = settings.type;
         this.owner = settings.owner;
-        this.settings = settings;
         this.parent(x, y);
     },
     completeSettings: function(settings){
@@ -40,7 +39,11 @@ sh.Unit = sh.TileEntity.extendShared({
             id: this.id,
             x: this.x,
             y: this.y,
-            settings: this.settings
+            settings: {
+                speed: this.speed,
+                type: this.type,
+                owner: this.owner.toJson()
+            }
 
         };
     }

@@ -83,6 +83,7 @@ exports.BattleSetUp = function(params) {
             battle.playerRight = this.challenger;
             battles.push(battle);
             this.battle = battle;
+            return battle;
         }
         catch(e){
             err = new Error(e);

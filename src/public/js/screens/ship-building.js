@@ -160,7 +160,7 @@ screens.register('ship-building', GameScreen.extend({
         $.post('/battles/create',{shipJsonString: ship.toJsonString()},
                     function(settings) {
             console.log('Battle created');
-            settings.creator = sh.fromJson(settings.creator);
+            settings.creator = sh.make.playerFromJson(settings.creator);
             me.state.change('battle-set-up', settings);
         }, 'json');
 

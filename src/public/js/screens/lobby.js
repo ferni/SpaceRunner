@@ -40,7 +40,7 @@ screens.register('lobby', GameScreen.extend({
                 this.hostBattle = screen.hostBattle;
             };
         $.get('/lobby/get', function(data) {
-            gs.player = sh.fromJson(data.player);
+            gs.player = sh.make.playerFromJson(data.player);
             ko.applyBindings(new HtmlViewModel(data),
                 document.getElementById('screensUi'));
         });
