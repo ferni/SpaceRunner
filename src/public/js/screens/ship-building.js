@@ -412,6 +412,7 @@ screens.register('ship-building', GameScreen.extend({
     drawItem: function(x, y, type) {
         'use strict';
         var item = make.item(type, [x, y, {}]);
+        item.alpha = 0.7;
         this.drawingScreen.push(item);
         me.game.repaint();
     },
