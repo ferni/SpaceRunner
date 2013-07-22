@@ -37,11 +37,15 @@ var Unit = TileEntityVM.extend({
     },
     draw: function(ctx){
         'use strict';
+        var color;
         this.parent(ctx);
         if (this.selected) {
             //draw rectangle around each selected unit
-            draw.tileHighlight(ctx, this.m.x, this.m.y, 'limegreen', 2);
+            color = this.isMine() ? 'limegreen' : 'red';
+            draw.tileHighlight(ctx, this.m.x, this.m.y, color, 2);
         }
-
+    },
+    isMine: function(){
+        return gs.player.id === this.m.owner.id;
     }
 });
