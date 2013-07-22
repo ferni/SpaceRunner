@@ -38,5 +38,10 @@ var Unit = TileEntityVM.extend({
     draw: function(ctx){
         'use strict';
         this.parent(ctx);
+        if (this.selected) {
+            //draw rectangle around each selected unit
+            draw.tileHighlight(ctx, this.m.x, this.m.y, 'limegreen', 2);
+        }
+
     }
 });

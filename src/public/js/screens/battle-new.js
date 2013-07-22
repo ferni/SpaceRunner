@@ -58,15 +58,6 @@ screens.register('battle', GameScreen.extend({
             screen = this;
         this.parent(ctx);
         if (this.paused) {
-            _.each(this.shipVM.unitVMs, function(u) {
-                //u.drawPath(ctx);
-                if (u.selected) {
-                    //draw rectangle around each selected unit
-                    draw.tileHighlight(ctx, u.x, u.y,
-                        'limegreen', 2);
-                }
-            });
-
             if (gs.ship.at(mouse.x, mouse.y) instanceof sh.Unit) {
                 utils.setCursor('pointer');
             } else if(!this.dragBox){
