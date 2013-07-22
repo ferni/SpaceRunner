@@ -10,6 +10,7 @@
 screens.register('battle', GameScreen.extend({
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
+    verifiedOrders: [],
     onReset: function(settings){
         this.id = settings.battleID;
         this.shipVM = new ShipVM(gs.ship);
@@ -103,7 +104,7 @@ screens.register('battle', GameScreen.extend({
             return;
         }
         if (which === me.input.mouse.RIGHT) {
-            //this.giveMoveOrder(this.shipVM.selected(), mouse);
+            this.giveMoveOrder(this.shipVM.selected(), mouse);
         } else if (which === me.input.mouse.LEFT){
             this.startDragBox(utils.getMouse(true));
         }
@@ -114,6 +115,19 @@ screens.register('battle', GameScreen.extend({
         if (this.dragBox) {
             this.dragBox.updateFromMouse(utils.getMouse(true));
         }
+    },
+    giveMoveOrder: function(unitVMs, destination) {
+        var self = this;
+        _.each(unitVMs, function(u){
+            var order = make.moveOrder(u.m, destination);
+            if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
+                self.verifiedOrders.push(order);
+                console.log('Order given valid.');
+            }else{
+                console.log('Order given INVALID.');
+            }
+        });
+
     },
     selectUnit: function(x, y) {
         'use strict';
@@ -159,9 +173,13 @@ screens.register('battle', GameScreen.extend({
     resume: function() {
         'use strict';
         $('#paused-indicator, #resume-button').hide();
+        //send the orders to the server and pause on callback
+
         //reset time
         this.turnBeginTime = me.timer.getTime();
         this.paused = false;
+
+
     },
     at: function(x, y) {
         return gs.ship.at(x, y);

@@ -53,6 +53,18 @@ var make = (function() {
         return new VMConstructor(model);
     };
 
+    make.moveOrder = function(unit, destination){
+        return {
+            type: 'move',
+            unitID: unit.id,
+            data: {
+                destination: {
+                    x: destination.x,
+                    y: destination.y
+                }
+            }
+        }
+    };
 
     //add props from sh.make checking that none are being overwritten.
     for(p in sh.make){

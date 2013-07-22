@@ -42,18 +42,22 @@ if(typeof exports !== 'undefined'){
 
     //should have access to the ship
     sh.verifyOrder = function(order, ship, playerID){
+        if(!order || !order.type) return false;
         switch(order.type) {
             case 'move' : {
-                var dest = order.data.destination;
-                //is destination a walkable area
-                if(ship.at(dest.x, dest.y) === sh.tiles.clear &&
-                    //unit owned by the issuer
-                    order.unit.playerID === playerID){
-                    return true;
-                }else{
+                var dest = order.data.destination,
+                    unit = ship.getUnitByID(order.unitID);
+                    if(unit &&
+                        //is destination a walkable area
+                        ship.at(dest.x, dest.y) === sh.tiles.clear &&
+                        //unit owned by the issuer
+                        unit.owner.id === playerID){
+                        return true;
+                    }else{
                     return false;
                 }
-            }
+            }; break;
+            default: return false;
         }
     };
     sh.setUnitPath= function(unit, mouse) {

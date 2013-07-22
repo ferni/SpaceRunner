@@ -13,6 +13,7 @@ if(typeof exports !== 'undefined'){
 }
 
 sh.Unit = sh.TileEntity.extendShared({
+    id: null, //the ship is in charge of setting the id
     init: function(x, y, settings){
         this.size = [1, 1];
         settings = this.completeSettings(settings);
