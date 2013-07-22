@@ -175,6 +175,10 @@ sh.items.Wall = sh.Item.extendShared({
         };
 
     },
+    canBuildAt: function(x, y, ship) {
+        return this.parent(x, y, ship) ||
+            ship.at(x, y) instanceof sh.items.Wall;
+    },
     onBuilt: function() {
         'use strict';
 

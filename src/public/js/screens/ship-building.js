@@ -55,7 +55,7 @@ screens.register('ship-building', GameScreen.extend({
 
         this.mouseLockedOn = null;
         this.prepareGhostItems();
-        this.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 0);
+        this.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 1);
 
     },
 
@@ -377,13 +377,13 @@ screens.register('ship-building', GameScreen.extend({
         var self = this;
         if(this.chosen) {
             this.chosen.tiles(function(iX, iY) {
-                if (self.greenSpots[iY][iX] === 0) {
+                if (self.greenSpots[iY][iX] === 1) {
                     self.printRed(iX, iY);
                 }
             }, me.game.currentLevel);
         }
     },
-    //A matrix of 1 and 0. In 0 should be red overlay when trying to build
+    //A matrix of 1 and 0. In 1 should be red overlay when trying to build
     greenSpots: null,
     updateGreenSpots: function() {
         'use strict';
@@ -391,7 +391,7 @@ screens.register('ship-building', GameScreen.extend({
         if (!this.chosen) {
             return;
         }
-        self.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 0);
+        self.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 1);
         utils.levelTiles(function(x, y) {
             var i, j, cWidth, cHeight;
             if (self.chosen.m.canBuildAt(x, y, self.ship)) {
@@ -404,7 +404,7 @@ screens.register('ship-building', GameScreen.extend({
             }
             for (i = x; i < cWidth + x && i < width(); i++) {
                 for (j = y; j < cHeight + y && j < height(); j++) {
-                    self.greenSpots[j][i] = 1;
+                    self.greenSpots[j][i] = 0;
                 }
             }
         });

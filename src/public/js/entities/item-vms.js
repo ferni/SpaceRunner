@@ -350,7 +350,7 @@ var WallVM = ItemVM.extend({
         if (ui.mouseLockedOn === this) {
             return;
         }
-        pfMatrix = ui.ship.getPfMatrix();
+        pfMatrix = ui.greenSpots;
         //self tile will be walkable for pathfinding purposes
         pfMatrix[this.y][this.x] = 0;
 
