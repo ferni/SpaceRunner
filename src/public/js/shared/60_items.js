@@ -77,8 +77,7 @@ sh.Item = sh.TileEntity.extendShared({
             type: self.type,
             x: self.x,
             y: self.y,
-            rotated: self.rotated(),
-            settings: {}
+            r: self.rotated()
         }
     }
 });

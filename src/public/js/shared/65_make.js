@@ -44,7 +44,7 @@ sh.make = (function() {
 
     make.itemFromJson = function(json){
         var item = make.itemModel(json.type, [null, json.x, json.y]);
-        item.rotated(json.rotated);
+        item.rotated(json.r);
         return item;
     };
 
