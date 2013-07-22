@@ -18,6 +18,7 @@ sh.Unit = sh.TileEntity.extendShared({
         settings = this.completeSettings(settings);
         this.speed = settings.speed;
         this.type = settings.type;
+        this.owner = settings.owner;
         this.parent(x, y);
     },
     completeSettings: function(settings){

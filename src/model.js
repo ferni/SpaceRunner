@@ -29,7 +29,7 @@ exports.Battle = function(parameters) {
 
 exports.BattleSetUp = function(params) {
     this.id = params.id;
-    this.creator = params.creator;//the player id
+    this.creator = params.creator;
     this.shipJsonString = params.shipJsonString;
     this.challenger = null; //player that joins
     this.battle = null;
@@ -70,10 +70,15 @@ exports.BattleSetUp = function(params) {
         try{
             var ship = new sh.Ship({jsonString: this.shipJsonString}),
                 battle = new exports.Battle({id: battles.length, ship: ship});
-            ship.putUnit({type: 0, speed: 0.5});
-            ship.putUnit({type: 6, speed: 1});
-            ship.putUnit({type: 7, speed: 2});
-            ship.putUnit({type: 12, speed: 3});
+            ship.putUnit({type: 0, speed: 2, owner: this.creator});
+            ship.putUnit({type: 0, speed: 2, owner: this.creator});
+            ship.putUnit({type: 6, speed: 3, owner: this.creator});
+            ship.putUnit({type: 6, speed: 3, owner: this.creator});
+
+            ship.putUnit({type: 7, speed: 2, owner: this.challenger});
+            ship.putUnit({type: 7, speed: 2, owner: this.challenger});
+            ship.putUnit({type: 12, speed: 3, owner: this.challenger});
+            ship.putUnit({type: 12, speed: 3, owner: this.challenger});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
             battles.push(battle);
