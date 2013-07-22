@@ -234,6 +234,8 @@ screens.register('ship-building', GameScreen.extend({
         if (this.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object
             this.mouseLockedOn.lockedMouseUp(mouseTile);
+            me.game.sort();
+            me.game.repaint();
             return;
         }
 
