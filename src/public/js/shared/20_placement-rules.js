@@ -203,13 +203,24 @@ sh.pr = {
             tile.type === 'power';
     }, 1, 1));
 
-    pr.door = pr.make.spaceRule(function(tile) {
-        return tile instanceof sh.items.Wall && tile.isHorizontal();
-    }, 2, 1);
+    pr.door = or(pr.make.spaceRule(function(tile) {
+            return tile instanceof sh.items.Wall && tile.isHorizontal();
+        }, 2, 1),
+        //or...
+        and(space2x1,
+            //and...
+            new pr.PlacementRule({tileCondition: function(tile) {
+                return tile instanceof sh.items.Wall;
+            }, inAll:[{x: -1, y: 0}, {x: 2, y:0}]}))
+    );
 
-    pr.doorRotated = sh.pr.make.spaceRule(function(tile) {
-        return tile instanceof sh.items.Wall && tile.isVertical();
-    }, 1, 2);
+    pr.doorRotated = or(pr.make.spaceRule(function(tile) {
+            return tile instanceof sh.items.Wall && tile.isVertical();
+        }, 1, 2),
+        and(space1x2,
+            new pr.PlacementRule({tileCondition: function(tile) {
+                return tile instanceof sh.items.Wall;
+            }, inAll:[{x: 0, y: -1}, {x: 0, y: 2}]})));
 
 
 })();
