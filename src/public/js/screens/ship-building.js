@@ -211,6 +211,8 @@ screens.register('ship-building', GameScreen.extend({
         if (this.prevMouse.x === mouseTile.x &&
             this.prevMouse.y === mouseTile.y) {
             return;
+        }else{
+            this.prevMouse = mouseTile;
         }
         if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
@@ -223,7 +225,6 @@ screens.register('ship-building', GameScreen.extend({
         this.moveGhost(mouseTile.x, mouseTile.y);
         me.game.sort();
         me.game.repaint();
-        this.prevMouse = mouseTile;
     },
     mouseUp: function(e) {
         'use strict';

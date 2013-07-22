@@ -371,14 +371,16 @@ var WallVM = ItemVM.extend({
         ui = me.state.current();
         t = this.temp;
 
-        if ((mouseTile.x === t.pivotX && mouseTile.y === t.pivotY) ||
-            (mouseTile.x === t.preMouseX && mouseTile.y === t.preMouseY)) {
+        if (mouseTile.x === t.preMouseX && mouseTile.y === t.preMouseY) {
             return;
         }
         t.preMouseX = mouseTile.x;
         t.preMouseY = mouseTile.y;
         ui.clear();
-
+        if (mouseTile.x === t.pivotX && mouseTile.y === t.pivotY) {
+            t.path = null;
+            return;
+        }
         cloneGrid = t.grid.clone();
         t.path = t.finder.findPath(t.pivotX, t.pivotY,
             mouseTile.x, mouseTile.y, cloneGrid);
@@ -390,13 +392,10 @@ var WallVM = ItemVM.extend({
         'use strict';
         var ui = me.state.current();
         this.parent();
-        if (!this.m.canBuildAt(mouseTile.x, mouseTile.y,
-            me.state.current().ship)) {
-            return;
-        }
         _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x, wall.y, 'wall');
         });
+        this.temp = {};
         ui.clear();
         ui.mouseLockedOn = null;
     },
@@ -404,7 +403,7 @@ var WallVM = ItemVM.extend({
         'use strict';
         var ui = me.state.current();
         ui.clear();
-
+        this.temp = {};
         ui.mouseLockedOn = null;
         ui.ship.remove(this.m);
     }
