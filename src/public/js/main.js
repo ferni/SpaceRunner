@@ -307,10 +307,10 @@ var jsApp = {
         window.gs = new GameState();
 
         //set development modes
-        if (utils.getParameterByName('auto')) {
+        if (utils.getParameterByName('auto') === '1') {
             gs.modes.auto = true;
         }
-        if (utils.getParameterByName('useprebuilt')) {
+        if (utils.getParameterByName('useprebuilt') === '1') {
             gs.modes.useprebuilt = true;
         }
         this.generateHullMaps();
