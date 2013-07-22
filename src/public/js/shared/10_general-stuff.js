@@ -58,12 +58,14 @@ if(typeof exports !== 'undefined'){
 
 
     //should have access to the ship
-    sh.verifyOrder = function(order, ship){
+    sh.verifyOrder = function(order, ship, playerID){
         switch(order.type) {
             case 'move' : {
                 var dest = order.data.destination;
                 //is destination a walkable area
-                if(ship.at(dest.x, dest.y) === sh.tiles.clear){
+                if(ship.at(dest.x, dest.y) === sh.tiles.clear &&
+                    //unit owned by the issuer
+                    order.unit.playerID === playerID){
                     return true;
                 }else{
                     return false;
