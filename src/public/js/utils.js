@@ -27,6 +27,12 @@ if (!(window.console && console.log)) {
 }
 
 var utils = {
+    getParameterByName: function(name) {
+        'use strict';
+        var match = new RegExp('[?&]' + name + '=([^&]*)')
+            .exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    },
     toTileVector: function(vector2D) {
         'use strict';
         var v = new me.Vector2d();
