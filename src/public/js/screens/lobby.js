@@ -41,8 +41,16 @@ screens.register('lobby', GameScreen.extend({
             };
         $.get('/lobby/get', function(data) {
             gs.player = sh.make.playerFromJson(data.player);
-            ko.applyBindings(new HtmlViewModel(data),
+            screen.vm = new HtmlViewModel(data);
+            ko.applyBindings(screen.vm,
                 document.getElementById('screensUi'));
+            if (gs.modes.auto) {
+                if (data.battleSetUps.length <= 0) {
+                    screen.hostBattle();
+                } else {
+                    screen.vm.joinBattle(data.battleSetUps[0]);
+                }
+            }
         });
     },
 

@@ -270,6 +270,14 @@ var jsApp = {
         window.FIRST_SCREEN = 'lobby';
         window.gs = new GameState();
 
+        //set development modes
+        if (utils.getParameterByName('auto')) {
+            gs.modes.auto = true;
+        }
+        if (utils.getParameterByName('useprebuilt')) {
+            gs.modes.useprebuilt = true;
+        }
+
         this.generateHullMaps();
         chatClient.start();
 

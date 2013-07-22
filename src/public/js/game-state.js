@@ -10,4 +10,9 @@ var GameState = function(){
     this.player = null;
     //sh.Ship
     this.ship = null;
+    this.modes = {
+        //auto-creates battles, and auto-joins
+        auto: false,
+        useprebuilt: false
+    }
 };
