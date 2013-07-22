@@ -303,7 +303,7 @@ screens.register('ship-building', GameScreen.extend({
         this.chosen
             .setX(mouse.x)
             .setY(mouse.y)
-            .show();
+            .show().alpha = 0.7;
         this.updateGreenSpots();
 
         $('#item_' + this.chosen.type).addClass('chosen');
