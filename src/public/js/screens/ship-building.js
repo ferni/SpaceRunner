@@ -305,7 +305,7 @@ screens.register('ship-building', GameScreen.extend({
         this.chosen
             .setX(mouse.x)
             .setY(mouse.y)
-            .show().alpha = 0.7;
+            .show().alpha = 0.8;
         this.updateGreenSpots();
 
         $('#item_' + this.chosen.type).addClass('chosen');
@@ -414,7 +414,7 @@ screens.register('ship-building', GameScreen.extend({
     drawItem: function(x, y, type) {
         'use strict';
         var item = make.item(type, [x, y, {}]);
-        item.alpha = 0.7;
+        item.alpha = 0.8;
         this.drawingScreen.push(item);
         me.game.repaint();
     },

@@ -353,7 +353,8 @@ var WallVM = ItemVM.extend({
         pfMatrix = ui.greenSpots;
         //self tile will be walkable for pathfinding purposes
         pfMatrix[this.y][this.x] = 0;
-
+        this.hide();
+        ui.chosen.hide();
         t = this.temp;
         t.grid = new PF.Grid(width(), height(), pfMatrix);
         t.preMouseX = this.x;
@@ -395,6 +396,8 @@ var WallVM = ItemVM.extend({
         _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x, wall.y, 'wall');
         });
+        this.show();
+        ui.chosen.alpha = 0.8;
         this.temp = {};
         ui.clear();
         ui.mouseLockedOn = null;
@@ -403,6 +406,7 @@ var WallVM = ItemVM.extend({
         'use strict';
         var ui = me.state.current();
         ui.clear();
+        ui.chosen.alpha = 0.8;
         this.temp = {};
         ui.mouseLockedOn = null;
         ui.ship.remove(this.m);
