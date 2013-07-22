@@ -19,25 +19,16 @@ sh.Item = sh.TileEntity.extendShared({
         'use strict';
         this.parent(x, y);
         this.ship = ship;
-
-        this.buildPlacementRules();
     },
-    placementRules: [],
-    buildPlacementRules: function() {
-        'use strict';
-        this.placementRules = [];
-        this.placementRules.push(sh.pr.make.spaceRule(sh.tiles.clear,
-            this.size[0], this.size[1]));
-    },
-
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return _.every(this.placementRules, function(r) {
-            return r.compliesAt(x, y, ship.map);
-        });
+        //default placement rule
+        return sh.pr.space(this.size[0], this.size[1])
+            .compliesAt(x, y, ship.map);
     },
     canBuildRotated: function(x, y, ship) {
         'use strict';
+        //default placement rule
         return false;
     },
     _rotated: false,
@@ -96,19 +87,8 @@ sh.items.Weapon = sh.Item.extendShared({
         this.size = [2, 2];
         this.parent(ship, x, y);
     },
-    buildPlacementRules: function() {
-        'use strict';
-        this.parent();
-        this.placementRules.push(new sh.pr.PlacementRule({
-            tile: sh.tiles.front,
-            inAny: [{
-                x: 2,
-                y: 0
-            }, {
-                x: 2,
-                y: 1
-            }]
-        }));
+    canBuildAt: function(x, y, ship) {
+        return sh.pr.weapon.compliesAt(x, y, ship.map);
     }
 });
 
@@ -121,19 +101,8 @@ sh.items.Engine = sh.Item.extendShared({
         this.size = [2, 2];
         this.parent(ship, x, y);
     },
-    buildPlacementRules: function() {
-        'use strict';
-        this.parent();
-        this.placementRules.push(new sh.pr.PlacementRule({
-            tile: sh.tiles.back,
-            inAll: [{
-                x: -1,
-                y: 0
-            }, {
-                x: -1,
-                y: 1
-            }]
-        }));
+    canBuildAt: function(x, y, ship) {
+        return sh.pr.engine.compliesAt(x, y, ship.map);
     }
 });
 
@@ -155,13 +124,8 @@ sh.items.Console = sh.Item.extendShared({
         this.size = [1, 1];
         this.parent(ship, x, y)
     },
-    buildPlacementRules: function() {
-        'use strict';
-        this.parent();
-        this.placementRules.push(sh.pr.make.nextToRule(function(tile) {
-            return tile.type === 'weapon' || tile.type === 'engine' ||
-                tile.type === 'power';
-        }, this.size[0], this.size[1]));
+    canBuildAt: function(x, y, ship) {
+        return sh.pr.console.compliesAt(x, y, ship.map);
     }
 });
 
@@ -185,21 +149,13 @@ sh.items.Door = sh.Item.extendShared({
         this.size = [2, 1];
         this.parent(ship, x, y);
     },
-    buildPlacementRules: function() {
+    canBuildAt: function(x, y, ship) {
         'use strict';
-        //doesn't use inherited placementRules
-        this.placementRules = [sh.pr.make.spaceRule(function(tile) {
-            return tile instanceof sh.items.Wall && tile.isHorizontal();
-        }, 2, 1)];
-        this.rotatedPlacementRules = [sh.pr.make.spaceRule(function(tile) {
-            return tile instanceof sh.items.Wall && tile.isVertical();
-        }, 1, 2)];
+        return sh.pr.door.compliesAt(x, y, ship.map);
     },
     canBuildRotated: function(x, y, ship) {
         'use strict';
-        return _.every(this.rotatedPlacementRules, function(r) {
-            return r.compliesAt(x, y, ship.map);
-        });
+        return sh.pr.doorRotated.compliesAt(x, y, ship.map);
     }
 });
 

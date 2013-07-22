@@ -7,7 +7,7 @@
 
 /*global _*/
 
-var sh = require('./00_init'), _ = sh._;
+var sh = require('./12_utils'), _ = sh._;
 if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
@@ -139,3 +139,77 @@ sh.pr = {
     }
 };
 
+//add prebuilt placement rules for items
+(function(){
+    var pr = sh.pr,
+        space1x1 = pr.make.spaceRule(sh.tiles.clear, 1, 1),
+        space2x1 = pr.make.spaceRule(sh.tiles.clear, 2, 1),
+        space1x2 = pr.make.spaceRule(sh.tiles.clear, 1, 2),
+        space2x2 = pr.make.spaceRule(sh.tiles.clear, 2, 2),
+        prebuiltSpace = [[space1x1, space1x2],[space2x1, space2x2]];
+
+    pr.space = function(width, height){
+        if(!prebuiltSpace[width - 1] ||
+            !prebuiltSpace[width - 1][height - 1]) {
+            throw "There's no prebuilt space rule for size "
+                + width +'x' + height;
+        }
+        return prebuiltSpace[width - 1][height - 1];
+    };
+
+    function and (ruleA, ruleB) {
+        return {
+            compliesAt: function(x, y, map){
+                return ruleA.compliesAt(x, y, map) &&
+                    ruleB.compliesAt(x, y, map);
+            }
+        }
+    };
+    function or (ruleA, ruleB) {
+        return {
+            compliesAt: function(x, y, map){
+                return ruleA.compliesAt(x, y, map) ||
+                    ruleB.compliesAt(x, y, map);
+            }
+        }
+    };
+
+    //SPECIAL PLACEMENT RULES FOR ITEMS
+
+    pr.weapon = and(space2x2, new sh.pr.PlacementRule({
+        tile: sh.tiles.front,
+        inAny: [{
+            x: 2,
+            y: 0
+        }, {
+            x: 2,
+            y: 1
+        }]
+    }));
+
+    pr.engine = and(space2x2, new sh.pr.PlacementRule({
+        tile: sh.tiles.back,
+        inAll: [{
+            x: -1,
+            y: 0
+        }, {
+            x: -1,
+            y: 1
+        }]
+    }));
+
+    pr.console = and(space1x1, sh.pr.make.nextToRule(function(tile) {
+        return tile.type === 'weapon' || tile.type === 'engine' ||
+            tile.type === 'power';
+    }, 1, 1));
+
+    pr.door = pr.make.spaceRule(function(tile) {
+        return tile instanceof sh.items.Wall && tile.isHorizontal();
+    }, 2, 1);
+
+    pr.doorRotated = sh.pr.make.spaceRule(function(tile) {
+        return tile instanceof sh.items.Wall && tile.isVertical();
+    }, 1, 2);
+
+
+})();
