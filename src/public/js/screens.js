@@ -27,7 +27,23 @@ var screens = {
             }
         });
         for (i = 0; i < screens.all.length; i++) {
-            html.store(screens.all[i], tasks.done, tasks.error);
+            this.storeHtml(screens.all[i], tasks.done, tasks.error);
         }
+    },
+    storedHtmls: {},
+    storeHtml: function(screenId, success, error) {
+        'use strict';
+        var self = this;
+        $.get('screens/'+ screenId+'.html', function(data) {
+            self.storedHtmls[screenId] = data;
+            if (success) {
+                success();
+            }
+        }).fail(function() {
+            if (error) {
+                error();
+            }
+        });
     }
+
 };

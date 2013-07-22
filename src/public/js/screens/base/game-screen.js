@@ -53,7 +53,7 @@
          this.parent(true);
          me.video.clearSurface(me.video.getScreenContext(), 'gray');
 
-         html.display(this.name);
+         this.displayHtml();
          this.onHtmlLoaded();
 
          this.onReset(settings);
@@ -72,10 +72,21 @@
          'use strict';
          this.onDestroy();
          this.isReset = false;
-         html.clear();
+         this.clearHtml();
      },
      onDestroy: function(){
          'use strict';
+     },
+     displayHtml: function(){
+         'use strict';
+         if (!screens.storedHtmls[this.name]) {
+             throw 'Could not find preloaded html for ' + this.name;
+         }
+         $('#screensUi').html(screens.storedHtmls[this.name]);
+     },
+     clearHtml: function(){
+         'use strict';
+         $('#screensUi').html('');
      },
      /**
       * For modifying html and making bindings
