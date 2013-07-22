@@ -160,7 +160,7 @@ asyncTest('fromJsonString', function() {
         screen.ship.removeAll();
         screen.ship.fromJsonString('{"tmxName":"test",' +
             '"buildings":[{"type":"power", "x":0, "y":0},' +
-            '{"type":"door", "x":2, "y":3, "rotated":true}]}');
+            '{"type":"door", "x":2, "y":3, "r":true}]}');
 
         power = screen.ship.at(0, 0);
         equal(power.type, 'power', 'power successfully added to the ship');
@@ -229,7 +229,7 @@ asyncTest('toJsonString', function() {
             'power saved with correct x position');
         equal(power.y, th.shipPositions.free.y,
             'power saved with correct y position');
-        ok(!power.rotated, 'power saved as not rotated');
+        ok(!power.r, 'power saved as not rotated');
 
         engine = _.find(buildings, function(i) {
             return i.type === 'engine';
@@ -238,7 +238,7 @@ asyncTest('toJsonString', function() {
             'engine saved with correct x position');
         equal(engine.y, th.shipPositions.engine.y,
             'engine saved with correct y position');
-        ok(engine.rotated, 'engine saved as rotated');
+        ok(engine.r, 'engine saved as rotated');
         start();
     });
 });
