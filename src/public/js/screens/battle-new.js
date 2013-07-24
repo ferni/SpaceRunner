@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global screens, GameScreen*/
+/*global screens-html, GameScreen*/
 
 screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION_SEC: 3,

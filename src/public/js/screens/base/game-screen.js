@@ -9,10 +9,10 @@
 /*global */
 
  /**
-  * Parent of all the other screens.
+  * Parent of all the other screens-html.
   * Example implementation:
   *
-    screens.register('example', GameScreen.extend({
+    screens-html.register('example', GameScreen.extend({
       init: function(name) {
           'use strict';
           this.parent(name);

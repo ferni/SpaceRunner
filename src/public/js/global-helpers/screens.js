@@ -34,7 +34,7 @@ var screens = {
     storeHtml: function(screenId, success, error) {
         'use strict';
         var self = this;
-        $.get('screens/'+ screenId+'.html', function(data) {
+        $.get('screens-html/'+ screenId+'.html', function(data) {
             self.storedHtmls[screenId] = data;
             if (success) {
                 success();

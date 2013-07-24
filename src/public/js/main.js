@@ -305,7 +305,7 @@ var jsApp = {
     --- */
     loaded: function() {
         'use strict';
-        // set screens
+        // set screens-html
         var self = this;
         window.FIRST_SCREEN = 'lobby';
         window.gs = new GameState();

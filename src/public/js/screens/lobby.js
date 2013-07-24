@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, screens, GameScreen*/
+/*global me, screens-html, GameScreen*/
 
 screens.register('lobby', GameScreen.extend({
     init: function(name) {
