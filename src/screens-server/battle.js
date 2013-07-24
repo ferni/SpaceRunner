@@ -8,9 +8,10 @@
 /*global */
 
 var auth = require('../auth'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    routes = require('./routes');
 
-exports.get = function(req, res, next) {
+routes.add('get', function(req, res, next) {
     var id = req.body.id,
         battle = _.find(battles, function(b){
             return b.id == id;
@@ -28,10 +29,10 @@ exports.get = function(req, res, next) {
         id: battle.id
         //otherPlayerReady:
     });
-};
+});
 
-exports.submitorders = function(req, res, next){
+routes.add('submitorders', function(req, res, next){
     var id = req.body.id, //the battle id
         playerID = auth.getID(req);
 
-};
+});

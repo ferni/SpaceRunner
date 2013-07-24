@@ -7,9 +7,10 @@
 
 var model = require('../model'),
     auth = require('../auth'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    routes = require('./routes');
 
-exports.get = function(req, res, next) {
+routes.add('get', function(req, res, next) {
     'use strict';
     var id = req.body.id,
         bsu = _.find(battleSetUps, function(bsu) {
@@ -33,9 +34,9 @@ exports.get = function(req, res, next) {
         next(new Error('Only a player from within the battle can request' +
             ' battle details.'));
     }
-};
+});
 
-exports.start = function(req, res, next) {
+routes.add('start' , function(req, res, next) {
     var id = req.body.id,
         bsu = _.find(battleSetUps, function(bsu) {
             return bsu.id == id;
@@ -58,9 +59,9 @@ exports.start = function(req, res, next) {
         next(new Error('Only a player from within the battle can request' +
             ' battle start.'));
     }
-};
+});
 
-exports.create = function(req, res, next) {
+routes.add('create' , function(req, res, next) {
     'use strict';
     var id = battleSetUps.length;
     console.log('creating...');
@@ -73,10 +74,10 @@ exports.create = function(req, res, next) {
         shipJsonString: req.body.shipJsonString});
     battleSetUps.push(bsu);
     res.json(bsu.toJson());
-};
+});
 
 
-exports.join = function(req, res, next) {
+routes.add('join', function(req, res, next) {
     'use strict';
     var battleID = req.body.battleID,
         battle;
@@ -95,4 +96,4 @@ exports.join = function(req, res, next) {
         battle.addPlayer(auth.getPlayer(req));
         res.json(battle.toJson());
     }
-};
+});

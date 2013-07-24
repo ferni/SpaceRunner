@@ -28,7 +28,7 @@ screens.register('lobby', GameScreen.extend({
                 this.battleSetUps = ko.observableArray(data.battleSetUps);
                 this.joinBattle = function(battleSetUp) {
                     console.log('Joining battle...');
-                    $.post('/battles/join', {battleID: battleSetUp.id},
+                    $.post('/battle-set-up/join', {battleID: battleSetUp.id},
                         function(data) {
                             if (!data.error) {
                                 me.state.change('battle-set-up', battleSetUp);
@@ -39,7 +39,7 @@ screens.register('lobby', GameScreen.extend({
                 };
                 this.hostBattle = screen.hostBattle;
             };
-        $.get('/lobby/get', function(data) {
+        $.post('/lobby/get', function(data) {
             gs.player = sh.make.playerFromJson(data.player);
             screen.vm = new HtmlViewModel(data);
             ko.applyBindings(screen.vm,
@@ -51,7 +51,7 @@ screens.register('lobby', GameScreen.extend({
                     screen.vm.joinBattle(data.battleSetUps[0]);
                 }
             }
-        });
+        }, 'json');
     },
 
     hostBattle: function() {

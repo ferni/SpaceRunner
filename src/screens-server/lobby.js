@@ -6,13 +6,14 @@
  */
 
 var _ = require('underscore')._,
-    auth = require('../auth');
+    auth = require('../auth'),
+    routes = require('./routes/index');
 
 /**
  * sets the initial info for the player
  * and fetches the initial data
  */
-exports.get = function(req, res, next) {
+routes.add('get', function(req, res, next) {
     var player;
     console.log(req.session);
     if (typeof req.session.playerID === 'undefined') {
@@ -37,4 +38,4 @@ exports.get = function(req, res, next) {
             return b.toJson();
         })
     });
-};
+});
