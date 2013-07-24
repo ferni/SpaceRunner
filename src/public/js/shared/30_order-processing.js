@@ -12,10 +12,16 @@ if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
+
+//TODO: verify that the player is in the order.battleID
+
 //should have access to the ship
 sh.verifyOrder = function(order, ship, playerID){
-    if(!order || !order.type) return false;
-    switch(order.type) {
+    if(!order || !order.type || order.type !== 'Order-JSON-V1' ||
+        !order.variant) {
+        return false;
+    }
+    switch(order.variant) {
         case 'move' : {
             var dest = order.data.destination,
                 unit = ship.getUnitByID(order.unitID);

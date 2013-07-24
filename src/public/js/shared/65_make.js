@@ -61,7 +61,8 @@ sh.make = (function() {
 
     make.moveOrder = function(unit, destination){
         return {
-            type: 'move',
+            type: 'Order-JSON-V1',
+            variant: 'move',
             unitID: unit.id,
             data: {
                 destination: {
