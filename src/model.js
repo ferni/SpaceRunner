@@ -100,15 +100,3 @@ exports.BattleSetUp = function(params) {
 exports.Player = sh.Player.extendShared({
 });
 
-exports.Building = Class.extend({
-    init: function(x, y){
-
-    },
-    toJson: function(){
-        return {
-            type: 'Building'
-        }
-    }
-});
-
-
