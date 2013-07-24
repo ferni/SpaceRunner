@@ -7,7 +7,7 @@
 
 /*global me*/
 
-var sh = require('./20_placement-rules'), _ = sh._;
+var sh = require('./30_order-processing'), _ = sh._;
 if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
