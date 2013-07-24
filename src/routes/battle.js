@@ -7,6 +7,8 @@
 
 /*global */
 
+var auth = require('../auth');
+
 exports.get = function(req, res, next) {
     var id = req.body.id,
         battle = _.find(battles, function(b){
@@ -14,6 +16,11 @@ exports.get = function(req, res, next) {
         });
     if(!battle) {
         next(new Error('Battle not found, id: ' + id));
+        return;
+    }
+
+    if(!battle.isPlayerInIt(auth.getID(req))) {
+        next(new Error('Player has no access to battle ' + id));
         return;
     }
     return res.json(battle.toJson());

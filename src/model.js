@@ -16,6 +16,10 @@ exports.Battle = function(parameters) {
     //The players currently in this battle
     this.playerLeft = null;
     this.playerRight = null;
+    this.isPlayerInIt = function(playerID) {
+        return (this.playerLeft && this.playerLeft.id === playerID) ||
+            (this.playerRight && this.playerRight.id === playerID);
+    };
     this.toJson = function(){
         return {
             id: this.id,
