@@ -58,5 +58,19 @@ sh.make = (function() {
     make.playerFromJson = function(json) {
         return new sh.Player(json);
     };
+
+    make.moveOrder = function(unit, destination){
+        return {
+            type: 'move',
+            unitID: unit.id,
+            data: {
+                destination: {
+                    x: destination.x,
+                    y: destination.y
+                }
+            }
+        }
+    };
+
     return make;
 })();
