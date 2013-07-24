@@ -38,6 +38,10 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/selector.png'
 }, {
+    name: 'pause-icon',
+    type: 'image',
+    src: 'data/img/render/pause-icon.png'
+}, {
     name: 'weapon',
     type: 'image',
     src: 'data/img/render/weapon_01.png'
