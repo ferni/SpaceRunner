@@ -10,7 +10,8 @@
 
  var _ = require('underscore')._,
      model = require('./model'),
-     chat = require('./chat');
+     chat = require('./chat'),
+     currentPlayers = []; //filled with model.Player;
 
  exports.getID = function(req) {
      //check that there's a player
@@ -49,6 +50,7 @@
          name: exports.toUniqueName('Player')
      });
      chat.log('Player "'+ player.name +'" connected to server.');
+     currentPlayers.push(player);
      return player;
  };
 

@@ -86,7 +86,7 @@ app.post('/general/disconnect', general.disconnect);
 //globals
 GLOBAL.battleSetUps = []; //filled with model.BattleSetUp
 GLOBAL.battles = []; //filled with model.Battle
-GLOBAL.currentPlayers = []; //filled with model.Player
+
 
 chat.init(app, chatRoutes);
 

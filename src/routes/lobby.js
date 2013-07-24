@@ -20,7 +20,6 @@ exports.get = function(req, res, next) {
         try{
             player = auth.createNewPlayer();
             req.session.playerID = player.id;
-            currentPlayers.push(player);
         }catch(e){
             next(new Error('Could not create new player'));
         }
