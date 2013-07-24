@@ -2,20 +2,18 @@
     font-family: Verdana;
 }
 
-#battle-screen #resume-button{
+#battle-screen #ready-button{
     border: 3px solid white;
-    font-size: 10pt;
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
 }
 
 #battle-screen #paused-indicator{
     position: fixed;
-    bottom: 30px;
-    font-size: 30pt;
-    color: white;
-    text-transform: uppercase;
-    text-align: center;
-    width: 100%;
-    background-color: rgba(50,50,50,0.5);
+    top: 10px;
+    left: 10px;
+
 }
 
 #battle-screen .button{
@@ -28,8 +26,8 @@
 
 #battle-screen #elapsed{
     position: fixed;
-    top: 20px;
-    right: 20px;
-    font-size: 30pt;
+    top: 10px;
+    left: 10px;
+    font-size: 24pt;
     color:white;
 }

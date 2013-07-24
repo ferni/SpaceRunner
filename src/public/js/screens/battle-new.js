@@ -33,7 +33,7 @@ screens.register('battle', GameScreen.extend({
     onHtmlLoaded: function() {
         'use strict';
         var screen = this;
-        $('#resume-button').click(function() {
+        $('#ready-button').click(function() {
             screen.resume();
         });
 
@@ -167,12 +167,14 @@ screens.register('battle', GameScreen.extend({
     },
     pause: function() {
         'use strict';
-        $('#paused-indicator, #resume-button').show();
+        $('#paused-indicator, #ready-button').show();
+        $('#elapsed').hide();
         this.paused = true;
     },
     resume: function() {
         'use strict';
-        $('#paused-indicator, #resume-button').hide();
+        $('#paused-indicator, #ready-button').hide();
+        $('#elapsed').show();
         //send the orders to the server and pause on callback
 
         //reset time
