@@ -14,7 +14,8 @@
 var express = require('express'),
     routes = require('./routes'),
     ship = require('./routes/ship'),
-    battles = require('./routes/battle-set-up'),
+    battleSetUps = require('./routes/battle-set-up'),
+    battle = require('./routes/battle'),
     lobby = require('./routes/lobby'),
     general = require('./routes/general'),
     chat =require('./chat'),
@@ -71,10 +72,12 @@ app.post('/ship/gethulls', ship.gethulls);
 
 app.get('/lobby/get', lobby.get);
 
-app.post('/battle-set-up/get', battles.get);
-app.post('/battle-set-up/start', battles.start);
-app.post('/battles/create', battles.create);
-app.post('/battles/join', battles.join);
+app.post('/battle-set-up/get', battleSetUps.get);
+app.post('/battle-set-up/start', battleSetUps.start);
+app.post('/battles/create', battleSetUps.create);
+app.post('/battles/join', battleSetUps.join);
+
+app.post('/battle/get', battle.get);
 
 app.post('/general/ping', general.ping);
 app.post('/general/sharedprops', general.sharedprops);
