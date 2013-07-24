@@ -7,12 +7,13 @@
 
 /*global */
 
-var auth = require('../auth');
+var auth = require('../auth'),
+    _ = require('underscore')._;
 
 exports.get = function(req, res, next) {
     var id = req.body.id,
         battle = _.find(battles, function(b){
-            return b.id == req.id;
+            return b.id == id;
         });
     if(!battle) {
         next(new Error('Battle not found, id: ' + id));
@@ -23,5 +24,14 @@ exports.get = function(req, res, next) {
         next(new Error('Player has no access to battle ' + id));
         return;
     }
-    return res.json(battle.toJson());
+    return res.json({
+        id: battle.id
+        //otherPlayerReady:
+    });
+};
+
+exports.submitorders = function(req, res, next){
+    var id = req.body.id, //the battle id
+        playerID = auth.getID(req);
+
 };

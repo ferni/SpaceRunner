@@ -44,7 +44,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         if(this.data.battle) {
             //this means it started!
             gs.ship =  new sh.Ship({jsonString: this.data.battle.ship});
-            me.state.change('battle', {battleID: this.data.battleID});
+            me.state.change('battle', {id: this.data.battle.id});
         }
     }
 }));

@@ -19,9 +19,14 @@ var ConnectedScreen = GameScreen.extend({
     },
     onReset: function(settings){
         var self = this,
-            first = true;
-        if(typeof settings.id === 'undefined') {
-            throw 'ConnectedScreen settings should have id';
+            first = true,
+            id;
+        if (typeof settings.id !== 'undefined') {
+            id = settings.id;
+        }else if (typeof this.id !== 'undefined') {
+            id = this.id;
+        }else {
+            throw 'ConnectedScreen should have id, or passed as a setting.';
         }
         //start fetching the data
         this.fetchIntervalID = setInterval(function(){

@@ -7,12 +7,13 @@
 
 /*global screens, GameScreen*/
 
-screens.register('battle', GameScreen.extend({
+screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
     verifiedOrders: [],
     onReset: function(settings){
-        this.id = settings.battleID;
+        this.parent(settings);
+        console.log('id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         me.input.registerMouseEvent('mouseup', me.game.viewport,
@@ -37,6 +38,12 @@ screens.register('battle', GameScreen.extend({
             screen.resume();
         });
 
+    },
+    onDataInit: function(){
+        //override this (the data is stored in this.data)
+    },
+    onDataUpdated: function(){
+        //override this (the data is stored in this.data)
     },
     update: function() {
         'use strict';
