@@ -353,7 +353,7 @@ var WallVM = ItemVM.extend({
         pfMatrix = ui.greenSpots;
         //self tile will be walkable for pathfinding purposes
         pfMatrix[this.y][this.x] = 0;
-        this.hide();
+        this.alpha = 0.8;
         if(ui.chosen){
             ui.chosen.hide();
         }
@@ -387,8 +387,10 @@ var WallVM = ItemVM.extend({
         cloneGrid = t.grid.clone();
         t.path = t.finder.findPath(t.pivotX, t.pivotY,
             mouseTile.x, mouseTile.y, cloneGrid);
-        _.each(t.path, function(p){
-            ui.drawItem(p[0], p[1], 'wall');
+        _.each(t.path, function(p, index){
+            if(index > 0){
+                ui.drawItem(p[0], p[1], 'wall');
+            }
         });
     },
     lockedMouseUp: function(mouseTile) {
@@ -398,7 +400,7 @@ var WallVM = ItemVM.extend({
         _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x, wall.y, 'wall');
         });
-        this.show();
+        this.alpha = 1;
         if(ui.chosen){
             ui.chosen.alpha = 0.8;
         }
