@@ -10,6 +10,7 @@
 
  /**
   * A screen that updates automatically from the server.
+  * Override onData function to process the incoming data.
   * @type {*}
   */
 var ConnectedScreen = GameScreen.extend({
@@ -18,8 +19,7 @@ var ConnectedScreen = GameScreen.extend({
         this.url = name + '/get';
     },
     onReset: function(settings){
-        var self = this,
-            first = true;
+        var self = this;
         if (typeof settings.id !== 'undefined') {
             this.id = settings.id;
         }else if (typeof this.id === 'undefined') {
@@ -29,12 +29,7 @@ var ConnectedScreen = GameScreen.extend({
         this.fetchIntervalID = setInterval(function() {
             $.post(self.url, {id: self.id}, function(data) {
                 self.data = data;
-                if (first) {
-                   self.onDataInit();
-                   first = false;
-                } else {
-                    self.onDataUpdated();
-                }
+                self.onData(data);
             }, 'json');}, 1000);
         this.parent(settings);
     },
@@ -42,10 +37,7 @@ var ConnectedScreen = GameScreen.extend({
         clearInterval(this.fetchIntervalID);
         this.parent();
     },
-    onDataInit: function(){
-        //override this (the data is stored in this.data)
-    },
-    onDataUpdated: function(){
+    onData: function(data){
         //override this (the data is stored in this.data)
     }
 });
