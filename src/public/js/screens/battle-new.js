@@ -39,11 +39,11 @@ screens.register('battle', ConnectedScreen.extend({
         });
 
     },
-    onDataInit: function(){
-        //override this (the data is stored in this.data)
-    },
-    onDataUpdated: function(){
-        //override this (the data is stored in this.data)
+    onData: function(data){
+        if(data.allPlayersReady) {//TODO: change for data.script
+
+            this.resume();
+        }
     },
     update: function() {
         'use strict';
@@ -176,12 +176,17 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
+        $('#ready-button')
+            .removeClass('disabled')
+            .html('Ready');
+        screen.submittedOrders = false;
         this.paused = true;
     },
     resume: function() {
         'use strict';
         $('#paused-indicator, #ready-button').hide();
         $('#elapsed').show();
+
         //reset time
         this.turnBeginTime = me.timer.getTime();
         this.paused = false;
@@ -189,14 +194,21 @@ screens.register('battle', ConnectedScreen.extend({
 
     },
     onClickedReady: function(){
-        //send the orders to the server
-        $.post('/battle/submitorders',
-            {id: this.id, orders: this.verifiedOrders}, function(response) {
-                console.log('Orders successfully submitted');
-        }, 'json')
-            .fail(function(){
-                console.error('Server error when submitting orders.');
-            });
+        var screen = this;
+        if(!screen.submittedOrders) {
+            //send the orders to the server
+            $.post('/battle/submitorders',
+                {id: this.id, orders: this.verifiedOrders}, function(response) {
+                    console.log('Orders successfully submitted');
+                    screen.submittedOrders = true;
+                    $('#ready-button')
+                        .addClass('disabled')
+                        .html('Awaiting players...');
+            }, 'json')
+                .fail(function(){
+                    console.error('Server error when submitting orders.');
+                });
+        }
     },
     at: function(x, y) {
         return gs.ship.at(x, y);

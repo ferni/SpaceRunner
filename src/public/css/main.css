@@ -87,6 +87,11 @@ textarea {
     background-color: limegreen;
 }
 
+.button.disabled {
+    cursor: default;
+    background-color: gray;
+}
+
 #debug-settings{
     border: 1px solid black;
     background-color: #DDD;

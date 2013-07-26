@@ -22,7 +22,8 @@ function getByID(battleID){
 
 routes.add('get', function(req, res, next) {
     var id = req.body.id,
-        battle = getByID(id);
+        battle = getByID(id),
+        script = null;
     if(!battle) {
         next(new Error('Battle not found, id: ' + id));
         return;
@@ -32,9 +33,13 @@ routes.add('get', function(req, res, next) {
         next(new Error('Player has no access to battle ' + id));
         return;
     }
+    if (battle.allPlayersReady()) {
+        //TODO: generate the script
+    }
+
     return res.json({
-        id: battle.id
-        //otherPlayerReady:
+        id: battle.id,
+        allPlayersReady: battle.allPlayersReady()
     });
 });
 
@@ -58,7 +63,9 @@ routes.add('submitorders', function(req, res, next){
         }
     }
 
-    //TODO: add players' orders to battle
+    battle.playersReady.push(playerID);
+    battle.allOrders = battle.allOrders.concat(orders);
+
     chat.log('SUCCESS: All orders submitted have been validated by the' +
         ' server (' + verifiedOrdersCount +' orders).');
     return res.json({ok: true});

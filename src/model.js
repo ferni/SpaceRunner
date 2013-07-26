@@ -16,6 +16,18 @@ exports.Battle = function(parameters) {
     //The players currently in this battle
     this.playerLeft = null;
     this.playerRight = null;
+    //The players that have submitted the orders (clicked "Ready")
+
+    this.playersReady = [];
+    this.allOrders = [];
+
+    this.allPlayersReady = function(){
+        return this.playersReady.length >= 2;
+    };
+    this.generateScript = function(){
+        //call this when all the players are ready
+        return {};
+    };
     this.isPlayerInIt = function(playerID) {
         return (this.playerLeft && this.playerLeft.id === playerID) ||
             (this.playerRight && this.playerRight.id === playerID);
