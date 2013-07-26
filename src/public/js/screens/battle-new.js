@@ -16,6 +16,7 @@ screens.register('battle', ConnectedScreen.extend({
         console.log('id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
+        this.shipVM.update();
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -39,25 +40,28 @@ screens.register('battle', ConnectedScreen.extend({
         });
 
     },
-    onData: function(data){
-        if(data.script) {
-            this.resume();
-        }
+    onData: function(data){/*
+        if(data.scriptReady) {
+            //get the script
+            $.post('/battle/getscript', {id: this.id}, function(data){
+                //use the script (make script vm)
+                this.resume();
+            });
+        }                    */
     },
     update: function() {
         'use strict';
         this.parent();
-        if(this.shipVM.update()){
-            me.game.sort();
-        }
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
+            this.shipVM.update();
             //update counter
             $('#elapsed').html(elapsed);
             if (elapsed >= this.TURN_DURATION) {
                 this.pause();
             }
         }
+        //return true;
     },
     draw: function(ctx) {
         'use strict';
@@ -180,6 +184,7 @@ screens.register('battle', ConnectedScreen.extend({
             .html('Ready');
         screen.submittedOrders = false;
         this.paused = true;
+        me.game.sort();
     },
     resume: function() {
         'use strict';

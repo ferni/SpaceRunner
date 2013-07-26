@@ -27,7 +27,14 @@ var ShipVM = function(shipModel) {
      */
     this.update = function(){
         'use strict';
-        return (this.updateItems() || this.updateUnits());
+        var somethingChanged = false;
+        if (this.updateItems()) {
+            somethingChanged = true;
+        }
+        if (this.updateUnits()) {
+            somethingChanged = true;
+        }
+        return somethingChanged;
     };
     this.updateItems = function(){
         return this.updateVMs(this.m.built, this.itemVMs, 100);
