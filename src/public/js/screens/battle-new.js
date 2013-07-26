@@ -35,7 +35,7 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var screen = this;
         $('#ready-button').click(function() {
-            screen.resume();
+            screen.onClickedReady();
         });
 
     },
@@ -182,13 +182,21 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         $('#paused-indicator, #ready-button').hide();
         $('#elapsed').show();
-        //send the orders to the server and pause on callback
-
         //reset time
         this.turnBeginTime = me.timer.getTime();
         this.paused = false;
 
 
+    },
+    onClickedReady: function(){
+        //send the orders to the server
+        $.post('/battle/submitorders',
+            {id: this.id, orders: this.verifiedOrders}, function(response) {
+                console.log('Orders successfully submitted');
+        }, 'json')
+            .fail(function(){
+                console.error('Server error when submitting orders.');
+            });
     },
     at: function(x, y) {
         return gs.ship.at(x, y);
