@@ -18,11 +18,43 @@ exports.Battle = function(parameters) {
     this.playerRight = null;
     //The players that have submitted the orders (clicked "Ready")
 
-    this.playersReady = [];
-    this.allOrders = [];
+    this.playersOrders = [];
+    this.playersReady = false;
 
-    this.allPlayersReady = function(){
-        return this.playersReady.length >= 2;
+    this.addOrders = function(playerID, orders){
+        if(_.any(this.playersOrders, function(po){
+            return po.playerID === playerID;
+        })) {
+            console.error('Orders for player ' + playerID +
+                ' had already been added.')
+            throw 'Orders for player ' + playerID +
+                ' had already been added.';
+        }
+
+        this.playersOrders.push({
+            playerID: playerID,
+            orders: orders
+        });
+        if(this.playersOrders.length == 2) {
+            this.playersReady = true;
+        }
+    };
+    this.removeOrders = function(playerID){
+        var i, removed;
+        for(i = 0; i < this.playersOrders.length; i++) {
+            if(this.playersOrders[i].playerID == playerID) {
+
+                removed = this.playersOrders.splice(i, 1);
+                console.log('Orders removed for player with id:' + playerID);
+                break;
+            }
+        }
+        console.log('removed orders: ' + removed);
+
+        if(this.playersOrders.length === 0) {
+            //all players have been served
+            this.playersReady = false;
+        }
     };
     this.generateScript = function(){
         //call this when all the players are ready

@@ -23,23 +23,26 @@ function getByID(battleID){
 routes.add('get', function(req, res, next) {
     var id = req.body.id,
         battle = getByID(id),
+        playerID = auth.getID(req),
         script = null;
     if(!battle) {
         next(new Error('Battle not found, id: ' + id));
         return;
     }
 
-    if(!battle.isPlayerInIt(auth.getID(req))) {
+    if(!battle.isPlayerInIt(playerID)) {
         next(new Error('Player has no access to battle ' + id));
         return;
     }
-    if (battle.allPlayersReady()) {
-        //TODO: generate the script
+    if (battle.playersReady) {
+        script = battle.generateScript();
+        //will send the data, remove orders from player
+        battle.removeOrders(playerID);
     }
 
     return res.json({
         id: battle.id,
-        allPlayersReady: battle.allPlayersReady()
+        script: script
     });
 });
 
@@ -63,8 +66,7 @@ routes.add('submitorders', function(req, res, next){
         }
     }
 
-    battle.playersReady.push(playerID);
-    battle.allOrders = battle.allOrders.concat(orders);
+    battle.addOrders(playerID, orders);
 
     chat.log('SUCCESS: All orders submitted have been validated by the' +
         ' server (' + verifiedOrdersCount +' orders).');

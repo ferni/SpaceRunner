@@ -40,8 +40,7 @@ screens.register('battle', ConnectedScreen.extend({
 
     },
     onData: function(data){
-        if(data.allPlayersReady) {//TODO: change for data.script
-
+        if(data.script) {
             this.resume();
         }
     },
