@@ -27,15 +27,9 @@ screens.register('lobby', GameScreen.extend({
                 this.playerName = ko.observable(data.player.name);
                 this.battleSetUps = ko.observableArray(data.battleSetUps);
                 this.joinBattle = function(battleSetUp) {
-                    console.log('Joining battle...');
-                    $.post('/battle-set-up/join', {battleID: battleSetUp.id},
-                        function(data) {
-                            if (!data.error) {
-                                me.state.change('battle-set-up', battleSetUp);
-                            } else {
-                                console.error('Attempted to join a full battle');
-                            }
-                        }, 'json');
+                    server.joinBattle(battleSetUp.id, function(){
+                        me.state.change('battle-set-up', battleSetUp);
+                    });
                 };
                 this.hostBattle = screen.hostBattle;
             };

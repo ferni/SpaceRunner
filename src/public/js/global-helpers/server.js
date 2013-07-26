@@ -21,5 +21,16 @@
                  data.creator = sh.make.playerFromJson(data.creator);
                  onDone(data);
              }, 'json');
+     },
+     joinBattle: function(battleID, onDone) {
+         console.log('Joining battle...');
+         $.post('/battle-set-up/join', {battleID: battleID},
+             function(data) {
+                 if (!data.error) {
+                     onDone();
+                 } else {
+                     console.error('Attempted to join a full battle');
+                 }
+             }, 'json');
      }
  };
