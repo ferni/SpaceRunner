@@ -43,7 +43,7 @@ routes.add('submitorders', function(req, res, next){
         battle = getByID(id),
         orders = req.body.orders,
         playerID = auth.getID(req),
-        i;
+        i, verifiedOrdersCount = 0;
     if(!battle) {
         next(new Error('Battle '+ id +' not found'));
         return;
@@ -53,9 +53,13 @@ routes.add('submitorders', function(req, res, next){
             chat.log('ERROR: An order was invalid.');
             next(new Error('An order submitted is invalid'));
             return;
+        }else{
+            verifiedOrdersCount++;
         }
     }
+
     //TODO: add players' orders to battle
-    chat.log('SUCCESS: All orders submitted have been validated by the sever.');
+    chat.log('SUCCESS: All orders submitted have been validated by the' +
+        ' server (' + verifiedOrdersCount +' orders).');
     return res.json({ok: true});
 });
