@@ -147,23 +147,13 @@ screens.register('ship-building', GameScreen.extend({
 
         $('.battle-button').click(function() {
             if (!loadingNextScreen) {
-                screen.createBattle();
+                server.createBattle(screen.ship, function(settings){
+                    me.state.change('battle-set-up', settings);
+                });
                 loadingNextScreen = true;
             }
 
         });
-    },
-    createBattle: function(){
-        var ship = this.ship;
-
-        console.log('Creating battle...');
-        $.post('/battle-set-up/create',{shipJsonString: ship.toJsonString()},
-                    function(settings) {
-            console.log('Battle created');
-            settings.creator = sh.make.playerFromJson(settings.creator);
-            me.state.change('battle-set-up', settings);
-        }, 'json');
-
     },
     mouseDbClick: function(e) {
         'use strict';
