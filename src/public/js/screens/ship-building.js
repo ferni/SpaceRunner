@@ -147,13 +147,13 @@ screens.register('ship-building', GameScreen.extend({
 
         $('.battle-button').click(function() {
             if (!loadingNextScreen) {
-                screen.finishShip();
+                screen.createBattle();
                 loadingNextScreen = true;
             }
 
         });
     },
-    finishShip: function(){
+    createBattle: function(){
         var ship = this.ship;
 
         console.log('Creating battle...');
