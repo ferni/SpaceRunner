@@ -14,3 +14,7 @@ me.plugin.patch(me.TMXTileMap, 'load', function() {
         this.z - 10));
 });
 
+//Disable pause on blur
+me.state.pause = function (){};
+me.state.resume = function (){};
+
