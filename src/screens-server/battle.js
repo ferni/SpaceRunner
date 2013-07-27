@@ -88,6 +88,6 @@ routes.add('scriptreceived', function(req, res, next){
         if(nextTurnCreated) {
             chat.log('All players received the script, created next turn.');
         }
-        return {ok: true};
+        return res.json({ok: true});
     });
 });
