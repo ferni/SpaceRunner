@@ -22,7 +22,7 @@ function getByID(battleID){
 
 /**
  * Makes sure that the battle exists and that the
- * player making the request is actually in the battle.
+ * player making the request is in the battle.
  * @param req {Object} The request object.
  * @param next {} next function.
  * @param callback {} Passes: battle and playerID
@@ -54,9 +54,12 @@ routes.add('get', function(req, res, next) {
 
 routes.add('submitorders', function(req, res, next){
     var orders = req.body.orders,
-        turnID = req.body.turnID,
         i, verifiedOrdersCount = 0;
     return authenticate(req, next, function(battle, playerID){
+        var turn;
+        if(!orders) {
+            orders = [];
+        }
         for (i = 0; i < orders.length; i++) {
             if(!sh.verifyOrder(orders[i], battle.ship, playerID)) {
                 chat.log('ERROR: An order was invalid.');
@@ -67,8 +70,13 @@ routes.add('submitorders', function(req, res, next){
             }
         }
 
-        battle.currentTurn.addOrders(playerID, orders);
-
+        turn = battle.currentTurn;
+        turn.addOrders(playerID, orders);
+        if(turn.playersSubmitted.length === battle.numberOfPlayers &&
+            !turn.script) {
+            //all orders have been submitted, generate the script
+            turn.generateScript();
+        }
         chat.log('SUCCESS: All orders submitted have been validated by the' +
             ' server (' + verifiedOrdersCount +' orders).');
         return res.json({ok: true});

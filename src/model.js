@@ -30,11 +30,6 @@ function BattleTurn(params) {
 
         this.allOrders = this.allOrders.concat(orders);
         this.playersSubmitted.push(playerID);
-        if(this.playersSubmitted.length == this.battle.numberOfPlayers &&
-            !this.script) {
-            //all orders have been submitted, generate the script
-            this.generateScript();
-        }
     };
     this.generateScript = function(){
         this.script = {};
