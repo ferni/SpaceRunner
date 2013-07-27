@@ -10,20 +10,17 @@ var Class = require('./class'),
     auth = require('./auth'),
     _ = require('underscore');
 
-exports.Battle = function(parameters) {
-    this.id = parameters.id;
-    this.ship = parameters.ship;
-    //The players currently in this battle
-    this.playerLeft = null;
-    this.playerRight = null;
-    //The players that have submitted the orders (clicked "Ready")
 
-    this.playersOrders = [];
-    this.playersReady = false;
-
+function BattleTurn(params) {
+    this.id = params.id;
+    this.battle = params.battle;
+    this.allOrders = [];
+    //all the players ids that have submitted the orders
+    this.playersSubmitted = [];
+    this.script = null;
     this.addOrders = function(playerID, orders){
-        if(_.any(this.playersOrders, function(po){
-            return po.playerID === playerID;
+        if(_.any(this.playersSubmitted, function(ps){
+            return ps === playerID;
         })) {
             console.error('Orders for player ' + playerID +
                 ' had already been added.')
@@ -31,34 +28,49 @@ exports.Battle = function(parameters) {
                 ' had already been added.';
         }
 
-        this.playersOrders.push({
-            playerID: playerID,
-            orders: orders
-        });
-        if(this.playersOrders.length == 2) {
-            this.playersReady = true;
-        }
-    };
-    this.removeOrders = function(playerID){
-        var i, removed;
-        for(i = 0; i < this.playersOrders.length; i++) {
-            if(this.playersOrders[i].playerID == playerID) {
-
-                removed = this.playersOrders.splice(i, 1);
-                console.log('Orders removed for player with id:' + playerID);
-                break;
-            }
-        }
-        console.log('removed orders: ' + removed);
-
-        if(this.playersOrders.length === 0) {
-            //all players have been served
-            this.playersReady = false;
+        this.allOrders = this.allOrders.concat(orders);
+        this.playersSubmitted.push(playerID);
+        if(this.playersSubmitted.length == this.battle.numberOfPlayers &&
+            !this.script) {
+            //all orders have been submitted, generate the script
+            this.generateScript();
         }
     };
     this.generateScript = function(){
-        //call this when all the players are ready
-        return {};
+        this.script = {};
+    };
+}
+
+exports.Battle = function(parameters) {
+    this.id = parameters.id;
+    this.ship = parameters.ship;
+    //The players currently in this battle
+    this.playerLeft = null;
+    this.playerRight = null;
+    this.numberOfPlayers = 2;
+    this.turnCount = 0;
+    this.currentTurn = null;
+
+    this.receivedTheScript = []; //players ids that received the script
+    /**
+     * Informs that some player has received the script.
+     * When all players in the battle receive the script,
+     * a new turn is created.
+     * @param playerID {int} The player ID.
+     * @returns {boolean} If the next turn was created or not.
+     */
+    this.registerScriptReceived = function(playerID){
+        this.receivedTheScript.push(playerID);
+        if(_.uniq(this.receivedTheScript).length >= this.numberOfPlayers) {
+            //all players have received the script, create next turn
+            this.nextTurn();
+            return true;
+        }
+        return false;
+    };
+    this.nextTurn = function(){
+        this.turnCount++;
+        this.currentTurn = new BattleTurn({id: this.turnCount, battle: this});
     };
     this.isPlayerInIt = function(playerID) {
         return (this.playerLeft && this.playerLeft.id === playerID) ||
@@ -71,7 +83,9 @@ exports.Battle = function(parameters) {
             playerLeft: this.playerLeft.toJson(),
             playerRight: this.playerRight.toJson()
         };
-    }
+    };
+    //create first turn
+    this.nextTurn();
 
 };
 

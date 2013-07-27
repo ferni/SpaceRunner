@@ -40,14 +40,20 @@ screens.register('battle', ConnectedScreen.extend({
         });
 
     },
-    onData: function(data){/*
-        if(data.scriptReady) {
+    onData: function(data){
+        var screen = this;
+        if (this.paused && data.scriptReady) {
             //get the script
-            $.post('/battle/getscript', {id: this.id}, function(data){
-                //use the script (make script vm)
-                this.resume();
+            $.post('/battle/getscript', {id: screen.id}, function (data) {
+                //TODO: use the script (make script vm)
+                screen.resume();
+                $.post('/battle/scriptreceived', {id: screen.id},function () {
+                    //(informs the server that the script has been received)
+                }).fail(function () {
+                        console.error('Error pinging server.');
+                    });
             });
-        }                    */
+        }
     },
     update: function() {
         'use strict';
@@ -183,6 +189,8 @@ screens.register('battle', ConnectedScreen.extend({
             .removeClass('disabled')
             .html('Ready');
         screen.submittedOrders = false;
+        //TODO: empty the script
+
         this.paused = true;
         me.game.sort();
     },

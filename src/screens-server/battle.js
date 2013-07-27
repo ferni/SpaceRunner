@@ -20,55 +20,74 @@ function getByID(battleID){
     });
 }
 
-routes.add('get', function(req, res, next) {
+/**
+ * Makes sure that the battle exists and that the
+ * player making the request is actually in the battle.
+ * @param req {Object} The request object.
+ * @param next {} next function.
+ * @param callback {} Passes: battle and playerID
+ */
+function authenticate(req, next, callback) {
     var id = req.body.id,
         battle = getByID(id),
-        playerID = auth.getID(req),
-        script = null;
-    if(!battle) {
+        playerID = auth.getID(req);
+    if (!battle) {
         next(new Error('Battle not found, id: ' + id));
         return;
     }
-
     if(!battle.isPlayerInIt(playerID)) {
         next(new Error('Player has no access to battle ' + id));
         return;
     }
-    if (battle.playersReady) {
-        script = battle.generateScript();
-        //will send the data, remove orders from player
-        battle.removeOrders(playerID);
-    }
+    return callback(battle, playerID);
+}
 
-    return res.json({
-        id: battle.id,
-        script: script
+routes.add('get', function(req, res, next) {
+    return authenticate(req, next, function(battle){
+        return res.json({
+            id: battle.id,
+            scriptReady: battle.currentTurn.script !== null,
+            currentTurnID: battle.currentTurn.id
+        });
     });
 });
 
 routes.add('submitorders', function(req, res, next){
-    var id = req.body.id, //the battle id
-        battle = getByID(id),
-        orders = req.body.orders,
-        playerID = auth.getID(req),
+    var orders = req.body.orders,
+        turnID = req.body.turnID,
         i, verifiedOrdersCount = 0;
-    if(!battle) {
-        next(new Error('Battle '+ id +' not found'));
-        return;
-    }
-    for (i = 0; i < orders.length; i++) {
-        if(!sh.verifyOrder(orders[i], battle.ship, playerID)) {
-            chat.log('ERROR: An order was invalid.');
-            next(new Error('An order submitted is invalid'));
-            return;
-        }else{
-            verifiedOrdersCount++;
+    return authenticate(req, next, function(battle, playerID){
+        for (i = 0; i < orders.length; i++) {
+            if(!sh.verifyOrder(orders[i], battle.ship, playerID)) {
+                chat.log('ERROR: An order was invalid.');
+                next(new Error('An order submitted is invalid'));
+                return;
+            }else{
+                verifiedOrdersCount++;
+            }
         }
-    }
 
-    battle.addOrders(playerID, orders);
+        battle.currentTurn.addOrders(playerID, orders);
 
-    chat.log('SUCCESS: All orders submitted have been validated by the' +
-        ' server (' + verifiedOrdersCount +' orders).');
-    return res.json({ok: true});
+        chat.log('SUCCESS: All orders submitted have been validated by the' +
+            ' server (' + verifiedOrdersCount +' orders).');
+        return res.json({ok: true});
+    });
+});
+
+
+routes.add('getscript', function(req, res, next) {
+    return authenticate(req, next, function(battle){
+        return res.json({script: battle.currentTurn.script});
+    });
+});
+
+routes.add('scriptreceived', function(req, res, next){
+    return authenticate(req, next, function(battle, playerID){
+        var nextTurnCreated = battle.registerScriptReceived(playerID);
+        if(nextTurnCreated) {
+            chat.log('All players received the script, created next turn.');
+        }
+        return {ok: true};
+    });
 });
