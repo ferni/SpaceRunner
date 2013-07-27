@@ -17,6 +17,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
+
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -35,10 +36,28 @@ screens.register('battle', ConnectedScreen.extend({
     onHtmlLoaded: function() {
         'use strict';
         var screen = this;
-        $('#ready-button').click(function() {
-            screen.onClickedReady();
-        });
-
+        this.readyButton = (function(){
+            var btn = {},
+                //reference to the dom node
+                $node = $('#ready-button');
+            btn.enabled = true;
+            $node.click(function() {
+                if(btn.enabled) {
+                    screen.onReady();
+                }
+            });
+            btn.enable = function() {
+                btn.enabled = true;
+                $node.removeClass('disabled')
+                    .html('Ready');
+            };
+            btn.disable = function() {
+                btn.enabled = false;
+                $node.addClass('disabled')
+                    .html('Awaiting players...');
+            };
+            return btn;
+        })();
     },
     onData: function(data){
         var screen = this;
@@ -185,10 +204,7 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
-        $('#ready-button')
-            .removeClass('disabled')
-            .html('Ready');
-        screen.submittedOrders = false;
+        this.readyButton.enable();
         //TODO: empty the script
 
         this.paused = true;
@@ -198,29 +214,23 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         $('#paused-indicator, #ready-button').hide();
         $('#elapsed').show();
-
         //reset time
         this.turnBeginTime = me.timer.getTime();
         this.paused = false;
-
-
     },
-    onClickedReady: function(){
+    //When a player clicks "Ready"
+    onReady: function(){
         var screen = this;
-        if(!screen.submittedOrders) {
-            //send the orders to the server
-            $.post('/battle/submitorders',
-                {id: this.id, orders: this.verifiedOrders}, function(response) {
-                    console.log('Orders successfully submitted');
-                    screen.submittedOrders = true;
-                    $('#ready-button')
-                        .addClass('disabled')
-                        .html('Awaiting players...');
+        screen.readyButton.disable();
+        //send the orders to the server
+        $.post('/battle/submitorders',
+            {id: this.id, orders: this.verifiedOrders}, function(data) {
+                console.log('Orders successfully submitted');
             }, 'json')
-                .fail(function(){
-                    console.error('Server error when submitting orders.');
-                });
-        }
+            .fail(function(){
+                console.error('Server error when submitting orders.');
+                screen.readyButton.enable();
+            });
     },
     at: function(x, y) {
         return gs.ship.at(x, y);
