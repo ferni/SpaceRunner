@@ -76,10 +76,9 @@
             <div id="jsapp"></div>
             <div id="screensUi"></div>
         </div>
-        <div id="chat-client">
-            <h3>Chat</h3>
+        <div id="chat-client" data-bind="css:{disabled:!enabled()}">
             <div data-bind="if: enabled">
-                <button type="button" data-bind="click:disable">Disable</button>
+                <button type="button" data-bind="click:disable">Disable Chat</button>
                 <div id="lines" data-bind="foreach: lines">
                     <p>
                         <span class="sender" data-bind="text: sender"></span>:
@@ -92,7 +91,7 @@
                 </form>
             </div>
             <div data-bind="ifnot: enabled">
-                <button type="button" data-bind="click:enable">Enable</button>
+                <button type="button" data-bind="click:enable">Enable Chat</button>
             </div>
 
         </div>

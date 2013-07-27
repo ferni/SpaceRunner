@@ -37,3 +37,7 @@ width: 400px;
 #chat-client .sender{
 	font-weight: bold;
 }
+
+#chat-client.disabled{
+    height: 25px;
+}
