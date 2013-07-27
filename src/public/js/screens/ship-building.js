@@ -65,6 +65,9 @@ screens.register('ship-building', GameScreen.extend({
     onDestroy: function() {
         'use strict';
         me.input.unbindKey(me.input.KEY.ESC);
+        //Debugging commands
+        me.input.unbindKey(me.input.KEY.L);//load
+        me.input.unbindKey(me.input.KEY.S);//save
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
