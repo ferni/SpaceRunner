@@ -31,3 +31,10 @@
     font-size: 24pt;
     color:white;
 }
+
+#battle-screen #turn-info{
+    position: fixed;
+    top: 10px;
+    left: 70px;
+    color: white;
+}

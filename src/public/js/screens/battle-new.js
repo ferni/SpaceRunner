@@ -11,6 +11,7 @@ screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
     verifiedOrders: [],
+    currentTurnID: null,
     onReset: function(settings){
         this.parent(settings);
         console.log('id is ' + this.id);
@@ -61,6 +62,8 @@ screens.register('battle', ConnectedScreen.extend({
     },
     onData: function(data){
         var screen = this;
+        this.currentTurnID = data.currentTurnID;
+        $('#turn-number').html(this.currentTurnID);
         if (this.paused && data.scriptReady) {
             //get the script
             $.post('/battle/getscript', {id: screen.id}, function (data) {
