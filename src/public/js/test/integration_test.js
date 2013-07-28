@@ -21,9 +21,9 @@ function registerTestsRequiringNodeJS(){
                 deepEqual(shipsClient[sh.mapNames[i]].map,
                     shipsServer[sh.mapNames[i]].map, sh.mapNames[i] +
                         "'s hull identical on server and client.");
-                equal(shipsClient[sh.mapNames[i]].width,
+                strictEqual(shipsClient[sh.mapNames[i]].width,
                     shipsServer[sh.mapNames[i]].width, 'width');
-                equal(shipsClient[sh.mapNames[i]].height,
+                strictEqual(shipsClient[sh.mapNames[i]].height,
                     shipsServer[sh.mapNames[i]].height, 'height');
             }
             shipsServer[sh.mapNames[0]].map[0] ='asdfasdfsdaf';
