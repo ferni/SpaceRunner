@@ -52,8 +52,8 @@ function toMapWithHull(tmxMap, mapName) {
         hull[y] = row.join('');
     }
     return {
-        width: tmxMap.width,
-        height: tmxMap.height,
+        width: parseInt(tmxMap.width),
+        height: parseInt(tmxMap.height),
         map: hull
     };
 }
