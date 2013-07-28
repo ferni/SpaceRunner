@@ -64,11 +64,9 @@ sh.make = (function() {
             type: 'Order-JSON-V1',
             variant: 'move',
             unitID: unit.id,
-            data: {
-                destination: {
-                    x: destination.x,
-                    y: destination.y
-                }
+            destination: {
+                x: destination.x,
+                y: destination.y
             }
         }
     };

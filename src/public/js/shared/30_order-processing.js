@@ -15,6 +15,28 @@ if(typeof exports !== 'undefined'){
 
 //TODO: verify that the player is in the order.battleID
 
+var Action = sh.SharedClass.extendShared({
+    unitID: null,
+    start: 0,//ms
+    finish: 0,//ms
+    init: function(json) {
+        this.start = json.start;
+        this.finish = json.finish;
+    }
+});
+
+sh.MoveAction = Action.extendShared({
+    from:null,
+    to:null,
+    init: function(json) {
+        this.parent(json);
+        this.from = json.from;
+        this.to = json.to;
+    }
+});
+
+
+
 //should have access to the ship
 sh.verifyOrder = function(order, ship, playerID){
     if(!order || !order.type || order.type !== 'Order-JSON-V1' ||
@@ -23,7 +45,7 @@ sh.verifyOrder = function(order, ship, playerID){
     }
     switch(order.variant) {
         case 'move' : {
-            var dest = order.data.destination,
+            var dest = order.destination,
                 unit = ship.getUnitByID(order.unitID);
             if(unit &&
                 //is destination a walkable area
@@ -39,41 +61,61 @@ sh.verifyOrder = function(order, ship, playerID){
     }
 };
 
-sh.setUnitPath= function(unit, mouse) {
-    'use strict';
+var pfFinder = new sh.PF.AStarFinder({
+    allowDiagonal: true
+});
 
-    //TODO: convert to shared function (this function was directly copied from public)
-
-    var grid, path,
-        ship = gs.ship;
-    if (mouse.x === unit.x && mouse.y === unit.y) {
-        unit.path = [];
-    } else {
-        grid = new PF.Grid(ship.width, ship.height,
-            ship.getPfMatrix());
-        grid = this.processGrid(grid, unit, mouse);
-        path = this.pfFinder.findPath(unit.x, unit.y,
-            mouse.x, mouse.y, grid);
-        console.log('path length: ' + (path.length - 1));
-        if(path.length > 1) {
-            unit.path = path;
-        }
+function pathToActionsArray(path, unit) {
+    var actions = [], i,
+        step = unit.getTimeForOneTile(),
+        time = 0; //in ms
+    for (i = 1; i < path.length; i++, time += step) {
+        actions.push(new sh.MoveAction({
+            from: path[i - 1],
+            to: path[i],
+            start: time,
+            finish: time + step
+        }));
     }
-};
-sh.resolveOrders = function(orders) {
-    var script;
-    _.each(orders, function(unitOrders){
-        //a set of orders for each unit
-        var unitScript = {
-            unitID : unitOrders.unitID,
-            actions: []
-        };
-        _.each(unitOrders, function(order){
-            switch(order.type) {
-                case 'move': {
+    return actions;
+}
 
-                }
+function createActionsFromMoveOrder(order, ship) {
+    var path,
+        dest = order.destination,
+        unit = ship.getUnitByID(order.unitID),
+        a = console.log('ship.width: '+ ship.width + ' height:'
+            + ship.height +' matrix: ' + ship.getPfMatrix()),
+        grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
+        path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y, grid);
+    console.log('path length: ' + (path.length - 1));
+
+    if(path.length > 1) {
+        //generate the actions
+        return pathToActionsArray(path, unit);
+    }
+    return [];
+};
+
+/**
+ * Generates a "script" for the units given all the orders issued.
+ * @param orders
+ * @param ship
+ * @returns {{}}
+ */
+sh.createScript = function(orders, ship) {
+    var script = {};
+    _.each(orders, function(order){
+        if(!script[order.unitID]){
+            script[order.unitID] = [];//array of Action
+        }
+        switch(order.variant) {
+            case 'move': {
+                //this assumes the orders array is ordered by orders given
+                script[order.unitID]
+                    .concat(createActionsFromMoveOrder(order, ship));
             }
-        });
+        }
     });
+    return script;
 };
