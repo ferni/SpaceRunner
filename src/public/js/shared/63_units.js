@@ -15,6 +15,7 @@ if(typeof exports !== 'undefined'){
 sh.Unit = sh.TileEntity.extendShared({
     id: null, //the ship is in charge of setting the id
     init: function(x, y, settings){
+        'use strict';
         this.size = [1, 1];
         settings = this.completeSettings(settings);
         this.speed = settings.speed;
@@ -36,6 +37,7 @@ sh.Unit = sh.TileEntity.extendShared({
         return settings;
     },
     toJson: function(){
+        'use strict';
         return {
             id: this.id,
             x: this.x,
@@ -47,5 +49,9 @@ sh.Unit = sh.TileEntity.extendShared({
             }
 
         };
+    },
+    getTimeForOneTile: function() {
+        'use strict';
+        return 1000 / this.speed;
     }
 });
