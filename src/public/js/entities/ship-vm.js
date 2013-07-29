@@ -34,6 +34,9 @@ var ShipVM = function(shipModel) {
         if (this.updateUnits()) {
             somethingChanged = true;
         }
+        if(somethingChanged) {
+            me.game.sort();
+        }
         return somethingChanged;
     };
     this.updateItems = function(){
