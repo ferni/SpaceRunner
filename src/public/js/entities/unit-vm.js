@@ -13,6 +13,10 @@ var Unit = TileEntityVM.extend({
     size: [1, 1],
     init: function(unitModel) {
         this.m = unitModel;
+        this.prevPos = {
+            x: this.m.x,
+            y: this.m.y
+        };
         this.size = unitModel.size;
         this.speed = unitModel.speed;
         this.parent(unitModel.x, unitModel.y, {
@@ -31,6 +35,22 @@ var Unit = TileEntityVM.extend({
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
+    },
+    update: function(){
+        this.parent();
+
+        if(this.prevPos.x !== this.m.x) {
+            console.log('Updating unitVM x position');
+            this.setX(this.m.x);
+            this.prevPos.x = this.m.x;
+        }
+        if(this.prevPos.y !== this.m.y) {
+            console.log('Updating unitVM y position');
+            this.setY(this.m.y);
+            this.prevPos.y = this.m.y;
+        }
+
+        return true;
     },
     onShip: function(){
         return this.m.ship;
