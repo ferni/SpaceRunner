@@ -68,6 +68,10 @@ screens.register('battle', ConnectedScreen.extend({
             //get the script
             $.post('/battle/getscript', {id: screen.id}, function (data) {
                 //TODO: use the script (make script vm)
+
+                sh.updateShipByScript(gs.ship, data.script,
+                    screen.TURN_DURATION);
+                screen.shipVM.update();
                 screen.resume();
                 $.post('/battle/scriptreceived', {id: screen.id},function () {
                     //(informs the server that the script has been received)
@@ -211,7 +215,6 @@ screens.register('battle', ConnectedScreen.extend({
         //TODO: empty the script
 
         this.paused = true;
-        me.game.sort();
     },
     resume: function() {
         'use strict';
