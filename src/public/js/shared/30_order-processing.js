@@ -61,10 +61,11 @@ sh.verifyOrder = function(order, ship, playerID){
     }
 };
 
+
+//SCRIPT GENERATION
 var pfFinder = new sh.PF.AStarFinder({
     allowDiagonal: true
 });
-
 function pathToActionsArray(path, unit) {
     var actions = [], i,
         step = unit.getTimeForOneTile(),
@@ -80,16 +81,11 @@ function pathToActionsArray(path, unit) {
     return actions;
 }
 
-function createActionsFromMoveOrder(order, ship) {
+function createActionsFromMoveOrder(order, unit, grid) {
     var path,
         dest = order.destination,
-        unit = ship.getUnitByID(order.unitID),
-        a = console.log('ship.width: '+ ship.width + ' height:'
-            + ship.height +' matrix: ' + ship.getPfMatrix()),
-        grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
         path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y, grid);
     console.log('path length: ' + (path.length - 1));
-
     if(path.length > 1) {
         //generate the actions
         return pathToActionsArray(path, unit);
@@ -104,18 +100,22 @@ function createActionsFromMoveOrder(order, ship) {
  * @returns {{}}
  */
 sh.createScript = function(orders, ship) {
-    var script = {};
+    var script = {},
+        grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
+
     _.each(orders, function(order){
+        var unit = ship.getUnitByID(order.unitID);
         if(!script[order.unitID]){
             script[order.unitID] = [];//array of Action
         }
         switch(order.variant) {
             case 'move': {
                 //this assumes the orders array is ordered by orders given
-                script[order.unitID]
-                    .concat(createActionsFromMoveOrder(order, ship));
+                script[order.unitID] = script[order.unitID]
+                    .concat(createActionsFromMoveOrder(order, unit, grid));
             }
         }
     });
     return script;
 };
+
