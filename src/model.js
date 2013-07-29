@@ -66,6 +66,7 @@ exports.Battle = function(parameters) {
     this.nextTurn = function(){
         this.turnCount++;
         this.currentTurn = new BattleTurn({id: this.turnCount, battle: this});
+        this.receivedTheScript = [];
     };
     this.isPlayerInIt = function(playerID) {
         return (this.playerLeft && this.playerLeft.id === playerID) ||
