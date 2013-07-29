@@ -38,7 +38,7 @@ var ConnectedScreen = GameScreen.extend({
             $.post(self.url, {id: self.id}, function(data) {
                 self.data = data;
                 self.onData(data);
-            }, 'json');}, 1000);
+            }, 'json');}, 500);
     },
      stopFetching: function(){
          clearInterval(this.fetchIntervalID);
