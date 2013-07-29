@@ -32,7 +32,7 @@ function BattleTurn(params) {
         this.playersSubmitted.push(playerID);
     };
     this.generateScript = function(){
-        this.script = {};
+        this.script = sh.createScript(this.allOrders, this.battle.ship);
     };
 }
 
