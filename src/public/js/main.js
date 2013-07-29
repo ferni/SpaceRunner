@@ -248,7 +248,7 @@ var prebuilt = {
         '{"type":"console","x":12,"y":14,"r":false},' +
         '{"type":"console","x":12,"y":3,"r":false},' +
         '{"type":"component","x":13,"y":5,"r":false}],"units":[]}',
-    human:'{"tmxName":"Humanoid_Frigate","buildings":[{"type":"engine",' +
+    humanoid:'{"tmxName":"Humanoid_Frigate","buildings":[{"type":"engine",' +
           '"x":9,"y":10,"r":false},{"type":"engine",' +
           '"x":9,"y":6,"r":false},{"type":"wall",' +
           '"x":13,"y":6,"r":false},{"type":"wall",' +

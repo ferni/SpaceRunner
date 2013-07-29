@@ -49,6 +49,13 @@ screens.register('lobby', GameScreen.extend({
     },
 
     hostBattle: function() {
-        me.state.change('ship-select');
+        if(gs.modes.useprebuilt) {
+            server.createBattle(new sh.Ship({jsonString: prebuilt.humanoid}),
+                function(settings){
+                    me.state.change('battle-set-up', settings);
+            });
+        }else{
+            me.state.change('ship-select');
+        }
     }
 }));
