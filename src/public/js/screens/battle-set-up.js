@@ -18,6 +18,12 @@ screens.register('battle-set-up', ConnectedScreen.extend({
     onHtmlLoaded : function(){
 
     },
+
+    bothPlayersPresent: function(){
+        return this.data &&
+            typeof this.data.creator.id !== 'undefined' &&
+            typeof this.data.challenger.id !== 'undefined';
+    },
     /**
      * Loads the knockout vm to bind it to the HTML
      */
@@ -29,8 +35,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         }, this.vm);
         this.vm.start = function () {
             //both players present
-            if (typeof screen.data.creator.id !== 'undefined'
-                && typeof screen.data.challenger.id !== 'undefined') {
+            if (screen.bothPlayersPresent()) {
                 $.post(screen.name + '/start', {id: this.id()},
                     function (data) {
                         //nothing (battle starts in onDataUpdated )
@@ -49,6 +54,10 @@ screens.register('battle-set-up', ConnectedScreen.extend({
             gs.ship =  new sh.Ship({jsonString: this.data.battle.ship});
             me.state.change('battle', {id: this.data.battle.id});
         }
+        //this somehow makes both players use different battle ids.
+        /*if(gs.modes.auto && this.bothPlayersPresent()) {
+            this.vm.start();
+        }*/
     },
     onData: function(){
         if(!this.dataExecuted) {//is first time
