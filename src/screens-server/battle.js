@@ -54,19 +54,22 @@ routes.add('get', function(req, res, next) {
 
 routes.add('submitorders', function(req, res, next){
     var orders = req.body.orders,
-        i, verifiedOrdersCount = 0;
+        verifiedOrdersCount = 0;
     return authenticate(req, next, function(battle, playerID){
-        var turn;
+        var turn, unitID;
         if(!orders) {
-            orders = [];
+            orders = {};
         }
-        for (i = 0; i < orders.length; i++) {
-            if(!sh.verifyOrder(orders[i], battle.ship, playerID)) {
-                chat.log('ERROR: An order was invalid.');
-                next(new Error('An order submitted is invalid'));
-                return;
-            }else{
-                verifiedOrdersCount++;
+        for (unitID in orders) {
+            if (orders.hasOwnProperty(unitID)) {
+                //for now each unit just has one order
+                if(!sh.verifyOrder(orders[unitID], battle.ship, playerID)) {
+                    chat.log('ERROR: An order was invalid.');
+                    next(new Error('An order submitted is invalid'));
+                    return;
+                }else{
+                    verifiedOrdersCount++;
+                }
             }
         }
 
@@ -76,6 +79,9 @@ routes.add('submitorders', function(req, res, next){
             !turn.script) {
             //all orders have been submitted, generate the script
             turn.generateScript();
+            //TODO: make the function updateShip... server side only
+            //then send the updated ship to the clients
+            sh.updateShipByScript(battle.ship, turn.script, 3000);
         }
         chat.log('SUCCESS: All orders submitted have been validated by the' +
             ' server (' + verifiedOrdersCount +' orders).');

@@ -10,7 +10,7 @@
 screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
-    verifiedOrders: [],
+    verifiedOrders: {},
     currentTurnID: null,
     onReset: function(settings){
         this.parent(settings);
@@ -165,13 +165,47 @@ screens.register('battle', ConnectedScreen.extend({
         _.each(unitVMs, function(u){
             var order = make.moveOrder(u.m, destination);
             if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
-                self.verifiedOrders.push(order);
+                self.verifiedOrders[u.m.id] = order;
                 console.log('Order given valid.');
             }else{
                 console.log('Order given INVALID.');
             }
         });
 
+    },
+
+    pause: function() {
+        'use strict';
+        $('#paused-indicator, #ready-button').show();
+        $('#elapsed').hide();
+        this.readyButton.enable();
+        //TODO: empty the script
+
+        this.paused = true;
+    },
+    resume: function() {
+        'use strict';
+        $('#paused-indicator, #ready-button').hide();
+        $('#elapsed').show();
+        //reset time
+        this.turnBeginTime = me.timer.getTime();
+        this.paused = false;
+    },
+    //When a player clicks "Ready"
+    onReady: function(){
+        var screen = this;
+        screen.readyButton.disable();
+        //send the orders to the server
+        $.post('/battle/submitorders',
+            {id: this.id, orders: this.verifiedOrders}, function(data) {
+                console.log('Orders successfully submitted');
+                screen.verifiedOrders = {};
+                screen.startFetching();
+            }, 'json')
+            .fail(function(){
+                console.error('Server error when submitting orders.');
+                screen.readyButton.enable();
+            });
     },
     selectUnit: function(x, y) {
         'use strict';
@@ -208,38 +242,6 @@ screens.register('battle', ConnectedScreen.extend({
                 ' released.');
         }
 
-    },
-    pause: function() {
-        'use strict';
-        $('#paused-indicator, #ready-button').show();
-        $('#elapsed').hide();
-        this.readyButton.enable();
-        //TODO: empty the script
-
-        this.paused = true;
-    },
-    resume: function() {
-        'use strict';
-        $('#paused-indicator, #ready-button').hide();
-        $('#elapsed').show();
-        //reset time
-        this.turnBeginTime = me.timer.getTime();
-        this.paused = false;
-    },
-    //When a player clicks "Ready"
-    onReady: function(){
-        var screen = this;
-        screen.readyButton.disable();
-        //send the orders to the server
-        $.post('/battle/submitorders',
-            {id: this.id, orders: this.verifiedOrders}, function(data) {
-                console.log('Orders successfully submitted');
-                screen.startFetching();
-            }, 'json')
-            .fail(function(){
-                console.error('Server error when submitting orders.');
-                screen.readyButton.enable();
-            });
     },
     at: function(x, y) {
         return gs.ship.at(x, y);

@@ -90,8 +90,8 @@ if(typeof exports !== 'undefined'){
         var path,
             dest = order.destination,
             path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y, grid);
-        console.log('path length: ' + (path.length - 1));
-        if(path.length > 1) {
+        console.log('path length: ' + path.length);
+        if(path.length > 0) {
             //generate the actions
             return pathToActionsArray(path, unit);
         }
