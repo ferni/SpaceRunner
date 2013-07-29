@@ -14,7 +14,8 @@ screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
     onReset: function(settings){
         this.parent(settings);
-        console.log('id is ' + this.id);
+        this.stopFetching();
+        console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
@@ -73,6 +74,7 @@ screens.register('battle', ConnectedScreen.extend({
                     screen.TURN_DURATION);
                 screen.shipVM.update();
                 screen.resume();
+                screen.stopFetching();
                 $.post('/battle/scriptreceived', {id: screen.id},function () {
                     //(informs the server that the script has been received)
                 }).fail(function () {
@@ -232,6 +234,7 @@ screens.register('battle', ConnectedScreen.extend({
         $.post('/battle/submitorders',
             {id: this.id, orders: this.verifiedOrders}, function(data) {
                 console.log('Orders successfully submitted');
+                screen.startFetching();
             }, 'json')
             .fail(function(){
                 console.error('Server error when submitting orders.');
