@@ -185,12 +185,16 @@ sh.Ship = sh.SharedClass.extendShared({
         var ship = this,
             pfMatrix = sh.utils.getEmptyMatrix(this.width, this.height, 1);
         ship.map.tiles(function(x, y) {
-            if (ship.map.at(x, y) === sh.tiles.clear ||
-                ship.map.at(x, y) instanceof sh.Unit) {
-                pfMatrix[y][x] = 0; //clear tiles and units are walkable
+            if (ship.isWalkable(x, y)) {
+                pfMatrix[y][x] = 0;
             }
         });
         return pfMatrix;
+    },
+    isWalkable: function(x, y) {
+        var tile = this.map.at(x, y);
+        //clear tiles and units are walkable
+        return  tile === sh.tiles.clear || tile instanceof sh.Unit;
     }
 });
 

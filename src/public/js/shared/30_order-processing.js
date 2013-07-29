@@ -51,7 +51,7 @@ if(typeof exports !== 'undefined'){
                     unit = ship.getUnitByID(order.unitID);
                 if(unit &&
                     //is destination a walkable area
-                    ship.at(dest.x, dest.y) === sh.tiles.clear &&
+                    ship.isWalkable(dest.x, dest.y) &&
                     //unit owned by the issuer
                     unit.owner.id === playerID){
                     return true;
