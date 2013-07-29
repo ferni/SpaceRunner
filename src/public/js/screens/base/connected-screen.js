@@ -19,24 +19,30 @@ var ConnectedScreen = GameScreen.extend({
         this.url = name + '/get';
     },
     onReset: function(settings){
-        var self = this;
         if (typeof settings.id !== 'undefined') {
             this.id = settings.id;
         }else if (typeof this.id === 'undefined') {
             throw 'ConnectedScreen should have id, or passed as a setting.';
         }
         //start fetching the data
+        this.startFetching();
+        this.parent(settings);
+    },
+    onDestroyEvent: function(){
+        this.stopFetching();
+        this.parent();
+    },
+    startFetching: function(){
+        var self = this;
         this.fetchIntervalID = setInterval(function() {
             $.post(self.url, {id: self.id}, function(data) {
                 self.data = data;
                 self.onData(data);
             }, 'json');}, 1000);
-        this.parent(settings);
     },
-    onDestroyEvent: function(){
-        clearInterval(this.fetchIntervalID);
-        this.parent();
-    },
+     stopFetching: function(){
+         clearInterval(this.fetchIntervalID);
+     },
     onData: function(data){
         //override this (the data is stored in this.data)
     }
