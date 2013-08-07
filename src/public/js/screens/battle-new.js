@@ -13,6 +13,8 @@ screens.register('battle', ConnectedScreen.extend({
     verifiedOrders: {},
     currentTurnID: null,
     scriptVM: null,
+    scriptPlayer: null,
+    scriptServer: {},
     onReset: function(settings){
         this.parent(settings);
         this.stopFetching();
@@ -21,6 +23,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM.showInScreen();
         this.shipVM.update();
         this.scriptVM = new ScriptVM({});
+        this.scriptPlayer = new ScriptPlayer(this);
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -69,10 +72,8 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.paused && data.scriptReady) {
             //get the script
             $.post('/battle/getscript', {id: screen.id}, function (data) {
-                //TODO: use the script (make script vm)
-
-                sh.updateShipByScript(gs.ship, data.script,
-                    screen.TURN_DURATION);
+                screen.scriptServer = data.script;
+                screen.scriptPlayer.loadScript(data.script);
                 screen.shipVM.update();
                 screen.resume();
                 screen.stopFetching();
@@ -90,6 +91,8 @@ screens.register('battle', ConnectedScreen.extend({
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
             this.shipVM.update();
+            this.scriptPlayer.update(elapsed);
+
             //update counter
             $('#elapsed').html(elapsed);
             if (elapsed >= this.TURN_DURATION) {
@@ -183,7 +186,10 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
+        sh.updateShipByScript(gs.ship, this.scriptServer, this.TURN_DURATION)
+        this.shipVM.update();
         //empty the script
+        this.scriptServer = {};
         this.scriptVM.m = {};
 
         this.paused = true;
