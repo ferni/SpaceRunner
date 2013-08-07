@@ -36,6 +36,7 @@ var DragBox = me.Rect.extend({
         this.parent(ctx);
         ctx.fillStyle = 'rgba(0,0,255,0.3)';
         ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 1;
         ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
         ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
     },
