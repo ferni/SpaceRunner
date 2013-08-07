@@ -232,39 +232,18 @@ var g_resources = [{
 }];
 
 var prebuilt = {
-    cyborg:'{"tmxName":"Cyborg_Frigate","buildings":[' +
-        '{"type":"engine","x":5,"y":9,"r":false},' +
-        '{"type":"wall","x":7,"y":10,"r":false},' +
-        '{"type":"wall","x":7,"y":9,"r":false},' +
-        '{"type":"door","x":7,"y":7,"r":true},' +
-        '{"type":"power","x":8,"y":9,"r":false},' +
-        '{"type":"console","x":10,"y":10,"r":false},' +
-        '{"type":"weapon","x":13,"y":3,"r":false},' +
-        '{"type":"weapon","x":13,"y":13,"r":false},' +
-        '{"type":"wall","x":11,"y":10,"r":false},' +
-        '{"type":"wall","x":11,"y":7,"r":false},' +
-        '{"type":"door","x":11,"y":8,"r":true},' +
-        '{"type":"component","x":13,"y":11,"r":false},' +
-        '{"type":"console","x":12,"y":14,"r":false},' +
-        '{"type":"console","x":12,"y":3,"r":false},' +
-        '{"type":"component","x":13,"y":5,"r":false}],"units":[]}',
-    humanoid:'{"tmxName":"Humanoid_Frigate","buildings":[{"type":"engine",' +
-          '"x":9,"y":10,"r":false},{"type":"engine",' +
-          '"x":9,"y":6,"r":false},{"type":"wall",' +
-          '"x":13,"y":6,"r":false},{"type":"wall",' +
-          '"x":13,"y":5,"r":false},{"type":"console",' +
-          '"x":10,"y":8,"r":false},{"type":"console",' +
-          '"x":10,"y":9,"r":false},{"type":"door",' +
-          '"x":11,"y":6,"r":false},{"type":"weapon",' +
-          '"x":16,"y":7,"r":false},{"type":"weapon",' +
-        '"x":16,"y":9,"r":false},{"type":"console",' +
-        '"x":15,"y":10,"r":false},{"type":"console",' +
-        '"x":15,"y":7,"r":false},{"type":"component",' +
-        '"x":10,"y":12,"r":false},{"type":"power",' +
-        '"x":12,"y":8,"r":false},{"type":"wall",' +
-        '"x":13,"y":11,"r":false},{"type":"wall",' +
-        '"x":13,"y":12,"r":false},{"type":"door",' +
-        '"x":11,"y":11,"r":false}],"units":[]}'
+    humanoid:'{"tmxName":"Humanoid_Cruiser","buildings":[' +
+        '{"type":"power","x":15,"y":11,"r":false},' +
+        '{"type":"engine","x":11,"y":9,"r":false},' +
+        '{"type":"engine","x":11,"y":13,"r":false},' +
+        '{"type":"weapon","x":22,"y":9,"r":false},' +
+        '{"type":"weapon","x":22,"y":13,"r":false},' +
+        '{"type":"component","x":19,"y":11,"r":false},' +
+        '{"type":"console","x":11,"y":11,"r":false},' +
+        '{"type":"console","x":11,"y":12,"r":false},' +
+        '{"type":"console","x":21,"y":9,"r":false},' +
+        '{"type":"console","x":21,"y":14,"r":false}],' +
+        '"units":[]}'
 };
 
 // jsApp
