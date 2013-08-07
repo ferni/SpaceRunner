@@ -183,7 +183,8 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        //TODO: empty the script
+        //empty the script
+        this.scriptVM.m = {};
 
         this.paused = true;
     },
