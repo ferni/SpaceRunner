@@ -12,6 +12,7 @@ screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION: 3000,
     verifiedOrders: {},
     currentTurnID: null,
+    scriptVM: null,
     onReset: function(settings){
         this.parent(settings);
         this.stopFetching();
@@ -19,7 +20,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
-
+        this.scriptVM = new ScriptVM({});
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -103,6 +104,7 @@ screens.register('battle', ConnectedScreen.extend({
             screen = this;
         this.parent(ctx);
         if (this.paused) {
+            this.scriptVM.draw(ctx);
             if (gs.ship.at(mouse.x, mouse.y) instanceof sh.Unit) {
                 utils.setCursor('pointer');
             } else if(!this.dragBox){
@@ -166,6 +168,8 @@ screens.register('battle', ConnectedScreen.extend({
             var order = make.moveOrder(u.m, destination);
             if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 self.verifiedOrders[u.m.id] = order;
+                //update vm with new script model
+                self.scriptVM.m = sh.createScript(self.verifiedOrders, gs.ship);
                 console.log('Order given valid.');
             }else{
                 console.log('Order given INVALID.');
