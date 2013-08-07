@@ -68,7 +68,7 @@ if(typeof exports !== 'undefined'){
     var pfFinder = new sh.PF.AStarFinder({
         allowDiagonal: true
     });
-    function pathToActionsArray(path, unit) {
+    function convertPathToActionsArray(path, unit) {
         var actions = [], i,
             step = unit.getTimeForOneTile(),
             time = 0; //in ms
@@ -93,7 +93,7 @@ if(typeof exports !== 'undefined'){
         console.log('path length: ' + path.length);
         if(path.length > 0) {
             //generate the actions
-            return pathToActionsArray(path, unit);
+            return convertPathToActionsArray(path, unit);
         }
         return [];
     };
