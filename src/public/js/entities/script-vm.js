@@ -7,6 +7,10 @@
 
 /*global */
 
+/**
+ * Displays the script on the screen.
+ * @type {*}
+ */
 var ScriptVM = Object.extend({
     init: function(model){
         this.m = model;
@@ -27,10 +31,10 @@ var ScriptVM = Object.extend({
         ctx.strokeStyle = 'green';
         ctx.lineWidth = 3;
         _.each(linesToDraw, function(line){
-            ctx.moveTo((line.from[0] * TILE_SIZE) + HALF_TILE,
-                (line.from[1] * TILE_SIZE) + HALF_TILE);
-            ctx.lineTo((line.to[0] * TILE_SIZE) + HALF_TILE,
-                (line.to[1] * TILE_SIZE) + HALF_TILE);
+            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
+                (line.from.y * TILE_SIZE) + HALF_TILE);
+            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
+                (line.to.y * TILE_SIZE) + HALF_TILE);
         });
         ctx.stroke();
     }

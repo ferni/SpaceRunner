@@ -77,8 +77,14 @@ if(typeof exports !== 'undefined'){
             actions.push({
                 type: 'Action',
                 variant: 'move',
-                from: path[i - 1],
-                to: path[i],
+                from: {
+                    x: path[i - 1][0],
+                    y: path[i - 1][1]
+                },
+                to: {
+                    x: path[i][0],
+                    y: path[i][1]
+                },
                 start: time,
                 end: time + step
             });
@@ -159,11 +165,11 @@ if(typeof exports !== 'undefined'){
                 executingAction = findActionByTime(script[unitID]);
                 if(executingAction) {
                     if(time < getActionMiddle(executingAction)) {
-                        unit.x = executingAction.from[0];
-                        unit.y = executingAction.from[1];
+                        unit.x = executingAction.from.x;
+                        unit.y = executingAction.from.y;
                     }else{
-                        unit.x = executingAction.to[0];
-                        unit.y = executingAction.to[1];
+                        unit.x = executingAction.to.x;
+                        unit.y = executingAction.to.y;
                     }
                 }
             }
