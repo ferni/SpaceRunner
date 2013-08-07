@@ -17,11 +17,11 @@ var ScriptPlayer = function(battleScreen){
     function playMoveAction(action, unitVM) {
         var duration, tween;
         duration = action.end - action.start;
-        unitVM.pos.x = action.from.x * TILE_SIZE;
-        unitVM.pos.y = action.from.y * TILE_SIZE;
+        unitVM.pos.x = (action.from.x - unitVM.cannonTile[0]) * TILE_SIZE;
+        unitVM.pos.y = (action.from.y - unitVM.cannonTile[1]) * TILE_SIZE;
         tween = new me.Tween(unitVM.pos)
-            .to({x: action.to.x * TILE_SIZE,
-                y: action.to.y * TILE_SIZE}, duration);
+            .to({x: (action.to.x - unitVM.cannonTile[0]) * TILE_SIZE,
+                y: (action.to.y - unitVM.cannonTile[1]) * TILE_SIZE}, duration);
         tween.start();
     }
 

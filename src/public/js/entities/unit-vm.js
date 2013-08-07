@@ -11,6 +11,7 @@ var Unit = TileEntityVM.extend({
     speed: 1, //tiles per second
     selected: false,
     size: [1, 1],
+    cannonTile: [-0.25, -0.25],//image offset
     init: function(unitModel) {
         this.m = unitModel;
         this.prevPos = {
