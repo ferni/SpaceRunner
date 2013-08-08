@@ -21,7 +21,8 @@ var ScriptPlayer = function(battleScreen){
         unitVM.pos.y = (action.from.y - unitVM.cannonTile[1]) * TILE_SIZE;
         tween = new me.Tween(unitVM.pos)
             .to({x: (action.to.x - unitVM.cannonTile[0]) * TILE_SIZE,
-                y: (action.to.y - unitVM.cannonTile[1]) * TILE_SIZE}, duration);
+                y: (action.to.y - unitVM.cannonTile[1]) * TILE_SIZE},
+            duration);
         tween.start();
     }
 
