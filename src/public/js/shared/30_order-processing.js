@@ -73,7 +73,6 @@ if(typeof exports !== 'undefined'){
             step = unit.getTimeForOneTile(),
             time = 0; //in ms
         for (i = 1; i < path.length; i++, time += step) {
-            console.log('adding action');
             actions.push({
                 type: 'Action',
                 variant: 'move',
@@ -97,7 +96,6 @@ if(typeof exports !== 'undefined'){
         var path,
             dest = order.destination,
             path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y, grid);
-        console.log('path length: ' + path.length);
         if(path.length > 0) {
             //generate the actions
             return convertPathToActionsArray(path, unit);
@@ -116,13 +114,13 @@ if(typeof exports !== 'undefined'){
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
 
         _.each(orders, function(order){
-            var unit = ship.getUnitByID(order.unitID);
+            var unit = ship.getUnitByID(order.unitID), actions;
             switch(order.variant) {
                 case 'move': {
                     //this assumes the orders array is ordered by orders given
-                    script = script
-                        .concat(createActionsFromMoveOrder(order, unit, grid));
-                }
+                    actions = createActionsFromMoveOrder(order, unit, grid.clone());
+                    script = script.concat(actions);
+                } break;
             }
         });
         script = _.sortBy(script, 'start');
