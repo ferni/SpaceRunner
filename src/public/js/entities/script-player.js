@@ -12,7 +12,7 @@
  * @type {*}
  */
 var ScriptPlayer = function(battleScreen){
-    var screen = battleScreen, script, lastExecuted = -1;
+    var screen = battleScreen, script, lastExecuted;
 
     function playMoveAction(action) {
         var duration, tween,
@@ -38,6 +38,7 @@ var ScriptPlayer = function(battleScreen){
 
     this.loadScript = function(s){
         script = s;
+        lastExecuted = -1;
     };
 
 
@@ -49,8 +50,8 @@ var ScriptPlayer = function(battleScreen){
                 lastExecuted = i;
             } else {
                 break;
-                //if the first is not yet due, that means none
-                //are due because the script is ordered.
+                //if one is not yet due, that means the following ones
+                //are not yet due because the script is ordered.
             }
         }
     };
