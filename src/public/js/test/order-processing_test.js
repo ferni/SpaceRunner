@@ -21,3 +21,20 @@ test('script creation', function(){
     equal(script[0].start, 0, 'First action starts at 0');
     equal(script[1].start, 1000, 'Second action starts at 1000');
 });
+
+test('fix actions overlap', function(){
+    var actions = [
+        {start: 0, end: 10},
+        {start: 7, end: 17},
+        {start: 5, end: 15}
+    ];
+
+    sh.fixActionsOverlap(actions);
+    equal(actions[0].start, 0);
+    equal(actions[0].end, 10);
+    equal(actions[1].start, 10);
+    equal(actions[1].end, 20);
+    equal(actions[2].start, 20);
+    equal(actions[2].end, 30);
+
+});

@@ -16,7 +16,8 @@ if(typeof exports !== 'undefined'){
 //TODO: verify that the player is in the order.battleID
 (function(){
     'use strict';
-
+    //These classes serve as documentation only,
+    //the json counterparts are being used instead.
     var Action = sh.SharedClass.extendShared({
         unitID: null,
         start: 0,//ms
@@ -39,7 +40,6 @@ if(typeof exports !== 'undefined'){
 
 
 
-    //should have access to the ship
     sh.verifyOrder = function(order, ship, playerID){
         if(!order || !order.type || order.type !== 'Order-JSON-V1' ||
             !order.variant) {
@@ -101,7 +101,66 @@ if(typeof exports !== 'undefined'){
             return convertPathToActionsArray(path, unit);
         }
         return [];
+    }
+
+    function willUnitMove(unitID, actionsByUnit) {
+        _.any(actionsByUnit[unitID], function(action){
+            return action.variant === 'move';
+        });
+    }
+
+    function getActionsByUnit(script) {
+        var actions = {};
+        _.each(script, function(action){
+            if(typeof action.unitID !== 'undefined') {
+                if(!actions[action.unitID]){
+                    actions[action.unitID] = [];
+                }
+                actions[action.unitID].push(action);
+            }
+        });
+        return actions;
+    }
+
+    sh.fixActionsOverlap = function(actions) {
+        var i, diff;
+        for(i = 0; i < actions.length - 1; i++) {
+            if(actions[i + 1].start < actions[i].end) {
+                diff = actions[i].end - actions[i + 1].start;
+                actions[i + 1].start += diff;
+                actions[i + 1].end += diff;
+            }
+        }
     };
+
+    function applySpeedModifiers(script, ship){
+        var actionsByUnit = getActionsByUnit(script);
+        _.each(actionsByUnit, function(actions, unitID) {
+            var unit = ship.getUnitByID(unitID),
+                changed = false;
+            _.each(actions, function(action){
+                var otherUnit, duration;
+                if(action.variant === 'move') {
+                    otherUnit = ship.map.at(action.from.x, action.from.y);
+                    if(otherUnit instanceof sh.Unit &&
+                        //is enemy unit
+                        otherUnit.owner.id !== unit.owner.id &&
+                        //unit will stand still
+                        !willUnitMove(otherUnit.id, actionsByUnit)){
+
+                        //apply %25 speed
+                        duration = action.end - action.start;
+                        duration *= 4;
+                        action.end = action.start + duration;
+                        changed = true;
+                    }
+                }
+            });
+            if(changed) {
+                sh.fixActionsOverlap(actions);
+            }
+        });
+    }
 
     /**
      * Generates a "script" for the units given all the orders issued.
@@ -124,6 +183,7 @@ if(typeof exports !== 'undefined'){
             }
         });
         script = _.sortBy(script, 'start');
+        applySpeedModifiers(script, ship);
         return script;
     };
 
