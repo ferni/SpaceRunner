@@ -12,10 +12,12 @@
  * @type {*}
  */
 var ScriptPlayer = function(battleScreen){
-    var screen = battleScreen;
+    var screen = battleScreen, script, lastExecuted = -1;
 
-    function playMoveAction(action, unitVM) {
-        var duration, tween;
+    function playMoveAction(action) {
+        var duration, tween,
+            unit = gs.ship.getUnitByID(action.unitID),
+            unitVM = screen.shipVM.getVM(unit);
         duration = action.end - action.start;
         unitVM.pos.x = (action.from.x - unitVM.cannonTile[0]) * TILE_SIZE;
         unitVM.pos.y = (action.from.y - unitVM.cannonTile[1]) * TILE_SIZE;
@@ -26,41 +28,31 @@ var ScriptPlayer = function(battleScreen){
         tween.start();
     }
 
-    function playAction(action, unitVM){
+    function playAction(action){
         switch(action.variant) {
             case 'move': {
-                 playMoveAction(action, unitVM);
+                 playMoveAction(action);
             } break;
         }
     }
 
-
-
-    this.loadScript = function(script){
-        this.script = script;
-        this.index = {};
-
+    this.loadScript = function(s){
+        script = s;
     };
 
 
     this.update = function(elapsed){
-        //TODO: Maybe don't organize actions by unit in the script.
-        //actions for each unit
-        var self = this;
-        _.each(this.script, function(actions, unitID){
-            var unit, unitVM, i;
-            if(!self.index[unitID]) {
-                self.index[unitID] = 0;
+        var i;
+        for(i = lastExecuted + 1; i < script.length; i++) {
+            if (elapsed >= script[i].start) {
+                playAction(script[i]);
+                lastExecuted = i;
+            } else {
+                break;
+                //if the first is not yet due, that means none
+                //are due because the script is ordered.
             }
-            i = self.index[unitID];
-            while(actions[i] && elapsed >= actions[i].start) {
-                unit = gs.ship.getUnitByID(unitID);
-                unitVM = screen.shipVM.getVM(unit);
-                playAction(actions[i], unitVM);
-                self.index[unitID]++;
-                i = self.index[unitID];
-            }
-        })
+        }
     };
     this.draw = function(ctx){
 

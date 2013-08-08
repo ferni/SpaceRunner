@@ -14,7 +14,7 @@ screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
     scriptVM: null,
     scriptPlayer: null,
-    scriptServer: {},
+    scriptServer: [],
     onReset: function(settings){
         this.parent(settings);
         this.stopFetching();
@@ -22,7 +22,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
-        this.scriptVM = new ScriptVM({});
+        this.scriptVM = new ScriptVM([]);
         this.scriptPlayer = new ScriptPlayer(this);
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
@@ -189,8 +189,8 @@ screens.register('battle', ConnectedScreen.extend({
         sh.updateShipByScript(gs.ship, this.scriptServer, this.TURN_DURATION)
         this.shipVM.update();
         //empty the script
-        this.scriptServer = {};
-        this.scriptVM.m = {};
+        this.scriptServer = [];
+        this.scriptVM.m = [];
 
         this.paused = true;
     },

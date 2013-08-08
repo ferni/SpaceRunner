@@ -77,6 +77,7 @@ if(typeof exports !== 'undefined'){
             actions.push({
                 type: 'Action',
                 variant: 'move',
+                unitID: unit.id,
                 from: {
                     x: path[i - 1][0],
                     y: path[i - 1][1]
@@ -108,47 +109,25 @@ if(typeof exports !== 'undefined'){
      * Generates a "script" for the units given all the orders issued.
      * @param orders
      * @param ship
-     * @returns {{}}
+     * @returns {[]}
      */
     sh.createScript = function(orders, ship) {
-        var script = {},
+        var script = [],
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
 
         _.each(orders, function(order){
             var unit = ship.getUnitByID(order.unitID);
-            if(!script[order.unitID]){
-                script[order.unitID] = [];//array of Action
-            }
             switch(order.variant) {
                 case 'move': {
                     //this assumes the orders array is ordered by orders given
-                    script[order.unitID] = script[order.unitID]
+                    script = script
                         .concat(createActionsFromMoveOrder(order, unit, grid));
                 }
             }
         });
+        script = _.sortBy(script, 'start');
         return script;
     };
-
-    //find action at the time, or the last action
-    //(assumes actions are ordered by time)
-    function findActionByTime(actions, time) {
-        var i;
-        if(actions.length === 0) {
-            return null;
-        }
-
-        for(i = 0; i < actions.length; i++) {
-            if(actions[i].start >= time && actions[i].to < time) {
-                return actions[i];
-            }
-        }
-        return actions[i - 1];//last action
-    }
-
-    function getActionMiddle(action) {
-        return (action.start + action.end) / 2;
-    }
 
     /**
      * Modifies the ship and its elements according with the script given
@@ -158,22 +137,16 @@ if(typeof exports !== 'undefined'){
      * @param time
      */
     sh.updateShipByScript = function(ship, script, time) {
-        var unit, unitID, executingAction;
-        for(unitID in script) {
-            if(script.hasOwnProperty(unitID)) {
-                unit = ship.getUnitByID(unitID);
-                executingAction = findActionByTime(script[unitID]);
-                if(executingAction) {
-                    if(time < getActionMiddle(executingAction)) {
-                        unit.x = executingAction.from.x;
-                        unit.y = executingAction.from.y;
-                    }else{
-                        unit.x = executingAction.to.x;
-                        unit.y = executingAction.to.y;
-                    }
-                }
+        //TODO: leverage the fact that the actions are ordered by time
+        _.each(script, function(action){
+            var unit;
+            if(action.start <= time) {
+                //this assumes the action involves a unit
+                unit = ship.getUnitByID(action.unitID);
+                unit.x = action.to.x;
+                unit.y = action.to.y;
             }
-        }
+        });
         ship.unitsMap.update();
     };
 })();

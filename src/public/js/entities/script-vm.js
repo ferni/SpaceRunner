@@ -17,13 +17,11 @@ var ScriptVM = Object.extend({
     },
     draw: function(ctx) {
         var linesToDraw = [];
-        _.each(this.m, function(actions, unitID){
-            _.each(actions, function(action) {
-                if(action.variant === 'move') {
-                    //draw a line
-                    linesToDraw.push({from: action.from, to: action.to});
-                }
-            });
+        _.each(this.m, function(action){
+            if(action.variant === 'move') {
+                //draw a line
+                linesToDraw.push({from: action.from, to: action.to});
+            }
         });
 
         //draw lines for units' move actions
