@@ -7,7 +7,7 @@
     max-height: 300px;
   padding: 2px;
     background-color: black;
-    color: graytext;
+    color: #cccccc;
     font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
 
     border: solid 1px white;
@@ -41,7 +41,7 @@
     bottom:2px;
 }
 #chat-client input{
-    width: 100%;
+    width: 188px;
 }
 
 #chat-client .sender{
