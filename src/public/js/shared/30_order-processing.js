@@ -137,7 +137,7 @@ if(typeof exports !== 'undefined'){
     }
 
     function willUnitMove(unitID, actionsByUnit) {
-        _.any(actionsByUnit[unitID], function(action){
+        return _.any(actionsByUnit[unitID], function(action){
             return action.variant === 'move';
         });
     }
