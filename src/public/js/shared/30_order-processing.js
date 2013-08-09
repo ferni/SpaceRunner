@@ -68,12 +68,38 @@ if(typeof exports !== 'undefined'){
     var pfFinder = new sh.PF.AStarFinder({
         allowDiagonal: true
     });
+
+    function getTileDistance(from, to) {
+        var a = to.x - from.x,
+            b = to.y - from.y;
+        if(a === 0) {
+            if(b < 0) {
+                return -b;
+            }
+            return b;
+        }
+        if(a < 0) {
+            return -a;
+        }
+        return a;
+    }
+
+    function isDiagonal(from, to) {
+        var a = to.x - from.x,
+            b = to.y - from.y;
+        return a !== 0 && b !== 0;
+    }
+
     function convertPathToActionsArray(path, unit) {
-        var actions = [], i,
-            step = unit.getTimeForOneTile(),
+        var action,
+            actions = [], i,
+            oneTileTime = unit.getTimeForOneTile(),
+            diagonalTime = oneTileTime * 1.41421356,
+            tileDistance,
+            step,
             time = 0; //in ms
         for (i = 1; i < path.length; i++, time += step) {
-            actions.push({
+            action = {
                 type: 'Action',
                 variant: 'move',
                 unitID: unit.id,
@@ -85,9 +111,16 @@ if(typeof exports !== 'undefined'){
                     x: path[i][0],
                     y: path[i][1]
                 },
-                start: time,
-                end: time + step
-            });
+                start: time
+            };
+            tileDistance = getTileDistance(action.from, action.to);
+            if(isDiagonal(action.from, action.to)) {
+                step = tileDistance * diagonalTime;
+            }else{
+                step = tileDistance * oneTileTime;
+            }
+            action.end = action.start + step;
+            actions.push(action);
         }
         return actions;
     }
