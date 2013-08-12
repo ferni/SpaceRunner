@@ -242,7 +242,8 @@ if(typeof exports !== 'undefined'){
                 a = ship.units[i];
                 for (j = i - 1; j >= 0; j--) {
                     b = ship.units[j];
-                    if(_.isEqual(getEndPosition(a, actionsByUnit),
+                    if(a.owner.id === b.owner.id && //unis are of the same team
+                        _.isEqual(getEndPosition(a, actionsByUnit),
                         getEndPosition(b, actionsByUnit))) {
                         //same end position, one will need to change
                         if(willUnitMove(a.id, actionsByUnit)){
