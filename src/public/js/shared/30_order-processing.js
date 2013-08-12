@@ -16,7 +16,8 @@ if(typeof exports !== 'undefined'){
 //TODO: verify that the player is in the order.battleID
 (function(){
     'use strict';
-    //These classes serve as documentation only,
+
+    //The following classes serve as documentation only,
     //the json counterparts are being used instead.
     var Action = sh.SharedClass.extendShared({
         unitID: null,
@@ -26,7 +27,8 @@ if(typeof exports !== 'undefined'){
             this.start = json.start;
             this.end = json.end;
         }
-    });
+    }),
+    TURN_DURATION = 3000;//TODO: maybe set this somewhere else and propagate it
 
     sh.MoveAction = Action.extendShared({
         from:null,
@@ -49,16 +51,12 @@ if(typeof exports !== 'undefined'){
             case 'move' : {
                 var dest = order.destination,
                     unit = ship.getUnitByID(order.unitID);
-                if(unit &&
+                return unit &&
                     //is destination a walkable area
                     ship.isWalkable(dest.x, dest.y) &&
                     //unit owned by the issuer
-                    unit.owner.id === playerID){
-                    return true;
-                }else{
-                    return false;
-                }
-            }; break;
+                    unit.owner.id === playerID;
+            } break;
             default: return false;
         }
     };
@@ -126,8 +124,7 @@ if(typeof exports !== 'undefined'){
     }
 
     function createActionsFromMoveOrder(order, unit, grid) {
-        var path,
-            dest = order.destination,
+        var dest = order.destination,
             path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y, grid);
         if(path.length > 0) {
             //generate the actions
@@ -195,6 +192,82 @@ if(typeof exports !== 'undefined'){
         });
     }
 
+
+    function insertDelay(actions, index, delay){
+        var i;
+        for (i = actions.length - 1; i >= index; i--) {
+            actions[index].start += delay;
+            actions[index].end += delay;
+        }
+    }
+
+
+    /*
+    NOTES:
+
+    If an action start time is less than the turn duration,
+    it gets executed, even if that means that the action is
+    finishing executing after the timer has stopped. This means
+    that a unit's end position is indicated by the "to" property
+    of the last executed action.
+
+     */
+    function isActionWithinTurn(action, turnDuration) {
+        return action.start < turnDuration;
+    }
+
+    function getLastMoveAction(actions) {
+        var moveActions = _.filter(actions, function(a){
+            return a.variant === 'move' &&
+                isActionWithinTurn(a, TURN_DURATION);
+        });
+        if(moveActions && moveActions.length > 0) {
+            return moveActions[moveActions.length - 1];
+        }
+        return null;
+    }
+
+    function getEndPosition(unit, actionsByUnit) {
+        var lastMoveAction = getLastMoveAction(actionsByUnit[unit.id]);
+        return lastMoveAction ? lastMoveAction.to : {x: unit.x, y: unit.y};
+    }
+
+    sh.fixEndOfTurnOverlap = function(script, ship) {
+        var actionsByUnit = getActionsByUnit(script),
+            i, j, a, b, forChange, somethingChanged,
+                actions, lastMoveAction;
+        do{
+            somethingChanged = false;
+            for (i = ship.units.length - 1; i >= 0; i--) {
+                a = ship.units[i];
+                for (j = i - 1; j >= 0; j--) {
+                    b = ship.units[j];
+                    if(_.isEqual(getEndPosition(a, actionsByUnit),
+                        getEndPosition(b, actionsByUnit))) {
+                        //same end position, one will need to change
+                        if(willUnitMove(a.id, actionsByUnit)){
+                            //change a, since it's the one moving
+                            forChange = a;
+                        }else if(willUnitMove(b.id, actionsByUnit)) {
+                            //change b, since it's the one moving
+                            forChange = b;
+                        }else {
+                            throw 'Neither unit is moving yet they ended' +
+                                ' up in the same position, something' +
+                                ' has gone wrong...';
+                        }
+                        actions = actionsByUnit[forChange.id];
+                        lastMoveAction = getLastMoveAction(actions);
+                        insertDelay(actions,
+                            actions.indexOf(lastMoveAction),
+                            TURN_DURATION - lastMoveAction.start);
+                        somethingChanged = true;
+                    }
+                }
+            }
+        }while(somethingChanged);
+    };
+
     /**
      * Generates a "script" for the units given all the orders issued.
      * @param orders
@@ -202,6 +275,7 @@ if(typeof exports !== 'undefined'){
      * @returns {[]}
      */
     sh.createScript = function(orders, ship) {
+        //TODO: make it async
         var script = [],
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
 
@@ -217,6 +291,7 @@ if(typeof exports !== 'undefined'){
         });
         script = _.sortBy(script, 'start');
         applySpeedModifiers(script, ship);
+        sh.fixEndOfTurnOverlap(script, ship);
         return script;
     };
 
@@ -231,7 +306,7 @@ if(typeof exports !== 'undefined'){
         //TODO: leverage the fact that the actions are ordered by time
         _.each(script, function(action){
             var unit;
-            if(action.start <= time) {
+            if(action.start < time) {
                 //this assumes the action involves a unit
                 unit = ship.getUnitByID(action.unitID);
                 unit.x = action.to.x;

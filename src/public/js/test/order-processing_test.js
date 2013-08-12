@@ -38,3 +38,86 @@ test('fix actions overlap', function(){
     equal(actions[2].end, 30);
 
 });
+
+test('sh.fixEndOfTurnOverlap', function(){
+    //TODO: fix hardcoded end of turn
+    var actions, ship;
+    ship = new sh.Ship({tmxName: 'test'});
+    ship.addUnit(new sh.Unit(1, 1)); //id 1
+    ship.addUnit(new sh.Unit(2, 1)); //id 2
+    ship.addUnit(new sh.Unit(3, 1)); //id 3
+
+    ok(ship.getUnitByID(1));
+    ok(ship.getUnitByID(2));
+    ok(ship.getUnitByID(3));
+    ok(!ship.getUnitByID(123));
+
+    actions = [{
+        type: 'Action',
+        variant: 'move',
+        unitID: 1,
+        from: {x:1, y:1},
+        to: {x:2, y:1},
+        start: 1000,
+        end: 2000
+    }];
+
+    sh.fixEndOfTurnOverlap(actions, ship);
+    equal(actions[0].start, 3000);
+    equal(actions[0].end, 4000);
+
+    actions = [{
+        type: 'Action',
+        variant: 'move',
+        unitID: 1,
+        from: {x:1, y:1},
+        to: {x:2, y:1},
+        start: 1000,
+        end: 2000
+    },{
+        type: 'Action',
+        variant: 'move',
+        unitID: 2,
+        from: {x:2, y:1},
+        to: {x:1, y:1},
+        start: 1000,
+        end: 2000
+    }];
+
+    sh.fixEndOfTurnOverlap(actions, ship);
+    //actions shouldn't change here
+    equal(actions[0].start, 1000);
+    equal(actions[0].end, 2000);
+    equal(actions[1].start, 1000);
+    equal(actions[1].end, 2000);
+
+    actions = [{
+        type: 'Action',
+        variant: 'move',
+        unitID: 1,
+        from: {x:1, y:1},
+        to: {x:2, y:2},
+        start: 1000,
+        end: 2000
+    },{
+        type: 'Action',
+        variant: 'move',
+        unitID: 1,
+        from: {x:2, y:2},
+        to: {x:3, y:1},
+        start: 2000,
+        end: 3000
+    },{
+        type: 'Action',
+        variant: 'move',
+        unitID: 2,
+        from: {x:2, y:1},
+        to: {x:2, y:2},
+        start: 1000,
+        end: 2000
+    }];
+    sh.fixEndOfTurnOverlap(actions, ship);
+    ok(actions[0].start === 3000 ||
+        actions[2].start === 3000);
+
+});
