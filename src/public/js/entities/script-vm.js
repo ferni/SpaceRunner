@@ -16,19 +16,33 @@ var ScriptVM = Object.extend({
         this.m = model;
     },
     draw: function(ctx) {
-        var linesToDraw = [];
+        var greenLines = [], orangeLines = [];
         _.each(this.m, function(action){
             if(action.variant === 'move') {
-                //draw a line
-                linesToDraw.push({from: action.from, to: action.to});
+                //TODO: solve hard-coded end of turn
+                if(action.start < 3000) {
+                    greenLines.push({from: action.from, to: action.to});
+                }else {
+                    orangeLines.push({from: action.from, to: action.to});
+                }
+
             }
         });
 
         //draw lines for units' move actions
         ctx.beginPath();
-        ctx.strokeStyle = 'green';
         ctx.lineWidth = 3;
-        _.each(linesToDraw, function(line){
+        ctx.strokeStyle = 'green';
+        _.each(greenLines, function(line){
+            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
+                (line.from.y * TILE_SIZE) + HALF_TILE);
+            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
+                (line.to.y * TILE_SIZE) + HALF_TILE);
+        });
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = 'orange';
+        _.each(orangeLines, function(line){
             ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
                 (line.from.y * TILE_SIZE) + HALF_TILE);
             ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
