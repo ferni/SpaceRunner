@@ -42,7 +42,6 @@ var TileEntityVM = me.ObjectEntity.extend({
         }
         this.pos.x = (x - this.cannonTile[0]) * TILE_SIZE;
         this.x = x;
-        this.onPositionChange();
         return this;
     },
     setY: function(y) { //sets the row
@@ -52,7 +51,6 @@ var TileEntityVM = me.ObjectEntity.extend({
         }
         this.pos.y = (y - this.cannonTile[1]) * TILE_SIZE;
         this.y = y;
-        this.onPositionChange();
         return this;
     },
     _hidden: false,
@@ -78,10 +76,6 @@ var TileEntityVM = me.ObjectEntity.extend({
         'use strict';
         this.hidden(true);
         return this;
-    },
-    onPositionChange: function() {
-        'use strict';
-        //it's abstract; does nothing
     },
     zIndex: 100
 });
