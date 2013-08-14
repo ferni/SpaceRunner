@@ -180,14 +180,39 @@ screens.register('battle', ConnectedScreen.extend({
         });
 
     },
-
+    updateUnitsImageOffset: function(){
+        var i, j, unitVMs = this.shipVM.unitVMs, unitA, unitB;
+        //TODO: enable map to have multiple units in same position
+        _.each(unitVMs, function(u){
+            u.putInCenter();
+        });
+        for (i = unitVMs.length - 1; i >= 0; i--) {
+            unitA = unitVMs[i];
+            for (j = i - 1; j >= 0; j--) {
+                unitB = unitVMs[j];
+                if(unitA.m.x === unitB.m.x && unitA.m.y === unitB.m.y &&
+                    unitA.m.owner.id !== unitB.m.owner.id) {
+                    if(unitA.isMine()){
+                        unitA.putInTopRight();
+                        unitB.putInBottomLeft();
+                    }else{
+                        unitA.putInBottomLeft();
+                        unitB.putInTopRight();
+                    }
+                }
+            }
+        }
+    },
     pause: function() {
         'use strict';
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        sh.updateShipByScript(gs.ship, this.scriptServer, this.TURN_DURATION)
+        sh.updateShipByScript(gs.ship, this.scriptServer, this.TURN_DURATION);
+        this.updateUnitsImageOffset();
         this.shipVM.update();
+        me.game.sort();
+        me.game.repaint();
         //empty the script
         this.scriptServer = [];
         this.scriptVM.m = [];

@@ -37,6 +37,21 @@ var Unit = TileEntityVM.extend({
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
     },
+    putInCenter: function(){
+        this.cannonTile = [-0.25, -0.25];
+        this.updatePixelX();
+        this.updatePixelY();
+    },
+    putInTopRight: function(){
+        this.cannonTile = [-0.5, 0];
+        this.updatePixelX();
+        this.updatePixelY();
+    },
+    putInBottomLeft: function(){
+        this.cannonTile = [0, -0.5];
+        this.updatePixelX();
+        this.updatePixelY();
+    },
     update: function(){
         this.parent();
 
