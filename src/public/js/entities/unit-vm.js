@@ -31,7 +31,7 @@ var Unit = TileEntityVM.extend({
                 array[i] += unitModel.type * 4;
             }
             return array;
-        };
+        }
         this.addAnimation('idle', toImgRow([0, 1, 2, 1]));
 
         this.setCurrentAnimation('idle');
@@ -56,12 +56,10 @@ var Unit = TileEntityVM.extend({
         this.parent();
 
         if(this.prevPos.x !== this.m.x) {
-            console.log('Updating unitVM x position');
             this.setX(this.m.x);
             this.prevPos.x = this.m.x;
         }
         if(this.prevPos.y !== this.m.y) {
-            console.log('Updating unitVM y position');
             this.setY(this.m.y);
             this.prevPos.y = this.m.y;
         }

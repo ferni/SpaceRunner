@@ -103,8 +103,7 @@ screens.register('battle', ConnectedScreen.extend({
     },
     draw: function(ctx) {
         'use strict';
-        var mouse = utils.getMouse(),
-            screen = this;
+        var mouse = utils.getMouse();
         this.parent(ctx);
         if (this.paused) {
             this.scriptVM.draw(ctx);
@@ -159,7 +158,7 @@ screens.register('battle', ConnectedScreen.extend({
         }
 
     },
-    mouseMove: function(e) {
+    mouseMove: function() {
         'use strict';
         if (this.dragBox) {
             this.dragBox.updateFromMouse(utils.getMouse(true));
@@ -174,9 +173,6 @@ screens.register('battle', ConnectedScreen.extend({
                 //update vm with new script model
                 self.scriptVM.m = sh.createScript(self.verifiedOrders, gs.ship,
                     self.TURN_DURATION);
-                console.log('Order given valid.');
-            }else{
-                console.log('Order given INVALID.');
             }
         });
 
