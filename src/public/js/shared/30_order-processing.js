@@ -132,9 +132,11 @@ if(typeof exports !== 'undefined'){
         return [];
     }
 
-    function willUnitMove(unitID, script) {
+    function willUnitMove(unitID, script, withinTurnObj) {
+        var withinTurn = withinTurnObj.withinTurn;
         return _.any(script.byUnit[unitID], function(action){
-            return action.variant === 'move';
+            return action.variant === 'move' &&
+                (!withinTurn || script.isWithinTurn(action));
         });
     }
 
@@ -175,7 +177,8 @@ if(typeof exports !== 'undefined'){
                         //is enemy unit
                         otherUnit.owner.id !== unit.owner.id &&
                         //unit will stand still
-                        !willUnitMove(otherUnit.id, script)){
+                        !willUnitMove(otherUnit.id, script,
+                            {withinTurn: false})){
 
                         //apply %25 speed
                         duration = action.end - action.start;
@@ -194,9 +197,9 @@ if(typeof exports !== 'undefined'){
 
     function insertDelay(actions, index, delay){
         var i;
-        for (i = actions.length - 1; i >= index; i--) {
-            actions[index].start += delay;
-            actions[index].end += delay;
+        for (i = index; i < actions.length; i++) {
+            actions[i].start += delay;
+            actions[i].end += delay;
         }
     }
 
@@ -229,10 +232,12 @@ if(typeof exports !== 'undefined'){
                         _.isEqual(getEndPosition(a, script),
                         getEndPosition(b, script))) {
                         //same end position, one will need to change
-                        if(willUnitMove(a.id, script)){
+                        if(willUnitMove(a.id, script,
+                            {withinTurn: true})){
                             //change a, since it's the one moving
                             forChange = a;
-                        }else if(willUnitMove(b.id, script)) {
+                        }else if(willUnitMove(b.id, script,
+                            {withinTurn: true})) {
                             //change b, since it's the one moving
                             forChange = b;
                         }else {
@@ -242,6 +247,7 @@ if(typeof exports !== 'undefined'){
                         }
                         actions = script.byUnit[forChange.id];
                         lastMoveAction = getLastMoveAction(script, forChange);
+
                         insertDelay(actions,
                             actions.indexOf(lastMoveAction),
                             script.turnDuration - lastMoveAction.start);
@@ -318,7 +324,6 @@ if(typeof exports !== 'undefined'){
      * @param script
      */
     function updateShipByScript(ship, script) {
-        //TODO: leverage the fact that the actions are ordered by time
         _.each(script.actions, function(action){
             var unit;
             if(script.isWithinTurn(action)) {
