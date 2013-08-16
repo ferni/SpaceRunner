@@ -58,7 +58,7 @@ if(typeof exports !== 'undefined'){
             } break;
             default: return false;
         }
-    };
+    }
 
 
     //SCRIPT GENERATION
@@ -160,7 +160,7 @@ if(typeof exports !== 'undefined'){
                 actions[i + 1].end += diff;
             }
         }
-    };
+    }
 
     function applySpeedModifiers(script, ship){
 
@@ -250,7 +250,7 @@ if(typeof exports !== 'undefined'){
                 }
             }
         }while(somethingChanged);
-    };
+    }
 
     Script = sh.SharedClass.extendShared({
         turnDuration: 0,
@@ -258,9 +258,8 @@ if(typeof exports !== 'undefined'){
         byUnit: {},
         init: function(parameters){
             if(parameters) {
-                var actions = parameters.actions,
-                    turnDuration = parameters.turnDuration;
-                this.turnDuration = turnDuration;
+                var actions = parameters.actions;
+                this.turnDuration = parameters.turnDuration;
                 this.actions = _.sortBy(actions, 'start');
                 this.byUnit = getActionsByUnit(this.actions);
             }
@@ -278,20 +277,8 @@ if(typeof exports !== 'undefined'){
                 actions: this.actions
             };
         },
-        /*
-         NOTES:
-
-         If an action start time is less than the turn duration,
-         it gets executed, even if that means that the action is
-         finishing executing after the timer has stopped. This means
-         that a unit's end position is indicated by the "to" property
-         of the last executed action.
-
-         //TODO: change this (it doesn't look good)
-
-         */
         isWithinTurn: function(action) {
-            return action.start < this.turnDuration;
+            return action.end <= this.turnDuration;
         }
     });
 
@@ -318,12 +305,11 @@ if(typeof exports !== 'undefined'){
                 } break;
             }
         });
-        //TODO: get turn duration from the battle
         script = new Script({actions: actions, turnDuration: turnDuration});
         applySpeedModifiers(script, ship);
         fixEndOfTurnOverlap(script, ship);
         return script;
-    };
+    }
 
     /**
      * Modifies the ship and its elements according with the script given
@@ -343,7 +329,7 @@ if(typeof exports !== 'undefined'){
             }
         });
         ship.unitsMap.update();
-    };
+    }
 
     //Export
     sh.verifyOrder = verifyOrder;
