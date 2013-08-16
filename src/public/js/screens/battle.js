@@ -8,7 +8,6 @@
 /*global screens-html, GameScreen*/
 
 screens.register('battle', ConnectedScreen.extend({
-    TURN_DURATION_SEC: 3,
     TURN_DURATION: 3000,
     verifiedOrders: {},
     currentTurnID: null,
@@ -72,8 +71,9 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.paused && data.scriptReady) {
             //get the script
             $.post('/battle/getscript', {id: screen.id}, function (data) {
-                screen.scriptServer = data.script;
-                screen.scriptPlayer.loadScript(data.script);
+                var script = new sh.Script().fromJson(data.script);
+                screen.scriptServer = script;
+                screen.scriptPlayer.loadScript(script);
                 screen.shipVM.update();
                 screen.resume();
                 screen.stopFetching();
@@ -172,7 +172,8 @@ screens.register('battle', ConnectedScreen.extend({
             if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 self.verifiedOrders[u.m.id] = order;
                 //update vm with new script model
-                self.scriptVM.m = sh.createScript(self.verifiedOrders, gs.ship);
+                self.scriptVM.m = sh.createScript(self.verifiedOrders, gs.ship,
+                    self.TURN_DURATION);
                 console.log('Order given valid.');
             }else{
                 console.log('Order given INVALID.');
@@ -208,7 +209,7 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        sh.updateShipByScript(gs.ship, this.scriptServer, this.TURN_DURATION);
+        sh.updateShipByScript(gs.ship, this.scriptServer);
         this.updateUnitsImageOffset();
         this.shipVM.update();
         me.game.sort();

@@ -81,7 +81,7 @@ routes.add('submitorders', function(req, res, next){
             turn.generateScript();
             //TODO: make the function updateShip... server side only
             //then send the updated ship to the clients
-            sh.updateShipByScript(battle.ship, turn.script, 3000);
+            sh.updateShipByScript(battle.ship, turn.script);
         }
         chat.log('SUCCESS: All orders submitted have been validated by the' +
             ' server (' + verifiedOrdersCount +' orders).');
@@ -92,7 +92,7 @@ routes.add('submitorders', function(req, res, next){
 
 routes.add('getscript', function(req, res, next) {
     return authenticate(req, next, function(battle){
-        return res.json({script: battle.currentTurn.script});
+        return res.json({script: battle.currentTurn.script.toJson()});
     });
 });
 

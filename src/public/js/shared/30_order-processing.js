@@ -16,10 +16,10 @@ if(typeof exports !== 'undefined'){
 //TODO: verify that the player is in the order.battleID
 (function(){
     'use strict';
-
+    var Action, MoveAction, Script, pfFinder;
     //The following classes serve as documentation only,
     //the json counterparts are being used instead.
-    var Action = sh.SharedClass.extendShared({
+    Action = sh.SharedClass.extendShared({
         unitID: null,
         start: 0,//ms
         end: 0,//ms
@@ -27,10 +27,9 @@ if(typeof exports !== 'undefined'){
             this.start = json.start;
             this.end = json.end;
         }
-    }),
-    TURN_DURATION = 3000;//TODO: maybe set this somewhere else and propagate it
+    });
 
-    sh.MoveAction = Action.extendShared({
+    MoveAction = Action.extendShared({
         from:null,
         to:null,
         init: function(json) {
@@ -41,8 +40,8 @@ if(typeof exports !== 'undefined'){
     });
 
 
-
-    sh.verifyOrder = function(order, ship, playerID){
+    //ORDER VERIFICATION
+    function verifyOrder(order, ship, playerID){
         if(!order || !order.type || order.type !== 'Order-JSON-V1' ||
             !order.variant) {
             return false;
@@ -63,7 +62,7 @@ if(typeof exports !== 'undefined'){
 
 
     //SCRIPT GENERATION
-    var pfFinder = new sh.PF.AStarFinder({
+    pfFinder = new sh.PF.AStarFinder({
         allowDiagonal: true
     });
 
@@ -133,26 +132,26 @@ if(typeof exports !== 'undefined'){
         return [];
     }
 
-    function willUnitMove(unitID, actionsByUnit) {
-        return _.any(actionsByUnit[unitID], function(action){
+    function willUnitMove(unitID, script) {
+        return _.any(script.byUnit[unitID], function(action){
             return action.variant === 'move';
         });
     }
 
-    function getActionsByUnit(script) {
-        var actions = {};
-        _.each(script, function(action){
+    function getActionsByUnit(actions){
+        var actionsByUnit = {};
+        _.each(actions, function(action){
             if(typeof action.unitID !== 'undefined') {
-                if(!actions[action.unitID]){
-                    actions[action.unitID] = [];
+                if(!actionsByUnit[action.unitID]){
+                    actionsByUnit[action.unitID] = [];
                 }
-                actions[action.unitID].push(action);
+                actionsByUnit[action.unitID].push(action);
             }
         });
-        return actions;
+        return actionsByUnit;
     }
 
-    sh.fixActionsOverlap = function(actions) {
+    function fixActionsOverlap(actions) {
         var i, diff;
         for(i = 0; i < actions.length - 1; i++) {
             if(actions[i + 1].start < actions[i].end) {
@@ -164,8 +163,8 @@ if(typeof exports !== 'undefined'){
     };
 
     function applySpeedModifiers(script, ship){
-        var actionsByUnit = getActionsByUnit(script);
-        _.each(actionsByUnit, function(actions, unitID) {
+
+        _.each(script.byUnit, function(actions, unitID) {
             var unit = ship.getUnitByID(unitID),
                 changed = false;
             _.each(actions, function(action){
@@ -176,7 +175,7 @@ if(typeof exports !== 'undefined'){
                         //is enemy unit
                         otherUnit.owner.id !== unit.owner.id &&
                         //unit will stand still
-                        !willUnitMove(otherUnit.id, actionsByUnit)){
+                        !willUnitMove(otherUnit.id, script)){
 
                         //apply %25 speed
                         duration = action.end - action.start;
@@ -187,7 +186,7 @@ if(typeof exports !== 'undefined'){
                 }
             });
             if(changed) {
-                sh.fixActionsOverlap(actions);
+                fixActionsOverlap(actions);
             }
         });
     }
@@ -201,25 +200,10 @@ if(typeof exports !== 'undefined'){
         }
     }
 
-
-    /*
-    NOTES:
-
-    If an action start time is less than the turn duration,
-    it gets executed, even if that means that the action is
-    finishing executing after the timer has stopped. This means
-    that a unit's end position is indicated by the "to" property
-    of the last executed action.
-
-     */
-    function isActionWithinTurn(action, turnDuration) {
-        return action.start < turnDuration;
-    }
-
-    function getLastMoveAction(actions) {
-        var moveActions = _.filter(actions, function(a){
+    function getLastMoveAction(script, unit) {
+        var moveActions = _.filter(script.byUnit[unit.id], function(a){
             return a.variant === 'move' &&
-                isActionWithinTurn(a, TURN_DURATION);
+                script.isWithinTurn(a);
         });
         if(moveActions && moveActions.length > 0) {
             return moveActions[moveActions.length - 1];
@@ -227,14 +211,13 @@ if(typeof exports !== 'undefined'){
         return null;
     }
 
-    function getEndPosition(unit, actionsByUnit) {
-        var lastMoveAction = getLastMoveAction(actionsByUnit[unit.id]);
+    function getEndPosition(unit, script) {
+        var lastMoveAction = getLastMoveAction(script, unit);
         return lastMoveAction ? lastMoveAction.to : {x: unit.x, y: unit.y};
     }
 
-    sh.fixEndOfTurnOverlap = function(script, ship) {
-        var actionsByUnit = getActionsByUnit(script),
-            i, j, a, b, forChange, somethingChanged,
+    function fixEndOfTurnOverlap(script, ship) {
+        var i, j, a, b, forChange, somethingChanged,
                 actions, lastMoveAction;
         do{
             somethingChanged = false;
@@ -243,13 +226,13 @@ if(typeof exports !== 'undefined'){
                 for (j = i - 1; j >= 0; j--) {
                     b = ship.units[j];
                     if(a.owner.id === b.owner.id && //unis are of the same team
-                        _.isEqual(getEndPosition(a, actionsByUnit),
-                        getEndPosition(b, actionsByUnit))) {
+                        _.isEqual(getEndPosition(a, script),
+                        getEndPosition(b, script))) {
                         //same end position, one will need to change
-                        if(willUnitMove(a.id, actionsByUnit)){
+                        if(willUnitMove(a.id, script)){
                             //change a, since it's the one moving
                             forChange = a;
-                        }else if(willUnitMove(b.id, actionsByUnit)) {
+                        }else if(willUnitMove(b.id, script)) {
                             //change b, since it's the one moving
                             forChange = b;
                         }else {
@@ -257,11 +240,11 @@ if(typeof exports !== 'undefined'){
                                 ' up in the same position, something' +
                                 ' has gone wrong...';
                         }
-                        actions = actionsByUnit[forChange.id];
-                        lastMoveAction = getLastMoveAction(actions);
+                        actions = script.byUnit[forChange.id];
+                        lastMoveAction = getLastMoveAction(script, forChange);
                         insertDelay(actions,
                             actions.indexOf(lastMoveAction),
-                            TURN_DURATION - lastMoveAction.start);
+                            script.turnDuration - lastMoveAction.start);
                         somethingChanged = true;
                     }
                 }
@@ -269,30 +252,76 @@ if(typeof exports !== 'undefined'){
         }while(somethingChanged);
     };
 
+    Script = sh.SharedClass.extendShared({
+        turnDuration: 0,
+        actions: [],
+        byUnit: {},
+        init: function(parameters){
+            if(parameters) {
+                var actions = parameters.actions,
+                    turnDuration = parameters.turnDuration;
+                this.turnDuration = turnDuration;
+                this.actions = _.sortBy(actions, 'start');
+                this.byUnit = getActionsByUnit(this.actions);
+            }
+        },
+        fromJson: function(json){
+            //logic here
+            this.turnDuration = json.turnDuration;
+            this.actions = json.actions;
+            this.byUnit = getActionsByUnit(json.actions);
+            return this;
+        },
+        toJson: function(){
+            return {
+                turnDuration: this.turnDuration,
+                actions: this.actions
+            };
+        },
+        /*
+         NOTES:
+
+         If an action start time is less than the turn duration,
+         it gets executed, even if that means that the action is
+         finishing executing after the timer has stopped. This means
+         that a unit's end position is indicated by the "to" property
+         of the last executed action.
+
+         //TODO: change this (it doesn't look good)
+
+         */
+        isWithinTurn: function(action) {
+            return action.start < this.turnDuration;
+        }
+    });
+
     /**
      * Generates a "script" for the units given all the orders issued.
      * @param orders
      * @param ship
-     * @returns {[]}
+     * @param turnDuration {int}
+     * @returns {Script}
      */
-    sh.createScript = function(orders, ship) {
+    function createScript(orders, ship, turnDuration) {
         //TODO: make it async
-        var script = [],
+        var script,
+            actions = [],
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
 
         _.each(orders, function(order){
-            var unit = ship.getUnitByID(order.unitID), actions;
+            var unit = ship.getUnitByID(order.unitID);
             switch(order.variant) {
                 case 'move': {
                     //this assumes the orders array is ordered by orders given
-                    actions = createActionsFromMoveOrder(order, unit, grid.clone());
-                    script = script.concat(actions);
+                    actions = actions.concat(createActionsFromMoveOrder(
+                        order, unit, grid.clone()));
                 } break;
             }
         });
-        script = _.sortBy(script, 'start');
+        //TODO: get turn duration from the battle
+        script = new Script({actions: actions, turnDuration: turnDuration});
         applySpeedModifiers(script, ship);
-        sh.fixEndOfTurnOverlap(script, ship);
+        fixEndOfTurnOverlap(script, ship);
         return script;
     };
 
@@ -301,13 +330,12 @@ if(typeof exports !== 'undefined'){
      * and the time.
      * @param ship
      * @param script
-     * @param time
      */
-    sh.updateShipByScript = function(ship, script, time) {
+    function updateShipByScript(ship, script) {
         //TODO: leverage the fact that the actions are ordered by time
-        _.each(script, function(action){
+        _.each(script.actions, function(action){
             var unit;
-            if(action.start < time) {
+            if(script.isWithinTurn(action)) {
                 //this assumes the action involves a unit
                 unit = ship.getUnitByID(action.unitID);
                 unit.x = action.to.x;
@@ -316,5 +344,14 @@ if(typeof exports !== 'undefined'){
         });
         ship.unitsMap.update();
     };
+
+    //Export
+    sh.verifyOrder = verifyOrder;
+    sh.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
+    sh.fixActionsOverlap = fixActionsOverlap;
+    sh.Script = Script;
+    sh.createScript = createScript;
+    sh.updateShipByScript = updateShipByScript;
+
 })();
 

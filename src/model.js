@@ -32,7 +32,8 @@ function BattleTurn(params) {
         this.playersSubmitted.push(playerID);
     };
     this.generateScript = function(){
-        this.script = sh.createScript(this.allOrders, this.battle.ship);
+        this.script = sh.createScript(this.allOrders, this.battle.ship,
+            this.battle.turnDuration);
     };
 }
 
@@ -47,6 +48,7 @@ exports.Battle = function(parameters) {
     this.currentTurn = null;
 
     this.receivedTheScript = []; //players ids that received the script
+    this.turnDuration = 3000;
     /**
      * Informs that some player has received the script.
      * When all players in the battle receive the script,

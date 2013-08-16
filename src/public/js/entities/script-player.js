@@ -43,11 +43,11 @@ var ScriptPlayer = function(battleScreen){
 
 
     this.update = function(elapsed){
-        var i;
-        for(i = lastExecuted + 1; i < script.length; i++) {
-            if (elapsed >= script[i].start && elapsed < 3000) {
-                //TODO: remove hard-coded 3000 (turn duration)
-                playAction(script[i]);
+        var i, actions = script.actions;
+        for(i = lastExecuted + 1; i < actions.length; i++) {
+            if (elapsed >= actions[i].start &&
+                script.isWithinTurn(actions[i])) {
+                playAction(actions[i]);
                 lastExecuted = i;
             } else {
                 break;
