@@ -15,12 +15,21 @@ var ScriptVM = Object.extend({
     init: function(model){
         this.m = model;
     },
+    drawLines: function (lines, ctx) {
+        _.each(lines, function (line) {
+            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
+                (line.from.y * TILE_SIZE) + HALF_TILE);
+            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
+                (line.to.y * TILE_SIZE) + HALF_TILE);
+        });
+        ctx.stroke();
+    },
     draw: function(ctx) {
-        var greenLines = [], orangeLines = [];
-        _.each(this.m, function(action){
+        var greenLines = [], orangeLines = [],
+            script = this.m;
+        _.each(script.actions, function(action){
             if(action.variant === 'move') {
-                //TODO: solve hard-coded end of turn
-                if(action.start < 3000) {
+                if(script.isWithinTurn(action)) {
                     greenLines.push({from: action.from, to: action.to});
                 }else {
                     orangeLines.push({from: action.from, to: action.to});
@@ -33,21 +42,9 @@ var ScriptVM = Object.extend({
         ctx.beginPath();
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'green';
-        _.each(greenLines, function(line){
-            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
-                (line.from.y * TILE_SIZE) + HALF_TILE);
-            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
-                (line.to.y * TILE_SIZE) + HALF_TILE);
-        });
-        ctx.stroke();
+        this.drawLines(greenLines, ctx);
         ctx.beginPath();
         ctx.strokeStyle = 'orange';
-        _.each(orangeLines, function(line){
-            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
-                (line.from.y * TILE_SIZE) + HALF_TILE);
-            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
-                (line.to.y * TILE_SIZE) + HALF_TILE);
-        });
-        ctx.stroke();
+        this.drawLines(orangeLines, ctx);
     }
 });
