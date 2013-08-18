@@ -65,10 +65,6 @@ var utils = {
         'use strict';
         return { x: v1.x - v2.x, y: v1.y - v2.y };
     },
-    boolToInt: function(boole){
-        'use strict';
-        return boole ? 1 : 0;
-    },
     pathToPixels: function(path) {
         'use strict';
         var newPath = [], i;
@@ -140,6 +136,13 @@ var utils = {
         if(object instanceof ItemVM){
             return object.m;
         }
+    },
+    posStr: function(pos) {
+        return '(' + pos.x + ',' + pos.y + ')';
+    },
+    actionStr: function(action) {
+        return action.start + ' -> ' + action.end + ': ' +
+            utils.posStr(action.from) + ' -> ' + utils.posStr(action.to)
     }
 };
 
