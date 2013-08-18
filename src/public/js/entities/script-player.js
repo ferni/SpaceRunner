@@ -12,7 +12,7 @@
  * @type {*}
  */
 var ScriptPlayer = function(battleScreen){
-    var script, lastExecuted;
+    var script, next;
 
     function playMoveAction(action) {
         var duration, tween,
@@ -38,22 +38,17 @@ var ScriptPlayer = function(battleScreen){
 
     this.loadScript = function(s){
         script = s;
-        lastExecuted = -1;
+        next = 0;
     };
 
 
     this.update = function(elapsed){
-        var i, actions = script.actions;
-        for(i = lastExecuted + 1; i < actions.length; i++) {
-            if (elapsed >= actions[i].start &&
-                script.isWithinTurn(actions[i])) {
-                playAction(actions[i]);
-                lastExecuted = i;
-            } else {
-                break;
-                //if one is not yet due, that means the following ones
-                //are not yet due because the script is ordered.
+        var actions = script.actions;
+        if (next < actions.length && elapsed >= actions[next].start) {
+            if (script.isWithinTurn(actions[next])) {
+                playAction(actions[next]);
             }
+            next++;
         }
     };
     this.draw = function(ctx){
