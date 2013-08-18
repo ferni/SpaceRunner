@@ -78,7 +78,7 @@ var utils = {
      * Executes a callback when a certain number of
      * .done() were called on TaskWait, or an
      * error handler if .error() was called instead.
-     * @param settings {Object} has 'pendingCount'(int), 'success', 'error'.
+     * @param settings {Object} has 'pendingCount'(int), 'allDone', 'error'.
      * @constructor
      */
     TaskWait: function(settings){
