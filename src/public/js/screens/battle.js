@@ -75,6 +75,7 @@ screens.register('battle', ConnectedScreen.extend({
                 screen.scriptServer = script;
                 screen.scriptPlayer.loadScript(script);
                 screen.shipVM.update();
+                //screen.logActions(script);
                 screen.resume();
                 screen.stopFetching();
                 $.post('/battle/scriptreceived', {id: screen.id},function () {
@@ -84,6 +85,14 @@ screens.register('battle', ConnectedScreen.extend({
                     });
             });
         }
+    },
+    logActions: function(script) {
+        _.each(script.byUnit, function(actions, unitID){
+            console.log('Unit ' + unitID + '\'s actions:');
+            _.each(actions, function(a){
+                console.log(utils.actionStr(a));
+            })
+        });
     },
     update: function() {
         'use strict';
@@ -247,6 +256,8 @@ screens.register('battle', ConnectedScreen.extend({
         if (unit instanceof sh.Unit) {
             this.shipVM.updateUnits();
             this.shipVM.getVM(unit).selected = true;
+            console.log('Selected unit ' + unit.id + ' ' +
+                utils.posStr(unit));
             return true;
         }
         return false;
