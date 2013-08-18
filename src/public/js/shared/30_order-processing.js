@@ -264,10 +264,9 @@ if(typeof exports !== 'undefined'){
         byUnit: {},
         init: function(parameters){
             if(parameters) {
-                var actions = parameters.actions;
+                this.actions = parameters.actions;
                 this.turnDuration = parameters.turnDuration;
-                this.actions = _.sortBy(actions, 'start');
-                this.byUnit = getActionsByUnit(this.actions);
+                this.sort();
             }
         },
         fromJson: function(json){
@@ -285,6 +284,10 @@ if(typeof exports !== 'undefined'){
         },
         isWithinTurn: function(action) {
             return action.end <= this.turnDuration;
+        },
+        sort: function() {
+            this.actions = _.sortBy(this.actions, 'start');
+            this.byUnit = getActionsByUnit(this.actions);
         }
     });
 
@@ -313,7 +316,9 @@ if(typeof exports !== 'undefined'){
         });
         script = new Script({actions: actions, turnDuration: turnDuration});
         applySpeedModifiers(script, ship);
+        script.sort();
         fixEndOfTurnOverlap(script, ship);
+        script.sort();
         return script;
     }
 
