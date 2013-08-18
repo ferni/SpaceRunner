@@ -8,6 +8,15 @@
 /*global me, $*/
 
  var server = {
+
+     init: function(onDone){
+         $.post('/general/init', function(data){
+             onDone(data);
+         }, 'json')
+             .fail(function(){
+                 throw 'Server error trying to initialize player.';
+             });
+     },
      disconnect: function(){
          $.post('/general/disconnect', function(data){
          }, 'json');

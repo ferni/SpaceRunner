@@ -71,6 +71,7 @@ app.post('/ship/gethulls', ship.gethulls);
 screens.configureRoutes(app);
 //console.log(screens.getAll());
 
+app.post('/general/init', general.init);
 app.post('/general/ping', general.ping);
 app.post('/general/sharedprops', general.sharedprops);
 app.post('/general/disconnect', general.disconnect);

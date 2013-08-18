@@ -9,6 +9,37 @@
 var auth = require('../auth'),
     sh = require('../public/js/shared');
 
+/*
+Initializes the entire app. Creates the player
+session, or returns the player state if a session is
+already present.
+
+TODO: Move this to the on connection callback when socket.io is implemented
+ */
+exports.init = function(req, res, next) {
+    var player;
+    console.log(req.session);
+    if (typeof req.session.playerID === 'undefined') {
+        //create the player
+        try{
+            player = auth.createNewPlayer();
+            req.session.playerID = player.id;
+        }catch(e){
+            next(new Error('Could not create new player'));
+        }
+
+    } else {
+        try{
+            player = auth.getPlayer(req);
+        }catch(e) {
+            next(new Error('Expected player to be logged in'));
+        }
+    }
+    res.json({
+        ok: true
+    });
+};
+
 exports.ping = function(req, res) {
   'use strict';
   res.json({ ok: true });
@@ -18,7 +49,7 @@ exports.ping = function(req, res) {
 exports.sharedprops = function(req, res) {
     'use strict';
     res.json({properties: sh.getProperties(sh)});
-}
+};
 
 exports.disconnect = function(req, res, next) {
     try{

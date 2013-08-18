@@ -300,7 +300,7 @@ var jsApp = {
         chatClient.start();
 
         //prepare dom
-        $('#jsapp').bind('contextmenu', function(e) {
+        $('#jsapp').bind('contextmenu', function() {
             return false;//disable context menu
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
@@ -309,14 +309,13 @@ var jsApp = {
             server.disconnect();
         });
 
-
         screens.loadHtmls(function(){
-            //start the game
-            me.state.change(FIRST_SCREEN);
-            self.loadReady = true;
-            self.onAppLoaded();
+            server.init(function(data) {
+                me.state.change(FIRST_SCREEN);
+                self.loadReady = true;
+                self.onAppLoaded();
+            });
         });
-
     },
     /*
     useful for testing
