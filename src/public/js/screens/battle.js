@@ -14,8 +14,9 @@ screens.register('battle', ConnectedScreen.extend({
     scriptVM: null,
     scriptPlayer: null,
     scriptServer: [],
-    onReset: function(settings){
-        this.parent(settings);
+    onReset: function(battleModel){
+        this.parent({id: battleModel.id});
+        gs.ship =  new sh.Ship({jsonString: battleModel.ship});
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
@@ -239,7 +240,7 @@ screens.register('battle', ConnectedScreen.extend({
         screen.readyButton.disable();
         //send the orders to the server
         $.post('/battle/submitorders',
-            {id: this.id, orders: this.verifiedOrders}, function(data) {
+            {id: this.id, orders: this.verifiedOrders}, function() {
                 console.log('Orders successfully submitted');
                 screen.verifiedOrders = {};
                 screen.startFetching();

@@ -38,7 +38,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
             if (screen.bothPlayersPresent()) {
                 $.post(screen.name + '/start', {id: this.id()},
                     function (data) {
-                        //nothing (battle starts in onDataUpdated )
+                        //nothing (battle starts in updateVM )
                     }, 'json');
             } else {
                 alert('More players are required to start.');
@@ -51,8 +51,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         ko.mapping.fromJS(this.data, this.vm);
         if(this.data.battle) {
             //this means it started!
-            gs.ship =  new sh.Ship({jsonString: this.data.battle.ship});
-            me.state.change('battle', {id: this.data.battle.id});
+            me.state.change('battle', this.data.battle);
         }
         //this somehow makes both players use different battle ids.
         /*if(gs.modes.auto && this.bothPlayersPresent()) {
