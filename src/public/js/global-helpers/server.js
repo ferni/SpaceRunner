@@ -41,5 +41,10 @@
                      console.error('Attempted to join a full battle');
                  }
              }, 'json');
+     },
+     getBattle: function(battleID, onDone) {
+         $.post('/battle/getmodel', {id: battleID} ,function(battleModel) {
+             onDone(battleModel);
+         });
      }
  };

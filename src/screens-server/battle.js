@@ -52,6 +52,12 @@ routes.add('get', function(req, res, next) {
     });
 });
 
+routes.add('getmodel', function(req, res, next){
+    return authenticate(req, next, function(battle){
+        return res.json(battle.toJson());
+    });
+});
+
 routes.add('submitorders', function(req, res, next){
     var orders = req.body.orders,
         verifiedOrdersCount = 0;

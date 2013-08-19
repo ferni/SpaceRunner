@@ -36,7 +36,8 @@ exports.init = function(req, res, next) {
         }
     }
     res.json({
-        ok: true
+        player: player.toJson(),
+        battleID: req.session.battleID
     });
 };
 

@@ -24,6 +24,11 @@ routes.add('get', function(req, res, next) {
     //authenticate
     if(bsu.creator.id == playerID ||
         (bsu.challenger && bsu.challenger.id == playerID)) {
+        if(bsu.battle) {
+            //host has had clicked "start" and the battle model is ready.
+            //load the battle id in session for persistence on browser refresh
+            req.session.battleID = bsu.battle.id;
+        }
         try{
             bsu.updatePlayers();
             res.json(bsu.toJson());

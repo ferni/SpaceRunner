@@ -6,14 +6,11 @@
  */
 
 var _ = require('underscore')._,
-    auth = require('../auth'),
     routes = require('./routes/index');
 
 routes.add('get', function(req, res, next) {
     try{
-        var player = auth.getPlayer(req);
         res.json({
-            player: player.toJson(),
             battleSetUps: _.map(battleSetUps, function(b){
                 return b.toJson();
             })

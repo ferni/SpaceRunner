@@ -311,9 +311,19 @@ var jsApp = {
 
         screens.loadHtmls(function(){
             server.init(function(data) {
-                me.state.change(FIRST_SCREEN);
-                self.loadReady = true;
-                self.onAppLoaded();
+                gs.player = sh.make.playerFromJson(data.player);
+                if(typeof data.battleID !== 'undefined') {
+                    //player was in a battle, resume it
+                    server.getBattle(data.battleID, function(battle) {
+                        me.state.change('battle', battle);
+                        self.loadReady = true;
+                        self.onAppLoaded();
+                    });
+                }else{
+                    me.state.change(FIRST_SCREEN);
+                    self.loadReady = true;
+                    self.onAppLoaded();
+                }
             });
         });
     },

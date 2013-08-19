@@ -24,7 +24,7 @@ screens.register('lobby', GameScreen.extend({
         //get battle info from server
         var screen = this,
             HtmlViewModel = function(data) {
-                this.playerName = ko.observable(data.player.name);
+                this.playerName = ko.observable(gs.player.name);
                 this.battleSetUps = ko.observableArray(data.battleSetUps);
                 this.joinBattle = function(battleSetUp) {
                     server.joinBattle(battleSetUp.id, function(){
@@ -34,7 +34,6 @@ screens.register('lobby', GameScreen.extend({
                 this.hostBattle = screen.hostBattle;
             };
         $.post('/lobby/get', function(data) {
-            gs.player = sh.make.playerFromJson(data.player);
             screen.vm = new HtmlViewModel(data);
             ko.applyBindings(screen.vm,
                 document.getElementById('screensUi'));
