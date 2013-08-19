@@ -15,52 +15,42 @@ var ScriptPrediction = Object.extend({
     init: function(model){
         this.m = model;
     },
-    drawPathLine: function (moveAction, ctx, color){
-        ctx.beginPath();
-        ctx.strokeStyle = color;
-        ctx.moveTo((moveAction.from.x * TILE_SIZE) + HALF_TILE,
-            (moveAction.from.y * TILE_SIZE) + HALF_TILE);
-        ctx.lineTo((moveAction.to.x * TILE_SIZE) + HALF_TILE,
-            (moveAction.to.y * TILE_SIZE) + HALF_TILE);
-        ctx.stroke();
-    },
     drawCircle: function(position, ctx, color){
         ctx.beginPath();
         ctx.fillStyle = color;
         ctx.arc((position.x  * TILE_SIZE) + HALF_TILE,
             (position.y * TILE_SIZE) + HALF_TILE,
-            HALF_TILE / 2, 0, Math.PI * 2, false);
+                5, 0, Math.PI * 2, false);
         ctx.fill();
+    },
+    drawPath: function(moveActions, ctx, color) {
+        if(moveActions.length === 0) {
+            return;
+        }
+        ctx.beginPath();
+        ctx.save();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = color;
+        _.each(moveActions, function(action) {
+            ctx.moveTo((action.from.x * TILE_SIZE) + HALF_TILE,
+                (action.from.y * TILE_SIZE) + HALF_TILE);
+            ctx.lineTo((action.to.x * TILE_SIZE) + HALF_TILE,
+                (action.to.y * TILE_SIZE) + HALF_TILE);
+        });
+        ctx.stroke();
+        ctx.restore();
+        this.drawCircle(_.last(moveActions).to, ctx, color);
     },
     draw: function(ctx) {
         var self = this,
             script = this.m;
-
-        ctx.lineWidth = 3;
         _.each(script.byUnit, function(actions){
-            var last;
-            _.each(actions, function(action) {
-                if(script.isWithinTurn(action)) {
-                    self.drawPathLine(action, ctx, 'green');
-                    last = action;
-                }
-            });
-            if(last) {
-                self.drawCircle(last.to, ctx, 'green');
-            }
-        });
-
-        _.each(script.byUnit, function(actions){
-            var last;
-            _.each(actions, function(action) {
-                if(!script.isWithinTurn(action)) {
-                    self.drawPathLine(action, ctx, 'orange');
-                    last = action;
-                }
-            });
-            if(last) {
-                self.drawCircle(last.to, ctx, 'orange');
-            }
+            self.drawPath(_.filter(actions, function(a){
+                return script.isWithinTurn(a) && a.variant === 'move';
+            }) ,ctx, 'green');
+            self.drawPath(_.filter(actions, function(a){
+                return !script.isWithinTurn(a) && a.variant === 'move';
+            }) ,ctx, 'orange');
         });
     }
 });
