@@ -23,7 +23,7 @@ function BattleTurn(params) {
             return ps === playerID;
         })) {
             console.error('Orders for player ' + playerID +
-                ' had already been added.')
+                ' had already been added.');
             throw 'Orders for player ' + playerID +
                 ' had already been added.';
         }
@@ -143,7 +143,6 @@ exports.BattleSetUp = function(params) {
             battle.playerRight = this.challenger;
             battles.push(battle);
             this.battle = battle;
-            return battle;
         }
         catch(e){
             err = new Error(e);
