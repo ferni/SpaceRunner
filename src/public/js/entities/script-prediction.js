@@ -15,36 +15,52 @@ var ScriptPrediction = Object.extend({
     init: function(model){
         this.m = model;
     },
-    drawLines: function (lines, ctx) {
-        _.each(lines, function (line) {
-            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
-                (line.from.y * TILE_SIZE) + HALF_TILE);
-            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
-                (line.to.y * TILE_SIZE) + HALF_TILE);
-        });
+    drawPathLine: function (moveAction, ctx, color){
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.moveTo((moveAction.from.x * TILE_SIZE) + HALF_TILE,
+            (moveAction.from.y * TILE_SIZE) + HALF_TILE);
+        ctx.lineTo((moveAction.to.x * TILE_SIZE) + HALF_TILE,
+            (moveAction.to.y * TILE_SIZE) + HALF_TILE);
         ctx.stroke();
     },
+    drawCircle: function(position, ctx, color){
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc((position.x  * TILE_SIZE) + HALF_TILE,
+            (position.y * TILE_SIZE) + HALF_TILE,
+            HALF_TILE / 2, 0, Math.PI * 2, false);
+        ctx.fill();
+    },
     draw: function(ctx) {
-        var greenLines = [], orangeLines = [],
+        var self = this,
             script = this.m;
-        _.each(script.actions, function(action){
-            if(action.variant === 'move') {
-                if(script.isWithinTurn(action)) {
-                    greenLines.push({from: action.from, to: action.to});
-                }else {
-                    orangeLines.push({from: action.from, to: action.to});
-                }
 
+        ctx.lineWidth = 3;
+        _.each(script.byUnit, function(actions){
+            var last;
+            _.each(actions, function(action) {
+                if(script.isWithinTurn(action)) {
+                    self.drawPathLine(action, ctx, 'green');
+                    last = action;
+                }
+            });
+            if(last) {
+                self.drawCircle(last.to, ctx, 'green');
             }
         });
 
-        //draw lines for units' move actions
-        ctx.beginPath();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = 'green';
-        this.drawLines(greenLines, ctx);
-        ctx.beginPath();
-        ctx.strokeStyle = 'orange';
-        this.drawLines(orangeLines, ctx);
+        _.each(script.byUnit, function(actions){
+            var last;
+            _.each(actions, function(action) {
+                if(!script.isWithinTurn(action)) {
+                    self.drawPathLine(action, ctx, 'orange');
+                    last = action;
+                }
+            });
+            if(last) {
+                self.drawCircle(last.to, ctx, 'orange');
+            }
+        });
     }
 });
