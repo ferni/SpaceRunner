@@ -11,7 +11,7 @@ screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION: 3000,
     verifiedOrders: {},
     currentTurnID: null,
-    scriptVM: null,
+    scriptPrediction: null,
     scriptPlayer: null,
     scriptServer: [],
     onReset: function(battleModel){
@@ -22,7 +22,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
-        this.scriptVM = new ScriptVM([]);
+        this.scriptPrediction = new ScriptPrediction([]);
         this.scriptPlayer = new ScriptPlayer(this);
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
@@ -116,7 +116,7 @@ screens.register('battle', ConnectedScreen.extend({
         var mouse = utils.getMouse();
         this.parent(ctx);
         if (this.paused) {
-            this.scriptVM.draw(ctx);
+            this.scriptPrediction.draw(ctx);
             if (gs.ship.at(mouse.x, mouse.y) instanceof sh.Unit) {
                 utils.setCursor('pointer');
             } else if(!this.dragBox){
@@ -181,8 +181,8 @@ screens.register('battle', ConnectedScreen.extend({
             if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 self.verifiedOrders[u.m.id] = order;
                 //update vm with new script model
-                self.scriptVM.m = sh.createScript(self.verifiedOrders, gs.ship,
-                    self.TURN_DURATION);
+                self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
+                    gs.ship, self.TURN_DURATION);
             }
         });
 
@@ -222,7 +222,7 @@ screens.register('battle', ConnectedScreen.extend({
         me.game.repaint();
         //empty the script
         this.scriptServer = [];
-        this.scriptVM.m = [];
+        this.scriptPrediction.m = [];
 
         this.paused = true;
     },

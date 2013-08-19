@@ -11,7 +11,7 @@
  * Displays the script on the screen.
  * @type {*}
  */
-var ScriptVM = Object.extend({
+var ScriptPrediction = Object.extend({
     init: function(model){
         this.m = model;
     },
