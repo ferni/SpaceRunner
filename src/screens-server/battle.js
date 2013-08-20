@@ -58,7 +58,7 @@ routes.add('getmodel', function(req, res, next){
     });
 });
 
-routes.add('submitorders', function(req, res, next){
+routes.add('sendorders', function(req, res, next){
     var orders = req.body.orders,
         verifiedOrdersCount = 0;
     return authenticate(req, next, function(battle, playerID){
@@ -80,17 +80,28 @@ routes.add('submitorders', function(req, res, next){
         }
 
         turn = battle.currentTurn;
-        turn.addOrders(playerID, orders);
-        if(turn.playersSubmitted.length === battle.numberOfPlayers &&
+        turn.addOrders(orders, playerID);
+        //verifiedOrdersCount is available for logging, but it might tip the
+        //other player with how many orders this player issued.
+        chat.log('SUCCESS: The orders issued by ' +
+            auth.playerByID(playerID).name +
+            ' have been validated by the server');
+        return res.json({ok: true});
+    });
+});
+
+routes.add('ready', function(req, res, next){
+    return authenticate(req, next, function(battle, playerID){
+        var turn = battle.currentTurn;
+        turn.setPlayerReady(playerID);
+        if(_.uniq(turn.playersSubmitted).length === battle.numberOfPlayers &&
             !turn.script) {
             //all orders have been submitted, generate the script
             turn.generateScript();
-            //TODO: make the function updateShip... server side only
+            //TODO: maybe make the function updateShip... server side only
             //then send the updated ship to the clients
             sh.updateShipByScript(battle.ship, turn.script);
         }
-        chat.log('SUCCESS: All orders submitted have been validated by the' +
-            ' server (' + verifiedOrdersCount +' orders).');
         return res.json({ok: true});
     });
 });

@@ -175,15 +175,25 @@ screens.register('battle', ConnectedScreen.extend({
         }
     },
     giveMoveOrder: function(unitVMs, destination) {
-        var self = this;
+        var self = this,
+            newOrders = {};
         _.each(unitVMs, function(u){
             var order = make.moveOrder(u.m, destination);
             if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 self.verifiedOrders[u.m.id] = order;
-                //update vm with new script model
-                self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
-                    gs.ship, self.TURN_DURATION);
+                newOrders[u.m.id] = order;
             }
+        });
+        //update script prediction with new script model
+        self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
+            gs.ship, self.TURN_DURATION);
+        //send order to server
+        $.post('/battle/sendorders',
+            {id: this.id, orders: newOrders}, function() {
+                console.log('Orders successfully submitted');
+        }, 'json')
+        .fail(function(){
+            console.error('Server error when submitting orders.');
         });
 
     },
@@ -239,14 +249,13 @@ screens.register('battle', ConnectedScreen.extend({
         var screen = this;
         screen.readyButton.disable();
         //send the orders to the server
-        $.post('/battle/submitorders',
-            {id: this.id, orders: this.verifiedOrders}, function() {
-                console.log('Orders successfully submitted');
+        $.post('/battle/ready',
+            {id: this.id}, function() {
                 screen.verifiedOrders = {};
                 screen.startFetching();
             }, 'json')
             .fail(function(){
-                console.error('Server error when submitting orders.');
+                console.error('Could not ready player: server error.');
                 screen.readyButton.enable();
             });
     },

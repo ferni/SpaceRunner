@@ -8,17 +8,26 @@
 var Class = require('./class'),
     sh = require('./public/js/shared'),
     auth = require('./auth'),
-    _ = require('underscore');
+    _ = require('underscore')._;
 
 
 function BattleTurn(params) {
     this.id = params.id;
     this.battle = params.battle;
-    this.allOrders = [];
+    this.playersOrders = {};
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
     this.script = null;
-    this.addOrders = function(playerID, orders){
+    this.addOrders = function(orders, playerID) {
+        var self = this;
+        if(!this.playersOrders[playerID]) {
+            this.playersOrders[playerID] = {};
+        }
+        _.each(orders, function(order){
+            self.playersOrders[playerID][order.unitID] = order;
+        });
+    };
+    this.setPlayerReady = function(playerID){
         if(_.any(this.playersSubmitted, function(ps){
             return ps === playerID;
         })) {
@@ -27,12 +36,16 @@ function BattleTurn(params) {
             throw 'Orders for player ' + playerID +
                 ' had already been added.';
         }
-
-        this.allOrders = this.allOrders.concat(orders);
         this.playersSubmitted.push(playerID);
     };
     this.generateScript = function(){
-        this.script = sh.createScript(this.allOrders, this.battle.ship,
+        var orders = _.extend(this.playersOrders[this.battle.playerLeft.id],
+                              this.playersOrders[this.battle.playerRight.id]);
+        
+        console.log('playerLeft\'s orders:' + JSON.stringify(this.playersOrders[this.battle.playerLeft.id]));
+        console.log('playerRight\'s orders:' + JSON.stringify(this.playersOrders[this.battle.playerRight.id]));
+        console.log('all orders' + JSON.stringify(orders));
+        this.script = sh.createScript(orders, this.battle.ship,
             this.battle.turnDuration);
     };
 }
