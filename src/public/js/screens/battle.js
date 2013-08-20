@@ -32,6 +32,13 @@ screens.register('battle', ConnectedScreen.extend({
             this.mouseMove.bind(this));
 
         this.pause();
+
+        if (battleModel.orders) {
+            this.verifiedOrders = battleModel.orders;
+            //update script prediction with new script model
+            this.scriptPrediction.m = sh.createScript(this.verifiedOrders,
+                gs.ship, this.TURN_DURATION);
+        }
     },
     onDestroy: function() {
         'use strict';
@@ -220,6 +227,7 @@ screens.register('battle', ConnectedScreen.extend({
             }
         }
     },
+    
     pause: function() {
         'use strict';
         $('#paused-indicator, #ready-button').show();

@@ -53,8 +53,12 @@ routes.add('get', function(req, res, next) {
 });
 
 routes.add('getmodel', function(req, res, next){
-    return authenticate(req, next, function(battle){
-        return res.json(battle.toJson());
+    return authenticate(req, next, function(battle, playerID){
+        var battleJson = battle.toJson();
+        if(battle.currentTurn) {
+            battleJson.orders = battle.currentTurn.playersOrders[playerID];
+        }
+        return res.json(battleJson);
     });
 });
 
