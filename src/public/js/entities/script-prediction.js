@@ -12,8 +12,9 @@
  * @type {*}
  */
 var ScriptPrediction = Object.extend({
-    init: function(model){
-        this.m = model;
+    m: null, //the script model
+    init: function(battleScreen){
+        this.screen = battleScreen;
     },
     drawCircle: function(position, ctx, color){
         ctx.beginPath();
@@ -41,16 +42,25 @@ var ScriptPrediction = Object.extend({
         ctx.restore();
         this.drawCircle(_.last(moveActions).to, ctx, color);
     },
+    isSelected: function(unitID) {
+        var unitVM = this.screen.shipVM.getVM(gs.ship.getUnitByID(unitID));
+        return unitVM.selected;
+    },
     draw: function(ctx) {
         var self = this,
             script = this.m;
-        _.each(script.byUnit, function(actions){
+        _.each(script.byUnit, function(actions, unitID) {
+            ctx.save();
+            if(!self.isSelected(unitID)) {
+                ctx.globalAlpha = 0.5;
+            }
             self.drawPath(_.filter(actions, function(a){
                 return script.isWithinTurn(a) && a.variant === 'move';
             }) ,ctx, 'green');
             self.drawPath(_.filter(actions, function(a){
                 return !script.isWithinTurn(a) && a.variant === 'move';
             }) ,ctx, 'orange');
+            ctx.restore();
         });
     }
 });
