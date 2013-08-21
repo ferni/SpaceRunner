@@ -97,6 +97,9 @@ routes.add('sendorders', function(req, res, next){
 routes.add('ready', function(req, res, next){
     return authenticate(req, next, function(battle, playerID){
         var turn = battle.currentTurn;
+        if(turn.isPlayerReady(playerID)) {
+            return res.json({wasReady: true});
+        }
         turn.setPlayerReady(playerID);
         if(_.uniq(turn.playersSubmitted).length === battle.numberOfPlayers &&
             !turn.script) {
@@ -106,7 +109,7 @@ routes.add('ready', function(req, res, next){
             //then send the updated ship to the clients
             sh.updateShipByScript(battle.ship, turn.script);
         }
-        return res.json({ok: true});
+        return res.json({wasReady: false});
     });
 });
 

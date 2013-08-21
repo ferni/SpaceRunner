@@ -258,7 +258,11 @@ screens.register('battle', ConnectedScreen.extend({
         screen.readyButton.disable();
         //send the orders to the server
         $.post('/battle/ready',
-            {id: this.id}, function() {
+            {id: this.id}, function(data) {
+                if(data.wasReady) {
+                    console.warn('According to the server, the player ' +
+                        'was already ready.');
+                }
                 screen.verifiedOrders = {};
                 screen.startFetching();
             }, 'json')

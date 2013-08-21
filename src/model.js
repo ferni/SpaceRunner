@@ -15,27 +15,26 @@ function BattleTurn(params) {
     this.id = params.id;
     this.battle = params.battle;
     this.playersOrders = {};
+    this.playersOrders[this.battle.playerLeft.id] = {};
+    this.playersOrders[this.battle.playerRight.id] = {};
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
     this.script = null;
     this.addOrders = function(orders, playerID) {
         var self = this;
-        if(!this.playersOrders[playerID]) {
-            this.playersOrders[playerID] = {};
+        if(!this.battle.isPlayerInIt(playerID)) {
+            throw 'Player ' + playerID +' is not in the battle.';
         }
         _.each(orders, function(order){
             self.playersOrders[playerID][order.unitID] = order;
         });
     };
+    this.isPlayerReady = function(playerID) {
+        return _.any(this.playersSubmitted, function(id){
+            return id === playerID;
+        });
+    };
     this.setPlayerReady = function(playerID){
-        if(_.any(this.playersSubmitted, function(ps){
-            return ps === playerID;
-        })) {
-            console.error('Orders for player ' + playerID +
-                ' had already been added.');
-            throw 'Orders for player ' + playerID +
-                ' had already been added.';
-        }
         this.playersSubmitted.push(playerID);
     };
     this.generateScript = function(){
@@ -95,9 +94,6 @@ exports.Battle = function(parameters) {
             playerRight: this.playerRight.toJson()
         };
     };
-    //create first turn
-    this.nextTurn();
-
 };
 
 exports.BattleSetUp = function(params) {
@@ -143,18 +139,19 @@ exports.BattleSetUp = function(params) {
         try{
             var ship = new sh.Ship({jsonString: this.shipJsonString}),
                 battle = new exports.Battle({id: battles.length, ship: ship});
-            ship.putUnit({type: 0, speed: 1, owner: this.creator});
-            ship.putUnit({type: 0, speed: 1, owner: this.creator});
+            ship.putUnit({type: 0, speed: 2, owner: this.creator});
+            ship.putUnit({type: 0, speed: 2, owner: this.creator});
             ship.putUnit({type: 6, speed: 1.5, owner: this.creator});
             ship.putUnit({type: 6, speed: 1.5, owner: this.creator});
 
             ship.putUnit({type: 12, speed: 1.5, owner: this.challenger});
             ship.putUnit({type: 12, speed: 1.5, owner: this.challenger});
-            ship.putUnit({type: 7, speed: 1, owner: this.challenger});
-            ship.putUnit({type: 7, speed: 1, owner: this.challenger});
+            ship.putUnit({type: 7, speed: 2, owner: this.challenger});
+            ship.putUnit({type: 7, speed: 2, owner: this.challenger});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
             battles.push(battle);
+            battle.nextTurn();
             this.battle = battle;
         }
         catch(e){
