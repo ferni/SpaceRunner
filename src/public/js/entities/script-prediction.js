@@ -16,14 +16,6 @@ var ScriptPrediction = Object.extend({
     init: function(battleScreen){
         this.screen = battleScreen;
     },
-    drawCircle: function(position, ctx, color){
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.arc((position.x  * TILE_SIZE) + HALF_TILE,
-            (position.y * TILE_SIZE) + HALF_TILE,
-                5, 0, Math.PI * 2, false);
-        ctx.fill();
-    },
     drawPath: function(moveActions, ctx, color) {
         if(moveActions.length === 0) {
             return;
@@ -40,7 +32,7 @@ var ScriptPrediction = Object.extend({
         });
         ctx.stroke();
         ctx.restore();
-        this.drawCircle(_.last(moveActions).to, ctx, color);
+        draw.circle(ctx, _.last(moveActions).to, 5, color);
     },
     isSelected: function(unitID) {
         var unitVM = this.screen.shipVM.getVM(gs.ship.getUnitByID(unitID));

@@ -20,5 +20,13 @@ var draw = {
         ctx.lineWidth = thickness;
         ctx.moveTo(pixelPos.x, pixelPos.y);
         ctx.strokeRect(pixelPos.x, pixelPos.y, TILE_SIZE, TILE_SIZE);
+    },
+    circle: function(ctx, position, size, color) {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc((position.x  * TILE_SIZE) + HALF_TILE,
+            (position.y * TILE_SIZE) + HALF_TILE,
+            size, 0, Math.PI * 2, false);
+        ctx.fill();
     }
 }
