@@ -12,8 +12,6 @@ if(typeof exports !== 'undefined'){
     sh = module.exports = sh;
 }
 
-
-//TODO: verify that the player is in the order.battleID
 (function(){
     'use strict';
     var Action, MoveAction, Script, pfFinder;
@@ -165,19 +163,21 @@ if(typeof exports !== 'undefined'){
     }
 
     function applySpeedModifiers(script, ship){
-
         _.each(script.byUnit, function(actions, unitID) {
             var unit = ship.getUnitByID(unitID),
                 changed = false;
             _.each(actions, function(action){
-                var otherUnit, duration;
+                var others, duration;
                 if(action.variant === 'move') {
-                    otherUnit = ship.map.at(action.from.x, action.from.y);
-                    if(otherUnit instanceof sh.Unit &&
+                    others = ship.unitsMap.at(action.from.x, action.from.y);
+                    others = _.without(others, unit);
+                    if(others &&
+                        //there's only one unit...
+                        others.length === 1 &&
                         //is enemy unit
-                        otherUnit.owner.id !== unit.owner.id &&
+                        others[0].owner.id !== unit.owner.id &&
                         //unit will stand still
-                        !willUnitMove(otherUnit.id, script,
+                        !willUnitMove(others[0].id, script,
                             {withinTurn: false})){
 
                         //apply %25 speed
