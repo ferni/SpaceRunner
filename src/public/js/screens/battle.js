@@ -311,13 +311,16 @@ screens.register('battle', ConnectedScreen.extend({
         var self = this;
         if (this.dragBox) {
             _.each(this.shipVM.unitVMs, function(u){
-                var pos = new me.Vector2d(
-                    u.m.x * TILE_SIZE,
-                    u.m.y * TILE_SIZE
-                    ),
+                var pos, unitRect;
+                if(u.isMine()){
+                    pos = new me.Vector2d(
+                        u.m.x * TILE_SIZE,
+                        u.m.y * TILE_SIZE
+                        );
                     unitRect = new me.Rect(pos, TILE_SIZE, TILE_SIZE);
-                if(self.dragBox.overlaps(unitRect)) {
-                    u.selected = true;
+                    if(self.dragBox.overlaps(unitRect)) {
+                        u.selected = true;
+                    }
                 }
             });
             this.dragBox = null;
