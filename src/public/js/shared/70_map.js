@@ -79,6 +79,32 @@ sh.EntityMap = sh.Map.extendShared({
     }
 });
 
+/**
+ * Each tile holds an array of entities.
+ * @type {*}
+ */
+sh.EntityMap3d = sh.Map.extendShared({
+    init: function(width, height, entityArray){
+        this.parent(sh.utils.getEmptyMatrix(width, height, 0));
+        this.changed = true;
+        this.entities = entityArray;
+        this.update();
+    },
+    update: function() {
+        var self = this;
+        this.clear();
+        _.each(this.entities, function(e) {
+            e.tiles(function(x, y) {
+                if(!self.at(x, y)) {
+                    self.set(x, y, []);
+                }
+                self.at(x, y).push(e);
+            }, self);
+        });
+        this.changed = true;
+    }
+});
+
 sh.CompoundMap = sh.Map.extendShared({
     init: function(maps){
         if(!maps){
@@ -99,11 +125,11 @@ sh.CompoundMap = sh.Map.extendShared({
         this.width = maps[0].width;
         this.height = maps[0].height;
         this.at = function(x, y){
-            var i, at;
+            var i, what;
             for (i = maps.length - 1; i >= 0; i--) {
-                at = maps[i].at(x, y);
-                if(at){
-                    return at;
+                what = maps[i].at(x, y);
+                if(what){
+                    return what;
                 }
             }
         };

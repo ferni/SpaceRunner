@@ -31,7 +31,7 @@ sh.Ship = sh.SharedClass.extendShared({
         this.itemsMap = new sh.EntityMap(this.width, this.height,
             this.built);
         this.units = [];
-        this.unitsMap = new sh.EntityMap(this.width, this.height,
+        this.unitsMap = new sh.EntityMap3d(this.width, this.height,
             this.units);
         this.map = new sh.CompoundMap([
             new sh.Map(this.hullMap), this.itemsMap, this.unitsMap
@@ -193,7 +193,7 @@ sh.Ship = sh.SharedClass.extendShared({
     isWalkable: function(x, y) {
         var tile = this.map.at(x, y);
         //clear tiles and units are walkable
-        return  tile === sh.tiles.clear || tile instanceof sh.Unit;
+        return  tile === sh.tiles.clear || this.hasUnits({x: x, y: y});
     }
 });
 

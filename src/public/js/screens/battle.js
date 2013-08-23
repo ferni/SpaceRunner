@@ -124,7 +124,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.parent(ctx);
         if (this.paused) {
             this.scriptPrediction.draw(ctx);
-            if (gs.ship.at(mouse.x, mouse.y) instanceof sh.Unit) {
+            if (gs.ship.hasUnits(mouse)) {
                 utils.setCursor('pointer');
             } else if(!this.dragBox){
                 utils.setCursor('default')
@@ -273,13 +273,16 @@ screens.register('battle', ConnectedScreen.extend({
     },
     selectUnit: function(x, y) {
         'use strict';
-        var unit = gs.ship.at(x, y);
+        var self = this,
+            units = gs.ship.unitsMap.at(x, y);
         this.unselectAll();
-        if (unit instanceof sh.Unit) {
+        if (units) {
             this.shipVM.updateUnits();
-            this.shipVM.getVM(unit).selected = true;
-            console.log('Selected unit ' + unit.id + ' ' +
-                utils.posStr(unit));
+            _.each(units, function(unit){
+                self.shipVM.getVM(unit).selected = true;
+                console.log('Selected unit ' + unit.id + ' ' +
+                    utils.posStr(unit));
+            });
             return true;
         }
         return false;
