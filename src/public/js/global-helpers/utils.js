@@ -143,6 +143,9 @@ var utils = {
     actionStr: function(action) {
         return action.start + ' -> ' + action.end + ': ' +
             utils.posStr(action.from) + ' -> ' + utils.posStr(action.to)
+    },
+    isMine: function(unit) {
+        return gs.player.id === unit.owner.id;
     }
 };
 

@@ -126,14 +126,18 @@ screens.register('battle', ConnectedScreen.extend({
             this.scriptPrediction.draw(ctx);
             if (gs.ship.hasUnits(mouse)) {
                 utils.setCursor('pointer');
+                if(_.any(gs.ship.unitsMap.at(mouse.x, mouse.y),
+                    utils.isMine)) {
+                    draw.tileHighlight(ctx, mouse, 'teal', 1);
+                } else {
+                    draw.tileHighlight(ctx, mouse, 'red', 1);
+                }
             } else if(!this.dragBox){
                 utils.setCursor('default')
             }
 
             //highlight where the mouse is pointing if it's a unit
-            if (gs.ship.hasUnits(mouse)) {
-                draw.tileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
-            }
+
             if(_.any(this.shipVM.selected(), function(u){
                 return u.isMine();
             })) {

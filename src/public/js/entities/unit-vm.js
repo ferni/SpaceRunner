@@ -76,10 +76,10 @@ var Unit = TileEntityVM.extend({
         if (this.selected) {
             //draw rectangle around each selected unit
             color = this.isMine() ? 'limegreen' : 'red';
-            draw.tileHighlight(ctx, this.m.x, this.m.y, color, 2);
+            draw.tileHighlight(ctx, this.m, color, 2);
         }
     },
     isMine: function(){
-        return gs.player.id === this.m.owner.id;
+        return utils.isMine(this.m);
     }
 });

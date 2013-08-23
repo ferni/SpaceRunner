@@ -12,10 +12,10 @@
  * @type {{}}
  */
 var draw = {
-    tileHighlight: function(ctx, x, y, color, thickness) {
+    tileHighlight: function(ctx, pos, color, thickness) {
         'use strict';
-        var pixelPos = {x: x * TILE_SIZE,
-            y: y * TILE_SIZE};
+        var pixelPos = {x: pos.x * TILE_SIZE,
+            y: pos.y * TILE_SIZE};
         ctx.strokeStyle = color;
         ctx.lineWidth = thickness;
         ctx.moveTo(pixelPos.x, pixelPos.y);
@@ -29,4 +29,4 @@ var draw = {
             size, 0, Math.PI * 2, false);
         ctx.fill();
     }
-}
+};
