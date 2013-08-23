@@ -131,7 +131,7 @@ screens.register('battle', ConnectedScreen.extend({
             }
 
             //highlight where the mouse is pointing if it's a unit
-            if (gs.ship.isAt(mouse.x, mouse.y, 'unit') ||
+            if (gs.ship.hasUnits(mouse) ||
                 this.shipVM.selected().length > 0) {
                 draw.tileHighlight(ctx, mouse.x, mouse.y, 'teal', 1);
             }

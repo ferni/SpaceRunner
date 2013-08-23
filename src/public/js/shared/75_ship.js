@@ -148,9 +148,8 @@ sh.Ship = sh.SharedClass.extendShared({
     at: function(x, y) {
         return this.map.at(x, y);
     },
-    isAt: function(x, y, name){
-        var what = this.at(x, y);
-        return what && what.name === name;
+    hasUnits: function(position){
+        return this.unitsMap.at(position.x, position.y);
     },
     isInside: function(x, y) {
         var tile = this.at(x, y);
