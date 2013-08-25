@@ -202,18 +202,19 @@ screens.register('battle', ConnectedScreen.extend({
                 newOrders[u.m.id] = order;
             }
         });
-        //update script prediction with new script model
-        self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
-            gs.ship, self.TURN_DURATION);
-        //send order to server
-        $.post('/battle/sendorders',
-            {id: this.id, orders: newOrders}, function() {
-                console.log('Orders successfully submitted');
-        }, 'json')
-        .fail(function(){
-            console.error('Server error when submitting orders.');
-        });
-
+        if(_.size(newOrders) > 0) {
+            //update script prediction with new script model
+            self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
+                gs.ship, self.TURN_DURATION);
+            //send order to server
+            $.post('/battle/sendorders',
+                {id: this.id, orders: newOrders}, function() {
+                    console.log('Orders successfully submitted');
+            }, 'json')
+            .fail(function(){
+                console.error('Server error when submitting orders.');
+            });
+        }
     },
     updateUnitsImageOffset: function(){
         var i, j, unitVMs = this.shipVM.unitVMs, unitA, unitB;
@@ -238,7 +239,17 @@ screens.register('battle', ConnectedScreen.extend({
             }
         }
     },
-    
+    giveOrdersFromLeftOverPath: function(){
+        var self = this;
+        _.each(this.scriptServer.byUnit, function(actions, unitID) {
+            var unit = gs.ship.getUnitByID(unitID),
+                lastAction = _.last(actions);
+            if(utils.isMine(unit) &&
+                !self.scriptServer.isWithinTurn(lastAction)) {
+                self.giveMoveOrder([self.shipVM.getVM(unit)], lastAction.to);
+            }
+        });
+    },
     pause: function() {
         'use strict';
         $('#paused-indicator, #ready-button').show();
@@ -247,11 +258,13 @@ screens.register('battle', ConnectedScreen.extend({
         sh.updateShipByScript(gs.ship, this.scriptServer);
         this.updateUnitsImageOffset();
         this.shipVM.update();
+
+        this.scriptPrediction.m = [];
+        this.giveOrdersFromLeftOverPath();
         me.game.sort();
         me.game.repaint();
         //empty the script
         this.scriptServer = [];
-        this.scriptPrediction.m = [];
 
         this.paused = true;
     },
