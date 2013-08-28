@@ -5,10 +5,10 @@
 * All rights reserved.
 */
 
-/*global _*/
+/*global _, require, exports, module*/
 
 var sh = require('./12_utils'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 
@@ -116,7 +116,7 @@ sh.pr = {
         checkAnyOrAll: function(tileMap, tileCondition, relativeCoordinates,
                 currentCoordinate, inAny) {
             'use strict';
-            var coor, wantedTileCoordinate, row, tileAtCoordinate;
+            var coor, wantedTileCoordinate, tileAtCoordinate;
             if (!relativeCoordinates || relativeCoordinates.length === 0) {
                 return true;
             }
@@ -141,6 +141,7 @@ sh.pr = {
 
 //add prebuilt placement rules for items
 (function(){
+    'use strict';
     var pr = sh.pr,
         space1x1 = pr.make.spaceRule(sh.tiles.clear, 1, 1),
         space2x1 = pr.make.spaceRule(sh.tiles.clear, 2, 1),
@@ -163,16 +164,16 @@ sh.pr = {
                 return ruleA.compliesAt(x, y, map) &&
                     ruleB.compliesAt(x, y, map);
             }
-        }
-    };
+        };
+    }
     function or (ruleA, ruleB) {
         return {
             compliesAt: function(x, y, map){
                 return ruleA.compliesAt(x, y, map) ||
                     ruleB.compliesAt(x, y, map);
             }
-        }
-    };
+        };
+    }
 
     //SPECIAL PLACEMENT RULES FOR ITEMS
 
@@ -221,6 +222,4 @@ sh.pr = {
             new pr.PlacementRule({tileCondition: function(tile) {
                 return tile instanceof sh.items.Wall;
             }, inAll:[{x: 0, y: -1}, {x: 0, y: 2}]})));
-
-
-})();
+}());

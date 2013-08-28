@@ -6,7 +6,7 @@
 * All rights reserved.
 */
 
-/*global */
+/*global GameScreen, $*/
 
  /**
   * A screen that updates automatically from the server.
@@ -15,13 +15,15 @@
   */
 var ConnectedScreen = GameScreen.extend({
     init: function(name) {
+        'use strict';
         this.parent(name);
         this.url = name + '/get';
     },
     onReset: function(settings){
-        if (typeof settings.id !== 'undefined') {
+        'use strict';
+        if (settings.id !== undefined) {
             this.id = settings.id;
-        }else if (typeof this.id === 'undefined') {
+        }else if (this.id === undefined) {
             throw 'ConnectedScreen should have id, or passed as a setting.';
         }
         //start fetching the data
@@ -29,10 +31,12 @@ var ConnectedScreen = GameScreen.extend({
         this.parent(settings);
     },
     onDestroyEvent: function(){
+        'use strict';
         this.stopFetching();
         this.parent();
     },
     startFetching: function(){
+        'use strict';
         var self = this;
         this.fetchIntervalID = setInterval(function() {
             $.post(self.url, {id: self.id}, function(data) {
@@ -41,9 +45,11 @@ var ConnectedScreen = GameScreen.extend({
             }, 'json');}, 500);
     },
      stopFetching: function(){
+         'use strict';
          clearInterval(this.fetchIntervalID);
      },
     onData: function(data){
         //override this (the data is stored in this.data)
+        return data;
     }
 });

@@ -8,6 +8,6 @@
 /*global */
 
 var sh = require('./75_ship'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }

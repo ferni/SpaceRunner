@@ -5,9 +5,11 @@
  * All rights reserved.
  */
 
-/*global */
+/*global _, PF, require, exports*/
 
+window.sh = {onClient: {}}; //initialize window.sh being first file
 (function(sh){
+    'use strict';
     if(sh.onClient) {
         sh.onClient.files = [];
         /**
@@ -35,6 +37,4 @@
         sh.PF = require('pathfinding');
     }
 
-}(typeof exports === 'undefined' ?
-        window.sh = {onClient: {}} : //initialize window.sh being first file
-        exports));
+}(exports === undefined ? window.sh : exports));

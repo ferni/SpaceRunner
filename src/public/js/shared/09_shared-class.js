@@ -5,10 +5,10 @@
  * All rights reserved.
  */
 
-/*global */
+/*global require, exports*/
 
 var sh = require('./00_init'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 

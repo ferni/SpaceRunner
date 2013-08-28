@@ -8,7 +8,7 @@
 /*global me*/
 
 var sh = require('./55_tile-entity'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 

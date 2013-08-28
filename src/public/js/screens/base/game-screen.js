@@ -6,7 +6,7 @@
 * All rights reserved.
 */
 
-/*global */
+/*global me, jsApp, screens, $*/
 
  /**
   * Parent of all the other screens-html.
@@ -63,6 +63,8 @@
      },
      onReset: function(settings){
          'use strict';
+         //abstract
+         return settings;
      },
      /**
       * This function should not be overridden,
@@ -76,6 +78,8 @@
      },
      onDestroy: function(){
          'use strict';
+         //abstract
+         return 0;
      },
      displayHtml: function(){
          'use strict';
@@ -93,5 +97,7 @@
       */
      onHtmlLoaded: function() {
          'use strict';
+         //abstract
+         return 0;
      }
  });

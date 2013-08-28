@@ -5,8 +5,10 @@
 * All rights reserved.
 */
 
+/*global require, exports, module*/
+
 var sh = require('./10_general-stuff'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 

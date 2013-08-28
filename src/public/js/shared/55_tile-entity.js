@@ -8,7 +8,7 @@
 /*global me*/
 
 var sh = require('./30_order-processing'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 

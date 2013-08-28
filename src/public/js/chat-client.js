@@ -50,7 +50,7 @@ var chatClient = (function(){
 
     client.start = function(){
         var $clientDom = $('#chat-client');
-        if(typeof $clientDom[0] !== 'undefined'){
+        if($clientDom[0] !== undefined){
             ko.applyBindings(new ChatViewModel(), $clientDom.get(0));
             $clientDom.find('input').focus();
         }else{

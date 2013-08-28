@@ -23,10 +23,10 @@ var TileEntityVM = me.ObjectEntity.extend({
         if (!this.totalSize) {
             this.totalSize = [this.size[0], this.size[1]];
         }
-        if (typeof settings.spritewidth === 'undefined') {
+        if (settings.spritewidth === undefined) {
             settings.spritewidth = this.totalSize[0] * TILE_SIZE;
         }
-        if (typeof settings.spriteheight === 'undefined') {
+        if (settings.spriteheight === undefined) {
             settings.spriteheight = this.totalSize[1] * TILE_SIZE;
         }
         this.parent(x, y, settings);

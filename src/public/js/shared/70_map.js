@@ -8,7 +8,7 @@
 /*global me*/
 
 var sh = require('./65_make'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 

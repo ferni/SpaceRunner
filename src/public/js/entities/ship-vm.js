@@ -92,7 +92,7 @@ var ShipVM = function(shipModel) {
     //internal function used by getVM
     function getMatch(model, modelArray, vmArray){
         var index = modelArray.indexOf(model);
-        if(index !== null && typeof index !== 'undefined' &&
+        if(index !== null && index !== undefined &&
             vmArray[index].m === model) {
             return vmArray[index];
         }

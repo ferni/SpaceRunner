@@ -8,7 +8,7 @@
 /*global me*/
 
 var sh = require('./20_placement-rules'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 
@@ -141,7 +141,7 @@ if(typeof exports !== 'undefined'){
     function getActionsByUnit(actions){
         var actionsByUnit = {};
         _.each(actions, function(action){
-            if(typeof action.unitID !== 'undefined') {
+            if(action.unitID !== undefined) {
                 if(!actionsByUnit[action.unitID]){
                     actionsByUnit[action.unitID] = [];
                 }

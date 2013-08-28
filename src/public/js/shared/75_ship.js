@@ -8,7 +8,7 @@
 /*global require, exports, module*/
 
 var sh = require('./70_map'), _ = sh._;
-if(typeof exports !== 'undefined'){
+if(exports !== undefined){
     sh = module.exports = sh;
 }
 

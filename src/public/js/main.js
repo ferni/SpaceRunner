@@ -312,7 +312,7 @@ var jsApp = {
         screens.loadHtmls(function(){
             server.init(function(data) {
                 gs.player = sh.make.playerFromJson(data.player);
-                if(typeof data.battleID !== 'undefined') {
+                if(data.battleID !== undefined) {
                     //player was in a battle, resume it
                     server.getBattle(data.battleID, function(battle) {
                         me.state.change('battle', battle);

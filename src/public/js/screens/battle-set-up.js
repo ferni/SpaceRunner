@@ -21,8 +21,8 @@ screens.register('battle-set-up', ConnectedScreen.extend({
 
     bothPlayersPresent: function(){
         return this.data &&
-            typeof this.data.creator.id !== 'undefined' &&
-            typeof this.data.challenger.id !== 'undefined';
+            this.data.creator.id !== undefined &&
+            this.data.challenger.id !== undefined;
     },
     /**
      * Loads the knockout vm to bind it to the HTML
