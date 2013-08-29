@@ -8,11 +8,24 @@
 /*global _, require, exports, module*/
 
 var sh = require('./12_utils'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * NodeJS exports
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
+/**
+ * Library for facilitating configuring the rules for placement for the items.
+ * @type {{PlacementRule: Function, make: {spaceRule: Function, nextToRule: Function}, utils: {checkAny: Function, checkAll: Function, checkAnyOrAll: Function}}}
+ */
 sh.pr = {
+    /**
+     * A placement rule
+     * @param {{tile:{Object}, inAny:{Array}, inAll:{Array}}} settings
+     * @constructor
+     */
     PlacementRule: function(settings) { //settings: tile, inAny, inAll
         'use strict';
         var wantedTile;
@@ -28,7 +41,7 @@ sh.pr = {
             };
         }
         this.compliesAt = function(x, y, map) {
-            if(!(map instanceof sh.Map)){
+            if (!(map instanceof sh.Map)) {
                 throw 'map should be an instance of sh.Map';
             }
             return sh.pr.utils.checkAny(map, this.tileCondition, this.inAny, {
@@ -43,7 +56,7 @@ sh.pr = {
     make: {
         //has to have enough space
         spaceRule: function(tileCondition, width, height) {
-           'use strict';
+            'use strict';
             var coordArray = [], x, y, settings;
             for (y = 0; y < height; y++) {
                 for (x = 0; x < width; x++) {
@@ -58,8 +71,7 @@ sh.pr = {
             };
             if (_.isFunction(tileCondition)) {
                 settings.tileCondition = tileCondition;
-            }
-            else {
+            } else {
                 settings.tile = tileCondition; //tileCondition is just a tile
             }
             return new sh.pr.PlacementRule(settings);
@@ -93,8 +105,7 @@ sh.pr = {
             };
             if (_.isFunction(tileCondition)) {
                 settings.tileCondition = tileCondition;
-            }
-            else {
+            } else {
                 settings.tile = tileCondition; //tileCondition is just a tile
             }
             return new sh.pr.PlacementRule(settings);
@@ -114,22 +125,22 @@ sh.pr = {
                 currentCoord, false);
         },
         checkAnyOrAll: function(tileMap, tileCondition, relativeCoordinates,
-                currentCoordinate, inAny) {
+                currentCoord, inAny) {
             'use strict';
-            var coor, wantedTileCoordinate, tileAtCoordinate;
+            var coor, wantedTileCoord, tileAtCoord;
             if (!relativeCoordinates || relativeCoordinates.length === 0) {
                 return true;
             }
             for (coor = 0; coor < relativeCoordinates.length; coor++) {
-                wantedTileCoordinate = relativeCoordinates[coor];
-                tileAtCoordinate = tileMap.at(currentCoordinate.x + wantedTileCoordinate.x,
-                    currentCoordinate.y + wantedTileCoordinate.y);
-                if (inAny && tileAtCoordinate &&
-                    tileCondition(tileAtCoordinate)) {
+                wantedTileCoord = relativeCoordinates[coor];
+                tileAtCoord = tileMap.at(currentCoord.x + wantedTileCoord.x,
+                    currentCoord.y + wantedTileCoord.y);
+                if (inAny && tileAtCoord &&
+                        tileCondition(tileAtCoord)) {
                     return true;
                 }
-                if (!inAny && (!tileAtCoordinate ||
-                    !tileCondition(tileAtCoordinate))) {
+                if (!inAny && (!tileAtCoord ||
+                    !tileCondition(tileAtCoord))) {
                     return false;
                 }
             }
@@ -140,35 +151,35 @@ sh.pr = {
 };
 
 //add prebuilt placement rules for items
-(function(){
+(function() {
     'use strict';
     var pr = sh.pr,
         space1x1 = pr.make.spaceRule(sh.tiles.clear, 1, 1),
         space2x1 = pr.make.spaceRule(sh.tiles.clear, 2, 1),
         space1x2 = pr.make.spaceRule(sh.tiles.clear, 1, 2),
         space2x2 = pr.make.spaceRule(sh.tiles.clear, 2, 2),
-        prebuiltSpace = [[space1x1, space1x2],[space2x1, space2x2]];
+        prebuiltSpace = [[space1x1, space1x2], [space2x1, space2x2]];
 
-    pr.space = function(width, height){
-        if(!prebuiltSpace[width - 1] ||
-            !prebuiltSpace[width - 1][height - 1]) {
-            throw "There's no prebuilt space rule for size "
-                + width +'x' + height;
+    pr.space = function(width, height) {
+        if (!prebuiltSpace[width - 1] ||
+                !prebuiltSpace[width - 1][height - 1]) {
+            throw "There's no prebuilt space rule for size " +
+                width + 'x' + height;
         }
         return prebuiltSpace[width - 1][height - 1];
     };
 
-    function and (ruleA, ruleB) {
+    function and(ruleA, ruleB) {
         return {
-            compliesAt: function(x, y, map){
+            compliesAt: function(x, y, map) {
                 return ruleA.compliesAt(x, y, map) &&
                     ruleB.compliesAt(x, y, map);
             }
         };
     }
-    function or (ruleA, ruleB) {
+    function or(ruleA, ruleB) {
         return {
-            compliesAt: function(x, y, map){
+            compliesAt: function(x, y, map) {
                 return ruleA.compliesAt(x, y, map) ||
                     ruleB.compliesAt(x, y, map);
             }
@@ -205,21 +216,21 @@ sh.pr = {
     }, 1, 1));
 
     pr.door = or(pr.make.spaceRule(function(tile) {
-            return tile instanceof sh.items.Wall && tile.isHorizontal();
-        }, 2, 1),
+        return tile instanceof sh.items.Wall && tile.isHorizontal();
+    }, 2, 1),
         //or...
         and(space2x1,
             //and...
             new pr.PlacementRule({tileCondition: function(tile) {
                 return tile instanceof sh.items.Wall;
-            }, inAll:[{x: -1, y: 0}, {x: 2, y:0}]}))
-    );
+            }, inAll: [{x: -1, y: 0}, {x: 2, y: 0}]}))
+        );
 
     pr.doorRotated = or(pr.make.spaceRule(function(tile) {
-            return tile instanceof sh.items.Wall && tile.isVertical();
-        }, 1, 2),
+        return tile instanceof sh.items.Wall && tile.isVertical();
+    }, 1, 2),
         and(space1x2,
             new pr.PlacementRule({tileCondition: function(tile) {
                 return tile instanceof sh.items.Wall;
-            }, inAll:[{x: 0, y: -1}, {x: 0, y: 2}]})));
+            }, inAll: [{x: 0, y: -1}, {x: 0, y: 2}]})));
 }());

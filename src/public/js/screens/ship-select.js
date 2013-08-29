@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, html, jsApp, ko, _ */
+/*global me, html, jsApp, ko, _, GameScreen, screens */
 
 screens.register('ship-select', GameScreen.extend({
     init: function(name) {

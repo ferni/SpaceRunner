@@ -5,15 +5,16 @@
  * All rights reserved.
  */
 
-/*global */
+/*global require, module, exports */
 
 var sh = require('./09_shared-class'), _ = sh._,
     PF = sh.PF;
-if(exports !== undefined){
+if (exports !== undefined) {
     sh = module.exports = sh;
 }
 
-(function(sh){
+(function(sh) {
+    'use strict';
     //SHARED ENTITIES
     sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
@@ -23,7 +24,7 @@ if(exports !== undefined){
             this.id = settings.id;
             this.name = settings.name;
         },
-        toJson: function(){
+        toJson: function() {
             return {
                 type: this.type,
                 id: this.id,
@@ -62,9 +63,12 @@ if(exports !== undefined){
     //used in testing
     sh.getProperties = function(object) {
         var props = [], p;
-        for(p in object ){
-            props.push(p);
+        for (p in object ) {
+            if (object.hasOwnProperty(p)) {
+                props.push(p);
+            }
         }
         return props;
     };
-})(sh);
+}(sh));
+

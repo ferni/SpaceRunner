@@ -7,8 +7,9 @@
 
 /*global _, PF, require, exports*/
 
+
 window.sh = {onClient: {}}; //initialize window.sh being first file
-(function(sh){
+(function(sh) {
     'use strict';
     if(sh.onClient) {
         sh.onClient.files = [];

@@ -5,10 +5,14 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, require, exports, module*/
 
 var sh = require('./55_tile-entity'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * NodeJS exports
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 

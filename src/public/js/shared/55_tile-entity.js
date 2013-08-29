@@ -5,16 +5,25 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, require, module, exports*/
 
 var sh = require('./30_order-processing'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * NodeJS exports
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
+/**
+ * An object on the ship. (An item, an unit, etc)
+ * @type {*}
+ */
 sh.TileEntity = sh.SharedClass.extendShared({
     id: null,
-    init: function(x, y){
+    init: function(x, y) {
+        'use strict';
         this.x = x;
         this.y = y;
     },
@@ -25,7 +34,7 @@ sh.TileEntity = sh.SharedClass.extendShared({
         return this.size[index];
     },
     //callback must have x and y. withinSize is optional
-    tiles: function(callback ,withinSize) {
+    tiles: function(callback, withinSize) {
         'use strict';
         var x, y,
             width = this.trueSize(0),

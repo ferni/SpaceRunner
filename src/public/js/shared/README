@@ -8,7 +8,11 @@ IMPORTANT
 
 /*global require, exports, module*/
 var sh = require('./previous-file-name'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
    sh = module.exports = sh;
 }
 

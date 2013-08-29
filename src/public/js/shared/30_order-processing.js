@@ -5,14 +5,18 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, require, module, exports*/
 
 var sh = require('./20_placement-rules'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * NodeJS exports
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
-(function(){
+(function() {
     'use strict';
     var Action, MoveAction, Script, pfFinder;
     //The following classes serve as documentation only,
@@ -28,8 +32,8 @@ if(exports !== undefined){
     });
 
     MoveAction = Action.extendShared({
-        from:null,
-        to:null,
+        from: null,
+        to: null,
         init: function(json) {
             this.parent(json);
             this.from = json.from;
@@ -39,22 +43,22 @@ if(exports !== undefined){
 
 
     //ORDER VERIFICATION
-    function verifyOrder(order, ship, playerID){
-        if(!order || !order.type || order.type !== 'Order-JSON-V1' ||
-            !order.variant) {
+    function verifyOrder(order, ship, playerID) {
+        if (!order || !order.type || order.type !== 'Order-JSON-V1' ||
+                !order.variant) {
             return false;
         }
-        switch(order.variant) {
-            case 'move' : {
-                var dest = order.destination,
-                    unit = ship.getUnitByID(order.unitID);
-                return unit &&
-                    //is destination a walkable area
-                    ship.isWalkable(dest.x, dest.y) &&
-                    //unit owned by the issuer
-                    unit.owner.id === playerID;
-            } break;
-            default: return false;
+        switch (order.variant) {
+        case 'move':
+            var dest = order.destination,
+                unit = ship.getUnitByID(order.unitID);
+            return unit &&
+                //is destination a walkable area
+                ship.isWalkable(dest.x, dest.y) &&
+                //unit owned by the issuer
+                unit.owner.id === playerID;
+        default:
+            return false;
         }
     }
 
@@ -67,13 +71,13 @@ if(exports !== undefined){
     function getTileDistance(from, to) {
         var a = to.x - from.x,
             b = to.y - from.y;
-        if(a === 0) {
-            if(b < 0) {
+        if (a === 0) {
+            if (b < 0) {
                 return -b;
             }
             return b;
         }
-        if(a < 0) {
+        if (a < 0) {
             return -a;
         }
         return a;
@@ -87,7 +91,8 @@ if(exports !== undefined){
 
     function convertPathToActionsArray(path, unit) {
         var action,
-            actions = [], i,
+            actions = [],
+            i,
             oneTileTime = unit.getTimeForOneTile(),
             diagonalTime = oneTileTime * 1.41421356,
             tileDistance,
@@ -109,9 +114,9 @@ if(exports !== undefined){
                 start: time
             };
             tileDistance = getTileDistance(action.from, action.to);
-            if(isDiagonal(action.from, action.to)) {
+            if (isDiagonal(action.from, action.to)) {
                 step = tileDistance * diagonalTime;
-            }else{
+            } else {
                 step = tileDistance * oneTileTime;
             }
             action.end = action.start + step;
@@ -123,7 +128,7 @@ if(exports !== undefined){
     function createActionsFromMoveOrder(order, unit, grid) {
         var dest = order.destination,
             path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y, grid);
-        if(path.length > 0) {
+        if (path.length > 0) {
             //generate the actions
             return convertPathToActionsArray(path, unit);
         }
@@ -132,17 +137,17 @@ if(exports !== undefined){
 
     function willUnitMove(unitID, script, withinTurnObj) {
         var withinTurn = withinTurnObj.withinTurn;
-        return _.any(script.byUnit[unitID], function(action){
+        return _.any(script.byUnit[unitID], function(action) {
             return action.variant === 'move' &&
                 (!withinTurn || script.isWithinTurn(action));
         });
     }
 
-    function getActionsByUnit(actions){
+    function getActionsByUnit(actions) {
         var actionsByUnit = {};
-        _.each(actions, function(action){
-            if(action.unitID !== undefined) {
-                if(!actionsByUnit[action.unitID]){
+        _.each(actions, function(action) {
+            if (action.unitID !== undefined) {
+                if (!actionsByUnit[action.unitID]) {
                     actionsByUnit[action.unitID] = [];
                 }
                 actionsByUnit[action.unitID].push(action);
@@ -153,8 +158,8 @@ if(exports !== undefined){
 
     function fixActionsOverlap(actions) {
         var i, diff;
-        for(i = 0; i < actions.length - 1; i++) {
-            if(actions[i + 1].start < actions[i].end) {
+        for (i = 0; i < actions.length - 1; i++) {
+            if (actions[i + 1].start < actions[i].end) {
                 diff = actions[i].end - actions[i + 1].start;
                 actions[i + 1].start += diff;
                 actions[i + 1].end += diff;
@@ -162,23 +167,23 @@ if(exports !== undefined){
         }
     }
 
-    function applySpeedModifiers(script, ship){
+    function applySpeedModifiers(script, ship) {
         _.each(script.byUnit, function(actions, unitID) {
             var unit = ship.getUnitByID(unitID),
                 changed = false;
-            _.each(actions, function(action){
+            _.each(actions, function(action) {
                 var others, duration;
-                if(action.variant === 'move') {
+                if (action.variant === 'move') {
                     others = ship.unitsMap.at(action.from.x, action.from.y);
                     others = _.without(others, unit);
-                    if(others &&
+                    if (others &&
                         //there's only one unit...
-                        others.length === 1 &&
-                        //is enemy unit
-                        others[0].owner.id !== unit.owner.id &&
-                        //unit will stand still
-                        !willUnitMove(others[0].id, script,
-                            {withinTurn: false})){
+                            others.length === 1 &&
+                            //is enemy unit
+                            others[0].owner.id !== unit.owner.id &&
+                            //unit will stand still
+                            !willUnitMove(others[0].id, script,
+                                {withinTurn: false})) {
 
                         //apply %25 speed
                         duration = action.end - action.start;
@@ -188,14 +193,13 @@ if(exports !== undefined){
                     }
                 }
             });
-            if(changed) {
+            if (changed) {
                 fixActionsOverlap(actions);
             }
         });
     }
 
-
-    function insertDelay(actions, index, delay){
+    function insertDelay(actions, index, delay) {
         var i;
         for (i = index; i < actions.length; i++) {
             actions[i].start += delay;
@@ -204,11 +208,11 @@ if(exports !== undefined){
     }
 
     function getLastMoveAction(script, unit) {
-        var moveActions = _.filter(script.byUnit[unit.id], function(a){
+        var moveActions = _.filter(script.byUnit[unit.id], function(a) {
             return a.variant === 'move' &&
                 script.isWithinTurn(a);
         });
-        if(moveActions && moveActions.length > 0) {
+        if (moveActions && moveActions.length > 0) {
             return moveActions[moveActions.length - 1];
         }
         return null;
@@ -221,26 +225,26 @@ if(exports !== undefined){
 
     function fixEndOfTurnOverlap(script, ship) {
         var i, j, a, b, forChange, somethingChanged,
-                actions, lastMoveAction;
-        do{
+            actions, lastMoveAction;
+        do {
             somethingChanged = false;
             for (i = ship.units.length - 1; i >= 0; i--) {
                 a = ship.units[i];
                 for (j = i - 1; j >= 0; j--) {
                     b = ship.units[j];
-                    if(a.owner.id === b.owner.id && //unis are of the same team
+                    if (a.owner.id === b.owner.id && //unis are of the same team
                         _.isEqual(getEndPosition(a, script),
-                        getEndPosition(b, script))) {
+                                getEndPosition(b, script))) {
                         //same end position, one will need to change
-                        if(willUnitMove(a.id, script,
-                            {withinTurn: true})){
+                        if (willUnitMove(a.id, script,
+                                {withinTurn: true})) {
                             //change a, since it's the one moving
                             forChange = a;
-                        }else if(willUnitMove(b.id, script,
-                            {withinTurn: true})) {
+                        } else if (willUnitMove(b.id, script,
+                                {withinTurn: true})) {
                             //change b, since it's the one moving
                             forChange = b;
-                        }else {
+                        } else {
                             throw 'Neither unit is moving yet they ended' +
                                 ' up in the same position, something' +
                                 ' has gone wrong...';
@@ -255,28 +259,28 @@ if(exports !== undefined){
                     }
                 }
             }
-        }while(somethingChanged);
+        } while (somethingChanged);
     }
 
     Script = sh.SharedClass.extendShared({
         turnDuration: 0,
         actions: [],
         byUnit: {},
-        init: function(parameters){
-            if(parameters) {
+        init: function(parameters) {
+            if (parameters) {
                 this.actions = parameters.actions;
                 this.turnDuration = parameters.turnDuration;
                 this.sort();
             }
         },
-        fromJson: function(json){
+        fromJson: function(json) {
             //logic here
             this.turnDuration = json.turnDuration;
             this.actions = json.actions;
             this.byUnit = getActionsByUnit(json.actions);
             return this;
         },
-        toJson: function(){
+        toJson: function() {
             return {
                 turnDuration: this.turnDuration,
                 actions: this.actions
@@ -293,25 +297,28 @@ if(exports !== undefined){
 
     /**
      * Generates a "script" for the units given all the orders issued.
-     * @param orders
-     * @param ship
-     * @param turnDuration {int}
-     * @returns {Script}
+     * @param {Array} orders
+     * @param {sh.Ship} ship
+     * @param {int} turnDuration
+     * @return {Script}
      */
     function createScript(orders, ship, turnDuration) {
-        //TODO: make it async
+        //make it async in the future
         var script,
             actions = [],
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
 
-        _.each(orders, function(order){
+        _.each(orders, function(order) {
             var unit = ship.getUnitByID(order.unitID);
-            switch(order.variant) {
-                case 'move': {
+            switch (order.variant) {
+            case 'move':
                     //this assumes the orders array is ordered by orders given
-                    actions = actions.concat(createActionsFromMoveOrder(
-                        order, unit, grid.clone()));
-                } break;
+                actions = actions.concat(createActionsFromMoveOrder(
+                    order,
+                    unit,
+                    grid.clone()
+                ));
+                break;
             }
         });
         script = new Script({actions: actions, turnDuration: turnDuration});
@@ -325,13 +332,13 @@ if(exports !== undefined){
     /**
      * Modifies the ship and its elements according with the script given
      * and the time.
-     * @param ship
-     * @param script
+     * @param {sh.Ship} ship
+     * @param {Script} script
      */
     function updateShipByScript(ship, script) {
-        _.each(script.actions, function(action){
+        _.each(script.actions, function(action) {
             var unit;
-            if(script.isWithinTurn(action)) {
+            if (script.isWithinTurn(action)) {
                 //this assumes the action involves a unit
                 unit = ship.getUnitByID(action.unitID);
                 unit.x = action.to.x;
@@ -349,5 +356,4 @@ if(exports !== undefined){
     sh.createScript = createScript;
     sh.updateShipByScript = updateShipByScript;
 
-})();
-
+}());
