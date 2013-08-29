@@ -35,7 +35,7 @@
  var GameScreen = me.ScreenObject.extend({
      init: function(name) {
          'use strict';
-         if(!name) {
+         if (!name) {
              throw 'The screen should have a name. If overriding init,' +
                  ' call this.parent(<name>)';
          }
@@ -61,7 +61,7 @@
          this.isReset = true;
          jsApp.onScreenReset();
      },
-     onReset: function(settings){
+     onReset: function(settings) {
          'use strict';
          //abstract
          return settings;
@@ -76,19 +76,19 @@
          this.isReset = false;
          this.clearHtml();
      },
-     onDestroy: function(){
+     onDestroy: function() {
          'use strict';
          //abstract
          return 0;
      },
-     displayHtml: function(){
+     displayHtml: function() {
          'use strict';
          if (!screens.storedHtmls[this.name]) {
              throw 'Could not find preloaded html for ' + this.name;
          }
          $('#screensUi').html(screens.storedHtmls[this.name]);
      },
-     clearHtml: function(){
+     clearHtml: function() {
          'use strict';
          $('#screensUi').html('');
      },

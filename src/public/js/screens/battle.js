@@ -5,7 +5,8 @@
 * All rights reserved.
 */
 
-/*global screens-html, GameScreen*/
+/*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
+ScriptPlayer, $, utils, _, draw, DragBox, make, TILE_SIZE*/
 
 screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION: 3000,
@@ -14,9 +15,10 @@ screens.register('battle', ConnectedScreen.extend({
     scriptPrediction: null,
     scriptPlayer: null,
     scriptServer: [],
-    onReset: function(battleModel){
+    onReset: function(battleModel) {
+        'use strict';
         this.parent({id: battleModel.id});
-        gs.ship =  new sh.Ship({jsonString: battleModel.ship});
+        gs.ship = new sh.Ship({jsonString: battleModel.ship});
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
@@ -49,13 +51,13 @@ screens.register('battle', ConnectedScreen.extend({
     onHtmlLoaded: function() {
         'use strict';
         var screen = this;
-        this.readyButton = (function(){
+        this.readyButton = (function() {
             var btn = {},
                 //reference to the dom node
                 $node = $('#ready-button');
             btn.enabled = true;
             $node.click(function() {
-                if(btn.enabled) {
+                if (btn.enabled) {
                     screen.onReady();
                 }
             });
@@ -70,15 +72,16 @@ screens.register('battle', ConnectedScreen.extend({
                     .html('Awaiting players...');
             };
             return btn;
-        })();
+        }());
     },
-    onData: function(data){
+    onData: function(data) {
+        'use strict';
         var screen = this;
         this.currentTurnID = data.currentTurnID;
         $('#turn-number').html(this.currentTurnID);
         if (this.paused && data.scriptReady) {
             //get the script
-            $.post('/battle/getscript', {id: screen.id}, function (data) {
+            $.post('/battle/getscript', {id: screen.id}, function(data) {
                 var script = new sh.Script().fromJson(data.script);
                 screen.scriptServer = script;
                 screen.scriptPlayer.loadScript(script);
@@ -86,20 +89,20 @@ screens.register('battle', ConnectedScreen.extend({
                 //screen.logActions(script);
                 screen.resume();
                 screen.stopFetching();
-                $.post('/battle/scriptreceived', {id: screen.id},function () {
+                $.post('/battle/scriptreceived', {id: screen.id}, function() {
                     //(informs the server that the script has been received)
-                }).fail(function () {
-                        console.error('Error pinging server.');
-                    });
+                }).fail(function() {
+                    console.error('Error pinging server.');
+                });
             });
         }
     },
     logActions: function(script) {
-        _.each(script.byUnit, function(actions, unitID){
+        _.each(script.byUnit, function(actions, unitID) {
             console.log('Unit ' + unitID + '\'s actions:');
-            _.each(actions, function(a){
+            _.each(actions, function(a) {
                 console.log(utils.actionStr(a));
-            })
+            });
         });
     },
     update: function() {
@@ -126,21 +129,21 @@ screens.register('battle', ConnectedScreen.extend({
             this.scriptPrediction.draw(ctx);
             if (gs.ship.hasUnits(mouse)) {
                 utils.setCursor('pointer');
-                if(_.any(gs.ship.unitsMap.at(mouse.x, mouse.y),
-                    utils.isMine)) {
+                if (_.any(gs.ship.unitsMap.at(mouse.x, mouse.y),
+                        utils.isMine)) {
                     draw.tileHighlight(ctx, mouse, 'teal', 1);
                 } else {
                     draw.tileHighlight(ctx, mouse, 'red', 1);
                 }
-            } else if(!this.dragBox){
-                utils.setCursor('default')
+            } else if (!this.dragBox) {
+                utils.setCursor('default');
             }
 
             //highlight where the mouse is pointing if it's a unit
 
-            if(_.any(this.shipVM.selected(), function(u){
-                return u.isMine();
-            })) {
+            if (_.any(this.shipVM.selected(), function(u) {
+                    return u.isMine();
+                })) {
                 ctx.save();
                 ctx.globalAlpha = 0.5;
                 draw.circle(ctx, mouse, 5, 'green');
@@ -181,7 +184,7 @@ screens.register('battle', ConnectedScreen.extend({
         }
         if (which === me.input.mouse.RIGHT) {
             this.giveMoveOrder(this.shipVM.selected(), mouse);
-        } else if (which === me.input.mouse.LEFT){
+        } else if (which === me.input.mouse.LEFT) {
             this.startDragBox(utils.getMouse(true));
         }
 
@@ -193,16 +196,17 @@ screens.register('battle', ConnectedScreen.extend({
         }
     },
     giveMoveOrder: function(unitVMs, destination) {
+        'use strict';
         var self = this,
             newOrders = {};
-        _.each(unitVMs, function(u){
+        _.each(unitVMs, function(u) {
             var order = make.moveOrder(u.m, destination);
-            if(sh.verifyOrder(order, gs.ship, gs.player.id)) {
+            if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 self.verifiedOrders[u.m.id] = order;
                 newOrders[u.m.id] = order;
             }
         });
-        if(_.size(newOrders) > 0) {
+        if (_.size(newOrders) > 0) {
             //update script prediction with new script model
             self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
                 gs.ship, self.TURN_DURATION);
@@ -210,28 +214,28 @@ screens.register('battle', ConnectedScreen.extend({
             $.post('/battle/sendorders',
                 {id: this.id, orders: newOrders}, function() {
                     console.log('Orders successfully submitted');
-            }, 'json')
-            .fail(function(){
-                console.error('Server error when submitting orders.');
-            });
+                }, 'json')
+                .fail(function() {
+                    console.error('Server error when submitting orders.');
+                });
         }
     },
-    updateUnitsImageOffset: function(){
+    updateUnitsImageOffset: function() {
+        'use strict';
         var i, j, unitVMs = this.shipVM.unitVMs, unitA, unitB;
-        //TODO: enable map to have multiple units in same position
-        _.each(unitVMs, function(u){
+        _.each(unitVMs, function(u) {
             u.putInCenter();
         });
         for (i = unitVMs.length - 1; i >= 0; i--) {
             unitA = unitVMs[i];
             for (j = i - 1; j >= 0; j--) {
                 unitB = unitVMs[j];
-                if(unitA.m.x === unitB.m.x && unitA.m.y === unitB.m.y &&
-                    unitA.m.owner.id !== unitB.m.owner.id) {
-                    if(unitA.isMine()){
+                if (unitA.m.x === unitB.m.x && unitA.m.y === unitB.m.y &&
+                        unitA.m.owner.id !== unitB.m.owner.id) {
+                    if (unitA.isMine()) {
                         unitA.putInTopRight();
                         unitB.putInBottomLeft();
-                    }else{
+                    } else {
                         unitA.putInBottomLeft();
                         unitB.putInTopRight();
                     }
@@ -239,13 +243,14 @@ screens.register('battle', ConnectedScreen.extend({
             }
         }
     },
-    giveOrdersFromLeftOverPath: function(){
+    giveOrdersFromLeftOverPath: function() {
+        'use strict';
         var self = this;
         _.each(this.scriptServer.byUnit, function(actions, unitID) {
             var unit = gs.ship.getUnitByID(unitID),
                 lastAction = _.last(actions);
-            if(utils.isMine(unit) &&
-                !self.scriptServer.isWithinTurn(lastAction)) {
+            if (utils.isMine(unit) &&
+                    !self.scriptServer.isWithinTurn(lastAction)) {
                 self.giveMoveOrder([self.shipVM.getVM(unit)], lastAction.to);
             }
         });
@@ -277,20 +282,21 @@ screens.register('battle', ConnectedScreen.extend({
         this.paused = false;
     },
     //When a player clicks "Ready"
-    onReady: function(){
+    onReady: function() {
+        'use strict';
         var screen = this;
         screen.readyButton.disable();
         //send the orders to the server
         $.post('/battle/ready',
             {id: this.id}, function(data) {
-                if(data.wasReady) {
+                if (data.wasReady) {
                     console.warn('According to the server, the player ' +
                         'was already ready.');
                 }
                 screen.verifiedOrders = {};
                 screen.startFetching();
             }, 'json')
-            .fail(function(){
+            .fail(function() {
                 console.error('Could not ready player: server error.');
                 screen.readyButton.enable();
             });
@@ -302,7 +308,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.unselectAll();
         if (units) {
             this.shipVM.updateUnits();
-            _.each(units, function(unit){
+            _.each(units, function(unit) {
                 self.shipVM.getVM(unit).selected = true;
                 console.log('Selected unit ' + unit.id + ' ' +
                     utils.posStr(unit));
@@ -314,24 +320,26 @@ screens.register('battle', ConnectedScreen.extend({
     unselectAll: function() {
         'use strict';
         _.each(this.shipVM.unitVMs, function(u) {
-            return u.selected = false;
+            u.selected = false;
         });
     },
     startDragBox: function(pos) {
+        'use strict';
         this.dragBox = new DragBox(pos);
     },
     releaseDragBox: function() {
+        'use strict';
         var self = this;
         if (this.dragBox) {
-            _.each(this.shipVM.unitVMs, function(u){
+            _.each(this.shipVM.unitVMs, function(u) {
                 var pos, unitRect;
-                if(u.isMine()){
+                if (u.isMine()) {
                     pos = new me.Vector2d(
                         u.m.x * TILE_SIZE,
                         u.m.y * TILE_SIZE
-                        );
+                    );
                     unitRect = new me.Rect(pos, TILE_SIZE, TILE_SIZE);
-                    if(self.dragBox.overlaps(unitRect)) {
+                    if (self.dragBox.overlaps(unitRect)) {
                         u.selected = true;
                     }
                 }
@@ -344,8 +352,7 @@ screens.register('battle', ConnectedScreen.extend({
 
     },
     at: function(x, y) {
+        'use strict';
         return gs.ship.at(x, y);
     }
-
-
 }));

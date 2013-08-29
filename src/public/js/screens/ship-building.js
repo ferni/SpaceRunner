@@ -6,8 +6,8 @@
 */
 
 
-/*global
-_, html, $, Ship, me, utils, jsApp, width, height, AjaxUpload,
+/*global GameScreen, screens, ShipVM, sh, server, make,
+$, Ship, me, utils, jsApp, width, height,
 items, RedColorEntity, hullMap */
 
 /* Screen where one builds the ship */
@@ -39,10 +39,6 @@ screens.register('ship-building', GameScreen.extend({
 
         me.game.sort();
 
-        //Debugging commands
-        me.input.bindKey(me.input.KEY.L, 'load');//load
-        me.input.bindKey(me.input.KEY.S, 'save');//save
-
         me.input.bindKey(me.input.KEY.ESC, 'escape');
         me.input.registerMouseEvent('mousedown', me.game.viewport,
             this.mouseDown.bind(this));
@@ -65,9 +61,6 @@ screens.register('ship-building', GameScreen.extend({
     onDestroy: function() {
         'use strict';
         me.input.unbindKey(me.input.KEY.ESC);
-        //Debugging commands
-        me.input.unbindKey(me.input.KEY.L);//load
-        me.input.unbindKey(me.input.KEY.S);//save
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
@@ -85,16 +78,7 @@ screens.register('ship-building', GameScreen.extend({
                 this.choose();
             }
         }
-
-        //TODO: remove this and the bindings
-        if (me.input.isKeyPressed('save')) {
-            console.log(this.ship.toJsonString());
-        }
-        if (me.input.isKeyPressed('load')) {
-            var data = window.prompt('enter ship json data');
-            me.state.change('ship-building', {jsonString: data});
-        }
-        _.each(this.drawingScreen, function(item){
+        _.each(this.drawingScreen, function(item) {
             item.update();
         });
     },
@@ -103,7 +87,7 @@ screens.register('ship-building', GameScreen.extend({
     draw: function(ctx) {
         'use strict';
         this.parent(ctx);
-        _.each(this.drawingScreen, function(item){
+        _.each(this.drawingScreen, function(item) {
             item.draw(ctx);
         });
     },
@@ -128,29 +112,28 @@ screens.register('ship-building', GameScreen.extend({
                 name = prompt('Enter the ship name.');
             $.post('/save', {name: name, buildings: shipData},
                 function(response) {
-                if (response) {
-                    alert('saved');
-                }
-                else {
-                    alert('Error: Could not save ship.');
-                }
-            },'json');
+                    if (response) {
+                        alert('saved');
+                    } else {
+                        alert('Error: Could not save ship.');
+                    }
+                }, 'json');
         });
         //Load
         $('#file_load').click(function() {
             var name = prompt('Enter the ship name you wish to load.');
-            $.post('/load', {name: name},function(response) {
+            $.post('/load', {name: name}, function(response) {
                 if (response) {
                     me.state.change('ship-building', {jsonString: response});
-                }else {
+                } else {
                     alert('Error: Could not load ship.');
                 }
-            },'json');
+            }, 'json');
         });
 
         $('.battle-button').click(function() {
             if (!loadingNextScreen) {
-                server.createBattle(screen.ship, function(settings){
+                server.createBattle(screen.ship, function(settings) {
                     me.state.change('battle-set-up', settings);
                 });
                 loadingNextScreen = true;
@@ -202,11 +185,10 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var mouseTile = utils.getMouse();
         if (this.prevMouse.x === mouseTile.x &&
-            this.prevMouse.y === mouseTile.y) {
+                this.prevMouse.y === mouseTile.y) {
             return;
-        }else{
-            this.prevMouse = mouseTile;
         }
+        this.prevMouse = mouseTile;
         if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
             this.mouseLockedOn.lockedMouseMove(mouseTile);
@@ -247,12 +229,12 @@ screens.register('ship-building', GameScreen.extend({
     buildItem: function(x, y, type) {
         'use strict';
         var built = this.ship.buildAt(x, y, type);
-        if(built) {
+        if (built) {
             this.shipVM.update();
             this.shipVM.getVM(built).onBuilt();
         }
     },
-    deleteItem: function (item) {
+    deleteItem: function(item) {
         'use strict';
         this.ship.remove(item, true);
         this.updateRed();
@@ -313,7 +295,8 @@ screens.register('ship-building', GameScreen.extend({
                 this.chosen.m.canBuildRotated(x, y, this.ship)) {
             this.chosen.rotated(true);
         }
-        if (this.chosen.rotated() && this.chosen.m.canBuildAt(x, y, this.ship)) {
+        if (this.chosen.rotated() &&
+                this.chosen.m.canBuildAt(x, y, this.ship)) {
             this.chosen.rotated(false);
         }
         this.updateRed();
@@ -352,7 +335,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         this.redScreen[this.redIndex] = new RedColorEntity(x, y, {});
         me.game.add(this.redScreen[this.redIndex],
-        this.redScreen[this.redIndex].zIndex + 1000);
+            this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;
     },
     clearRed: function() {
@@ -368,7 +351,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         this.clearRed();
         var self = this;
-        if(this.chosen) {
+        if (this.chosen) {
             this.chosen.tiles(function(iX, iY) {
                 if (self.greenSpots[iY][iX] === 1) {
                     self.printRed(iX, iY);
@@ -429,7 +412,7 @@ screens.register('ship-building', GameScreen.extend({
         }
         shipTile = this.ship.map.at(x, y);
         if (shipTile === sh.tiles.clear && this.chosen &&
-            this.chosen.occupies(x, y)) {
+                this.chosen.occupies(x, y)) {
             return this.chosen;
         }
         return shipTile;

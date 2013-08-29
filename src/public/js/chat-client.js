@@ -1,4 +1,5 @@
-var chatClient = (function(){
+var chatClient = (function() {
+    'use strict';
     var client = {};
     function ChatViewModel(){
         var self = this,
@@ -9,6 +10,7 @@ var chatClient = (function(){
             id:0,
             sender:'Chat',
             message:'Welcome to the chat.'
+
         }]);
         this.input = ko.observable('');
         this.enabled = ko.observable(false);

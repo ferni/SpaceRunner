@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, screens-html, GameScreen*/
+/*global me, GameScreen, screens, ko, server, gs, $, sh, prebuilt*/
 
 screens.register('lobby', GameScreen.extend({
     init: function(name) {
@@ -15,9 +15,11 @@ screens.register('lobby', GameScreen.extend({
     onReset: function() {
         'use strict';
         //do stuff here
+        return 0;
     },
-    onDestroy: function(){
+    onDestroy: function() {
         'use strict';
+        return 0;
     },
     onHtmlLoaded: function() {
         'use strict';
@@ -27,7 +29,7 @@ screens.register('lobby', GameScreen.extend({
                 this.playerName = ko.observable(gs.player.name);
                 this.battleSetUps = ko.observableArray(data.battleSetUps);
                 this.joinBattle = function(battleSetUp) {
-                    server.joinBattle(battleSetUp.id, function(){
+                    server.joinBattle(battleSetUp.id, function() {
                         me.state.change('battle-set-up', battleSetUp);
                     });
                 };
@@ -48,12 +50,13 @@ screens.register('lobby', GameScreen.extend({
     },
 
     hostBattle: function() {
-        if(gs.modes.useprebuilt) {
+        'use strict';
+        if (gs.modes.useprebuilt) {
             server.createBattle(new sh.Ship({jsonString: prebuilt.humanoid}),
-                function(settings){
+                function(settings) {
                     me.state.change('battle-set-up', settings);
-            });
-        }else{
+                });
+        } else {
             me.state.change('ship-select');
         }
     }

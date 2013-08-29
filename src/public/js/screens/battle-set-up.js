@@ -6,20 +6,23 @@
 * All rights reserved.
 */
 
-/*global */
+/*global me, screens, ConnectedScreen, ko, gs, $*/
 
 screens.register('battle-set-up', ConnectedScreen.extend({
 
     onReset: function(settings) {
+        'use strict';
         this.parent(settings);
         this.id = settings.id;
         this.creator = settings.creator;
     },
-    onHtmlLoaded : function(){
-
+    onHtmlLoaded: function() {
+        'use strict';
+        return 0;
     },
 
-    bothPlayersPresent: function(){
+    bothPlayersPresent: function() {
+        'use strict';
         return this.data &&
             this.data.creator.id !== undefined &&
             this.data.challenger.id !== undefined;
@@ -27,17 +30,18 @@ screens.register('battle-set-up', ConnectedScreen.extend({
     /**
      * Loads the knockout vm to bind it to the HTML
      */
-    initVM: function () {
+    initVM: function() {
+        'use strict';
         var screen = this;
         this.vm = ko.mapping.fromJS(this.data);
-        this.vm.imCreator = ko.computed(function () {
-            return this.creator.id() == gs.player.id;
+        this.vm.imCreator = ko.computed(function() {
+            return this.creator.id() === gs.player.id;
         }, this.vm);
-        this.vm.start = function () {
+        this.vm.start = function() {
             //both players present
             if (screen.bothPlayersPresent()) {
                 $.post(screen.name + '/start', {id: this.id()},
-                    function (data) {
+                    function(data) {
                         //nothing (battle starts in updateVM )
                     }, 'json');
             } else {
@@ -47,9 +51,10 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         ko.applyBindings(this.vm,
             document.getElementById('battle-set-up-screen'));
     },
-    updateVM: function(){
+    updateVM: function() {
+        'use strict';
         ko.mapping.fromJS(this.data, this.vm);
-        if(this.data.battle) {
+        if (this.data.battle) {
             //this means it started!
             me.state.change('battle', this.data.battle);
         }
@@ -58,11 +63,12 @@ screens.register('battle-set-up', ConnectedScreen.extend({
             this.vm.start();
         }*/
     },
-    onData: function(){
-        if(!this.dataExecuted) {//is first time
+    onData: function() {
+        'use strict';
+        if (!this.dataExecuted) {//is first time
             this.initVM();
             this.dataExecuted = true;
-        }else{
+        } else {
             this.updateVM();
         }
     }

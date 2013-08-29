@@ -5,10 +5,11 @@
 * All rights reserved.
 */
 
-/*global */
+/*global exports, require*/
 var routes = [];
 
 exports.add = function(url, callback){
+    'use strict';
     routes.push({
         url: url,
         callback: callback
@@ -16,6 +17,7 @@ exports.add = function(url, callback){
 };
 
 exports.configureRoutes = function(app, screenNames) {
+    'use strict';
     var i, r, url;
     console.log('Configured the following entry points for the screens (POST):');
     for (i = screenNames.length - 1; i >= 0; i--) {
