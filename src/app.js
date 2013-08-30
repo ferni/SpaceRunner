@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, process, __dirname*/
+/*global require, process, __dirname, GLOBAL*/
 
 /**
  * Module dependencies.
@@ -16,7 +16,7 @@ var express = require('express'),
     ship = require('./routes/ship'),
     screens = require('./screens-server'),
     general = require('./routes/general'),
-    chat =require('./chat'),
+    chat = require('./chat'),
     chatRoutes = require('./routes/chat'),
     http = require('http'),
     path = require('path'),
@@ -25,13 +25,14 @@ var express = require('express'),
     app = express(),
 
     //TODO: change for connect-redis store
-    store  = new express.session.MemoryStore;
-    app.use(express.cookieParser());
-    app.use(express.session({
-        secret: 'asdfqwerasdfaq34%RT·W4tSDFg345t3qS$T·' +
-            '345·FSdg32$1@E2345r·Tefg4Drsertq4tq4ohelfg' +
-            'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
-        store: store }));
+    store = new express.session.MemoryStore();
+app.use(express.cookieParser());
+app.use(express.session({
+    secret: 'asdfqwerasdfaq34%RT·W4tSDFg345t3qS$T·' +
+        '345·FSdg32$1@E2345r·Tefg4Drsertq4tq4ohelfg' +
+        'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
+    store: store
+}));
 
 app.configure(function() {
     'use strict';
@@ -48,9 +49,10 @@ app.configure(function() {
 
 });
 
-app.configure('production', function(){
+app.configure('production', function() {
+    'use strict';
     //error handler
-    app.use(function(err, req, res, next){
+    app.use(function(err, req, res, next) {
         chat.error('Error');
         res.send(500, 'Something broke!');
     });
@@ -58,7 +60,7 @@ app.configure('production', function(){
 
 app.configure('development', function() {
     'use strict';
-     app.use(express.errorHandler());
+    app.use(express.errorHandler());
 });
 
 
@@ -77,18 +79,25 @@ app.post('/general/sharedprops', general.sharedprops);
 app.post('/general/disconnect', general.disconnect);
 
 //globals
-GLOBAL.battleSetUps = []; //filled with model.BattleSetUp
-GLOBAL.battles = []; //filled with model.Battle
+/**
+ * filled with model.BattleSetUp.
+ * @type {Array}
+ */
+GLOBAL.battleSetUps = [];
+/**
+ * filled with model.Battle.
+ * @type {Array}
+ */
+GLOBAL.battles = [];
 
 
 chat.init(app, chatRoutes);
 
 console.log('Loading maps...');
-shipMaps.loadMaps(function(maps){
+shipMaps.loadMaps(function(maps) {
     'use strict';
     GLOBAL.hullMaps = maps;
     http.createServer(app).listen(app.get('port'), function() {
-        'use strict';
         console.log('Express server listening on port ' + app.get('port'));
     });
 });

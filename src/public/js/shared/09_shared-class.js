@@ -9,6 +9,10 @@
 
 var sh = require('./00_init'), _ = sh._;
 if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 

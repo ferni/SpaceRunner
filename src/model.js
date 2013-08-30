@@ -5,6 +5,8 @@
 * All rights reserved.
 */
 
+/*global require, exports, battles*/
+
 var Class = require('./class'),
     sh = require('./public/js/shared'),
     auth = require('./auth'),
@@ -12,6 +14,7 @@ var Class = require('./class'),
 
 
 function BattleTurn(params) {
+    'use strict';
     this.id = params.id;
     this.battle = params.battle;
     this.playersOrders = {};
@@ -22,34 +25,38 @@ function BattleTurn(params) {
     this.script = null;
     this.addOrders = function(orders, playerID) {
         var self = this;
-        if(!this.battle.isPlayerInIt(playerID)) {
-            throw 'Player ' + playerID +' is not in the battle.';
+        if (!this.battle.isPlayerInIt(playerID)) {
+            throw 'Player ' + playerID + ' is not in the battle.';
         }
-        _.each(orders, function(order){
+        _.each(orders, function(order) {
             self.playersOrders[playerID][order.unitID] = order;
         });
     };
     this.isPlayerReady = function(playerID) {
-        return _.any(this.playersSubmitted, function(id){
+        return _.any(this.playersSubmitted, function(id) {
             return id === playerID;
         });
     };
-    this.setPlayerReady = function(playerID){
+    this.setPlayerReady = function(playerID) {
         this.playersSubmitted.push(playerID);
     };
-    this.generateScript = function(){
+    this.generateScript = function() {
         var orders = _.extend(this.playersOrders[this.battle.playerLeft.id],
                               this.playersOrders[this.battle.playerRight.id]);
-        
-        console.log('playerLeft\'s orders:' + JSON.stringify(this.playersOrders[this.battle.playerLeft.id]));
-        console.log('playerRight\'s orders:' + JSON.stringify(this.playersOrders[this.battle.playerRight.id]));
+
         console.log('all orders' + JSON.stringify(orders));
         this.script = sh.createScript(orders, this.battle.ship,
             this.battle.turnDuration);
     };
 }
 
+/**
+ * A model representing a battle.
+ * @param {{id,ship}} parameters
+ * @constructor
+ */
 exports.Battle = function(parameters) {
+    'use strict';
     this.id = parameters.id;
     this.ship = parameters.ship;
     //The players currently in this battle
@@ -65,19 +72,20 @@ exports.Battle = function(parameters) {
      * Informs that some player has received the script.
      * When all players in the battle receive the script,
      * a new turn is created.
-     * @param playerID {int} The player ID.
-     * @returns {boolean} If the next turn was created or not.
+     * @param {int} playerID The player ID.
+     * @return {boolean} If the next turn was created or not.
+     * @this exports.Battle
      */
-    this.registerScriptReceived = function(playerID){
+    this.registerScriptReceived = function(playerID) {
         this.receivedTheScript.push(playerID);
-        if(_.uniq(this.receivedTheScript).length >= this.numberOfPlayers) {
+        if (_.uniq(this.receivedTheScript).length >= this.numberOfPlayers) {
             //all players have received the script, create next turn
             this.nextTurn();
             return true;
         }
         return false;
     };
-    this.nextTurn = function(){
+    this.nextTurn = function() {
         this.turnCount++;
         this.currentTurn = new BattleTurn({id: this.turnCount, battle: this});
         this.receivedTheScript = [];
@@ -86,7 +94,7 @@ exports.Battle = function(parameters) {
         return (this.playerLeft && this.playerLeft.id === playerID) ||
             (this.playerRight && this.playerRight.id === playerID);
     };
-    this.toJson = function(){
+    this.toJson = function() {
         return {
             id: this.id,
             ship: this.ship.toJsonString(),
@@ -96,49 +104,59 @@ exports.Battle = function(parameters) {
     };
 };
 
+/**
+ * A model representing the battle set up (for the battle-set-up screen)
+ * @param {{id, creator, shipJsonString}} params
+ * @constructor
+ */
 exports.BattleSetUp = function(params) {
+    'use strict';
     this.id = params.id;
     this.creator = params.creator;
     this.shipJsonString = params.shipJsonString;
     this.challenger = null; //player that joins
     this.battle = null;
-    this.toJson = function(){
+    this.toJson = function() {
         return {
             id: this.id,
             battle: this.battle ?
-                this.battle.toJson() : null,
+                    this.battle.toJson() : null,
             creator: this.creator ?
-                this.creator.toJson() : {name: '<empty>'},
+                    this.creator.toJson() : {name: '<empty>'},
             challenger: this.challenger ?
-                this.challenger.toJson() : {name: '<empty>'}
-        }
+                    this.challenger.toJson() : {name: '<empty>'}
+        };
     };
     this.isFull = function() {
         return this.challenger && this.creator;
     };
-    this.addPlayer = function(player){
-        if(!this.isFull()){
+    this.addPlayer = function(player) {
+        if (!this.isFull()) {
             this.challenger = player;
-        } else{
+        } else {
             throw 'Cannot add player, battle is full';
         }
     };
-    this.updatePlayers = function(){
-        if(this.creator && !auth.isOnline(this.creator.id)) {
+    this.updatePlayers = function() {
+        if (this.creator && !auth.isOnline(this.creator.id)) {
             this.creator = null;
         }
-        if(this.challenger && !auth.isOnline(this.challenger.id)) {
+        if (this.challenger && !auth.isOnline(this.challenger.id)) {
             this.challenger = null;
         }
     };
     /**
      * Returns the battle.
+     * @param {Function} done callback for when it creates the battle.
+     * @this exports.BattleSetUp
      */
-    this.createBattle = function(done){
-        var err = null;
-        try{
-            var ship = new sh.Ship({jsonString: this.shipJsonString}),
-                battle = new exports.Battle({id: battles.length, ship: ship});
+    this.createBattle = function(done) {
+        var err = null,
+            ship,
+            battle;
+        try {
+            ship = new sh.Ship({jsonString: this.shipJsonString});
+            battle = new exports.Battle({id: battles.length, ship: ship});
             ship.putUnit({type: 6, speed: 2, owner: this.creator});
             ship.putUnit({type: 6, speed: 2, owner: this.creator});
             ship.putUnit({type: 0, speed: 1.5, owner: this.creator});
@@ -153,15 +171,17 @@ exports.BattleSetUp = function(params) {
             battles.push(battle);
             battle.nextTurn();
             this.battle = battle;
-        }
-        catch(e){
+        } catch (e) {
             err = new Error(e);
         }
         done(err);
     };
 };
 
-
+/**
+ * The player as used by NodeJS.
+ * @type {*}
+ */
 exports.Player = sh.Player.extendShared({
 });
 
