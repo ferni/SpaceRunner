@@ -5,13 +5,20 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, require, exports, module*/
 
 var sh = require('./63_units'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
+/**
+ * Factories.
+ */
 sh.make = (function() {
     'use strict';
     var make = {};
@@ -35,14 +42,13 @@ sh.make = (function() {
                 "' (utils.makeItem)");
             return null;
         }
-        if(params) {
+        if (params) {
             return new Constructor(params[0], params[1], params[2]);
-        } else {
-            return new Constructor(null, 0, 0);
         }
+        return new Constructor(null, 0, 0);
     };
 
-    make.itemFromJson = function(json){
+    make.itemFromJson = function(json) {
         var item = make.itemModel(json.type, [null, json.x, json.y]);
         item.rotated(json.r);
         return item;
@@ -50,7 +56,7 @@ sh.make = (function() {
 
     //UNITS
     make.unitFromJson = function(json) {
-        if(json.settings){
+        if (json.settings) {
             json.settings.owner = make.playerFromJson(json.settings.owner);
         }
         return new sh.Unit(json.x, json.y, json.settings);
@@ -59,7 +65,7 @@ sh.make = (function() {
         return new sh.Player(json);
     };
 
-    make.moveOrder = function(unit, destination){
+    make.moveOrder = function(unit, destination) {
         return {
             type: 'Order-JSON-V1',
             variant: 'move',
@@ -68,8 +74,8 @@ sh.make = (function() {
                 x: destination.x,
                 y: destination.y
             }
-        }
+        };
     };
 
     return make;
-})();
+}());

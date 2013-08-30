@@ -16,7 +16,10 @@ if (exports !== undefined) {
     sh = module.exports = sh;
 }
 
-/* individual object class */
+/**
+ * Represents a component from the ship (engine, weapon, etc).
+ * @type {*}
+ */
 sh.Item = sh.TileEntity.extendShared({
     size: [1, 1],
     init: function(ship, x, y) {
@@ -36,8 +39,9 @@ sh.Item = sh.TileEntity.extendShared({
         return false;
     },
     _rotated: false,
-    rotated: function(rotated){
-        if(rotated === undefined) {
+    rotated: function(rotated) {
+        'use strict';
+        if (rotated === undefined) {
             return this._rotated;
         }
         this._rotated = rotated;
@@ -59,32 +63,41 @@ sh.Item = sh.TileEntity.extendShared({
         'use strict';
         //abstract method
     },
-    onShip: function(ship){
-        if(ship === undefined) {
+    onShip: function(ship) {
+        'use strict';
+        if (ship === undefined) {
             return this.ship;
         }
         this.ship = ship;
         return this;
     },
-    toJson: function(){
+    toJson: function() {
+        'use strict';
         var self = this;
         return {
             type: self.type,
             x: self.x,
             y: self.y,
             r: self.rotated()
-        }
+        };
     }
 });
 
+/**
+ * Enumerates all the concrete item constructors.
+ * @type {{}}
+ */
 sh.items = {};
 
 /*
  In each item, set size and type before calling parent()
  */
-// weapon object
+
+/**
+ * A Weapon.
+ * @type {*}
+ */
 sh.items.Weapon = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'weapon';
@@ -92,13 +105,16 @@ sh.items.Weapon = sh.Item.extendShared({
         this.parent(ship, x, y);
     },
     canBuildAt: function(x, y, ship) {
+        'use strict';
         return sh.pr.weapon.compliesAt(x, y, ship.map);
     }
 });
 
-// engine object
+/**
+ * An engine.
+ * @type {*}
+ */
 sh.items.Engine = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'engine';
@@ -106,12 +122,16 @@ sh.items.Engine = sh.Item.extendShared({
         this.parent(ship, x, y);
     },
     canBuildAt: function(x, y, ship) {
+        'use strict';
         return sh.pr.engine.compliesAt(x, y, ship.map);
     }
 });
 
+/**
+ * Power!
+ * @type {*}
+ */
 sh.items.Power = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'power';
@@ -120,22 +140,29 @@ sh.items.Power = sh.Item.extendShared({
     }
 });
 
+/**
+ * The console next to the power, weapon or engine.
+ * A unit must run these items from the console.
+ * @type {*}
+ */
 sh.items.Console = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'console';
         this.size = [1, 1];
-        this.parent(ship, x, y)
+        this.parent(ship, x, y);
     },
     canBuildAt: function(x, y, ship) {
+        'use strict';
         return sh.pr.console.compliesAt(x, y, ship.map);
     }
 });
 
-// component object class
+/**
+ * Component.
+ * @type {*}
+ */
 sh.items.Component = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'component';
@@ -144,9 +171,11 @@ sh.items.Component = sh.Item.extendShared({
     }
 });
 
-// door object class
+/**
+ * Door. Can be placed on top of a wall or between two walls.
+ * @type {*}
+ */
 sh.items.Door = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'door';
@@ -163,9 +192,11 @@ sh.items.Door = sh.Item.extendShared({
     }
 });
 
-// wall object class
+/**
+ * An individual wall tile.
+ * @type {*}
+ */
 sh.items.Wall = sh.Item.extendShared({
-    // init function
     init: function(ship, x, y) {
         'use strict';
         this.type = 'wall';
@@ -177,9 +208,9 @@ sh.items.Wall = sh.Item.extendShared({
             bottom: false,
             right: true
         };
-
     },
     canBuildAt: function(x, y, ship) {
+        'use strict';
         return this.parent(x, y, ship) ||
             ship.at(x, y) instanceof sh.items.Wall;
     },
@@ -192,7 +223,7 @@ sh.items.Wall = sh.Item.extendShared({
             right = this.ship.at(this.x + 1, this.y);
         this.updateConnections(top, left, bot, right);
     },
-    updateConnections: function(top, left, bot, right){
+    updateConnections: function(top, left, bot, right) {
         'use strict';
         //modify self and surrounding walls' connections
         var it = sh.items,
@@ -206,37 +237,39 @@ sh.items.Wall = sh.Item.extendShared({
         if (top instanceof it.Wall) {
             top.connected.bottom = true;
             this.connected.top = true;
-        } else if(top instanceof it.Door && top.rotated() &&
-            top.y === y - 2) {
+        } else if (top instanceof it.Door && top.rotated() &&
+                top.y === y - 2) {
             this.connected.top = true;
         }
         if (left instanceof it.Wall) {
             left.connected.right = true;
             this.connected.left = true;
-        }else if(left instanceof it.Door && !left.rotated() &&
-            left.x === x - 2) {
+        } else if (left instanceof it.Door && !left.rotated() &&
+                left.x === x - 2) {
             this.connected.left = true;
         }
         if (bot instanceof it.Wall) {
             bot.connected.top = true;
             this.connected.bottom = true;
-        }else if(bot instanceof it.Door && bot.rotated() &&
-            bot.y === y + 1) {
+        } else if (bot instanceof it.Door && bot.rotated() &&
+                bot.y === y + 1) {
             this.connected.bottom = true;
         }
         if (right instanceof it.Wall) {
             right.connected.left = true;
             this.connected.right = true;
-        }else if(right instanceof it.Door && !right.rotated() &&
-            right.x === x + 1) {
+        } else if (right instanceof it.Door && !right.rotated() &&
+                right.x === x + 1) {
             this.connected.right = true;
         }
     },
-    isHorizontal: function(){
+    isHorizontal: function() {
+        'use strict';
         return !this.connected.top && !this.connected.bottom;
         //(because it's the default state)
     },
-    isVertical: function(){
+    isVertical: function() {
+        'use strict';
         return !this.connected.left && !this.connected.right &&
             (this.connected.top || this.connected.bottom);
     }

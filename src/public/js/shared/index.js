@@ -5,9 +5,13 @@
 * All rights reserved.
 */
 
-/*global */
+/*global require, exports, module*/
 
 var sh = require('./75_ship'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
     sh = module.exports = sh;
 }

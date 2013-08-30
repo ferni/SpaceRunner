@@ -5,16 +5,24 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, require, exports, module*/
 
 var sh = require('./60_items'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
+/**
+ * A crew member.
+ * @type {*}
+ */
 sh.Unit = sh.TileEntity.extendShared({
     id: null, //the ship is in charge of setting the id
-    init: function(x, y, settings){
+    init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];
         settings = this.completeSettings(settings);
@@ -23,7 +31,7 @@ sh.Unit = sh.TileEntity.extendShared({
         this.owner = settings.owner;
         this.parent(x, y);
     },
-    completeSettings: function(settings){
+    completeSettings: function(settings) {
         'use strict';
         if (!settings) {
             settings = {};
@@ -31,12 +39,12 @@ sh.Unit = sh.TileEntity.extendShared({
         if (!settings.type) {
             settings.type = 0;
         }
-        if(!settings.speed){
+        if (!settings.speed) {
             settings.speed = 1;
         }
         return settings;
     },
-    toJson: function(){
+    toJson: function() {
         'use strict';
         return {
             id: this.id,

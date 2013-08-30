@@ -5,10 +5,14 @@
 * All rights reserved.
 */
 
-/*global me*/
+/*global me, require, exports, module*/
 
 var sh = require('./65_make'), _ = sh._;
-if(exports !== undefined){
+if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
@@ -17,57 +21,66 @@ if(exports !== undefined){
  * @type {*}
  */
 sh.Map = sh.SharedClass.extendShared({
-    init: function(raw){
+    init: function(raw) {
+        'use strict';
         //check consistent width
         var i, width;
         if (!raw) {
             throw 'raw parameter mandatory.';
         }
         width = raw[0].length;
-        for(i = raw.length - 2; i >= 0; i--) {
-            if(raw[i].length !== width) {
+        for (i = raw.length - 2; i >= 0; i--) {
+            if (raw[i].length !== width) {
                 throw 'the raw map has not consistent width';
             }
         }
         this.width = width;
         this.height = raw.length;
         this.at = function(x, y) {
-            return raw[y] !== undefined ? raw[y][x]: undefined;
+            return raw[y] !== undefined ? raw[y][x] : undefined;
         };
         this.set = function(x, y, value) {
-            if(this.isInBounds(x, y)) {
+            if (this.isInBounds(x, y)) {
                 raw[y][x] = value;
-            }else{
-                throw 'Cannot set map at ' + x +',' + y+': out of bounds.';
+            } else {
+                throw 'Cannot set map at ' + x + ',' + y + ': out of bounds.';
             }
         };
-        this.clear = function(){
-            this.tiles(function(x, y){
+        this.clear = function() {
+            this.tiles(function(x, y) {
                 raw[y][x] = 0;
             });
         };
     },
-    isInBounds: function(x, y){
+    isInBounds: function(x, y) {
+        'use strict';
         return x >= 0 && x < this.width && y >= 0 && y < this.height;
     },
-    tiles: function(callback){
+    tiles: function(callback) {
+        'use strict';
         var y, x;
-        for(y = this.height - 1; y >= 0; y--) {
-            for(x = this.width - 1; x >= 0; x--) {
+        for (y = this.height - 1; y >= 0; y--) {
+            for (x = this.width - 1; x >= 0; x--) {
                 callback(x, y);
             }
         }
     }
 });
 
+/**
+ * A map of sh.TileEntity (which have x and y position)
+ * @type {*}
+ */
 sh.EntityMap = sh.Map.extendShared({
-    init: function(width, height, entityArray){
+    init: function(width, height, entityArray) {
+        'use strict';
         this.parent(sh.utils.getEmptyMatrix(width, height, 0));
         this.changed = true;
         this.entities = entityArray;
         this.update();
     },
     update: function() {
+        'use strict';
         var self = this;
         this.clear();
         _.each(this.entities, function(e) {
@@ -84,18 +97,20 @@ sh.EntityMap = sh.Map.extendShared({
  * @type {*}
  */
 sh.EntityMap3d = sh.Map.extendShared({
-    init: function(width, height, entityArray){
+    init: function(width, height, entityArray) {
+        'use strict';
         this.parent(sh.utils.getEmptyMatrix(width, height, 0));
         this.changed = true;
         this.entities = entityArray;
         this.update();
     },
     update: function() {
+        'use strict';
         var self = this;
         this.clear();
         _.each(this.entities, function(e) {
             e.tiles(function(x, y) {
-                if(!self.at(x, y)) {
+                if (!self.at(x, y)) {
                     self.set(x, y, []);
                 }
                 self.at(x, y).push(e);
@@ -105,30 +120,36 @@ sh.EntityMap3d = sh.Map.extendShared({
     }
 });
 
+/**
+ * A group of maps. The at function returns the last map that
+ * has something in position (parameter) that is other than 0.
+ * @type {*}
+ */
 sh.CompoundMap = sh.Map.extendShared({
-    init: function(maps){
-        if(!maps){
+    init: function(maps) {
+        'use strict';
+        if (!maps) {
             throw 'maps parameter mandatory.';
         }
         //check sizes
-        (function(){
+        (function() {
             var width = maps[0].width,
                 height = maps[0].height,
                 i;
-            for(i = 1; i < maps.length; i++) {
-                if(maps[i].width !== width ||
-                    maps[i].height !== height) {
+            for (i = 1; i < maps.length; i++) {
+                if (maps[i].width !== width ||
+                        maps[i].height !== height) {
                     throw 'Maps for Compound should be the same size.';
                 }
             }
-        })();
+        }());
         this.width = maps[0].width;
         this.height = maps[0].height;
-        this.at = function(x, y){
+        this.at = function(x, y) {
             var i, what;
             for (i = maps.length - 1; i >= 0; i--) {
                 what = maps[i].at(x, y);
-                if(what){
+                if (what) {
                     return what;
                 }
             }
