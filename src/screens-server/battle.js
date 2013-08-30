@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global */
+/*global require, battles*/
 
 var auth = require('../auth'),
     _ = require('underscore')._,
@@ -13,9 +13,10 @@ var auth = require('../auth'),
     sh = require('../public/js/shared'),
     chat = require('../chat');
 
-function getByID(battleID){
-    var id = parseInt(battleID);
-    return _.find(battles, function(b){
+function getByID(battleID) {
+    'use strict';
+    var id = parseInt(battleID, 10);
+    return _.find(battles, function(b) {
         return b.id === id;
     });
 }
@@ -23,11 +24,13 @@ function getByID(battleID){
 /**
  * Makes sure that the battle exists and that the
  * player making the request is in the battle.
- * @param req {Object} The request object.
- * @param next {} next function.
- * @param callback {} Passes: battle and playerID
+ * @param {Object} req The request object.
+ * @param {Function} next next function.
+ * @param {Function} callback Parameters: battle and playerID
+ * @return {*}
  */
 function authenticate(req, next, callback) {
+    'use strict';
     var id = req.body.id,
         battle = getByID(id),
         playerID = auth.getID(req);
@@ -35,7 +38,7 @@ function authenticate(req, next, callback) {
         next(new Error('Battle not found, id: ' + id));
         return;
     }
-    if(!battle.isPlayerInIt(playerID)) {
+    if (!battle.isPlayerInIt(playerID)) {
         next(new Error('Player has no access to battle ' + id));
         return;
     }
@@ -43,7 +46,8 @@ function authenticate(req, next, callback) {
 }
 
 routes.add('get', function(req, res, next) {
-    return authenticate(req, next, function(battle){
+    'use strict';
+    return authenticate(req, next, function(battle) {
         return res.json({
             id: battle.id,
             scriptReady: battle.currentTurn.script !== null,
@@ -52,34 +56,35 @@ routes.add('get', function(req, res, next) {
     });
 });
 
-routes.add('getmodel', function(req, res, next){
-    return authenticate(req, next, function(battle, playerID){
+routes.add('getmodel', function(req, res, next) {
+    'use strict';
+    return authenticate(req, next, function(battle, playerID) {
         var battleJson = battle.toJson();
-        if(battle.currentTurn) {
+        if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[playerID];
         }
         return res.json(battleJson);
     });
 });
 
-routes.add('sendorders', function(req, res, next){
+routes.add('sendorders', function(req, res, next) {
+    'use strict';
     var orders = req.body.orders,
         verifiedOrdersCount = 0;
-    return authenticate(req, next, function(battle, playerID){
+    return authenticate(req, next, function(battle, playerID) {
         var turn, unitID;
-        if(!orders) {
+        if (!orders) {
             orders = {};
         }
         for (unitID in orders) {
             if (orders.hasOwnProperty(unitID)) {
                 //for now each unit just has one order
-                if(!sh.verifyOrder(orders[unitID], battle.ship, playerID)) {
+                if (!sh.verifyOrder(orders[unitID], battle.ship, playerID)) {
                     chat.log('ERROR: An order was invalid.');
                     next(new Error('An order submitted is invalid'));
                     return;
-                }else{
-                    verifiedOrdersCount++;
                 }
+                verifiedOrdersCount++;
             }
         }
 
@@ -94,15 +99,16 @@ routes.add('sendorders', function(req, res, next){
     });
 });
 
-routes.add('ready', function(req, res, next){
-    return authenticate(req, next, function(battle, playerID){
+routes.add('ready', function(req, res, next) {
+    'use strict';
+    return authenticate(req, next, function(battle, playerID) {
         var turn = battle.currentTurn;
-        if(turn.isPlayerReady(playerID)) {
+        if (turn.isPlayerReady(playerID)) {
             return res.json({wasReady: true});
         }
         turn.setPlayerReady(playerID);
-        if(_.uniq(turn.playersSubmitted).length === battle.numberOfPlayers &&
-            !turn.script) {
+        if (_.uniq(turn.playersSubmitted).length === battle.numberOfPlayers &&
+                !turn.script) {
             //all orders have been submitted, generate the script
             turn.generateScript();
             //TODO: maybe make the function updateShip... server side only
@@ -115,15 +121,17 @@ routes.add('ready', function(req, res, next){
 
 
 routes.add('getscript', function(req, res, next) {
-    return authenticate(req, next, function(battle){
+    'use strict';
+    return authenticate(req, next, function(battle) {
         return res.json({script: battle.currentTurn.script.toJson()});
     });
 });
 
-routes.add('scriptreceived', function(req, res, next){
-    return authenticate(req, next, function(battle, playerID){
+routes.add('scriptreceived', function(req, res, next) {
+    'use strict';
+    return authenticate(req, next, function(battle, playerID) {
         var nextTurnCreated = battle.registerScriptReceived(playerID);
-        if(nextTurnCreated) {
+        if (nextTurnCreated) {
             chat.log('All players received the script, created next turn.');
         }
         return res.json({ok: true});

@@ -5,17 +5,20 @@
  * All rights reserved.
  */
 
+/*global require, battleSetUps*/
+
 var _ = require('underscore')._,
     routes = require('./routes/index');
 
 routes.add('get', function(req, res, next) {
-    try{
+    'use strict';
+    try {
         res.json({
-            battleSetUps: _.map(battleSetUps, function(b){
+            battleSetUps: _.map(battleSetUps, function(b) {
                 return b.toJson();
             })
         });
-    }catch(e) {
+    } catch (e) {
         console.log(e);
         next(new Error(e));
     }

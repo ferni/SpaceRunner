@@ -5,6 +5,8 @@
 * All rights reserved.
 */
 
+/*global require, battleSetUps*/
+
 var model = require('../model'),
     auth = require('../auth'),
     _ = require('underscore')._,
@@ -12,71 +14,74 @@ var model = require('../model'),
 
 routes.add('get', function(req, res, next) {
     'use strict';
-    var id = req.body.id,
+    var id = parseInt(req.body.id, 10),
         bsu = _.find(battleSetUps, function(bsu) {
-            return bsu.id == id;
+            return bsu.id === id;
         }),
         playerID = auth.getID(req);
-    if(!bsu) {
+    if (!bsu) {
         next(new Error('No battleSetUp with id ' + id));
         return;
     }
     //authenticate
-    if(bsu.creator.id == playerID ||
-        (bsu.challenger && bsu.challenger.id == playerID)) {
-        if(bsu.battle) {
+    if (bsu.creator.id === playerID ||
+            (bsu.challenger && bsu.challenger.id === playerID)) {
+        if (bsu.battle) {
             //host has had clicked "start" and the battle model is ready.
             //load the battle id in session for persistence on browser refresh
             req.session.battleID = bsu.battle.id;
         }
-        try{
+        try {
             bsu.updatePlayers();
             res.json(bsu.toJson());
-        }catch(e) {
+        } catch (e) {
             next(e);
         }
-    }else {
+    } else {
         next(new Error('Only a player from within the battle can request' +
             ' battle details.'));
     }
 });
 
-routes.add('start' , function(req, res, next) {
-    var id = req.body.id,
+routes.add('start', function(req, res, next) {
+    'use strict';
+    var id = parseInt(req.body.id, 10),
         bsu = _.find(battleSetUps, function(bsu) {
-            return bsu.id == id;
+            return bsu.id === id;
         }),
         playerID = auth.getID(req);
-    if(!bsu.isFull()) {
+    if (!bsu.isFull()) {
         next(new Error("Battle can't start unless both players are present."));
         return;
     }
-    if(bsu.creator.id == playerID ||
-        (bsu.challenger && bsu.challenger.id == playerID)) {
-        bsu.createBattle(function(err){
-            if(err) {
+    if (bsu.creator.id === playerID ||
+            (bsu.challenger && bsu.challenger.id === playerID)) {
+        bsu.createBattle(function(err) {
+            if (err) {
                 next(err);
-            }else{
+            } else {
                 res.json({});
             }
         });
-    }else{
+    } else {
         next(new Error('Only a player from within the battle can request' +
             ' battle start.'));
     }
 });
 
-routes.add('create' , function(req, res, next) {
+routes.add('create', function(req, res, next) {
     'use strict';
-    var id = battleSetUps.length;
+    var id = battleSetUps.length,
+        bsu;
     console.log('creating...');
-    if(!req.body.shipJsonString) {
+    if (!req.body.shipJsonString) {
         next(new Error('shipJsonString must be provided'));
     }
-    var bsu = new model.BattleSetUp({
+    bsu = new model.BattleSetUp({
         id: id,
         creator: auth.getPlayer(req),
-        shipJsonString: req.body.shipJsonString});
+        shipJsonString: req.body.shipJsonString
+    });
     battleSetUps.push(bsu);
     res.json(bsu.toJson());
 });
@@ -86,18 +91,18 @@ routes.add('join', function(req, res, next) {
     'use strict';
     var battleID = req.body.battleID,
         battle;
-    if(typeof battleID === 'undefined') {
+    if (battleID === undefined) {
         return next(new Error('battleID must be provided'));
     }
-    battle = _.find(battleSetUps, function(b){
-        return b.id == battleID;
+    battle = _.find(battleSetUps, function(b) {
+        return b.id === battleID;
     });
-    if(!battle) {
-        return next(new Error('battle ' + battleID +' not found'));
+    if (!battle) {
+        return next(new Error('battle ' + battleID + ' not found'));
     }
-    if(battle.isFull()) {
+    if (battle.isFull()) {
         res.json({error: 'battle is full'});
-    } else{
+    } else {
         battle.addPlayer(auth.getPlayer(req));
         res.json(battle.toJson());
     }

@@ -8,7 +8,12 @@
 /*global exports, require*/
 var routes = [];
 
-exports.add = function(url, callback){
+/**
+ * Registers a route for the screen.
+ * @param {String} url
+ * @param {Function} callback
+ */
+exports.add = function(url, callback) {
     'use strict';
     routes.push({
         url: url,
@@ -16,10 +21,16 @@ exports.add = function(url, callback){
     });
 };
 
+/**
+ * Registers with the app all the routes that have been added with add.
+ * @param {*} app
+ * @param {Array} screenNames
+ */
 exports.configureRoutes = function(app, screenNames) {
     'use strict';
     var i, r, url;
-    console.log('Configured the following entry points for the screens (POST):');
+    console.log('Configured the following entry points for the screens ' +
+        '(POST):');
     for (i = screenNames.length - 1; i >= 0; i--) {
         routes = [];
         require('../' + screenNames[i]);//here it loads the routes

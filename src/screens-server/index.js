@@ -5,9 +5,16 @@
 * All rights reserved.
 */
 
-var routes = require('./routes'),
-    screens = ['battle','lobby','battle-set-up'];
+/*global require, exports*/
 
+var routes = require('./routes'),
+    screens = ['battle', 'lobby', 'battle-set-up'];
+
+/**
+ * Calls routes.configureRoutes with the registered screens. (screens array)
+ * @param {*} app
+ */
 exports.configureRoutes = function(app) {
+    'use strict';
     routes.configureRoutes(app, screens);
 };
