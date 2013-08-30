@@ -5,7 +5,8 @@
 * All rights reserved.
 */
 
-/*global me, _, g_resources, items, width, height, TILE_SIZE */
+/*global me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE, sh,
+ItemVM, gs*/
 
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
@@ -78,73 +79,60 @@ var utils = {
      * Executes a callback when a certain number of
      * .done() were called on TaskWait, or an
      * error handler if .error() was called instead.
-     * @param settings {Object} has 'pendingCount'(int), 'allDone', 'error'.
+     * @param {Object} settings has 'pendingCount'(int), 'allDone', 'error'.
      * @constructor
      */
-    TaskWait: function(settings){
+    TaskWait: function(settings) {
+        'use strict';
         var tickCount = 0,
             errorThrown = false,
             pendingCount = settings.pendingCount,
             _allDoneCallback = settings.allDone,
             _errorCallback = settings.error;
 
-        this.done = function(){
-            if(errorThrown){
+        this.done = function() {
+            if (errorThrown) {
                 return;
             }
             tickCount++;
-            if(tickCount === pendingCount){
+            if (tickCount === pendingCount) {
                 _allDoneCallback();
-            }else if(tickCount > pendingCount){
+            } else if (tickCount > pendingCount) {
                 throw 'Number of ticks exceeded expected count ' +
                     '(pendingCount).';
             }
         };
-        this.error = function(){
+        this.error = function() {
             errorThrown = true;
             _errorCallback();
-        }
-    },
-    windowsOverlap: function(w1, w2) {
-        'use strict';
-        if(w1.to < w1.from || w2.to < w2.from ) {
-            throw 'Argument not a valid window (to < than from)';
-        }
-        return w1.from < w2.to && w1.to > w2.from
-            || w2.from < w1.to && w2.to > w1.from;
-    },
-    windowAdd: function(w1, w2) {
-        'use strict';
-        if(w1.to < w1.from || w2.to < w2.from ) {
-            throw 'Argument not a valid window (to < than from)';
-        }
-        if(!utils.windowsOverlap(w1, w2)) {
-            throw 'Can only add overlapping windows.';
-        }
-        return {from: w1.from < w2.from ? w1.from : w2.from,
-                to: w1.to > w2.to ? w1.to : w2.to};
+        };
     },
     /**
      * Returns the model of the object if it's a viewmodel,
      * or returns the object itself if it's a model.
-     * @param object
+     * @param {*} object
+     * @return {sh.Item}
      */
     getModel: function(object) {
-        if(object instanceof sh.Item) {
+        'use strict';
+        if (object instanceof sh.Item) {
             return object;
         }
-        if(object instanceof ItemVM){
+        if (object instanceof ItemVM) {
             return object.m;
         }
     },
     posStr: function(pos) {
+        'use strict';
         return '(' + pos.x + ',' + pos.y + ')';
     },
     actionStr: function(action) {
+        'use strict';
         return action.start + ' -> ' + action.end + ': ' +
-            utils.posStr(action.from) + ' -> ' + utils.posStr(action.to)
+            utils.posStr(action.from) + ' -> ' + utils.posStr(action.to);
     },
     isMine: function(unit) {
+        'use strict';
         return gs.player.id === unit.owner.id;
     }
 };
