@@ -5,9 +5,13 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemVM, PF, hullMap, utils, width, height*/
+/*global me, _, pr, ItemVM, PF, hullMap, utils, width, height,
+TileEntityVM*/
 
-/* individual object class */
+/**
+ * A melonJS object used to represent an sh.Item on screen.
+ * @type {*}
+ */
 var ItemVM = TileEntityVM.extend({
     init: function(x, y, settings) {
         'use strict';
@@ -29,17 +33,18 @@ var ItemVM = TileEntityVM.extend({
     },
 
     updateAnimation: function() {
+        'use strict';
         var anim;
-        if(this._onShip){
-            if(this.m.rotated()){
+        if (this._onShip) {
+            if (this.m.rotated()) {
                 anim = this.onShipAnimations.rotated;
-            }else{
+            } else {
                 anim = this.onShipAnimations.normal;
             }
-        }else{
-            if(this.m.rotated()){
+        } else {
+            if (this.m.rotated()) {
                 anim = this.offShipAnimations.rotated;
-            }else{
+            } else {
                 anim = this.offShipAnimations.normal;
             }
         }
@@ -85,13 +90,13 @@ var ItemVM = TileEntityVM.extend({
         return this.m.trueSize(index);
     },
     //callback must have x and y. withinSize is optional
-    tiles: function(callback ,withinSize) {
+    tiles: function(callback, withinSize) {
         'use strict';
         var x, y;
         for (x = this.x; x < this.trueSize(0) + this.x &&
-            (!withinSize || x < withinSize.width) && x >= 0; x++) {
+                (!withinSize || x < withinSize.width) && x >= 0; x++) {
             for (y = this.y; y < this.trueSize(1) + this.y &&
-                (!withinSize || y < withinSize.height) && y >= 0; y++) {
+                    (!withinSize || y < withinSize.height) && y >= 0; y++) {
                 callback(x, y);
             }
         }
@@ -112,12 +117,10 @@ var ItemVM = TileEntityVM.extend({
         'use strict';
         if (!me.state.isCurrent('ship-building')) {
             console.error('item.onBuilt called when not building the ship');
-            return;
         }
         //abstract method
     },
-    temp: {} //for storing temporary stuff
-    ,
+    temp: {}, //for storing temporary stuff (the wall uses this)
     _onShip: false,
     onShip: function(onShip) {
         'use strict';
@@ -143,9 +146,8 @@ var ItemVM = TileEntityVM.extend({
     whenOffShip: function() {
         'use strict';
     },
-
-
-    toJson: function(){
+    toJson: function() {
+        'use strict';
         var self = this;
         return {
             type: self.type,
@@ -153,7 +155,7 @@ var ItemVM = TileEntityVM.extend({
             y: self.y,
             rotated: self.rotated(),
             settings: {}
-        }
+        };
     }
 });
 
@@ -354,7 +356,7 @@ var WallVM = ItemVM.extend({
         //self tile will be walkable for pathfinding purposes
         pfMatrix[this.y][this.x] = 0;
         this.alpha = 0.8;
-        if(ui.chosen){
+        if (ui.chosen) {
             ui.chosen.hide();
         }
         t = this.temp;
@@ -387,8 +389,8 @@ var WallVM = ItemVM.extend({
         cloneGrid = t.grid.clone();
         t.path = t.finder.findPath(t.pivotX, t.pivotY,
             mouseTile.x, mouseTile.y, cloneGrid);
-        _.each(t.path, function(p, index){
-            if(index > 0){
+        _.each(t.path, function(p, index) {
+            if (index > 0) {
                 ui.drawItem(p[0], p[1], 'wall');
             }
         });
@@ -401,7 +403,7 @@ var WallVM = ItemVM.extend({
             ui.ship.buildAt(wall.x, wall.y, 'wall');
         });
         this.alpha = 1;
-        if(ui.chosen){
+        if (ui.chosen) {
             ui.chosen.alpha = 0.8;
         }
         this.temp = {};
@@ -412,7 +414,7 @@ var WallVM = ItemVM.extend({
         'use strict';
         var ui = me.state.current();
         ui.clear();
-        if(ui.chosen){
+        if (ui.chosen) {
             ui.chosen.alpha = 0.8;
         }
         this.temp = {};

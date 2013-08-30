@@ -6,7 +6,7 @@
 * All rights reserved.
 */
 
-/*global me, html, utils*/
+/*global me, html, utils, $*/
 
 var screens = {
     all: [],
@@ -21,7 +21,7 @@ var screens = {
         var i, tasks = new utils.TaskWait({
             pendingCount: screens.all.length,
             allDone: callback,
-            error: function(){
+            error: function() {
                 alert('An error has occurred attempting to load html ' +
                     'templates.');
             }
@@ -34,7 +34,7 @@ var screens = {
     storeHtml: function(screenId, success, error) {
         'use strict';
         var self = this;
-        $.get('screens-html/'+ screenId+'.html', function(data) {
+        $.get('screens-html/' + screenId + '.html', function(data) {
             self.storedHtmls[screenId] = data;
             if (success) {
                 success();

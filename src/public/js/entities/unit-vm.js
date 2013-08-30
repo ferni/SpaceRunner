@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global */
+/*global TileEntityVM, draw, utils*/
 
 var Unit = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -13,6 +13,7 @@ var Unit = TileEntityVM.extend({
     size: [1, 1],
     cannonTile: [-0.25, -0.25],//image offset
     init: function(unitModel) {
+        'use strict';
         this.m = unitModel;
         this.prevPos = {
             x: this.m.x,
@@ -26,8 +27,9 @@ var Unit = TileEntityVM.extend({
             spritewidth: 16,
             spriteheight: 16
         });
-        function toImgRow(array){
-            for(var i = 0; i < array.length; i++){
+        function toImgRow(array) {
+            var i;
+            for (i = 0; i < array.length; i++) {
                 array[i] += unitModel.type * 4;
             }
             return array;
@@ -37,39 +39,43 @@ var Unit = TileEntityVM.extend({
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
     },
-    putInCenter: function(){
+    putInCenter: function() {
+        'use strict';
         this.cannonTile = [-0.25, -0.25];
         this.updatePixelX();
         this.updatePixelY();
     },
-    putInTopRight: function(){
+    putInTopRight: function() {
+        'use strict';
         this.cannonTile = [-0.5, 0];
         this.updatePixelX();
         this.updatePixelY();
     },
-    putInBottomLeft: function(){
+    putInBottomLeft: function() {
+        'use strict';
         this.cannonTile = [0, -0.5];
         this.updatePixelX();
         this.updatePixelY();
     },
-    update: function(){
+    update: function() {
+        'use strict';
         this.parent();
-
-        if(this.prevPos.x !== this.m.x) {
+        if (this.prevPos.x !== this.m.x) {
             this.setX(this.m.x);
             this.prevPos.x = this.m.x;
         }
-        if(this.prevPos.y !== this.m.y) {
+        if (this.prevPos.y !== this.m.y) {
             this.setY(this.m.y);
             this.prevPos.y = this.m.y;
         }
 
         return true;
     },
-    onShip: function(){
+    onShip: function() {
+        'use strict';
         return this.m.ship;
     },
-    draw: function(ctx){
+    draw: function(ctx) {
         'use strict';
         var color;
         this.parent(ctx);
@@ -79,7 +85,8 @@ var Unit = TileEntityVM.extend({
             draw.tileHighlight(ctx, this.m, color, 2);
         }
     },
-    isMine: function(){
+    isMine: function() {
+        'use strict';
         return utils.isMine(this.m);
     }
 });

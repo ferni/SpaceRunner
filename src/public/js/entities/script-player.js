@@ -5,15 +5,17 @@
 * All rights reserved.
 */
 
-/*global */
+/*global gs, me, TILE_SIZE*/
 
 /**
  * Manages and reproduces actions on the screen
  * @type {*}
+ * @param {*} battleScreen The battle screen.
+ * @constructor
  */
-var ScriptPlayer = function(battleScreen){
+var ScriptPlayer = function(battleScreen) {
+    'use strict';
     var script, next;
-
     function playMoveAction(action) {
         var duration, tween,
             unit = gs.ship.getUnitByID(action.unitID),
@@ -24,25 +26,25 @@ var ScriptPlayer = function(battleScreen){
         tween = new me.Tween(unitVM.pos)
             .to({x: (action.to.x - unitVM.cannonTile[0]) * TILE_SIZE,
                 y: (action.to.y - unitVM.cannonTile[1]) * TILE_SIZE},
-            duration);
+                duration);
         tween.start();
     }
 
-    function playAction(action){
-        switch(action.variant) {
-            case 'move': {
-                 playMoveAction(action);
-            } break;
+    function playAction(action) {
+        switch (action.variant) {
+        case 'move':
+            playMoveAction(action);
+            break;
         }
     }
 
-    this.loadScript = function(s){
+    this.loadScript = function(s) {
         script = s;
         next = 0;
     };
 
 
-    this.update = function(elapsed){
+    this.update = function(elapsed) {
         var actions = script.actions;
         if (next < actions.length && elapsed >= actions[next].start) {
             if (script.isWithinTurn(actions[next])) {
@@ -51,7 +53,7 @@ var ScriptPlayer = function(battleScreen){
             next++;
         }
     };
-    this.draw = function(ctx){
+    this.draw = function(ctx) {
 
     };
 };

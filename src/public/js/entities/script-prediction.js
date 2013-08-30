@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global */
+/*global draw, gs, _, TILE_SIZE, HALF_TILE*/
 
 /**
  * Displays the script on the screen.
@@ -13,11 +13,13 @@
  */
 var ScriptPrediction = Object.extend({
     m: null, //the script model
-    init: function(battleScreen){
+    init: function(battleScreen) {
+        'use strict';
         this.screen = battleScreen;
     },
     drawPath: function(moveActions, ctx, color) {
-        if(moveActions.length === 0) {
+        'use strict';
+        if (moveActions.length === 0) {
             return;
         }
         ctx.beginPath();
@@ -35,23 +37,25 @@ var ScriptPrediction = Object.extend({
         draw.circle(ctx, _.last(moveActions).to, 5, color);
     },
     isSelected: function(unitID) {
+        'use strict';
         var unitVM = this.screen.shipVM.getVM(gs.ship.getUnitByID(unitID));
         return unitVM.selected;
     },
     draw: function(ctx) {
+        'use strict';
         var self = this,
             script = this.m;
         _.each(script.byUnit, function(actions, unitID) {
             ctx.save();
-            if(!self.isSelected(unitID)) {
+            if (!self.isSelected(unitID)) {
                 ctx.globalAlpha = 0.5;
             }
-            self.drawPath(_.filter(actions, function(a){
+            self.drawPath(_.filter(actions, function(a) {
                 return script.isWithinTurn(a) && a.variant === 'move';
-            }) ,ctx, 'green');
-            self.drawPath(_.filter(actions, function(a){
+            }), ctx, 'green');
+            self.drawPath(_.filter(actions, function(a) {
                 return !script.isWithinTurn(a) && a.variant === 'move';
-            }) ,ctx, 'orange');
+            }), ctx, 'orange');
             ctx.restore();
         });
     }

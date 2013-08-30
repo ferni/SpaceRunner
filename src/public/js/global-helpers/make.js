@@ -5,6 +5,9 @@
  * All rights reserved.
  */
 
+/*global WeaponVM, EngineVM, PowerVM, ConsoleVM, ComponentVM, DoorVM, WallVM,
+sh, Unit*/
+
 /**
  * Factories for entities
  */
@@ -22,7 +25,7 @@ var make = (function() {
         door: DoorVM,
         wall: WallVM
     };
-    make.item = function(type, params){
+    make.item = function(type, params) {
         var Constructor,
             model = sh.make.itemModel(type,
                 [null, params ? params[0] : 0, params ? params[1] : 0]);
@@ -36,13 +39,13 @@ var make = (function() {
     };
     /**
      *
-     * @param model {sh.Item} the item.
+     * @param {sh.Item} model the item.
      */
     make.vm = function(model) {
         var VMConstructor;
         if (model instanceof sh.Item) {
             VMConstructor = make.itemTypes[model.type];
-        } else if (model instanceof sh.Unit){
+        } else if (model instanceof sh.Unit) {
             VMConstructor = Unit;
         } else {
             throw 'Model not valid.';
@@ -54,15 +57,15 @@ var make = (function() {
     };
 
     //add props from sh.make checking that none are being overwritten.
-    for(p in sh.make){
-        if(sh.make.hasOwnProperty(p)){
-            if(typeof make[p] !== 'undefined'){
+    for (p in sh.make) {
+        if (sh.make.hasOwnProperty(p)) {
+            if (make[p] !== undefined) {
                 console.error('Attempted to overwrite property "' + p +
                     '" in sh.make');
-            }else{
+            } else {
                 make[p] = sh.make[p];
             }
         }
     }
     return make;
-})();
+}());

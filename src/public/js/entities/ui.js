@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM*/
+/*global TileEntityVM, me*/
 
 /* The red overlay */
 var RedColorEntity = TileEntityVM.extend({
@@ -23,15 +23,15 @@ var RedColorEntity = TileEntityVM.extend({
 var DragBox = me.Rect.extend({
     /**
      *
-     * @param pivot {me.Vector2d} The pivot position.
+     * @param {me.Vector2d} pivot The pivot position.
      */
     init: function(pivot) {
         'use strict';
-        //the pivot doesnt move
+        //the pivot doesn't move
         this.piv = pivot;
         this.parent(new me.Vector2d(pivot.x, pivot.y), 1, 1);
     },
-    draw: function(ctx){
+    draw: function(ctx) {
         'use strict';
         this.parent(ctx);
         ctx.fillStyle = 'rgba(0,0,255,0.3)';
@@ -42,18 +42,18 @@ var DragBox = me.Rect.extend({
     },
     updateFromMouse: function(mouse) {
         'use strict';
-        if(mouse.x > this.piv.x) {
+        if (mouse.x > this.piv.x) {
             this.width = mouse.x - this.piv.x;
-        } else{
+        } else {
             //the width must not have negative values or
             //else the 'contains' method would not work
             this.pos.x = mouse.x;
             this.width = this.piv.x - mouse.x;
         }
 
-        if(mouse.y > this.piv.y) {
+        if (mouse.y > this.piv.y) {
             this.height = mouse.y - this.piv.y;
-        } else{
+        } else {
             //the height must not have negative values or
             //else the 'contains' method would not work
             this.pos.y = mouse.y;

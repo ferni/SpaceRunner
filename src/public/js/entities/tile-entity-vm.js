@@ -35,10 +35,12 @@ var TileEntityVM = me.ObjectEntity.extend({
         this.setX(x);
         this.setY(y);
     },
-    updatePixelX: function(){
+    updatePixelX: function() {
+        'use strict';
         this.pos.x = (this.x - this.cannonTile[0]) * TILE_SIZE;
     },
-    updatePixelY: function(){
+    updatePixelY: function() {
+        'use strict';
         this.pos.y = (this.y - this.cannonTile[1]) * TILE_SIZE;
     },
     setX: function(x) { //sets the column at which it is located

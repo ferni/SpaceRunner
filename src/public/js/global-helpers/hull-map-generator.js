@@ -5,6 +5,8 @@
 * All rights reserved.
 */
 
+/*global sh*/
+
 var hullMapGenerator = {
     getCollisionTileChar: function(tmxMap, x, y) {
         'use strict';

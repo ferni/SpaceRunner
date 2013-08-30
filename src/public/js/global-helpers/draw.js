@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global */
+/*global TILE_SIZE, HALF_TILE*/
 
 /**
  * Draws stuff on the canvas based on canvas' primitives
@@ -22,9 +22,10 @@ var draw = {
         ctx.strokeRect(pixelPos.x, pixelPos.y, TILE_SIZE, TILE_SIZE);
     },
     circle: function(ctx, position, size, color) {
+        'use strict';
         ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.arc((position.x  * TILE_SIZE) + HALF_TILE,
+        ctx.arc((position.x * TILE_SIZE) + HALF_TILE,
             (position.y * TILE_SIZE) + HALF_TILE,
             size, 0, Math.PI * 2, false);
         ctx.fill();
