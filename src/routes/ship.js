@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, exports*/
+/*global require, exports, hullMaps*/
 var redis = require('redis');
 
 /**
@@ -36,13 +36,18 @@ exports.load = function(req, res) {
     client.hget('ships', name, function(error, reply) {
         if (!error) {
             res.json(reply);
-        }else {
+        } else {
             res.json(null);
         }
     });
 };
 
-exports.gethulls = function(req, res){
+/**
+ * Gets the hull maps.
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.gethulls = function(req, res) {
     'use strict';
     res.json(hullMaps);
 };

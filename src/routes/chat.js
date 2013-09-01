@@ -1,42 +1,52 @@
-
- /*
+/*
 -*- coding: utf-8 -*-
 * vim: set ts=4 sw=4 et sts=4 ai:
 * Copyright 2013 MITHIS
 * All rights reserved.
 */
 
-/*global */
+/*global require, exports*/
 
- var url = require('url'),
-     auth = require('../auth'),
-     chat = require('../chat');
+var url = require('url'),
+    auth = require('../auth'),
+    chat = require('../chat');
 
- exports.getlines = function(req, res){
-     var queryData = url.parse(req.url, true).query;
-     var lastLineId = queryData.last,
-         maxLines = queryData.max,
-         lastLineIndex,
-         i;
-     for(i = 0; i < linesInServer.length; i++){
-         if(linesInServer[i].id == lastLineId){
-             lastLineIndex = i;
-             break;
-         }
-     }
-     var forSending  = [];
-     if(maxLines && linesInServer.length - lastLineIndex > maxLines){
-         lastLineIndex = linesInServer.length - maxLines - 1;
-     }
-     for(i = lastLineIndex + 1; i < linesInServer.length; i++){
-         forSending.push(linesInServer[i]);
-     }
-     res.json(forSending);
- };
+/**
+ * Gets all the chat lines.
+ * @param {*} req
+ * @param {*} res
+ */
+exports.getlines = function(req, res) {
+    'use strict';
+    var queryData = url.parse(req.url, true).query,
+        lastLineId = parseInt(queryData.last, 10),
+        maxLines = queryData.max,
+        lastLineIndex,
+        i,
+        forSending = [];
+    for (i = 0; i < linesInServer.length; i++) {
+        if (linesInServer[i].id === lastLineId) {
+            lastLineIndex = i;
+            break;
+        }
+    }
+    if (maxLines && linesInServer.length - lastLineIndex > maxLines) {
+        lastLineIndex = linesInServer.length - maxLines - 1;
+    }
+    for (i = lastLineIndex + 1; i < linesInServer.length; i++) {
+        forSending.push(linesInServer[i]);
+    }
+    res.json(forSending);
+};
 
- exports.send = function(req, res){
-     var line = req.body.line;
-     chat.addLine(auth.getPlayer(req).name, line.message);
-
-     res.json({});
- };
+/**
+ * Send a line to the server
+ * @param {*} req
+ * @param {*} res
+ */
+exports.send = function(req, res) {
+    'use strict';
+    var line = req.body.line;
+    chat.addLine(auth.getPlayer(req).name, line.message);
+    res.json({});
+};

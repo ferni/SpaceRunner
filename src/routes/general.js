@@ -5,33 +5,37 @@
 * All rights reserved.
 */
 
-/*global exports*/
+/*global exports, require*/
+
 var auth = require('../auth'),
     sh = require('../public/js/shared');
 
-/*
-Initializes the entire app. Creates the player
-session, or returns the player state if a session is
-already present.
-
-TODO: Move this to the on connection callback when socket.io is implemented
+/**
+ * Initializes the entire app. Creates the player
+ session, or returns the player state if a session is
+ already present.
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
  */
 exports.init = function(req, res, next) {
+//  TODO: Move this to the on connection callback when socket.io is implemented
+    'use strict';
     var player;
     console.log(req.session);
-    if (typeof req.session.playerID === 'undefined') {
+    if (req.session.playerID === undefined) {
         //create the player
-        try{
+        try {
             player = auth.createNewPlayer();
             req.session.playerID = player.id;
-        }catch(e){
+        } catch (e) {
             next(new Error('Could not create new player'));
         }
 
     } else {
-        try{
+        try {
             player = auth.getPlayer(req);
-        }catch(e) {
+        } catch (e2) {
             next(new Error('Expected player to be logged in'));
         }
     }
@@ -41,22 +45,41 @@ exports.init = function(req, res, next) {
     });
 };
 
+/**
+ * Checks if the server is online.
+ * @param {Object} req
+ * @param {Object} res
+ */
 exports.ping = function(req, res) {
-  'use strict';
-  res.json({ ok: true });
+    'use strict';
+    res.json({ ok: true });
 };
 
-//used for testing
+/**
+ * Gets an array of all the properties of sh , (the namespace for the
+ * shared code between server and client.
+ * This is used to compare the properties of server and client to
+ * ensure that they are the same.
+ * @param {Object} req
+ * @param {Object} res
+ */
 exports.sharedprops = function(req, res) {
     'use strict';
     res.json({properties: sh.getProperties(sh)});
 };
 
+/**
+ * Informs the server that a player is disconnecting.
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Object} next
+ */
 exports.disconnect = function(req, res, next) {
-    try{
+    'use strict';
+    try {
         auth.disconnect(req);
-        res.json({ok:true});
-    }catch(e) {
+        res.json({ok: true});
+    } catch (e) {
         next(new Error('Error while trying to disconnect'));
     }
 };
