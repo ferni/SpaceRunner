@@ -7,7 +7,7 @@
 
 /*global
 _, th, asyncTest, equal, ok, me, notEqual, strictEqual, start,
-utils, module */
+utils, module, make, sh*/
 
 module('ship-building.js');
 
@@ -30,17 +30,17 @@ asyncTest('ESC key un-chooses the item', function() {
 
 asyncTest('mouseDbClick does not give an error when mouse is not locked',
     function() {
-    'use strict';
-    th.loadScreen(function() {
-        me.state.change('ship-building', {tmxName: 'test'});
-    }, function(screen) {
-        equal(screen.mouseLockedOn, null, 'Mouse is not locked');
-        screen.mouseDbClick({
-            which: me.input.mouse.LEFT
+        'use strict';
+        th.loadScreen(function() {
+            me.state.change('ship-building', {tmxName: 'test'});
+        }, function(screen) {
+            equal(screen.mouseLockedOn, null, 'Mouse is not locked');
+            screen.mouseDbClick({
+                which: me.input.mouse.LEFT
+            });
+            start();
         });
-        start();
     });
-});
 
 asyncTest('right click removes item', function() {
     'use strict';
@@ -179,7 +179,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         hX = th.shipPositions.engine.x;
         hY = th.shipPositions.engine.y;
         screen.ship.buildAt(hX, hY, 'wall');
-         screen.ship.buildAt(hX + 1, hY, 'wall');
+        screen.ship.buildAt(hX + 1, hY, 'wall');
         screen.mouseLockedOn = null;
         door = make.itemModel('door');
         ok(door.canBuildAt(hX, hY, screen.ship),
@@ -250,11 +250,12 @@ asyncTest('shipVM.update', function() {
         ship.built[1] = aux;
         screen.shipVM.update();
         equal(screen.shipVM.itemVMs.length, 2, 'Length remains the same...');
-        equal(screen.shipVM.itemVMs[0].m, weapon, '...but VMs switched positions.');
+        equal(screen.shipVM.itemVMs[0].m, weapon,
+            '...but VMs switched positions.');
         ship.remove(weapon, true);
         screen.shipVM.update();
         equal(screen.shipVM.itemVMs.length, 1, 'VM removed...');
-        equal(screen.shipVM.itemVMs[0].m, engine, "... the engine remains.");
+        equal(screen.shipVM.itemVMs[0].m, engine, '... the engine remains.');
 
         start();
     });

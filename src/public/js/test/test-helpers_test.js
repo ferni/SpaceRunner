@@ -22,14 +22,14 @@ asyncTest('restartGame', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     },
-    function() {
-        ok(me.state.isCurrent('ship-building'));
-        jsApp.loadReady = false;
-        th.restartGame(function() {
-            ok(jsApp.loadReady);
-            start();
+        function() {
+            ok(me.state.isCurrent('ship-building'));
+            jsApp.loadReady = false;
+            th.restartGame(function() {
+                ok(jsApp.loadReady);
+                start();
+            });
         });
-    });
 
 });
 
@@ -38,14 +38,14 @@ asyncTest('setMouse #1', function() {
     th.loadScreen(function() {
         me.state.change('ship-select');
     },
-    function(screen) {
-        th.mouseBegin(screen);
-        th.setMouse(4, 6);
-        equal(utils.getMouse().x, 4, 'x');
-        equal(utils.getMouse().y, 6, 'y');
-        th.mouseEnd();
-        start();
-    });
+        function(screen) {
+            th.mouseBegin(screen);
+            th.setMouse(4, 6);
+            equal(utils.getMouse().x, 4, 'x');
+            equal(utils.getMouse().y, 6, 'y');
+            th.mouseEnd();
+            start();
+        });
 });
 
 asyncTest('setMouse (test ship)', function() {
@@ -68,18 +68,18 @@ asyncTest('setMouse (cyborg_battleship1)', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'cyborg_battleship1'});
     },
-    function(screen) {
-        th.mouseBegin(screen);
-        th.setMouse(4, 6);
-        equal(utils.getMouse().x, 4, 'x');
-        equal(utils.getMouse().y, 6, 'y');
-        th.mouseEnd();
-        start();
-    });
+        function(screen) {
+            th.mouseBegin(screen);
+            th.setMouse(4, 6);
+            equal(utils.getMouse().x, 4, 'x');
+            equal(utils.getMouse().y, 6, 'y');
+            th.mouseEnd();
+            start();
+        });
 });
 
 asyncTest('loadScreen #1', function() {
-   'use strict';
+    'use strict';
     th.restartGame(function() {
         th.loadScreen(function() {
             me.state.change('ship-building', {tmxName: 'test'});
@@ -94,7 +94,7 @@ asyncTest('loadScreen #1', function() {
 });
 
 asyncTest('loadScreen back and forth', function() {
-   'use strict';
+    'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {

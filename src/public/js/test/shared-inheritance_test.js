@@ -5,19 +5,22 @@
 * All rights reserved.
 */
 
+/*global module, test, sh, equal, throws*/
+
 module('shared-inheritance');
 
-test('Basic stuff', function(){
+test('Basic stuff', function() {
+    'use strict';
     var Parent, Child, parent, child;
     Parent = sh.TestSharedEntity.extendShared({
         init: function(id) {
             this.id = id;
         },
         toString: function() {
-            return 'I am the '+ this.getDescription()
-                + ' with id ' + this.id;
+            return 'I am the ' + this.getDescription() +
+                ' with id ' + this.id;
         },
-        getDescription: function(){
+        getDescription: function() {
             return 'parent';
         }
     });
@@ -32,11 +35,11 @@ test('Basic stuff', function(){
             this.parent(id);
             this.number = number;
         },
-        toString: function(){
+        toString: function() {
             return this.parent() +
                 ' (#' + this.number + ')';
         },
-        getDescription: function(){
+        getDescription: function() {
             return 'child';
         }
     });
@@ -49,13 +52,14 @@ test('Basic stuff', function(){
 });
 
 
-test('Invalid usage of extend instead of extendShared', function(){
+test('Invalid usage of extend instead of extendShared', function() {
+    'use strict';
     var Person = sh.TestSharedEntity.extendShared({
         init: function(name) {
             this.name = name;
         }
     });
-    throws(function(){
+    throws(function() {
         Person.extend({});
     }, Error, 'throws error');
 });

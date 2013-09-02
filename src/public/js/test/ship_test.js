@@ -7,12 +7,12 @@
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
 strictEqual, me, _, utils, TILE_SIZE, EngineVM, DoorVM,
-FIRST_SCREEN, width, height */
+FIRST_SCREEN, width, height, make, sh*/
 
 module('main.js');
 test('Globals are set', function() {
     'use strict';
-     ok(FIRST_SCREEN, 'FIRST_SCREEN');
+    ok(FIRST_SCREEN, 'FIRST_SCREEN');
 });
 
 
@@ -38,8 +38,8 @@ asyncTest('add/at/removeAt', function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         var x = th.shipPositions.free.x,
-        y = th.shipPositions.free.y,
-        engine = make.item('engine', [x, y]);
+            y = th.shipPositions.free.y,
+            engine = make.item('engine', [x, y]);
         screen.ship.removeAll();
         //(ignores placement rules)
         screen.ship.addItem(engine);
@@ -143,9 +143,9 @@ asyncTest('at out of bounds', function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         screen.ship.removeAll();
-        ok(!screen.ship.map.at(-1, 0),'map.at(-1,0) is nothing');
-        ok(!screen.ship.map.at(width(), 0),'map.at(WIDTH,0) is nothing');
-        ok(!screen.ship.map.at(0, height()),'map.at(0,HEIGHT) is nothing');
+        ok(!screen.ship.map.at(-1, 0), 'map.at(-1,0) is nothing');
+        ok(!screen.ship.map.at(width(), 0), 'map.at(WIDTH,0) is nothing');
+        ok(!screen.ship.map.at(0, height()), 'map.at(0,HEIGHT) is nothing');
         start();
     });
 

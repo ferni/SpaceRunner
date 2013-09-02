@@ -10,7 +10,7 @@ me, $, utils*/
 
 module('mainlink.js');
 asyncTest('Item click', function() {
-   'use strict';
+    'use strict';
     th.onGameReady(function() {
         $('.items #item_weapon').trigger('click');
         equal(screen.chosen.type, 'weapon', 'choose weapon');

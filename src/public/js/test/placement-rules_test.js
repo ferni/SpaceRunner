@@ -6,7 +6,7 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-pr, _, me, utils*/
+pr, _, me, utils, sh*/
 
 module('placement-rules.js');
 

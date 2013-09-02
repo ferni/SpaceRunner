@@ -5,13 +5,16 @@
 * All rights reserved.
 */
 
-function registerTestsRequiringNodeJS(){
+/*global module, asyncTest, expect, hullMaps, $, sh, deepEqual, notDeepEqual,
+strictEqual, start*/
+
+function registerTestsRequiringNodeJS() {
+    'use strict';
     module('INTEGRATION');
     asyncTest('hullMaps generated in server identical to client', function() {
         var shipsClient = hullMaps, i;
 
-        $.post('ship/gethulls', function(shipsServer){
-
+        $.post('ship/gethulls', function(shipsServer) {
             console.log('shipsServer');
             console.log(shipsServer);
             console.log('ships client');
@@ -26,29 +29,28 @@ function registerTestsRequiringNodeJS(){
                 strictEqual(shipsClient[sh.mapNames[i]].height,
                     shipsServer[sh.mapNames[i]].height, 'height');
             }
-            shipsServer[sh.mapNames[0]].map[0] ='asdfasdfsdaf';
+            shipsServer[sh.mapNames[0]].map[0] = 'asdfasdfsdaf';
             notDeepEqual(shipsClient[sh.mapNames[0]].map,
                 shipsServer[sh.mapNames[0]].map,
                 'test fails if a map is changed'
-            );
+                );
 
         }, 'json')
-            .always(function(){
+            .always(function() {
                 start();
             });
     });
     asyncTest('"sh" object has the same' +
         ' properties in server and client.', function() {
-        var propsClient = sh.getProperties(sh);
-        expect(1);
-        $.post('/general/sharedprops', function(data){
-            var propsServer = data.properties;
-            deepEqual(propsServer, propsClient, JSON.stringify(propsServer) +
-                ' in server and client.');
-        }, 'json')
-            .always(function(){
-                start();
-            });
-    });
-
+            var propsClient = sh.getProperties(sh);
+            expect(1);
+            $.post('/general/sharedprops', function(data) {
+                var propsServer = data.properties;
+                deepEqual(propsServer, propsClient,
+                    JSON.stringify(propsServer) + ' in server and client.');
+            }, 'json')
+                .always(function() {
+                    start();
+                });
+        });
 }

@@ -5,12 +5,14 @@
 * All rights reserved.
 */
 
-/*global */
+/*global module, test, sh, equal*/
+
 module('sh-map');
-test('Basic map', function(){
+test('Basic map', function() {
+    'use strict';
     var map = new sh.Map([
-        [1,2,3],
-        [4,5,6]]);
+        [1, 2, 3],
+        [4, 5, 6]]);
     equal(map.at(0, 0), 1);
     equal(map.at(1, 0), 2);
     equal(map.at(2, 0), 3);
@@ -22,7 +24,8 @@ test('Basic map', function(){
     equal(map.height, 2, 'correct height');
 });
 
-test('Entity map', function(){
+test('Entity map', function() {
+    'use strict';
     var entities, map,
         power = new sh.items.Power(null, 1, 1),
         console = new sh.items.Console(null, 0, 1);
@@ -62,7 +65,8 @@ test('Entity map', function(){
     equal(map.at(2, 1), power);
 });
 
-test('CompoundMap', function(){
+test('CompoundMap', function() {
+    'use strict';
     var entities, entityMap, power, console, numberMap, map;
     power = new sh.items.Power(null, 1, 1);
     console = new sh.items.Console(null, 0, 1);
