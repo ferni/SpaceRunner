@@ -89,10 +89,10 @@ routes.add('create', function(req, res, next) {
 
 routes.add('join', function(req, res, next) {
     'use strict';
-    var battleID = req.body.battleID,
+    var battleID = parseInt(req.body.battleID, 10),
         battle;
-    if (battleID === undefined) {
-        return next(new Error('battleID must be provided'));
+    if (isNaN(battleID)) {
+        return next(new Error('battleID not provided or not a number.'));
     }
     battle = _.find(battleSetUps, function(b) {
         return b.id === battleID;
