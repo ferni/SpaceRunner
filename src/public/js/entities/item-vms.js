@@ -401,6 +401,10 @@ var WallVM = ItemVM.extend({
         ui.clear();
         ui.mouseLockedOn = null;
     },
+    lockedMouseDown: function() {
+        'use strict';
+        return 0;
+    },
     lockedEscape: function() {
         'use strict';
         var ui = me.state.current();
