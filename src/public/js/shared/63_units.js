@@ -8,7 +8,7 @@
 /*global me, require, exports, module*/
 
 var sh = require('./60_items'), _ = sh._;
-if (exports !== undefined) {
+if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS
      * @type {*}

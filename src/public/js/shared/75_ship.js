@@ -8,7 +8,7 @@
 /*global require, exports, module, hullMaps*/
 
 var sh = require('./70_map'), _ = sh._;
-if (exports !== undefined) {
+if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS
      * @type {*}

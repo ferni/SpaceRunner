@@ -7,11 +7,18 @@
 
 /*global _, PF, require, exports*/
 
-/**
- * The shared namespace.
- * @type {Object}
- */
-window.sh = {onClient: {}}; //initialize window.sh being first file
+
+var sh;
+if (typeof exports === 'undefined') {
+    /**
+     * The shared namespace.
+     * @type {Object}
+     */
+    sh = window.sh = {onClient: {}};
+} else {
+    sh = exports;
+}
+
 (function(sh) {
     'use strict';
     if (sh.onClient) {
@@ -41,4 +48,4 @@ window.sh = {onClient: {}}; //initialize window.sh being first file
         sh.PF = require('pathfinding');
     }
 
-}(exports === undefined ? window.sh : exports));
+}(sh));

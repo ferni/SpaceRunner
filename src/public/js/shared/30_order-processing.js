@@ -8,7 +8,7 @@
 /*global me, require, module, exports*/
 
 var sh = require('./20_placement-rules'), _ = sh._;
-if (exports !== undefined) {
+if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports
      * @type {*}

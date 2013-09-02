@@ -9,7 +9,7 @@
 
 var sh = require('./09_shared-class'), _ = sh._,
     PF = sh.PF;
-if (exports !== undefined) {
+if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS
      * @type {*}

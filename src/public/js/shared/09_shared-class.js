@@ -8,7 +8,7 @@
 /*global require, exports, module, xyz*/
 
 var sh = require('./00_init'), _ = sh._;
-if (exports !== undefined) {
+if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS
      * @type {*}

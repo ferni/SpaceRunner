@@ -8,7 +8,7 @@
 /*global require, exports, module*/
 
 var sh = require('./10_general-stuff'), _ = sh._;
-if (exports !== undefined) {
+if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS
      * @type {*}
