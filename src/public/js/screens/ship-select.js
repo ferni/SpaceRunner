@@ -14,9 +14,11 @@ screens.register('ship-select', GameScreen.extend({
     },
     onReset: function() {
         'use strict';
+        return 0;
     },
     onDestroy: function() {
         'use strict';
+        return 0;
     },
     onHtmlLoaded: function() {
         'use strict';

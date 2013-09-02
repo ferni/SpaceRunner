@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, exports*/
+/*global require, exports, linesInServer*/
 
 var url = require('url'),
     auth = require('../auth'),

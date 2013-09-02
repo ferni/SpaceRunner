@@ -8,7 +8,7 @@
 
 /*global GameScreen, screens, ShipVM, sh, server, make,
 $, Ship, me, utils, jsApp, width, height,
-items, RedColorEntity, hullMap */
+items, RedColorEntity, hullMap, _*/
 
 /* Screen where one builds the ship */
 screens.register('ship-building', GameScreen.extend({
@@ -141,7 +141,7 @@ screens.register('ship-building', GameScreen.extend({
 
         });
     },
-    mouseDbClick: function(e) {
+    mouseDbClick: function() {
         'use strict';
         //note: the "this" context is a canvas, not the screen
         var mouseTile, screen = me.state.current();
@@ -203,7 +203,7 @@ screens.register('ship-building', GameScreen.extend({
     },
     mouseUp: function(e) {
         'use strict';
-        var mouseTile, which, built;
+        var mouseTile, which;
         which = e.which - 1; //workaround for melonJS mismatch
         mouseTile = utils.getMouse();
         if (this.mouseLockedOn) { //the mouse is involved in a specific object

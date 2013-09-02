@@ -338,8 +338,10 @@ var jsApp = {
     */
     onScreenReset: function() {
         'use strict';
+        return 0;
     },
     onAppLoaded: function() {
         'use strict';
+        return 0;
     }
 };

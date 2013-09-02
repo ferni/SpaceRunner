@@ -20,6 +20,7 @@ var server = {
     disconnect: function() {
         'use strict';
         $.post('/general/disconnect', function(data) {
+            return data;
         }, 'json');
     },
     createBattle: function(ship, onDone) {

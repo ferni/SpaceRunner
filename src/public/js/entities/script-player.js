@@ -53,7 +53,4 @@ var ScriptPlayer = function(battleScreen) {
             next++;
         }
     };
-    this.draw = function(ctx) {
-
-    };
 };

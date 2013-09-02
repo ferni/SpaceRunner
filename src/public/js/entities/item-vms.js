@@ -52,13 +52,6 @@ var ItemVM = TileEntityVM.extend({
             this.setCurrentAnimation(anim);
         }
     },
-    /*functions to do when mouse-locked (override in each item)
-     mouseTile : Vector2D
-     */
-    lockedMouseUp: function(mouseTile) { 'use strict'; },
-    lockedMouseDown: function(mouseTile) { 'use strict'; },
-    lockedMouseMove: function(mouseTile) { 'use strict'; },
-    lockedMouseDbClick: function(mouseTile) { 'use strict'; },
     canBuildAt: function(x, y, ship) {
         'use strict';
         return this.m.canBuildAt(x, y, ship);
@@ -372,7 +365,6 @@ var WallVM = ItemVM.extend({
     lockedMouseMove: function(mouseTile) {
         'use strict';
         var t, cloneGrid, ui;
-        this.parent();
         ui = me.state.current();
         t = this.temp;
 
@@ -395,10 +387,9 @@ var WallVM = ItemVM.extend({
             }
         });
     },
-    lockedMouseUp: function(mouseTile) {
+    lockedMouseUp: function() {
         'use strict';
         var ui = me.state.current();
-        this.parent();
         _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x, wall.y, 'wall');
         });

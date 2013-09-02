@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, exports, module*/
+/*global require, exports, module, hullMaps*/
 
 var sh = require('./70_map'), _ = sh._;
 if (exports !== undefined) {
@@ -163,6 +163,7 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     onBuildingsChanged: function() {
         'use strict';
+        return 0;
     },
     at: function(x, y) {
         'use strict';

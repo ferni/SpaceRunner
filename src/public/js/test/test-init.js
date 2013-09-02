@@ -14,6 +14,7 @@ QUnit.config.autostart = false;
 
 QUnit.done(function() {
     'use strict';
+    return 0;
 });
 
 th.onGameReady(function() {

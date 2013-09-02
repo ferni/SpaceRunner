@@ -10,6 +10,10 @@
 var sh = require('./09_shared-class'), _ = sh._,
     PF = sh.PF;
 if (exports !== undefined) {
+    /**
+     * exports from NodeJS
+     * @type {*}
+     */
     sh = module.exports = sh;
 }
 
@@ -63,7 +67,7 @@ if (exports !== undefined) {
     //used in testing
     sh.getProperties = function(object) {
         var props = [], p;
-        for (p in object ) {
+        for (p in object) {
             if (object.hasOwnProperty(p)) {
                 props.push(p);
             }

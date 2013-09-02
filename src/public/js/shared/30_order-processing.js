@@ -18,10 +18,12 @@ if (exports !== undefined) {
 
 (function() {
     'use strict';
-    var Action, MoveAction, Script, pfFinder;
+    var Script, pfFinder;
     //The following classes serve as documentation only,
     //the json counterparts are being used instead.
-    Action = sh.SharedClass.extendShared({
+
+    /*
+    var Action = sh.SharedClass.extendShared({
         unitID: null,
         start: 0,//ms
         end: 0,//ms
@@ -31,7 +33,7 @@ if (exports !== undefined) {
         }
     });
 
-    MoveAction = Action.extendShared({
+    var MoveAction = Action.extendShared({
         from: null,
         to: null,
         init: function(json) {
@@ -40,7 +42,7 @@ if (exports !== undefined) {
             this.to = json.to;
         }
     });
-
+      */
 
     //ORDER VERIFICATION
     function verifyOrder(order, ship, playerID) {
@@ -233,7 +235,7 @@ if (exports !== undefined) {
                 for (j = i - 1; j >= 0; j--) {
                     b = ship.units[j];
                     if (a.owner.id === b.owner.id && //unis are of the same team
-                        _.isEqual(getEndPosition(a, script),
+                            _.isEqual(getEndPosition(a, script),
                                 getEndPosition(b, script))) {
                         //same end position, one will need to change
                         if (willUnitMove(a.id, script,

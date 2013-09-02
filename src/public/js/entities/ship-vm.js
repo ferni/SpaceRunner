@@ -79,7 +79,7 @@ var ShipVM = function(shipModel) {
         return somethingChanged;
     };
     this.draw = function(ctx) {
-        return true;
+        return ctx;
     };
     this.selected = function() {
         return _.filter(this.unitVMs, function(u) {

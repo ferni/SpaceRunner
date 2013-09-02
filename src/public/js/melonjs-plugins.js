@@ -16,15 +16,19 @@ me.plugin.patch(me.TMXTileMap, 'load', function() {
 
 /**
  * Disable MelonJS pause function for when focus is away.
+ * @return {int}
  */
 me.state.pause = function() {
     'use strict';
+    return 0;
 };
 
 /**
  * Disable MelonJS resume function.
+ * @return {int}
  */
 me.state.resume = function() {
     'use strict';
+    return 0;
 };
 
