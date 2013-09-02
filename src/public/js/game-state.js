@@ -5,7 +5,8 @@
 * All rights reserved.
 */
 
-var GameState = function(){
+var GameState = function() {
+    'use strict';
     //sh.Player
     this.player = null;
     //sh.Ship
@@ -14,5 +15,5 @@ var GameState = function(){
         //auto-creates battles, and auto-joins
         auto: false,
         useprebuilt: false
-    }
+    };
 };

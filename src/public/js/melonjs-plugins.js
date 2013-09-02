@@ -14,7 +14,17 @@ me.plugin.patch(me.TMXTileMap, 'load', function() {
         this.z - 10));
 });
 
-//Disable pause on blur
-me.state.pause = function (){};
-me.state.resume = function (){};
+/**
+ * Disable MelonJS pause function for when focus is away.
+ */
+me.state.pause = function() {
+    'use strict';
+};
+
+/**
+ * Disable MelonJS resume function.
+ */
+me.state.resume = function() {
+    'use strict';
+};
 

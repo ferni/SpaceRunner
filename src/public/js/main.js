@@ -6,7 +6,8 @@
 */
 
 /*global me, _, utils, $, items, RedColorEntity, hullMap,
-html, ShipSelectScreen, ShipBuildingScreen, BattleScreen*/
+html, ShipSelectScreen, ShipBuildingScreen, BattleScreen,
+sh, hullMaps, hullMapGenerator, GameState, gs, chatClient, server, screens*/
 
 //sugar
 var TILE_SIZE = 32, HALF_TILE = 16;
@@ -129,7 +130,7 @@ var g_resources = [{
     name: 'humanoid_frigate_img',
     type: 'image',
     src: 'data/img/render/ships/humanoid/humanoid_frigate_img.png'
-},{
+}, {
     name: 'humanoid_cruiser',
     type: 'tmx',
     src: 'data/outlines/humanoid_cruiser.tmx'
@@ -137,7 +138,7 @@ var g_resources = [{
     name: 'humanoid_cruiser_img',
     type: 'image',
     src: 'data/img/render/ships/humanoid/humanoid_cruiser_img.png'
-},{
+}, {
     name: 'humanoid_battleship',
     type: 'tmx',
     src: 'data/outlines/humanoid_battleship.tmx'
@@ -145,7 +146,7 @@ var g_resources = [{
     name: 'humanoid_battleship_img',
     type: 'image',
     src: 'data/img/render/ships/humanoid/humanoid_battleship_img.png'
-},{
+}, {
     name: 'humanoid_drone',
     type: 'tmx',
     src: 'data/outlines/humanoid_drone.tmx'
@@ -153,7 +154,7 @@ var g_resources = [{
     name: 'humanoid_drone_img',
     type: 'image',
     src: 'data/img/render/ships/humanoid/humanoid_drone_img.png'
-},{
+}, {
     name: 'liquid_frigate',
     type: 'tmx',
     src: 'data/outlines/liquid_frigate.tmx'
@@ -161,7 +162,7 @@ var g_resources = [{
     name: 'liquid_frigate_img',
     type: 'image',
     src: 'data/img/render/ships/liquid/liquid_frigate_img.png'
-},{
+}, {
     name: 'liquid_cruiser',
     type: 'tmx',
     src: 'data/outlines/liquid_cruiser.tmx'
@@ -169,7 +170,7 @@ var g_resources = [{
     name: 'liquid_cruiser_img',
     type: 'image',
     src: 'data/img/render/ships/liquid/liquid_cruiser_img.png'
-},{
+}, {
     name: 'liquid_battleship',
     type: 'tmx',
     src: 'data/outlines/liquid_battleship.tmx'
@@ -177,7 +178,7 @@ var g_resources = [{
     name: 'liquid_battleship_img',
     type: 'image',
     src: 'data/img/render/ships/liquid/liquid_battleship_img.png'
-},{
+}, {
     name: 'liquid_drone',
     type: 'tmx',
     src: 'data/outlines/liquid_drone.tmx'
@@ -185,7 +186,7 @@ var g_resources = [{
     name: 'liquid_drone_img',
     type: 'image',
     src: 'data/img/render/ships/liquid/liquid_drone_img.png'
-},{
+}, {
     name: 'mechanoid_frigate',
     type: 'tmx',
     src: 'data/outlines/mechanoid_frigate.tmx'
@@ -193,7 +194,7 @@ var g_resources = [{
     name: 'mechanoid_frigate_img',
     type: 'image',
     src: 'data/img/render/ships/mechanoid/mechanoid_frigate_img.png'
-},{
+}, {
     name: 'mechanoid_cruiser',
     type: 'tmx',
     src: 'data/outlines/mechanoid_cruiser.tmx'
@@ -201,7 +202,7 @@ var g_resources = [{
     name: 'mechanoid_cruiser_img',
     type: 'image',
     src: 'data/img/render/ships/mechanoid/mechanoid_cruiser_img.png'
-},{
+}, {
     name: 'mechanoid_battleship',
     type: 'tmx',
     src: 'data/outlines/mechanoid_battleship.tmx'
@@ -209,7 +210,7 @@ var g_resources = [{
     name: 'mechanoid_battleship_img',
     type: 'image',
     src: 'data/img/render/ships/mechanoid/mechanoid_battleship_img.png'
-},{
+}, {
     name: 'mechanoid_drone',
     type: 'tmx',
     src: 'data/outlines/mechanoid_drone.tmx'
@@ -232,7 +233,7 @@ var g_resources = [{
 }];
 
 var prebuilt = {
-    humanoid:'{"tmxName":"Humanoid_Cruiser","buildings":[' +
+    humanoid: '{"tmxName":"Humanoid_Cruiser","buildings":[' +
         '{"type":"power","x":15,"y":11,"r":false},' +
         '{"type":"engine","x":11,"y":9,"r":false},' +
         '{"type":"engine","x":11,"y":13,"r":false},' +
@@ -245,6 +246,10 @@ var prebuilt = {
         '{"type":"console","x":21,"y":14,"r":false}],' +
         '"units":[]}'
 };
+
+var hullMaps = {},
+    gs,
+    FIRST_SCREEN;
 
 // jsApp
 var jsApp = {
@@ -270,7 +275,8 @@ var jsApp = {
         // load everything & display a loading screen
         me.state.change(me.state.LOADING);
     },
-    generateHullMaps: function(){
+    generateHullMaps: function() {
+        'use strict';
         var i, tmxTileMap;
         window.hullMaps = {};
         for (i = 0; i < sh.mapNames.length; i++) {
@@ -309,17 +315,17 @@ var jsApp = {
             server.disconnect();
         });
 
-        screens.loadHtmls(function(){
+        screens.loadHtmls(function() {
             server.init(function(data) {
                 gs.player = sh.make.playerFromJson(data.player);
-                if(data.battleID !== undefined) {
+                if (data.battleID !== undefined) {
                     //player was in a battle, resume it
                     server.getBattle(data.battleID, function(battle) {
                         me.state.change('battle', battle);
                         self.loadReady = true;
                         self.onAppLoaded();
                     });
-                }else{
+                } else {
                     me.state.change(FIRST_SCREEN);
                     self.loadReady = true;
                     self.onAppLoaded();
@@ -331,9 +337,9 @@ var jsApp = {
     useful for testing
     */
     onScreenReset: function() {
-       'use strict';
+        'use strict';
     },
     onAppLoaded: function() {
-       'use strict';
+        'use strict';
     }
 };
