@@ -5,12 +5,22 @@
 * All rights reserved.
 */
 
-/*global QUnit, th, $, registerTestsRequiringNodeJS*/
+/*global QUnit, th, $, registerTestsRequiringNodeJS, _, test*/
 
 /**
 *Autostart config
 */
 QUnit.config.autostart = false;
+
+/**
+ * From QUnit documentation http://api.qunitjs.com/QUnit.config/
+ *
+ * Specify a global timeout in milliseconds after which all tests will fail
+ * with an appropiate message. Useful when async tests aren't finishing,
+ * to prevent the testrunner getting stuck.
+ * @type {number}
+ */
+QUnit.config.testTimeout = 4000;
 
 QUnit.done(function() {
     'use strict';
