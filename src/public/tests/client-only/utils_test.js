@@ -44,23 +44,6 @@ test('make.item: invalid item', function() {
     equal(make.item('asdf'), null);
 });
 
-asyncTest('getMouse', function() {
-    'use strict';
-    th.loadScreen(function() {
-        me.state.change('ship-building', {tmxName: 'test'});
-    }, function() {
-        var originalPos = me.game.currentLevel.pos,
-            m;
-        me.game.currentLevel.pos = new me.Vector2d(0, 0);
-        m = utils.getMouse();
-        equal(m.x, 0);
-        equal(m.y, 0);
-        me.game.currentLevel.pos = originalPos;
-        start();
-    });
-
-});
-
 test('setCursor', function() {
     'use strict';
     utils.setCursor('move');
