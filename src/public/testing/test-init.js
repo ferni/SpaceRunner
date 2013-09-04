@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global QUnit, th, $, registerTestsRequiringNodeJS, _, test*/
+/*global QUnit, th, $, registerTestsRequiringNodeJS, _, test, jsApp*/
 
 /**
 *Autostart config
@@ -42,4 +42,9 @@ th.onGameReady(function() {
             }
             QUnit.start();
         });
+});
+
+window.onReady(function() {
+    'use strict';
+    jsApp.onload();
 });
