@@ -52,12 +52,6 @@
     <script type="text/javascript" src="js/chat-client.js"></script>
     <script type="text/javascript" src="js/game-state.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
-
-    <script type="text/javascript">
-        window.onReady(function () {
-            jsApp.onload();
-        });
-    </script>
 </head>
 <body>
 
@@ -90,20 +84,12 @@
 	<!-- QUnit -->
 	<div id="qunit"></div>
 	<script type="text/javascript" src="js/vendor/qunit-1.11.0.js"></script>
-    <script type="text/javascript" src="tests/test-helpers.js"></script>
-	<script type="text/javascript" src="tests/test-init.js"></script>
+	<script type="text/javascript" src="testing/test-init-client.js"></script>
 
     <!-- Actual tests -->
-    <script type="text/javascript" src="tests/test-helpers_test.js"></script>
-    <script type="text/javascript" src="tests/ship_test.js"></script>
-    <script type="text/javascript" src="tests/ship-building-screen_test.js"></script>
-    <script type="text/javascript" src="tests/battle-screen_test.js" ></script>
-    <script type="text/javascript" src="tests/entities_test.js"></script>
-    <script type="text/javascript" src="tests/client-only/utils_test.js"></script>
-	<script type="text/javascript" src="tests/client-only/placement-rules_test.js"></script>
-	<script type="text/javascript" src="tests/client-only/shared-inheritance_test.js"></script>
-	<script type="text/javascript" src="tests/client-only/sh-map_test.js"></script>
-	<script type="text/javascript" src="tests/integration_test.js"></script>
-	<script type="text/javascript" src="tests/order-processing_test.js"></script>
+    <script type="text/javascript" src="testing/tests/client-only/utils_test.js"></script>
+	<script type="text/javascript" src="testing/tests/client-only/placement-rules_test.js"></script>
+	<script type="text/javascript" src="testing/tests/client-only/shared-inheritance_test.js"></script>
+	<script type="text/javascript" src="testing/tests/client-only/sh-map_test.js"></script>
 </body>
 </html>
