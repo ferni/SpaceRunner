@@ -6,7 +6,7 @@ var fs = require("fs");
 var rootUrl = require("system").args[1];
 if(rootUrl[rootUrl.length - 1] != "/")
     rootUrl = rootUrl + "/";
-var testsUrl = rootUrl + "test.html";
+var testsUrl = rootUrl + "test-client.html";
 
 console.log("Starting report ...");
 var reportPath = beginReport();
