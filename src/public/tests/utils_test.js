@@ -73,30 +73,3 @@ test('setCursor', function() {
     equal(document.getElementById('jsapp').style.cursor, 'move',
         "Cursor set to 'move' in jsapp div");
 });
-
-test('windowsOverlap', function() {
-    'use strict';
-    ok(utils.windowsOverlap({from: 12, to: 18}, {from: 14, to: 16}));
-    ok(utils.windowsOverlap({from: 12, to: 15}, {from: 14, to: 16}));
-    ok(utils.windowsOverlap({from: 14, to: 16}, {from: 12, to: 18}));
-    ok(utils.windowsOverlap({from: 12, to: 15}, {from: 10, to: 13}));
-    ok(!utils.windowsOverlap({from: 12, to: 14}, {from: 14, to: 16}));
-    ok(!utils.windowsOverlap({from: 14, to: 16}, {from: 12, to: 14}));
-    ok(!utils.windowsOverlap({from: 12, to: 14}, {from: 15, to: 16}));
-    ok(!utils.windowsOverlap({from: 15, to: 16}, {from: 12, to: 13}));
-});
-
-test('windowAdd', function() {
-    'use strict';
-    var addition = utils.windowAdd({from: 2, to: 5}, {from: 4, to: 10});
-    equal(addition.from, 2);
-    equal(addition.to, 10);
-
-    addition = utils.windowAdd({from: 2, to: 4}, {from: 1, to: 10});
-    equal(addition.from, 1);
-    equal(addition.to, 10);
-
-    addition = utils.windowAdd({from: 6, to: 14}, {from: 1, to: 10});
-    equal(addition.from, 1);
-    equal(addition.to, 14);
-});
