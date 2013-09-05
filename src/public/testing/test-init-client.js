@@ -21,3 +21,22 @@ QUnit.done(function() {
     'use strict';
     return 0;
 });
+
+/*Hard coded hullMaps in the absence of MelonJS*/
+var hullMaps = {
+    'test': {
+        'width': 15,
+        'height': 10,
+        'map': [
+            'sssssssssssssss',
+            'ssb...fssssssss',
+            'ssb....fsssssss',
+            'sss.......fssss',
+            'sb...........fs',
+            'sb...........fs',
+            'sss.......fssss',
+            'ssb....fsssssss',
+            'ssb...fssssssss',
+            'sssssssssssssss']
+    }
+};
