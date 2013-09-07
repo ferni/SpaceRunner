@@ -8,7 +8,10 @@
 /*global require, battleSetUps*/
 
 var _ = require('underscore')._,
-    routes = require('./routes/index');
+    routes = require('./routes/index'),
+    sh = require('../public/js/shared'),
+    model = require('../model.js'),
+    auth = require('../auth.js');
 
 routes.add('get', function(req, res, next) {
     'use strict';
@@ -21,5 +24,26 @@ routes.add('get', function(req, res, next) {
     } catch (e) {
         console.log(e);
         next(new Error(e));
+    }
+});
+
+routes.add('newchallenge', function(req, res, next) {
+    'use strict';
+    var player = auth.getPlayer(req),
+        ship,
+        battle;
+    if (player) {
+        ship = new sh.Ship({tmxName: 'mechanoid_cruiser'});
+        ship.putUnit({owner: player});
+        ship.putUnit({owner: player});
+        ship.putUnit({owner: player});
+        battle = new model.Battle({id: battles.length, ship: ship});
+        battle.playerLeft = player;
+        battle.playerRight = new model.Player({id: -1, name: 'Enemy'});
+        battles.push(battle);
+        battle.nextTurn();
+        res.json(battle.toJson());
+    } else {
+        next(new Error('No player in session'));
     }
 });

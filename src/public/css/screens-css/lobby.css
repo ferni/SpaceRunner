@@ -5,3 +5,7 @@
 #lobby-screen #battle-selector{
 
 }
+
+#lobby-screen h3{
+    text-decoration: underline;
+}

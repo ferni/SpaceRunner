@@ -34,6 +34,7 @@ screens.register('lobby', GameScreen.extend({
                     });
                 };
                 this.hostBattle = screen.hostBattle;
+                this.startChallenge = screen.startChallenge;
             };
         $.post('/lobby/get', function(data) {
             screen.vm = new HtmlViewModel(data);
@@ -48,7 +49,12 @@ screens.register('lobby', GameScreen.extend({
             }
         }, 'json');
     },
-
+    startChallenge: function() {
+        'use strict';
+        $.post('/lobby/newchallenge', function(battle) {
+            me.state.change('battle', battle);
+        }, 'json');
+    },
     hostBattle: function() {
         'use strict';
         if (gs.modes.useprebuilt) {

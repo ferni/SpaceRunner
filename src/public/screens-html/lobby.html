@@ -4,10 +4,15 @@
             Your name: <strong data-bind="text: playerName">(loading...)</strong>
         </p>
         <p>
+            <h3>Single player</h3>
+            <span class="button" data-bind="click: startChallenge">Challenge</span>
+        </p>
+        <p>
+            <h3>Multi player</h3>
             <span class="button" data-bind="click: hostBattle">New battle</span>
         </p>
         <p>
-            <h3>Join an existing battle</h3>
+            <h4>Join an existing battle</h4>
             <ul data-bind="foreach: battleSetUps">
                 <li class="button" data-bind="click: $parent.joinBattle">
                     #<span data-bind="text: id"></span><br/>
