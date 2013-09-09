@@ -29,21 +29,28 @@ routes.add('get', function(req, res, next) {
 
 routes.add('newchallenge', function(req, res, next) {
     'use strict';
-    var player = auth.getPlayer(req),
-        ship,
-        battle;
-    if (player) {
-        ship = new sh.Ship({tmxName: 'mechanoid_cruiser'});
-        ship.putUnit({owner: player});
-        ship.putUnit({owner: player});
-        ship.putUnit({owner: player});
-        battle = new model.Battle({id: battles.length, ship: ship});
-        battle.playerLeft = player;
-        battle.playerRight = new sh.Player({id: -1, name: 'Enemy'});
-        battles.push(battle);
-        battle.nextTurn();
-        res.json(battle.toJson());
-    } else {
-        next(new Error('No player in session'));
+    try {
+        var player = auth.getPlayer(req),
+            ship,
+            battle;
+        if (player) {
+            ship = new sh.Ship({tmxName: 'mechanoid_cruiser'});
+            ship.putUnit({owner: player});
+            ship.putUnit({owner: player});
+            ship.putUnit({owner: player});
+            battle = new model.Battle({id: battles.length, ship: ship});
+            battle.playerLeft = player;
+            battle.playerRight = new model.AIPlayer('Enemy');
+            ship.putUnit({owner: battle.playerRight});
+            ship.putUnit({owner: battle.playerRight});
+            ship.putUnit({owner: battle.playerRight});
+            battles.push(battle);
+            battle.nextTurn();
+            res.json(battle.toJson());
+        } else {
+            next(new Error('No player in session'));
+        }
+    } catch (e) {
+        next(e);
     }
 });

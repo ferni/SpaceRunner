@@ -89,6 +89,12 @@ exports.Battle = function(parameters) {
         this.turnCount++;
         this.currentTurn = new BattleTurn({id: this.turnCount, battle: this});
         this.receivedTheScript = [];
+
+        //register AI player orders
+        if (this.playerRight instanceof exports.AIPlayer) {
+            this.currentTurn.setPlayerReady(this.playerRight.id);
+            this.registerScriptReceived(this.playerRight.id);
+        }
     };
     this.isPlayerInIt = function(playerID) {
         return (this.playerLeft && this.playerLeft.id === playerID) ||
@@ -178,4 +184,28 @@ exports.BattleSetUp = function(params) {
     };
 };
 
-
+/**
+ * An AI controlled player.
+ * @type {*}
+ */
+exports.AIPlayer = sh.Player.extendShared({
+    init: function(name) {
+        'use strict';
+        this.id = -1;
+        this.name = name;
+    },
+    /**
+     * Gets the orders that the player would give for the current turn.
+     * @param {BattleTurn} battleTurn The battle's current turn.
+     */
+    getOrders: function(battleTurn) {
+        'use strict';
+        var self = this,
+            ship = battleTurn.battle.ship,
+            someUnit = _.first(ship.units, function(u) {
+                return u.owner.id === self.id;
+            });
+        //
+        return {};
+    }
+});
