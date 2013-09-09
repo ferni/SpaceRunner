@@ -8,9 +8,9 @@
 /*global require, exports*/
 
 var _ = require('underscore')._,
-    model = require('./model'),
+    sh = require('./public/js/shared'),
     chat = require('./chat'),
-    currentPlayers = []; //filled with model.Player;
+    currentPlayers = []; //filled with sh.Player;
 
 /**
 * Gets the id of the player in session.
@@ -71,11 +71,11 @@ exports.toUniqueName = function(playerName) {
 
 /**
  * Creates a new player and add it to currentPlayers.
- * @return {model.Player}
+ * @return {sh.Player}
  */
 exports.createNewPlayer = function() {
     'use strict';
-    var player = new model.Player({
+    var player = new sh.Player({
         id: currentPlayers.length,
         name: exports.toUniqueName('Player')
     });

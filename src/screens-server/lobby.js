@@ -39,7 +39,7 @@ routes.add('newchallenge', function(req, res, next) {
         ship.putUnit({owner: player});
         battle = new model.Battle({id: battles.length, ship: ship});
         battle.playerLeft = player;
-        battle.playerRight = new model.Player({id: -1, name: 'Enemy'});
+        battle.playerRight = new sh.Player({id: -1, name: 'Enemy'});
         battles.push(battle);
         battle.nextTurn();
         res.json(battle.toJson());

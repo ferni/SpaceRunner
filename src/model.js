@@ -178,10 +178,4 @@ exports.BattleSetUp = function(params) {
     };
 };
 
-/**
- * The player as used by NodeJS.
- * @type {*}
- */
-exports.Player = sh.Player.extendShared({
-});
 
