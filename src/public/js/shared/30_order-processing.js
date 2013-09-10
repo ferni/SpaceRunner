@@ -225,16 +225,29 @@ if (typeof exports !== 'undefined') {
         return lastMoveAction ? lastMoveAction.to : {x: unit.x, y: unit.y};
     }
 
+    function delayLastMovement(unit, script) {
+        var actions = script.byUnit[unit.id],
+            lastMoveAction = getLastMoveAction(script, unit);
+
+        insertDelay(actions,
+            actions.indexOf(lastMoveAction),
+            script.turnDuration - lastMoveAction.start);
+    }
+
     function fixEndOfTurnOverlap(script, ship) {
-        var i, j, a, b, forChange, somethingChanged,
-            actions, lastMoveAction;
+        var i, j, a, aPos, b, forChange, somethingChanged;
         do {
             somethingChanged = false;
             for (i = ship.units.length - 1; i >= 0; i--) {
                 a = ship.units[i];
+                aPos = getEndPosition(a, script);
+                if (ship.itemsMap.at(aPos.x, aPos.y) instanceof sh.items.Door) {
+                    delayLastMovement(a, script);
+                    somethingChanged = true;
+                }
                 for (j = i - 1; j >= 0; j--) {
                     b = ship.units[j];
-                    if (a.owner.id === b.owner.id && //unis are of the same team
+                    if (a.owner.id === b.owner.id &&//units are of the same team
                             _.isEqual(getEndPosition(a, script),
                                 getEndPosition(b, script))) {
                         //same end position, one will need to change
@@ -251,12 +264,7 @@ if (typeof exports !== 'undefined') {
                                 ' up in the same position, something' +
                                 ' has gone wrong...';
                         }
-                        actions = script.byUnit[forChange.id];
-                        lastMoveAction = getLastMoveAction(script, forChange);
-
-                        insertDelay(actions,
-                            actions.indexOf(lastMoveAction),
-                            script.turnDuration - lastMoveAction.start);
+                        delayLastMovement(forChange, script);
                         somethingChanged = true;
                     }
                 }
