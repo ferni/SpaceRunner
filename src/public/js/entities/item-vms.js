@@ -417,3 +417,15 @@ var WallVM = ItemVM.extend({
         ui.ship.remove(this.m);
     }
 });
+
+var WeakSpotVM = ItemVM.extend({
+    // init function
+    init: function(consoleModel) {
+        'use strict';
+        this.type = 'weak_spot';
+        this.size = consoleModel.size;
+        this.m = consoleModel;
+        this.parent(consoleModel.x, consoleModel.y, {});
+        this.onShip(consoleModel.onShip());
+    }
+});

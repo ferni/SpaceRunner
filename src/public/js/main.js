@@ -71,6 +71,10 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/wall_001.png'
 }, {
+    name: 'weak_spot',
+    type: 'image',
+    src: 'data/img/render/weak_spot.png'
+}, {
     name: 'metatiles32x32',
     type: 'image',
     src: 'data/img/render/metatiles32x32.png'

@@ -274,3 +274,16 @@ sh.items.Wall = sh.Item.extendShared({
             (this.connected.top || this.connected.bottom);
     }
 });
+
+/**
+ * Weak spot.
+ * @type {*}
+ */
+sh.items.WeakSpot = sh.Item.extendShared({
+    init: function(ship, x, y) {
+        'use strict';
+        this.type = 'weak_spot';
+        this.size = [2, 2];
+        this.parent(ship, x, y);
+    }
+});

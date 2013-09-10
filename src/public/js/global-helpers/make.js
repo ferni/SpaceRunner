@@ -6,7 +6,7 @@
 */
 
 /*global WeaponVM, EngineVM, PowerVM, ConsoleVM, ComponentVM, DoorVM, WallVM,
-sh, Unit*/
+WeakSpotVM, sh, Unit*/
 
 /**
  * Factories for entities
@@ -23,7 +23,8 @@ var make = (function() {
         console: ConsoleVM,
         component: ComponentVM,
         door: DoorVM,
-        wall: WallVM
+        wall: WallVM,
+        weak_spot: WeakSpotVM
     };
     make.item = function(type, params) {
         var Constructor,
