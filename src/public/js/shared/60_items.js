@@ -152,6 +152,7 @@ sh.items.Console = sh.Item.extendShared({
         this.type = 'console';
         this.size = [1, 1];
         this.parent(ship, x, y);
+        this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
