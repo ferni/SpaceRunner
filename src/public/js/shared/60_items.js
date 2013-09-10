@@ -22,6 +22,7 @@ if (typeof exports !== 'undefined') {
  */
 sh.Item = sh.TileEntity.extendShared({
     size: [1, 1],
+    walkable: false,
     init: function(ship, x, y) {
         'use strict';
         this.parent(x, y);
@@ -181,6 +182,7 @@ sh.items.Door = sh.Item.extendShared({
         this.type = 'door';
         this.size = [2, 1];
         this.parent(ship, x, y);
+        this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
@@ -227,7 +229,8 @@ sh.items.Wall = sh.Item.extendShared({
         'use strict';
         //modify self and surrounding walls' connections
         var it = sh.items,
-            x = this.x, y = this.y;
+            x = this.x,
+            y = this.y;
         //reset
         this.connected.top = false;
         this.connected.left = false;
@@ -285,5 +288,6 @@ sh.items.WeakSpot = sh.Item.extendShared({
         this.type = 'weak_spot';
         this.size = [2, 2];
         this.parent(ship, x, y);
+        this.walkable = true;
     }
 });

@@ -220,7 +220,8 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         var tile = this.map.at(x, y);
         //clear tiles and units are walkable
-        return tile === sh.tiles.clear || this.hasUnits({x: x, y: y});
+        return tile === sh.tiles.clear || this.hasUnits({x: x, y: y}) ||
+            (tile instanceof sh.Item && tile.walkable);
     }
 });
 
