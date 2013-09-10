@@ -427,5 +427,7 @@ var WeakSpotVM = ItemVM.extend({
         this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});
         this.onShip(consoleModel.onShip());
+        //this.setTransparency('A17FFF');
+        this.alpha = 0.75;
     }
 });
