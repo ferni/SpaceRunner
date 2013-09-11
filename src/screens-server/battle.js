@@ -72,21 +72,19 @@ routes.add('sendorders', function(req, res, next) {
     var orders = req.body.orders,
         verifiedOrdersCount = 0;
     return authenticate(req, next, function(battle, playerID) {
-        var turn, unitID;
+        var turn;
         if (!orders) {
             orders = {};
         }
-        for (unitID in orders) {
-            if (orders.hasOwnProperty(unitID)) {
-                //for now each unit just has one order
-                if (!sh.verifyOrder(orders[unitID], battle.ship, playerID)) {
-                    chat.log('ERROR: An order was invalid.');
-                    next(new Error('An order submitted is invalid'));
-                    return;
-                }
-                verifiedOrdersCount++;
+        _.each(orders, function(order) {
+            //for now each unit just has one order
+            if (!sh.verifyOrder(order, battle.ship, playerID)) {
+                chat.log('ERROR: An order was invalid.');
+                next(new Error('An order submitted is invalid'));
+                return;
             }
-        }
+            verifiedOrdersCount++;
+        });
 
         turn = battle.currentTurn;
         turn.addOrders(orders, playerID);
