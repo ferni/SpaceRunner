@@ -204,6 +204,18 @@ exports.BattleSetUp = function(params) {
         });
     }
 
+    function getUnoccupiedTile(weakSpot, units) {
+        var tile;
+        weakSpot.tiles(function(x, y) {
+            if (!_.any(units, function(unit) {
+                    return unit.x === x && unit.y === y;
+                })) {
+                tile = {x: x, y: y};
+            }
+        });
+        return tile;
+    }
+
     /**
      * An AI controlled player.
      * @type {*}
@@ -218,19 +230,19 @@ exports.BattleSetUp = function(params) {
          * @param {exports.Battle} battle The battle.
          */
         getOrders: function(battle) {
-            var self = this,
-                ship = battle.ship,
-                units = _.filter(ship.units, function(u) {
-                    return u.owner.id === self.id;
-                }),
+            var ship = battle.ship,
+                units = ship.getPlayerUnits(this.id),
                 orders = {};
             _.each(units, function(unit) {
-                var dest = getNearestWeakSpot(ship, unit);
-                orders[unit.id] = sh.make.moveOrder(unit, dest);
+                var ws = getNearestWeakSpot(ship, unit),
+                    destination = getUnoccupiedTile(ws, units);
+                if (!destination) {
+                    destination = ws;
+                }
+                orders[unit.id] = sh.make.moveOrder(unit, destination);
             });
             return orders;
         }
     });
-    exports.getNearestWeakSpot = getNearestWeakSpot;
     exports.AIPlayer = AIPlayer;
 }(exports));
