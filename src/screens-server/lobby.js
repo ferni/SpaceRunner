@@ -72,9 +72,11 @@ routes.add('newchallenge', function(req, res, next) {
             battle = new model.Battle({id: battles.length, ship: ship});
             battle.playerLeft = player;
             battle.playerRight = new model.AIPlayer('Enemy');
-            ship.putUnit({owner: battle.playerRight});
-            ship.putUnit({owner: battle.playerRight});
-            ship.putUnit({owner: battle.playerRight});
+            ship.putUnit({owner: battle.playerRight, type: 5});
+            ship.putUnit({owner: battle.playerRight, type: 5});
+            ship.putUnit({owner: battle.playerRight, type: 5});
+            ship.putUnit({owner: battle.playerRight, type: 5});
+            ship.putUnit({owner: battle.playerRight, type: 5});
             battles.push(battle);
             battle.nextTurn();
             res.json(battle.toJson());
