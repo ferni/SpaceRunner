@@ -40,9 +40,9 @@ sh.TileEntity = sh.SharedClass.extendShared({
             width = this.trueSize(0),
             height = this.trueSize(1);
         for (x = this.x; x < width + this.x &&
-            (!withinSize || x < withinSize.width) && x >= 0; x++) {
+                (!withinSize || x < withinSize.width) && x >= 0; x++) {
             for (y = this.y; y < height + this.y &&
-                (!withinSize || y < withinSize.height) && y >= 0; y++) {
+                    (!withinSize || y < withinSize.height) && y >= 0; y++) {
                 callback(x, y);
             }
         }
