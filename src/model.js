@@ -191,14 +191,16 @@ exports.BattleSetUp = function(params) {
     'use strict';
     var pfFinder = new sh.PF.AStarFinder({
         allowDiagonal: true
-    });
+    }),
+        AIPlayer;
     function getNearestWeakSpot(ship, pos) {
         var grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
             weakSpots = _.filter(ship.built, function(i) {
                 return i instanceof sh.items.WeakSpot;
             });
         return _.min(weakSpots, function(ws) {
-            return pfFinder.findPath(pos.x, pos.y, ws.x, ws.y, grid).length;
+            return pfFinder.findPath(pos.x, pos.y, ws.x, ws.y,
+                grid.clone()).length;
         });
     }
 
@@ -206,14 +208,14 @@ exports.BattleSetUp = function(params) {
      * An AI controlled player.
      * @type {*}
      */
-    exports.AIPlayer = sh.Player.extendShared({
+    AIPlayer = sh.Player.extendShared({
         init: function(name) {
             this.id = -1;
             this.name = name;
         },
         /**
          * Gets the orders that the player would give for the current turn.
-         * @param {BattleTurn} battleTurn The battle's current turn.
+         * @param {exports.Battle} battle The battle.
          */
         getOrders: function(battle) {
             var self = this,
@@ -229,5 +231,6 @@ exports.BattleSetUp = function(params) {
             return orders;
         }
     });
+    exports.getNearestWeakSpot = getNearestWeakSpot;
+    exports.AIPlayer = AIPlayer;
 }(exports));
-
