@@ -126,6 +126,12 @@ sh.Ship = sh.SharedClass.extendShared({
             return u.id === parseInt(id, 10);
         });
     },
+    getPlayerUnits: function(playerID) {
+        'use strict';
+        return _.filter(this.units, function(unit) {
+            return unit.owner.id === playerID;
+        });
+    },
     removeAt: function(x, y) {
         'use strict';
         //remove while is not string (is an item or unit)
