@@ -234,6 +234,11 @@ exports.BattleSetUp = function(params) {
                 units = ship.getPlayerUnits(this.id),
                 orders = {};
             _.each(units, function(unit) {
+                if (ship.itemsMap.at(unit.x, unit.y) instanceof
+                        sh.items.WeakSpot) {
+                    //already at the spot, don't move
+                    return;
+                }
                 var ws = getNearestWeakSpot(ship, unit),
                     destination = getUnoccupiedTile(ws, units);
                 if (!destination) {
