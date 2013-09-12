@@ -92,6 +92,8 @@ exports.Battle = function(parameters) {
 
         //register AI player orders
         if (this.playerRight instanceof exports.AIPlayer) {
+            this.currentTurn.addOrders(this.playerRight.getOrders(this),
+                this.playerRight.id);
             this.currentTurn.setPlayerReady(this.playerRight.id);
             this.registerScriptReceived(this.playerRight.id);
         }
@@ -184,28 +186,48 @@ exports.BattleSetUp = function(params) {
     };
 };
 
-/**
- * An AI controlled player.
- * @type {*}
- */
-exports.AIPlayer = sh.Player.extendShared({
-    init: function(name) {
-        'use strict';
-        this.id = -1;
-        this.name = name;
-    },
-    /**
-     * Gets the orders that the player would give for the current turn.
-     * @param {BattleTurn} battleTurn The battle's current turn.
-     */
-    getOrders: function(battleTurn) {
-        'use strict';
-        var self = this,
-            ship = battleTurn.battle.ship,
-            someUnit = _.first(ship.units, function(u) {
-                return u.owner.id === self.id;
+//AI player stuff
+(function(exports) {
+    'use strict';
+    var pfFinder = new sh.PF.AStarFinder({
+        allowDiagonal: true
+    });
+    function getNearestWeakSpot(ship, pos) {
+        var grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
+            weakSpots = _.filter(ship.built, function(i) {
+                return i instanceof sh.items.WeakSpot;
             });
-        //
-        return {};
+        return _.min(weakSpots, function(ws) {
+            return pfFinder.findPath(pos.x, pos.y, ws.x, ws.y, grid).length;
+        });
     }
-});
+
+    /**
+     * An AI controlled player.
+     * @type {*}
+     */
+    exports.AIPlayer = sh.Player.extendShared({
+        init: function(name) {
+            this.id = -1;
+            this.name = name;
+        },
+        /**
+         * Gets the orders that the player would give for the current turn.
+         * @param {BattleTurn} battleTurn The battle's current turn.
+         */
+        getOrders: function(battle) {
+            var self = this,
+                ship = battle.ship,
+                units = _.filter(ship.units, function(u) {
+                    return u.owner.id === self.id;
+                }),
+                orders = {};
+            _.each(units, function(unit) {
+                var dest = getNearestWeakSpot(ship, unit);
+                orders[unit.id] = sh.make.moveOrder(unit, dest);
+            });
+            return orders;
+        }
+    });
+}(exports));
+
