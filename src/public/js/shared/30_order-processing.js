@@ -18,31 +18,43 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    var Script, pfFinder;
+    var Script, Action, actionTypes = {}, pfFinder;
     //The following classes serve as documentation only,
     //the json counterparts are being used instead.
 
-    /*
-    var Action = sh.SharedClass.extendShared({
-        unitID: null,
+
+    Action = sh.SharedClass.extendShared({
         start: 0,//ms
         end: 0,//ms
         init: function(json) {
             this.start = json.start;
             this.end = json.end;
+        },
+        toJson: function() {
+            return {
+                start: this.start,
+                end: this.end
+            };
         }
     });
 
-    var MoveAction = Action.extendShared({
-        from: null,
-        to: null,
+    actionTypes.Move = Action.extendShared({
         init: function(json) {
             this.parent(json);
+            this.unitID = json.unitID;
             this.from = json.from;
             this.to = json.to;
+            this.type = 'Move';
+        },
+        toJson: function() {
+            var json = this.parent();
+            json.unitID = this.unitID;
+            json.from = this.from;
+            json.to = this.to;
+            json.type = 'Move';
+            return json;
         }
     });
-      */
 
     //ORDER VERIFICATION
     function verifyOrder(order, ship, playerID) {
@@ -101,9 +113,7 @@ if (typeof exports !== 'undefined') {
             step,
             time = 0; //in ms
         for (i = 1; i < path.length; i++, time += step) {
-            action = {
-                type: 'Action',
-                variant: 'move',
+            action = new actionTypes.Move({
                 unitID: unit.id,
                 from: {
                     x: path[i - 1][0],
@@ -114,7 +124,7 @@ if (typeof exports !== 'undefined') {
                     y: path[i][1]
                 },
                 start: time
-            };
+            });
             tileDistance = getTileDistance(action.from, action.to);
             if (isDiagonal(action.from, action.to)) {
                 step = tileDistance * diagonalTime;
@@ -140,7 +150,7 @@ if (typeof exports !== 'undefined') {
     function willUnitMove(unitID, script, withinTurnObj) {
         var withinTurn = withinTurnObj.withinTurn;
         return _.any(script.byUnit[unitID], function(action) {
-            return action.variant === 'move' &&
+            return action instanceof actionTypes.Move &&
                 (!withinTurn || script.isWithinTurn(action));
         });
     }
@@ -175,7 +185,7 @@ if (typeof exports !== 'undefined') {
                 changed = false;
             _.each(actions, function(action) {
                 var others, duration;
-                if (action.variant === 'move') {
+                if (action instanceof actionTypes.Move) {
                     others = ship.unitsMap.at(action.from.x, action.from.y);
                     others = _.without(others, unit);
                     if (others &&
@@ -211,7 +221,7 @@ if (typeof exports !== 'undefined') {
 
     function getLastMoveAction(script, unit) {
         var moveActions = _.filter(script.byUnit[unit.id], function(a) {
-            return a.variant === 'move' &&
+            return a instanceof actionTypes.Move &&
                 script.isWithinTurn(a);
         });
         if (moveActions && moveActions.length > 0) {
@@ -286,14 +296,18 @@ if (typeof exports !== 'undefined') {
         fromJson: function(json) {
             //logic here
             this.turnDuration = json.turnDuration;
-            this.actions = json.actions;
+            this.actions = _.map(json.actions, function(actionJson) {
+                return new actionTypes[actionJson.type](actionJson);
+            });
             this.byUnit = getActionsByUnit(json.actions);
             return this;
         },
         toJson: function() {
             return {
                 turnDuration: this.turnDuration,
-                actions: this.actions
+                actions: _.map(this.actions, function(action) {
+                    return action.toJson();
+                })
             };
         },
         isWithinTurn: function(action) {
@@ -359,6 +373,7 @@ if (typeof exports !== 'undefined') {
     }
 
     //Export
+    sh.actionTypes = actionTypes;
     sh.verifyOrder = verifyOrder;
     sh.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
     sh.fixActionsOverlap = fixActionsOverlap;

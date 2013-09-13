@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global draw, gs, _, TILE_SIZE, HALF_TILE*/
+/*global draw, gs, _, TILE_SIZE, HALF_TILE, sh*/
 
 /**
  * Displays the script on the screen.
@@ -51,10 +51,12 @@ var ScriptPrediction = Object.extend({
                 ctx.globalAlpha = 0.5;
             }
             self.drawPath(_.filter(actions, function(a) {
-                return script.isWithinTurn(a) && a.variant === 'move';
+                return script.isWithinTurn(a) &&
+                    a instanceof sh.actionTypes.Move;
             }), ctx, 'green');
             self.drawPath(_.filter(actions, function(a) {
-                return !script.isWithinTurn(a) && a.variant === 'move';
+                return !script.isWithinTurn(a) &&
+                    a instanceof sh.actionTypes.Move;
             }), ctx, 'orange');
             ctx.restore();
         });

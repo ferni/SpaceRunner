@@ -31,8 +31,8 @@ var ScriptPlayer = function(battleScreen) {
     }
 
     function playAction(action) {
-        switch (action.variant) {
-        case 'move':
+        switch (action.type) {
+        case 'Move':
             playMoveAction(action);
             break;
         }
