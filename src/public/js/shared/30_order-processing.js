@@ -56,6 +56,24 @@ if (typeof exports !== 'undefined') {
         }
     });
 
+    actionTypes.Attack = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.attackerID = json.attackerID;
+            this.receiverID = json.receiverID;
+            this.damage = json.damage;
+            this.type = 'Attack';
+        },
+        toJson: function() {
+            var json = this.parent();
+            json.attackerID = this.attackerID;
+            json.receiverID = this.receiverID;
+            json.damage = this.damage;
+            json.type = 'Attack';
+            return json;
+        }
+    });
+
     //ORDER VERIFICATION
     function verifyOrder(order, ship, playerID) {
         if (!order || !order.type || order.type !== 'Order-JSON-V1' ||
@@ -318,6 +336,11 @@ if (typeof exports !== 'undefined') {
             this.byUnit = getActionsByUnit(this.actions);
         }
     });
+
+    function addAttackActions(script, ship) {
+        //The units when standing, attack.
+
+    }
 
     /**
      * Generates a "script" for the units given all the orders issued.
