@@ -66,9 +66,9 @@ routes.add('newchallenge', function(req, res, next) {
                 '{"type":"weak_spot","x":19,"y":11,"r":false},' +
                 '{"type":"door","x":18,"y":11,"r":true}],' +
                 '"units":[]}'});
-            ship.putUnit({owner: player});
-            ship.putUnit({owner: player});
-            ship.putUnit({owner: player});
+            ship.putUnit({owner: player, speed: 2});
+            ship.putUnit({owner: player, speed: 2});
+            ship.putUnit({owner: player, speed: 2});
             battle = new model.Battle({id: battles.length, ship: ship});
             battle.playerLeft = player;
             battle.playerRight = new model.AIPlayer('Enemy');
