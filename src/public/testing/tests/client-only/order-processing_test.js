@@ -124,8 +124,7 @@ test('sh.getStandingPeriods', function() {
     ship = new sh.Ship({tmxName: 'test'});
     ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
 
-    ok(ship.getUnitByID(1));
-    ok(!ship.getUnitByID(123));
+    ok(ship.getUnitByID(1), 'unit is on the ship');
 
     script = new sh.Script({actions: [
         new sh.actionTypes.Move({
@@ -150,8 +149,48 @@ test('sh.getStandingPeriods', function() {
             end: 2800
         })], turnDuration: 3000});
     periods = sh.getStandingPeriods(script, 1);
-    deepEqual(periods, [{start: 0, end: 1000},
-        {start: 2000, end: 2100},
-        {start: 2800, end: 3000}],
+    deepEqual(periods, [{start: 0, end: 1000, pos: {x: 1, y: 1}},
+        {start: 2000, end: 2100, pos: {x: 2, y: 1}},
+        {start: 2800, end: 3000, pos: {x: 3, y: 2}}],
         'The standing time periods array is as expected');
+});
+
+test('sh.getPositions', function() {
+    'use strict';
+    var script, ship, positions;
+    ship = new sh.Ship({tmxName: 'test'});
+    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
+
+    ok(ship.getUnitByID(1), 'unit is on the ship');
+
+    script = new sh.Script({actions: [
+        new sh.actionTypes.Move({
+            unitID: 1,
+            from: {x: 1, y: 1},
+            to: {x: 2, y: 1},
+            start: 1000,
+            end: 2000
+        }),
+        new sh.actionTypes.Move({
+            unitID: 1,
+            from: {x: 2, y: 1},
+            to: {x: 2, y: 2},
+            start: 2100,
+            end: 2200
+        }),
+        new sh.actionTypes.Move({
+            unitID: 1,
+            from: {x: 2, y: 2},
+            to: {x: 3, y: 2},
+            start: 2200,
+            end: 2800
+        })], turnDuration: 3000});
+    positions = sh.getPositions(script, ship, 1);
+    deepEqual(positions, [
+        {pos: {x: 1, y: 1}, time: 0},
+        {pos: {x: 2, y: 1}, time: 2000},
+        {pos: {x: 2, y: 2}, time: 2200},
+        {pos: {x: 3, y: 2}, time: 2800}
+    ],
+        'The positions info array is as expected');
 });

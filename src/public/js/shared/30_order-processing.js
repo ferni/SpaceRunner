@@ -338,17 +338,42 @@ if (typeof exports !== 'undefined') {
     });
 
     /**
+     * Gets an array describing how the position of a unit changes.
+     * @param {Script} script
+     * @param {sh.Ship} ship
+     * @param {int} unitID
+     * @return {Array} Array of {pos, time}.
+     */
+    function getPositions(script, ship, unitID) {
+        var unit = ship.getUnitByID(unitID),
+            moveActions = _.filter(script.byUnit[unitID], function(a) {
+                return a instanceof actionTypes.Move;
+            }),
+            positions = [{
+                pos: {x: unit.x, y: unit.y},
+                time: 0
+            }];
+        _.each(moveActions, function(a) {
+            if (!_.isEqual(a.to, _.last(positions).pos)) {
+                positions.push({pos: {x: a.to.x, y: a.to.y},
+                    time: a.end});
+            }
+        });
+        return positions;
+    }
+    /**
      * Gets an array of time periods (start, end) for which
-     * a unit is standing.
+     * a unit is standing still.
      */
     function getStandingPeriods(script, unitID) {
         var periods = [],
             newPeriod,
             action,
             i;
-        //get the moving periods and get the "complement" to obtain
-        // the standing periods
-        newPeriod = {start: 0};
+        if (script.byUnit[unitID].length > 0) {
+            newPeriod = {start: 0,
+                pos: script.byUnit[unitID][0].from};
+        }
         //assumes the script is sorted
         for (i = 0; i < script.byUnit[unitID].length; i++) {
             action = script.byUnit[unitID][i];
@@ -357,7 +382,8 @@ if (typeof exports !== 'undefined') {
                 if (newPeriod.start < newPeriod.end) {//(it's not the same)
                     periods.push(newPeriod);
                 }
-                newPeriod = {start: action.end};
+                newPeriod = {start: action.end,
+                    pos: action.to};
             }
         }
         if (newPeriod.start < script.turnDuration) {
@@ -365,6 +391,31 @@ if (typeof exports !== 'undefined') {
             periods.push(newPeriod);
         }
         return periods;
+    }
+
+
+    function getUnitsPassingBy(script, pos, start, end) {
+        var units = [];//Array of {time, unitID}
+
+        _.each(script.byUnit, function(actions, unitID) {
+            var passingByInfo, i, ac;
+            for (i = 0; i < actions.length; i++) {
+                ac = actions[i];
+                if (ac) {
+
+                }
+            }
+        });
+    }
+
+    function addAttackActions(script, ship) {
+        _.each(ship.units, function(unit) {
+            //The units attack when standing
+            var standing = getStandingPeriods(script, unit.id);
+            _.each(standing, function(st) {
+
+            });
+        });
     }
 
     /**
@@ -425,6 +476,7 @@ if (typeof exports !== 'undefined') {
     sh.verifyOrder = verifyOrder;
     sh.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
     sh.fixActionsOverlap = fixActionsOverlap;
+    sh.getPositions = getPositions;//for testing
     sh.getStandingPeriods = getStandingPeriods;//for testing
     sh.Script = Script;
     sh.createScript = createScript;
