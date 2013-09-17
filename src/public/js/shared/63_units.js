@@ -22,6 +22,9 @@ if (typeof exports !== 'undefined') {
  */
 sh.Unit = sh.TileEntity.extendShared({
     id: null, //the ship is in charge of setting the id
+    hp: 100,
+    meleeAttack: 20,
+    attackCooldown: 500,//time (ms) between each attack
     init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];
