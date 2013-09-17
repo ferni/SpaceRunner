@@ -337,9 +337,34 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    function addAttackActions(script, ship) {
-        //The units when standing, attack.
-
+    /**
+     * Gets an array of time periods (start, end) for which
+     * a unit is standing.
+     */
+    function getStandingPeriods(script, unitID) {
+        var periods = [],
+            newPeriod,
+            action,
+            i;
+        //get the moving periods and get the "complement" to obtain
+        // the standing periods
+        newPeriod = {start: 0};
+        //assumes the script is sorted
+        for (i = 0; i < script.byUnit[unitID].length; i++) {
+            action = script.byUnit[unitID][i];
+            if (action instanceof actionTypes.Move) {
+                newPeriod.end = action.start;
+                if (newPeriod.start < newPeriod.end) {//(it's not the same)
+                    periods.push(newPeriod);
+                }
+                newPeriod = {start: action.end};
+            }
+        }
+        if (newPeriod.start < script.turnDuration) {
+            newPeriod.end = script.turnDuration;
+            periods.push(newPeriod);
+        }
+        return periods;
     }
 
     /**
@@ -400,6 +425,7 @@ if (typeof exports !== 'undefined') {
     sh.verifyOrder = verifyOrder;
     sh.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
     sh.fixActionsOverlap = fixActionsOverlap;
+    sh.getStandingPeriods = getStandingPeriods;//for testing
     sh.Script = Script;
     sh.createScript = createScript;
     sh.updateShipByScript = updateShipByScript;

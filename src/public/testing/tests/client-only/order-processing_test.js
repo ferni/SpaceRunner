@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global module, test, ok, equal, sh*/
+/*global module, test, ok, equal, sh, deepEqual*/
 
 module('orders');
 test('script creation', function() {
@@ -116,4 +116,42 @@ test('sh.fixEndOfTurnOverlap', function() {
     ok(script.actions[0].start === 3000 ||
         script.actions[2].start === 3000);
 
+});
+
+test('sh.getStandingPeriods', function() {
+    'use strict';
+    var script, ship, periods;
+    ship = new sh.Ship({tmxName: 'test'});
+    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
+
+    ok(ship.getUnitByID(1));
+    ok(!ship.getUnitByID(123));
+
+    script = new sh.Script({actions: [
+        new sh.actionTypes.Move({
+            unitID: 1,
+            from: {x: 1, y: 1},
+            to: {x: 2, y: 1},
+            start: 1000,
+            end: 2000
+        }),
+        new sh.actionTypes.Move({
+            unitID: 1,
+            from: {x: 2, y: 1},
+            to: {x: 2, y: 2},
+            start: 2100,
+            end: 2200
+        }),
+        new sh.actionTypes.Move({
+            unitID: 1,
+            from: {x: 2, y: 2},
+            to: {x: 3, y: 2},
+            start: 2200,
+            end: 2800
+        })], turnDuration: 3000});
+    periods = sh.getStandingPeriods(script, 1);
+    deepEqual(periods, [{start: 0, end: 1000},
+        {start: 2000, end: 2100},
+        {start: 2800, end: 3000}],
+        'The standing time periods array is as expected');
 });
