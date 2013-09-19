@@ -283,8 +283,8 @@ asyncTest('Wall building', function() {
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
     th.loadScreen(function() {
-            me.state.change('ship-building', {tmxName: 'test'});
-        },
+        me.state.change('ship-building', {tmxName: 'test'});
+    },
         function(screen) {
             screen.buildItem(x, y, 'wall');
             ok(screen.mouseLockedOn, 'Mouse locked on something');
