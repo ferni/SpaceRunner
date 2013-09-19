@@ -362,8 +362,11 @@ if (typeof exports !== 'undefined') {
         return positions;
     }
     /**
-     * Gets an array of time periods (start, end) for which
+     * Gets an array of time periods (start, end, pos) for which
      * a unit is standing still.
+     * @param {Script} script
+     * @param {int} unitID
+     * @return {Array} Array of {start, end, pos}
      */
     function getStandingPeriods(script, unitID) {
         var periods = [],
@@ -393,27 +396,58 @@ if (typeof exports !== 'undefined') {
         return periods;
     }
 
+    /**
+     * Returns if there's any overlap between the two time periods.
+     * @param {{start, end}} time1
+     * @param {{start, end}} time2
+     */
+    function periodsOverlap(time1, time2) {
+        if (time1.end < time1.start || time2.end < time2.start) {
+            throw 'Argument not a valid window (end < than start)';
+        }
+        return ((time1.start < time2.end) && (time1.end > time2.start)) ||
+                ((time2.start < time1.end) && (time2.end > time1.start));
+    }
 
-    function getUnitsPassingBy(script, pos, start, end) {
-        var units = [];//Array of {time, unitID}
-
-        _.each(script.byUnit, function(actions, unitID) {
-            var passingByInfo, i, ac;
-            for (i = 0; i < actions.length; i++) {
-                ac = actions[i];
-                if (ac) {
-
-                }
+    function getOverlaps(script, unitsPositions, atPos, atPeriod, excludedID) {
+        //TODO: unit-test this.
+        var overlaps = [];
+        _.each(unitsPositions, function(positions, unitID) {
+            if (unitID === excludedID) {
+                return;
             }
+            _.each(positions, function(posAndTime, index) {
+                var period, nextPos = positions[index + 1];
+                if (!_.isEqual(posAndTime.pos, atPos)) {
+                    //if it's not the same position, it's not overlapping.
+                    return;
+                }
+                period = {
+                    start: posAndTime.time,
+                    end: nextPos ? nextPos.time : script.turnDuration
+                };
+                if (periodsOverlap(period, atPeriod)) {
+                    overlaps.push({
+                        start: period.start,
+                        end: _.min(period.end, atPeriod.end)
+                    });
+                }
+            });
         });
+        return overlaps;
     }
 
     function addAttackActions(script, ship) {
+        var unitsPositions = {};
+        _.each(ship.units, function(u) {
+            unitsPositions[u.id] = getPositions(script, u);
+        });
         _.each(ship.units, function(unit) {
             //The units attack when standing
             var standing = getStandingPeriods(script, unit.id);
             _.each(standing, function(st) {
-
+                var overlaps = [];
+                //getOverlaps
             });
         });
     }
