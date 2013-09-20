@@ -341,13 +341,11 @@ if (typeof exports !== 'undefined') {
     /**
      * Gets an array describing how the position of a unit changes.
      * @param {Script} script
-     * @param {sh.Ship} ship
-     * @param {int} unitID
+     * @param {sh.Unit} unit
      * @return {Array} Array of {pos, time}.
      */
-    function getPositions(script, ship, unitID) {
-        var unit = ship.getUnitByID(unitID),
-            moveActions = _.filter(script.byUnit[unitID], function(a) {
+    function getPositionsForUnit(script, unit) {
+        var moveActions = _.filter(script.byUnit[unit.id], function(a) {
                 return a instanceof sh.actions.Move;
             }),
             positions = [{
@@ -362,6 +360,15 @@ if (typeof exports !== 'undefined') {
         });
         return positions;
     }
+
+    function getUnitsPositions(script, ship) {
+        var unitsPositions = {};
+        _.each(ship.units, function(unit) {
+            unitsPositions[unit.id] = getPositionsForUnit(script, unit);
+        });
+        return unitsPositions;
+    }
+
     /**
      * Gets an array of time periods (start, end, pos) for which
      * a unit is standing still.
@@ -411,7 +418,7 @@ if (typeof exports !== 'undefined') {
     }
 
     /**
-     * Returns an array of {start, end} (time periods) for which other
+     * Returns an array of {start, end, unitID} for which other
      * units cross the current one at the given time period.
      * @param {Script} script
      * @param {Array} unitsPositions
@@ -423,6 +430,7 @@ if (typeof exports !== 'undefined') {
     function getOverlaps(script, unitsPositions, atPos, atPeriod, excludedID) {
         var overlaps = [];
         _.each(unitsPositions, function(positions, unitID) {
+            unitID = parseInt(unitID, 10);
             if (unitID === excludedID) {
                 return;
             }
@@ -439,7 +447,8 @@ if (typeof exports !== 'undefined') {
                 if (periodsOverlap(otherPeriod, atPeriod)) {
                     overlaps.push({
                         start: otherPeriod.start,
-                        end: _.min(otherPeriod.end, atPeriod.end)
+                        end: _.min([otherPeriod.end, atPeriod.end]),
+                        unitID: unitID
                     });
                 }
             });
@@ -448,10 +457,7 @@ if (typeof exports !== 'undefined') {
     }
 
     function addAttackActions(script, ship) {
-        var unitsPositions = {};
-        _.each(ship.units, function(u) {
-            unitsPositions[u.id] = getPositions(script, u);
-        });
+        var unitsPositions = getUnitsPositions(script, ship);
         _.each(ship.units, function(unit) {
             //The units attack when standing
             var standing = getStandingPeriods(script, unit.id);
@@ -526,7 +532,8 @@ if (typeof exports !== 'undefined') {
     //Exported for testing
     sh.forTesting.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
     sh.forTesting.fixActionsOverlap = fixActionsOverlap;
-    sh.forTesting.getPositions = getPositions;
+    sh.forTesting.getPositionsForUnit = getPositionsForUnit;
+    sh.forTesting.getUnitsPositions = getUnitsPositions;
     sh.forTesting.getStandingPeriods = getStandingPeriods;
     sh.forTesting.getOverlaps = getOverlaps;
 
