@@ -409,27 +409,36 @@ if (typeof exports !== 'undefined') {
                 ((time2.start < time1.end) && (time2.end > time1.start));
     }
 
+    /**
+     * Returns an array of {start, end} (time periods) for which other
+     * units cross the current one at the given time period.
+     * @param {Script} script
+     * @param {Array} unitsPositions
+     * @param {{x, y}} atPos
+     * @param {{start, end}} atPeriod
+     * @param {int} excludedID
+     * @return {Array}
+     */
     function getOverlaps(script, unitsPositions, atPos, atPeriod, excludedID) {
-        //TODO: unit-test this.
         var overlaps = [];
         _.each(unitsPositions, function(positions, unitID) {
             if (unitID === excludedID) {
                 return;
             }
             _.each(positions, function(posAndTime, index) {
-                var period, nextPos = positions[index + 1];
+                var otherPeriod, nextPos = positions[index + 1];
                 if (!_.isEqual(posAndTime.pos, atPos)) {
                     //if it's not the same position, it's not overlapping.
                     return;
                 }
-                period = {
+                otherPeriod = {
                     start: posAndTime.time,
                     end: nextPos ? nextPos.time : script.turnDuration
                 };
-                if (periodsOverlap(period, atPeriod)) {
+                if (periodsOverlap(otherPeriod, atPeriod)) {
                     overlaps.push({
-                        start: period.start,
-                        end: _.min(period.end, atPeriod.end)
+                        start: otherPeriod.start,
+                        end: _.min(otherPeriod.end, atPeriod.end)
                     });
                 }
             });
@@ -508,12 +517,15 @@ if (typeof exports !== 'undefined') {
     //Export
     sh.actionTypes = actionTypes;
     sh.verifyOrder = verifyOrder;
-    sh.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
-    sh.fixActionsOverlap = fixActionsOverlap;
-    sh.getPositions = getPositions;//for testing
-    sh.getStandingPeriods = getStandingPeriods;//for testing
     sh.Script = Script;
     sh.createScript = createScript;
     sh.updateShipByScript = updateShipByScript;
+
+    //Exported for testing
+    sh.forTesting.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
+    sh.forTesting.fixActionsOverlap = fixActionsOverlap;
+    sh.forTesting.getPositions = getPositions;
+    sh.forTesting.getStandingPeriods = getStandingPeriods;
+    sh.forTesting.getOverlaps = getOverlaps;
 
 }());

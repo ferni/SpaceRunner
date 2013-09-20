@@ -30,7 +30,7 @@ test('fix actions overlap', function() {
         {start: 5, end: 15}
     ];
 
-    sh.fixActionsOverlap(actions);
+    sh.forTesting.fixActionsOverlap(actions);
     equal(actions[0].start, 0);
     equal(actions[0].end, 10);
     equal(actions[1].start, 10);
@@ -62,7 +62,7 @@ test('sh.fixEndOfTurnOverlap', function() {
             end: 2000
         })], turnDuration: 3000});
 
-    sh.fixEndOfTurnOverlap(script, ship);
+    sh.forTesting.fixEndOfTurnOverlap(script, ship);
     equal(script.actions[0].start, 3000);
     equal(script.actions[0].end, 4000);
 
@@ -83,7 +83,7 @@ test('sh.fixEndOfTurnOverlap', function() {
         })
     ], turnDuration: 3000});
 
-    sh.fixEndOfTurnOverlap(script, ship);
+    sh.forTesting.fixEndOfTurnOverlap(script, ship);
     //actions shouldn't change here
     equal(script.actions[0].start, 1000);
     equal(script.actions[0].end, 2000);
@@ -112,7 +112,7 @@ test('sh.fixEndOfTurnOverlap', function() {
             end: 2000
         })], turnDuration: 3000
         });
-    sh.fixEndOfTurnOverlap(script, ship);
+    sh.forTesting.fixEndOfTurnOverlap(script, ship);
     ok(script.actions[0].start === 3000 ||
         script.actions[2].start === 3000);
 
@@ -148,7 +148,7 @@ test('sh.getStandingPeriods', function() {
             start: 2200,
             end: 2800
         })], turnDuration: 3000});
-    periods = sh.getStandingPeriods(script, 1);
+    periods = sh.forTesting.getStandingPeriods(script, 1);
     deepEqual(periods, [{start: 0, end: 1000, pos: {x: 1, y: 1}},
         {start: 2000, end: 2100, pos: {x: 2, y: 1}},
         {start: 2800, end: 3000, pos: {x: 3, y: 2}}],
@@ -185,7 +185,7 @@ test('sh.getPositions', function() {
             start: 2200,
             end: 2800
         })], turnDuration: 3000});
-    positions = sh.getPositions(script, ship, 1);
+    positions = sh.forTesting.getPositions(script, ship, 1);
     deepEqual(positions, [
         {pos: {x: 1, y: 1}, time: 0},
         {pos: {x: 2, y: 1}, time: 2000},

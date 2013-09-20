@@ -64,6 +64,9 @@ if (typeof exports !== 'undefined') {
         'mechanoid_frigate'
     ];
 
+    //Object holding references to functions that will be tested.
+    sh.forTesting = {};
+
     //used in testing
     sh.getProperties = function(object) {
         var props = [], p;
