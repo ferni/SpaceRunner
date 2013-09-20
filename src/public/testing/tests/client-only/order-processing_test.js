@@ -54,7 +54,7 @@ test('sh.fixEndOfTurnOverlap', function() {
     ok(!ship.getUnitByID(123));
 
     script = new sh.Script({actions: [
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
@@ -67,14 +67,14 @@ test('sh.fixEndOfTurnOverlap', function() {
     equal(script.actions[0].end, 4000);
 
     script = new sh.Script({actions: [
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
             start: 1000,
             end: 2000
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 2,
             from: {x: 2, y: 1},
             to: {x: 1, y: 1},
@@ -90,21 +90,21 @@ test('sh.fixEndOfTurnOverlap', function() {
     equal(script.actions[1].start, 1000);
     equal(script.actions[1].end, 2000);
     script = new sh.Script({actions: [
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 2},
             start: 1000,
             end: 2000
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 3, y: 1},
             start: 2000,
             end: 3000
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 2,
             from: {x: 2, y: 1},
             to: {x: 2, y: 2},
@@ -127,21 +127,21 @@ test('sh.getStandingPeriods', function() {
     ok(ship.getUnitByID(1), 'unit is on the ship');
 
     script = new sh.Script({actions: [
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
             start: 1000,
             end: 2000
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 1},
             to: {x: 2, y: 2},
             start: 2100,
             end: 2200
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 3, y: 2},
@@ -164,21 +164,21 @@ test('sh.getPositions', function() {
     ok(ship.getUnitByID(1), 'unit is on the ship');
 
     script = new sh.Script({actions: [
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
             start: 1000,
             end: 2000
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 1},
             to: {x: 2, y: 2},
             start: 2100,
             end: 2200
         }),
-        new sh.actionTypes.Move({
+        new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 3, y: 2},

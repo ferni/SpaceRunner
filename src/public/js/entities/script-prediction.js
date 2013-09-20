@@ -52,11 +52,11 @@ var ScriptPrediction = Object.extend({
             }
             self.drawPath(_.filter(actions, function(a) {
                 return script.isWithinTurn(a) &&
-                    a instanceof sh.actionTypes.Move;
+                    a instanceof sh.actions.Move;
             }), ctx, 'green');
             self.drawPath(_.filter(actions, function(a) {
                 return !script.isWithinTurn(a) &&
-                    a instanceof sh.actionTypes.Move;
+                    a instanceof sh.actions.Move;
             }), ctx, 'orange');
             ctx.restore();
         });

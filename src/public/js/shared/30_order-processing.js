@@ -18,7 +18,7 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    var Script, Action, actionTypes = {}, pfFinder;
+    var Script, Action, pfFinder;
     //The following classes serve as documentation only,
     //the json counterparts are being used instead.
 
@@ -38,7 +38,8 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    actionTypes.Move = Action.extendShared({
+    sh.actions = {};
+    sh.actions.Move = Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.unitID = json.unitID;
@@ -56,7 +57,7 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    actionTypes.Attack = Action.extendShared({
+    sh.actions.Attack = Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.attackerID = json.attackerID;
@@ -131,7 +132,7 @@ if (typeof exports !== 'undefined') {
             step,
             time = 0; //in ms
         for (i = 1; i < path.length; i++, time += step) {
-            action = new actionTypes.Move({
+            action = new sh.actions.Move({
                 unitID: unit.id,
                 from: {
                     x: path[i - 1][0],
@@ -168,7 +169,7 @@ if (typeof exports !== 'undefined') {
     function willUnitMove(unitID, script, withinTurnObj) {
         var withinTurn = withinTurnObj.withinTurn;
         return _.any(script.byUnit[unitID], function(action) {
-            return action instanceof actionTypes.Move &&
+            return action instanceof sh.actions.Move &&
                 (!withinTurn || script.isWithinTurn(action));
         });
     }
@@ -203,7 +204,7 @@ if (typeof exports !== 'undefined') {
                 changed = false;
             _.each(actions, function(action) {
                 var others, duration;
-                if (action instanceof actionTypes.Move) {
+                if (action instanceof sh.actions.Move) {
                     others = ship.unitsMap.at(action.from.x, action.from.y);
                     others = _.without(others, unit);
                     if (others &&
@@ -239,7 +240,7 @@ if (typeof exports !== 'undefined') {
 
     function getLastMoveAction(script, unit) {
         var moveActions = _.filter(script.byUnit[unit.id], function(a) {
-            return a instanceof actionTypes.Move &&
+            return a instanceof sh.actions.Move &&
                 script.isWithinTurn(a);
         });
         if (moveActions && moveActions.length > 0) {
@@ -315,7 +316,7 @@ if (typeof exports !== 'undefined') {
             //logic here
             this.turnDuration = json.turnDuration;
             this.actions = _.map(json.actions, function(actionJson) {
-                return new actionTypes[actionJson.type](actionJson);
+                return new sh.actions[actionJson.type](actionJson);
             });
             this.byUnit = getActionsByUnit(json.actions);
             return this;
@@ -347,7 +348,7 @@ if (typeof exports !== 'undefined') {
     function getPositions(script, ship, unitID) {
         var unit = ship.getUnitByID(unitID),
             moveActions = _.filter(script.byUnit[unitID], function(a) {
-                return a instanceof actionTypes.Move;
+                return a instanceof sh.actions.Move;
             }),
             positions = [{
                 pos: {x: unit.x, y: unit.y},
@@ -380,7 +381,7 @@ if (typeof exports !== 'undefined') {
         //assumes the script is sorted
         for (i = 0; i < script.byUnit[unitID].length; i++) {
             action = script.byUnit[unitID][i];
-            if (action instanceof actionTypes.Move) {
+            if (action instanceof sh.actions.Move) {
                 newPeriod.end = action.start;
                 if (newPeriod.start < newPeriod.end) {//(it's not the same)
                     periods.push(newPeriod);
@@ -515,11 +516,12 @@ if (typeof exports !== 'undefined') {
     }
 
     //Export
-    sh.actionTypes = actionTypes;
+
     sh.verifyOrder = verifyOrder;
     sh.Script = Script;
     sh.createScript = createScript;
     sh.updateShipByScript = updateShipByScript;
+    //also: sh.actions
 
     //Exported for testing
     sh.forTesting.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
