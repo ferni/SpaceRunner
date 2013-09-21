@@ -19,9 +19,6 @@ if (typeof exports !== 'undefined') {
 (function() {
     'use strict';
     var Script, Action, pfFinder;
-    //The following classes serve as documentation only,
-    //the json counterparts are being used instead.
-
 
     Action = sh.SharedClass.extendShared({
         start: 0,//ms
@@ -446,7 +443,7 @@ if (typeof exports !== 'undefined') {
                 };
                 if (periodsOverlap(otherPeriod, atPeriod)) {
                     overlaps.push({
-                        start: otherPeriod.start,
+                        start: _.max([otherPeriod.start, atPeriod.start]),
                         end: _.min([otherPeriod.end, atPeriod.end]),
                         unitID: unitID
                     });
