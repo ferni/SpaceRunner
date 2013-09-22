@@ -22,6 +22,45 @@ test('script creation', function() {
     equal(script.actions[1].start, 1000, 'Second action starts at 1000');
 });
 
+test('Script.insertAction', function() {
+    'use strict';
+    var script = new sh.Script({actions: [
+        new sh.actions.Move({
+            unitID: 1,
+            start: 800,
+            end: 1500,
+            from: {x: 1, y: 1},
+            to: {x: 2, y: 1}
+        }),
+        new sh.actions.Move({
+            unitID: 2,
+            start: 200,
+            end: 1000,
+            from: {x: 1, y: 1},
+            to: {x: 2, y: 1}
+        }),
+        new sh.actions.Attack({
+            start: 500,
+            end: 600,
+            attackerID: 1,
+            receiverID: 2,
+            damage: 50
+        })
+    ], turnDuration: 5000}),
+        actionForInsertion = new sh.actions.Attack({
+            start: 300,
+            end: 1500,
+            attackerID: 2,
+            receiverID: 1,
+            damage: 70
+        });
+    script.insertAction(actionForInsertion);
+    equal(script.actions[0].unitID, 2);
+    equal(script.actions[1], actionForInsertion);
+
+    //TODO: implement and test insertion into byUnit object
+});
+
 test('fix actions overlap', function() {
     'use strict';
     var actions = [

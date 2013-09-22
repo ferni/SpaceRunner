@@ -332,6 +332,15 @@ if (typeof exports !== 'undefined') {
         sort: function() {
             this.actions = _.sortBy(this.actions, 'start');
             this.byUnit = getActionsByUnit(this.actions);
+        },
+        /**
+         * Inserts an action maintaining their order
+         * @param {Action} action The action to be inserted.
+         */
+        insertAction: function(action) {
+            var insertionIndex = _.sortedIndex(this.actions, action, 'start');
+            //TODO: insert into byUnit also
+            this.actions.splice(insertionIndex, 0, action);
         }
     });
 
@@ -454,13 +463,34 @@ if (typeof exports !== 'undefined') {
     }
 
     function addAttackActions(script, ship) {
-        var unitsPositions = getUnitsPositions(script, ship);
+        var allUnitsPositions = getUnitsPositions(script, ship);
         _.each(ship.units, function(unit) {
             //The units attack when standing
-            var standing = getStandingPeriods(script, unit.id);
+            var standing = getStandingPeriods(script, unit.id),
+                //time for which the next attack is due
+                nextAttack = unit.lastAttack + unit.attackCooldown;
             _.each(standing, function(st) {
-                var overlaps = [];
-                //getOverlaps
+                var overlaps = getOverlaps(script, allUnitsPositions, st.pos,
+                    st, unit.id),
+                    overlapInAttackTime,
+                    closestOverlap;
+                if (overlaps.length === 0) {
+                    return;
+                }
+                overlapInAttackTime = _.find(overlaps, function(o) {
+                    return o.start <= nextAttack && o.end >= nextAttack;
+                });
+                if (!overlapInAttackTime) {
+                    closestOverlap = _.min(_.filter(overlaps, function(o) {
+                        return o.start >= nextAttack;
+                    }), 'start');
+                    nextAttack = overlapInAttackTime.start;
+                }
+
+                //add attack
+
+                unit.lastAttack = nextAttack;
+                nextAttack += unit.attackCooldown;
             });
         });
     }
