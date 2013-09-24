@@ -346,6 +346,8 @@ if (typeof exports !== 'undefined') {
 
     /**
      * Gets an array describing how the position of a unit changes.
+     * (Maybe it can be replaced with a more advanced version
+     * describing every property change)
      * @param {Script} script
      * @param {sh.Unit} unit
      * @return {Array} Array of {pos, time}.
@@ -368,9 +370,12 @@ if (typeof exports !== 'undefined') {
     }
 
     function getUnitsPositions(script, ship) {
-        var unitsPositions = {};
+        var unitsPositions = [];
         _.each(ship.units, function(unit) {
-            unitsPositions[unit.id] = getPositionsForUnit(script, unit);
+            unitsPositions.push({
+                positions: getPositionsForUnit(script, unit),
+                unit: unit
+            });
         });
         return unitsPositions;
     }
@@ -424,20 +429,23 @@ if (typeof exports !== 'undefined') {
     }
 
     /**
-     * Returns an array of {start, end, unitID} for which other
+     * Returns an array of {start, end, unitID} for which enemy
      * units cross the current one at the given time period.
      * @param {Script} script
      * @param {Array} unitsPositions
      * @param {{x, y}} atPos
      * @param {{start, end}} atPeriod
-     * @param {int} excludedID
+     * @param {sh.Unit} currentUnit
      * @return {Array}
      */
-    function getOverlaps(script, unitsPositions, atPos, atPeriod, excludedID) {
+    function getOverlaps(script, unitsPositions, atPos, atPeriod, currentUnit) {
         var overlaps = [];
-        _.each(unitsPositions, function(positions, unitID) {
-            unitID = parseInt(unitID, 10);
-            if (unitID === excludedID) {
+        _.each(unitsPositions, function(unitPosObject) {
+            var positions = unitPosObject.positions,
+                otherUnit = unitPosObject.unit;
+            if (currentUnit === otherUnit ||
+                //doesn't register overlap if they're allies
+                    currentUnit.owner.id === otherUnit.owner.id) {
                 return;
             }
             _.each(positions, function(posAndTime, index) {
@@ -454,13 +462,15 @@ if (typeof exports !== 'undefined') {
                     overlaps.push({
                         start: _.max([otherPeriod.start, atPeriod.start]),
                         end: _.min([otherPeriod.end, atPeriod.end]),
-                        unitID: unitID
+                        unitID: otherUnit.id
                     });
                 }
             });
         });
         return overlaps;
     }
+
+
 
     function addAttackActions(script, ship) {
         var allUnitsPositions = getUnitsPositions(script, ship);
@@ -471,24 +481,32 @@ if (typeof exports !== 'undefined') {
                 nextAttack = unit.lastAttack + unit.attackCooldown;
             _.each(standing, function(st) {
                 var overlaps = getOverlaps(script, allUnitsPositions, st.pos,
-                    st, unit.id),
-                    overlapInAttackTime,
-                    closestOverlap;
+                    st, unit),
+                    overlap;
                 if (overlaps.length === 0) {
                     return;
                 }
-                overlapInAttackTime = _.find(overlaps, function(o) {
+                //find overlap in attack time
+                overlap = _.find(overlaps, function(o) {
                     return o.start <= nextAttack && o.end >= nextAttack;
                 });
-                if (!overlapInAttackTime) {
-                    closestOverlap = _.min(_.filter(overlaps, function(o) {
+                if (!overlap) {
+                    //no overlap in attack time, find closest overlap
+                    overlap = _.min(_.filter(overlaps, function(o) {
                         return o.start >= nextAttack;
                     }), 'start');
-                    nextAttack = overlapInAttackTime.start;
+                    nextAttack = overlap.start;
                 }
 
                 //add attack
-
+                //noinspection JSValidateTypes
+                script.insertAction(new sh.actions.Attack({
+                    start: nextAttack,
+                    end: nextAttack,
+                    attackerID: unit.id,
+                    receiverID: overlap.unitID,
+                    damage: unit.meleeDamage
+                }));
                 unit.lastAttack = nextAttack;
                 nextAttack += unit.attackCooldown;
             });
@@ -540,9 +558,11 @@ if (typeof exports !== 'undefined') {
             var unit;
             if (script.isWithinTurn(action)) {
                 //this assumes the action involves a unit
-                unit = ship.getUnitByID(action.unitID);
-                unit.x = action.to.x;
-                unit.y = action.to.y;
+                if (action instanceof sh.actions.Move) {
+                    unit = ship.getUnitByID(action.unitID);
+                    unit.x = action.to.x;
+                    unit.y = action.to.y;
+                }
             }
         });
         ship.unitsMap.update();
@@ -563,5 +583,6 @@ if (typeof exports !== 'undefined') {
     sh.forTesting.getUnitsPositions = getUnitsPositions;
     sh.forTesting.getStandingPeriods = getStandingPeriods;
     sh.forTesting.getOverlaps = getOverlaps;
+    sh.forTesting.addAttackActions = addAttackActions;
 
 }());

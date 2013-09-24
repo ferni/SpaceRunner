@@ -239,8 +239,8 @@ test('sh.getOverlaps', function() {
     var script, ship, positions, unitsPositions, overlaps, u1, u2, u3;
     ship = new sh.Ship({tmxName: 'test'});
     ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
-    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 2
-    ship.addUnit(new sh.Unit(2, 1, {owner: {id: 1}})); //id 3
+    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 2}})); //id 2
+    ship.addUnit(new sh.Unit(2, 1, {owner: {id: 2}})); //id 3
     u1 = ship.getUnitByID(1);
     u2 = ship.getUnitByID(2);
     u3 = ship.getUnitByID(3);
@@ -294,7 +294,7 @@ test('sh.getOverlaps', function() {
 
     unitsPositions = sh.forTesting.getUnitsPositions(script, ship);
     overlaps = sh.forTesting.getOverlaps(script, unitsPositions, {x: 1, y: 1},
-        {start: 0, end: 3000}, 1);
+        {start: 0, end: 3000}, u1);
     deepEqual(overlaps, [
         {unitID: 2, start: 0, end: 2000},
         {unitID: 2, start: 2200, end: 3000},
@@ -302,9 +302,26 @@ test('sh.getOverlaps', function() {
     ], 'Get overlaps, with period encompassing the entire turn, correct.');
 
     overlaps = sh.forTesting.getOverlaps(script, unitsPositions, {x: 1, y: 1},
-        {start: 1000, end: 2000}, 1);
+        {start: 1000, end: 2000}, u1);
     deepEqual(overlaps, [
         {unitID: 2, start: 1000, end: 2000},
         {unitID: 3, start: 1800, end: 2000}
     ], 'Get overlaps, with period 1000-2000, correct.');
 });
+
+test('sh.addAttackActions', function() {
+    'use strict';
+    var script, ship, u1, u2, u3;
+    ship = new sh.Ship({tmxName: 'test'});
+    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
+    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 2
+    ship.addUnit(new sh.Unit(2, 1, {owner: {id: 1}})); //id 3
+    u1 = ship.getUnitByID(1);
+    u2 = ship.getUnitByID(2);
+    u3 = ship.getUnitByID(3);
+    ok(u1, 'unit 1 on ship');
+    ok(u2, 'unit 2 on ship');
+    ok(u3, 'unit 3 on ship');
+
+});
+
