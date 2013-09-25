@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global module, test, ok, equal, sh, deepEqual*/
+/*global module, test, ok, equal, sh, deepEqual, _*/
 
 module('orders');
 test('script creation', function() {
@@ -311,17 +311,73 @@ test('sh.getOverlaps', function() {
 
 test('sh.addAttackActions', function() {
     'use strict';
-    var script, ship, u1, u2, u3;
+    var script, ship, u1, u2, u3, attacks, u1Attack, u2Attack, u3Attack;
     ship = new sh.Ship({tmxName: 'test'});
-    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
-    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 2
-    ship.addUnit(new sh.Unit(2, 1, {owner: {id: 1}})); //id 3
+    ship.addUnit(new sh.Unit(2, 2, {owner: {id: 1}})); //id 1
+    ship.addUnit(new sh.Unit(2, 2, {owner: {id: 2}})); //id 2
+    ship.addUnit(new sh.Unit(1, 1, {owner: {id: 2}})); //id 3
     u1 = ship.getUnitByID(1);
     u2 = ship.getUnitByID(2);
     u3 = ship.getUnitByID(3);
     ok(u1, 'unit 1 on ship');
     ok(u2, 'unit 2 on ship');
     ok(u3, 'unit 3 on ship');
+    //attack cooldown for the units is 500 ms (default)
+    script = new sh.Script({actions: [
+        new sh.actions.Move({
+            unitID: 2,
+            from: {x: 2, y: 2},
+            to: {x: 1, y: 1},
+            start: 200,     //u1 attacks, u2 attacks (they share the 2,2 tile)
+            end: 750        //u1 attacks again (u2 doesn't because it's moving)
+        }),
+        new sh.actions.Move({
+            unitID: 3,
+            from: {x: 1, y: 1},
+            to: {x: 2, y: 2},
+            start: 1000,
+            end: 1200 //u1 attacks at 1200, u3 also
+        }),
+        new sh.actions.Move({
+            unitID: 1,
+            from: {x: 2, y: 2},
+            to: {x: 1, y: 1},
+            start: 1250,
+            end: 1300       //u2 attacks at 1300 and 1800, u1 at 1700
+        })], turnDuration: 2000});
+    sh.forTesting.addAttackActions(script, ship);
+    attacks = _.filter(script.actions, function(action) {
+        return action instanceof sh.actions.Attack;
+    });
+    equal(attacks.length, 8);
+    u1Attack = attacks[0].attackerID === 1 ? attacks[0] : attacks[1];
+    u2Attack = attacks[0].attackerID === 2 ? attacks[0] : attacks[1];
+    equal(u1Attack.start, 0);
+    equal(u1Attack.attackerID, 1);
+    equal(u1Attack.receiverID, 2);
+    equal(u2Attack.start, 0);
+    equal(u2Attack.attackerID, 2);
+    equal(u2Attack.receiverID, 1);
+    equal(attacks[2].start, 500);
+    equal(attacks[2].attackerID, 1);
+    equal(attacks[2].receiverID, 2);
 
+    u1Attack = attacks[3].attackerID === 1 ? attacks[3] : attacks[4];
+    u3Attack = attacks[3].attackerID === 3 ? attacks[3] : attacks[4];
+    equal(u1Attack.start, 1200);
+    equal(u1Attack.attackerID, 1);
+    equal(u1Attack.receiverID, 3);
+    equal(u3Attack.start, 1200);
+    equal(u3Attack.attackerID, 3);
+    equal(u3Attack.receiverID, 1);
+    equal(attacks[5].start, 1300);
+    equal(attacks[5].attackerID, 2);
+    equal(attacks[5].receiverID, 1);
+    equal(attacks[6].start, 1700);
+    equal(attacks[6].attackerID, 1);
+    equal(attacks[6].receiverID, 2);
+    equal(attacks[7].start, 1800);
+    equal(attacks[7].attackerID, 2);
+    equal(attacks[7].receiverID, 1);
 });
 

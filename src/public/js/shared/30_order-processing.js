@@ -478,37 +478,53 @@ if (typeof exports !== 'undefined') {
             //The units attack when standing
             var standing = getStandingPeriods(script, unit.id),
                 //time for which the next attack is due
-                nextAttack = unit.lastAttack + unit.attackCooldown;
+                nextAttack = unit.lastAttack ?
+                        unit.lastAttack + unit.attackCooldown : 0;
             _.each(standing, function(st) {
-                var overlaps = getOverlaps(script, allUnitsPositions, st.pos,
-                    st, unit),
+                var overlaps = getOverlaps(script, allUnitsPositions,
+                    st.pos, st, unit),
                     overlap;
                 if (overlaps.length === 0) {
                     return;
                 }
-                //find overlap in attack time
-                overlap = _.find(overlaps, function(o) {
+                function attackWithinPeriod(o) {
                     return o.start <= nextAttack && o.end >= nextAttack;
-                });
-                if (!overlap) {
-                    //no overlap in attack time, find closest overlap
-                    overlap = _.min(_.filter(overlaps, function(o) {
-                        return o.start >= nextAttack;
-                    }), 'start');
-                    nextAttack = overlap.start;
+                }
+                function startsAfterAttack(o) {
+                    return o.start >= nextAttack;
+                }
+                function startProperty(o) {
+                    return o.start;
                 }
 
-                //add attack
-                //noinspection JSValidateTypes
-                script.insertAction(new sh.actions.Attack({
-                    start: nextAttack,
-                    end: nextAttack,
-                    attackerID: unit.id,
-                    receiverID: overlap.unitID,
-                    damage: unit.meleeDamage
-                }));
-                unit.lastAttack = nextAttack;
-                nextAttack += unit.attackCooldown;
+                do {
+                    //find overlap in attack time
+                    overlap = _.find(overlaps, attackWithinPeriod);
+                    if (!overlap) {
+                        //no overlap in attack time, find closest overlap
+                        overlap = _.min(_.filter(overlaps, startsAfterAttack),
+                            startProperty);
+                        if (overlap === Infinity) {//no overlap close
+                            overlap = null;
+                        } else {
+                            nextAttack = overlap.start;
+                        }
+                    }
+
+                    if (overlap) {
+                        //add attack
+                        //noinspection JSValidateTypes
+                        script.insertAction(new sh.actions.Attack({
+                            start: nextAttack,
+                            end: nextAttack,
+                            attackerID: unit.id,
+                            receiverID: overlap.unitID,
+                            damage: unit.meleeDamage
+                        }));
+                        unit.lastAttack = nextAttack;
+                        nextAttack += unit.attackCooldown;
+                    }
+                } while (nextAttack <= st.end && overlap);
             });
         });
     }
