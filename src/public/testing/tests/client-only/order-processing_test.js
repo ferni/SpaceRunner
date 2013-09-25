@@ -159,11 +159,11 @@ test('sh.fixEndOfTurnOverlap', function() {
 
 test('sh.getStandingPeriods', function() {
     'use strict';
-    var script, ship, periods;
+    var script, ship, periods, unit;
     ship = new sh.Ship({tmxName: 'test'});
     ship.addUnit(new sh.Unit(1, 1, {owner: {id: 1}})); //id 1
-
-    ok(ship.getUnitByID(1), 'unit is on the ship');
+    unit = ship.getUnitByID(1);
+    ok(unit, 'unit is on the ship');
 
     script = new sh.Script({actions: [
         new sh.actions.Move({
@@ -187,7 +187,7 @@ test('sh.getStandingPeriods', function() {
             start: 2200,
             end: 2800
         })], turnDuration: 3000});
-    periods = sh.forTesting.getStandingPeriods(script, 1);
+    periods = sh.forTesting.getStandingPeriods(script, unit);
     deepEqual(periods, [{start: 0, end: 1000, pos: {x: 1, y: 1}},
         {start: 2000, end: 2100, pos: {x: 2, y: 1}},
         {start: 2800, end: 3000, pos: {x: 3, y: 2}}],
@@ -316,6 +316,7 @@ test('sh.addAttackActions', function() {
     ship.addUnit(new sh.Unit(2, 2, {owner: {id: 1}})); //id 1
     ship.addUnit(new sh.Unit(2, 2, {owner: {id: 2}})); //id 2
     ship.addUnit(new sh.Unit(1, 1, {owner: {id: 2}})); //id 3
+    ship.addUnit(new sh.Unit(4, 7, {owner: {id: 1}})); //id 4 (won't move)
     u1 = ship.getUnitByID(1);
     u2 = ship.getUnitByID(2);
     u3 = ship.getUnitByID(3);

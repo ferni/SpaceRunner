@@ -384,21 +384,28 @@ if (typeof exports !== 'undefined') {
      * Gets an array of time periods (start, end, pos) for which
      * a unit is standing still.
      * @param {Script} script
-     * @param {int} unitID
+     * @param {sh.Unit} unit
      * @return {Array} Array of {start, end, pos}
      */
-    function getStandingPeriods(script, unitID) {
+    function getStandingPeriods(script, unit) {
         var periods = [],
             newPeriod,
             action,
             i;
-        if (script.byUnit[unitID].length > 0) {
+        if (!willUnitMove(unit.id, script, {withinTurn: true})) {
+            return [{
+                start: 0,
+                end: script.turnDuration,
+                pos: {x: unit.x, y: unit.y}
+            }];
+        }
+        if (script.byUnit[unit.id].length > 0) {
             newPeriod = {start: 0,
-                pos: script.byUnit[unitID][0].from};
+                pos: script.byUnit[unit.id][0].from};
         }
         //assumes the script is sorted
-        for (i = 0; i < script.byUnit[unitID].length; i++) {
-            action = script.byUnit[unitID][i];
+        for (i = 0; i < script.byUnit[unit.id].length; i++) {
+            action = script.byUnit[unit.id][i];
             if (action instanceof sh.actions.Move) {
                 newPeriod.end = action.start;
                 if (newPeriod.start < newPeriod.end) {//(it's not the same)
@@ -476,7 +483,7 @@ if (typeof exports !== 'undefined') {
         var allUnitsPositions = getUnitsPositions(script, ship);
         _.each(ship.units, function(unit) {
             //The units attack when standing
-            var standing = getStandingPeriods(script, unit.id),
+            var standing = getStandingPeriods(script, unit),
                 //time for which the next attack is due
                 nextAttack = unit.lastAttack ?
                         unit.lastAttack + unit.attackCooldown : 0;
@@ -560,6 +567,7 @@ if (typeof exports !== 'undefined') {
         script.sort();
         fixEndOfTurnOverlap(script, ship);
         script.sort();
+        addAttackActions(script, ship);
         return script;
     }
 
@@ -578,7 +586,9 @@ if (typeof exports !== 'undefined') {
                     unit = ship.getUnitByID(action.unitID);
                     unit.x = action.to.x;
                     unit.y = action.to.y;
-                }
+                } /*else if (action instanceof sh.actions.Attack) {
+
+                }*/
             }
         });
         ship.unitsMap.update();
