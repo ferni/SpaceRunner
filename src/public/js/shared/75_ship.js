@@ -141,13 +141,15 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     remove: function(item, updateBuildings) {
         'use strict';
+        var index;
         if (!item) {
             return;
         }
         if (updateBuildings === undefined) {
             updateBuildings = true; //updates by default
         }
-        this.built.remove(item);
+        index = _.indexOf(this.built, item);
+        this.built.splice(index, 1);
         if (updateBuildings) {
             this.buildingsChanged();
         }
@@ -160,6 +162,11 @@ sh.Ship = sh.SharedClass.extendShared({
             self.remove(this.built[i], false);
         }
         this.buildingsChanged();
+    },
+    removeUnit: function(unit) {
+        'use strict';
+        var index = _.indexOf(this.units, unit);
+        this.units.splice(index, 1);
     },
     //to call whenever buildings change
     buildingsChanged: function() {
