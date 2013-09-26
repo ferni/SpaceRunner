@@ -507,6 +507,10 @@ if (typeof exports !== 'undefined') {
     function addAttackActions(script, ship) {
         var allUnitsPositions = getUnitsPositions(script, ship);
         _.each(ship.units, function(unit) {
+            if (unit.lastAttack) {
+                //update lastAttack for the current turn
+                unit.lastAttack = script.turnDuration - unit.lastAttack;
+            }
             //The units attack when standing
             var standing = getStandingPeriods(script, unit),
                 //time for which the next attack is due
