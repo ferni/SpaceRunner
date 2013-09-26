@@ -57,8 +57,6 @@ test('Script.insertAction', function() {
     script.insertAction(actionForInsertion);
     equal(script.actions[0].unitID, 2);
     equal(script.actions[1], actionForInsertion);
-
-    //TODO: implement and test insertion into byUnit object
 });
 
 test('fix actions overlap', function() {
@@ -379,5 +377,41 @@ test('addAttackActions', function() {
     equal(attacks[7].start, 1800);
     equal(attacks[7].attackerID, 2);
     equal(attacks[7].receiverID, 1);
+});
+
+test('addAttackActions: units standing still', function() {
+    'use strict';
+    var script, ship, u1, u2, attacks, u1Attack, u2Attack;
+    ship = new sh.Ship({tmxName: 'test'});
+    ship.addUnit(new sh.Unit(2, 2, {owner: {id: 1}})); //id 1
+    ship.addUnit(new sh.Unit(2, 2, {owner: {id: 2}})); //id 2
+    u1 = ship.getUnitByID(1);
+    u2 = ship.getUnitByID(2);
+    ok(u1, 'unit 1 on ship');
+    ok(u2, 'unit 2 on ship');
+    //attack cooldown for the units is 500 ms (default)
+    script = new sh.Script({actions: [], turnDuration: 2000});
+    sh.forTesting.addAttackActions(script, ship);
+    attacks = _.filter(script.actions, function(action) {
+        return action instanceof sh.actions.Attack;
+    });
+    equal(attacks.length, 8);
+    u1Attack = attacks[0].attackerID === 1 ? attacks[0] : attacks[1];
+    u2Attack = attacks[0].attackerID === 2 ? attacks[0] : attacks[1];
+    equal(u1Attack.start, 0);
+    equal(u1Attack.attackerID, 1);
+    equal(u1Attack.receiverID, 2);
+    equal(u2Attack.start, 0);
+    equal(u2Attack.attackerID, 2);
+    equal(u2Attack.receiverID, 1);
+    u1Attack = attacks[2].attackerID === 1 ? attacks[2] : attacks[3];
+    u2Attack = attacks[2].attackerID === 2 ? attacks[2] : attacks[3];
+    equal(u1Attack.start, 500);
+    equal(u1Attack.attackerID, 1);
+    equal(u1Attack.receiverID, 2);
+    equal(u2Attack.start, 500);
+    equal(u2Attack.attackerID, 2);
+    equal(u2Attack.receiverID, 1);
+
 });
 
