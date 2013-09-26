@@ -30,10 +30,19 @@ var ScriptPlayer = function(battleScreen) {
         tween.start();
     }
 
+    function playAttackAction(action) {
+        console.log('Unit ' + action.attackerID + ' hit ' + action.receiverID +
+            ' with ' + action.damage + 'damage!');
+        //gs.ship.getUnitByID()
+    }
+
     function playAction(action) {
         switch (action.type) {
         case 'Move':
             playMoveAction(action);
+            break;
+        case 'Attack':
+            playAttackAction(action);
             break;
         }
     }
