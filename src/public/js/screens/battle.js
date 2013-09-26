@@ -249,7 +249,8 @@ screens.register('battle', ConnectedScreen.extend({
         _.each(this.scriptServer.byUnit, function(actions, unitID) {
             var unit = gs.ship.getUnitByID(unitID),
                 lastAction = _.last(actions);
-            if (utils.isMine(unit) &&
+            if (unit && //is alive
+                    utils.isMine(unit) &&
                     !self.scriptServer.isWithinTurn(lastAction)) {
                 self.giveMoveOrder([self.shipVM.getVM(unit)], lastAction.to);
             }

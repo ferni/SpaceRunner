@@ -339,7 +339,6 @@ if (typeof exports !== 'undefined') {
          */
         insertAction: function(action) {
             var insertionIndex = _.sortedIndex(this.actions, action, 'start');
-            //TODO: insert into byUnit also
             this.actions.splice(insertionIndex, 0, action);
         }
     });
@@ -498,7 +497,7 @@ if (typeof exports !== 'undefined') {
                     return;
                 }
                 function attackWithinPeriod(o) {
-                    return o.start <= nextAttack && o.end >= nextAttack;
+                    return o.start <= nextAttack && o.end > nextAttack;
                 }
                 function startsAfterAttack(o) {
                     return o.start >= nextAttack;
@@ -582,16 +581,25 @@ if (typeof exports !== 'undefined') {
      */
     function updateShipByScript(ship, script) {
         _.each(script.actions, function(action) {
-            var unit;
+            var unit, attacker, receiver;
             if (script.isWithinTurn(action)) {
-                //this assumes the action involves a unit
                 if (action instanceof sh.actions.Move) {
                     unit = ship.getUnitByID(action.unitID);
-                    unit.x = action.to.x;
-                    unit.y = action.to.y;
-                } /*else if (action instanceof sh.actions.Attack) {
-
-                }*/
+                    if (unit) { //is alive
+                        unit.y = action.to.y;
+                        unit.x = action.to.x;
+                    }
+                } else if (action instanceof sh.actions.Attack) {
+                    attacker = ship.getUnitByID(action.attackerID);
+                    receiver = ship.getUnitByID(action.receiverID);
+                    if (attacker && receiver) { //(both are alive)
+                        receiver.hp -= action.damage;
+                        if (receiver.hp <= 0) {
+                            //unit dies
+                            ship.removeUnit(receiver);
+                        }
+                    }
+                }
             }
         });
         ship.unitsMap.update();
