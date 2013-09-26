@@ -32,6 +32,10 @@ if (typeof exports !== 'undefined') {
                 start: this.start,
                 end: this.end
             };
+        },
+        applyChanges: function(ship) {
+            //(abstract)
+            return ship;
         }
     });
 
@@ -51,6 +55,13 @@ if (typeof exports !== 'undefined') {
             json.to = this.to;
             json.type = 'Move';
             return json;
+        },
+        applyChanges: function(ship) {
+            var unit = ship.getUnitByID(this.unitID);
+            if (unit) { //is alive
+                unit.y = this.to.y;
+                unit.x = this.to.x;
+            }
         }
     });
 
@@ -69,6 +80,17 @@ if (typeof exports !== 'undefined') {
             json.damage = this.damage;
             json.type = 'Attack';
             return json;
+        },
+        applyChanges: function(ship) {
+            var attacker = ship.getUnitByID(this.attackerID),
+                receiver = ship.getUnitByID(this.receiverID);
+            if (attacker && receiver) { //(both are alive)
+                receiver.hp -= this.damage;
+                if (receiver.hp <= 0) {
+                    //unit dies
+                    ship.removeUnit(receiver);
+                }
+            }
         }
     });
 
@@ -581,27 +603,11 @@ if (typeof exports !== 'undefined') {
      */
     function updateShipByScript(ship, script) {
         _.each(script.actions, function(action) {
-            var unit, attacker, receiver;
             if (script.isWithinTurn(action)) {
-                if (action instanceof sh.actions.Move) {
-                    unit = ship.getUnitByID(action.unitID);
-                    if (unit) { //is alive
-                        unit.y = action.to.y;
-                        unit.x = action.to.x;
-                    }
-                } else if (action instanceof sh.actions.Attack) {
-                    attacker = ship.getUnitByID(action.attackerID);
-                    receiver = ship.getUnitByID(action.receiverID);
-                    if (attacker && receiver) { //(both are alive)
-                        receiver.hp -= action.damage;
-                        if (receiver.hp <= 0) {
-                            //unit dies
-                            ship.removeUnit(receiver);
-                        }
-                    }
-                }
+                action.applyChanges(ship);
             }
         });
+        ship.itemsMap.update();
         ship.unitsMap.update();
     }
 
