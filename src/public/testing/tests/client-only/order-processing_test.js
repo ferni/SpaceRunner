@@ -79,7 +79,7 @@ test('fix actions overlap', function() {
 
 });
 
-test('sh.fixEndOfTurnOverlap', function() {
+test('fixEndOfTurnOverlap', function() {
     'use strict';
     var script, ship;
     ship = new sh.Ship({tmxName: 'test'});
@@ -157,7 +157,7 @@ test('sh.fixEndOfTurnOverlap', function() {
 
 });
 
-test('sh.getStandingPeriods', function() {
+test('getStandingPeriods', function() {
     'use strict';
     var script, ship, periods, unit;
     ship = new sh.Ship({tmxName: 'test'});
@@ -194,7 +194,7 @@ test('sh.getStandingPeriods', function() {
         'The standing time periods array is as expected');
 });
 
-test('sh.getPositions', function() {
+test('getPositionPeriodsForUnit', function() {
     'use strict';
     var script, ship, positions, unit;
     ship = new sh.Ship({tmxName: 'test'});
@@ -224,17 +224,17 @@ test('sh.getPositions', function() {
             start: 2200,
             end: 2800
         })], turnDuration: 3000});
-    positions = sh.forTesting.getPositionsForUnit(script, unit);
+    positions = sh.forTesting.getPositionPeriodsForUnit(script, unit);
     deepEqual(positions, [
-        {pos: {x: 1, y: 1}, time: 0},
-        {pos: {x: 2, y: 1}, time: 2000},
-        {pos: {x: 2, y: 2}, time: 2200},
-        {pos: {x: 3, y: 2}, time: 2800}
+        {pos: {x: 1, y: 1}, start: 0, end: 2000},
+        {pos: {x: 2, y: 1}, start: 2000, end: 2200},
+        {pos: {x: 2, y: 2}, start: 2200, end: 2800},
+        {pos: {x: 3, y: 2}, start: 2800, end: 3000}
     ],
         'The positions info array is as expected');
 });
 
-test('sh.getOverlaps', function() {
+test('getOverlaps', function() {
     'use strict';
     var script, ship, positions, unitsPositions, overlaps, u1, u2, u3;
     ship = new sh.Ship({tmxName: 'test'});
@@ -278,38 +278,37 @@ test('sh.getOverlaps', function() {
             start: 2100,
             end: 2200
         })], turnDuration: 3000});
-    positions = sh.forTesting.getPositionsForUnit(script, u2);
+    positions = sh.forTesting.getPositionPeriodsForUnit(script, u2);
     deepEqual(positions, [
-        {pos: {x: 1, y: 1}, time: 0},
-        {pos: {x: 2, y: 1}, time: 2000},
-        {pos: {x: 1, y: 1}, time: 2200}
+        {pos: {x: 1, y: 1}, start: 0, end: 2000},
+        {pos: {x: 2, y: 1}, start: 2000, end: 2200},
+        {pos: {x: 1, y: 1}, start: 2200, end: 3000}
     ], 'The positions info array for unit 2 is as expected');
 
-    positions = sh.forTesting.getPositionsForUnit(script, u3);
+    positions = sh.forTesting.getPositionPeriodsForUnit(script, u3);
     deepEqual(positions, [
-        {pos: {x: 2, y: 1}, time: 0},
-        {pos: {x: 1, y: 1}, time: 1800},
-        {pos: {x: 2, y: 1}, time: 4000}
+        {pos: {x: 2, y: 1}, start: 0, end: 1800},
+        {pos: {x: 1, y: 1}, start: 1800, end: 3000}
     ], 'The positions info array for unit 3 is as expected');
 
     unitsPositions = sh.forTesting.getUnitsPositions(script, ship);
-    overlaps = sh.forTesting.getOverlaps(script, unitsPositions, {x: 1, y: 1},
-        {start: 0, end: 3000}, u1);
+    overlaps = sh.forTesting.getOverlaps(u1, unitsPositions, {x: 1, y: 1},
+        {start: 0, end: 3000});
     deepEqual(overlaps, [
         {unitID: 2, start: 0, end: 2000},
         {unitID: 2, start: 2200, end: 3000},
         {unitID: 3, start: 1800, end: 3000}
     ], 'Get overlaps, with period encompassing the entire turn, correct.');
 
-    overlaps = sh.forTesting.getOverlaps(script, unitsPositions, {x: 1, y: 1},
-        {start: 1000, end: 2000}, u1);
+    overlaps = sh.forTesting.getOverlaps(u1, unitsPositions, {x: 1, y: 1},
+        {start: 1000, end: 2000});
     deepEqual(overlaps, [
         {unitID: 2, start: 1000, end: 2000},
         {unitID: 3, start: 1800, end: 2000}
     ], 'Get overlaps, with period 1000-2000, correct.');
 });
 
-test('sh.addAttackActions', function() {
+test('addAttackActions', function() {
     'use strict';
     var script, ship, u1, u2, u3, attacks, u1Attack, u2Attack, u3Attack;
     ship = new sh.Ship({tmxName: 'test'});

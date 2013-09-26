@@ -345,35 +345,43 @@ if (typeof exports !== 'undefined') {
     });
 
     /**
-     * Gets an array describing how the position of a unit changes.
+     * Gets an array describing how the position of a unit changes
+     * in time.
      * (Maybe it can be replaced with a more advanced version
      * describing every property change)
      * @param {Script} script
      * @param {sh.Unit} unit
-     * @return {Array} Array of {pos, time}.
+     * @return {Array} Array of {pos, start, end}.
      */
-    function getPositionsForUnit(script, unit) {
+    function getPositionPeriodsForUnit(script, unit) {
         var moveActions = _.filter(script.byUnit[unit.id], function(a) {
                 return a instanceof sh.actions.Move;
             }),
-            positions = [{
+            posPeriods = [{
                 pos: {x: unit.x, y: unit.y},
-                time: 0
-            }];
+                start: 0
+            }],
+            prev = posPeriods[0];
         _.each(moveActions, function(a) {
-            if (!_.isEqual(a.to, _.last(positions).pos)) {
-                positions.push({pos: {x: a.to.x, y: a.to.y},
-                    time: a.end});
+            if (script.isWithinTurn(a) &&
+                    !_.isEqual(a.to, _.last(posPeriods).pos)) {
+                prev.end = a.end;
+                posPeriods.push({
+                    pos: {x: a.to.x, y: a.to.y},
+                    start: a.end
+                });
+                prev = _.last(posPeriods);
             }
         });
-        return positions;
+        prev.end = script.turnDuration;
+        return posPeriods;
     }
 
     function getUnitsPositions(script, ship) {
         var unitsPositions = [];
         _.each(ship.units, function(unit) {
             unitsPositions.push({
-                positions: getPositionsForUnit(script, unit),
+                posPeriods: getPositionPeriodsForUnit(script, unit),
                 unit: unit
             });
         });
@@ -438,38 +446,34 @@ if (typeof exports !== 'undefined') {
     /**
      * Returns an array of {start, end, unitID} for which enemy
      * units cross the current one at the given time period.
-     * @param {Script} script
-     * @param {Array} unitsPositions
+     * @param {Array} unitsPosPeriods
      * @param {{x, y}} atPos
      * @param {{start, end}} atPeriod
-     * @param {sh.Unit} currentUnit
+     * @param {sh.Unit} unit
      * @return {Array}
      */
-    function getOverlaps(script, unitsPositions, atPos, atPeriod, currentUnit) {
+    function getOverlaps(unit, unitsPosPeriods, atPos, atPeriod) {
         var overlaps = [];
-        _.each(unitsPositions, function(unitPosObject) {
-            var positions = unitPosObject.positions,
-                otherUnit = unitPosObject.unit;
-            if (currentUnit === otherUnit ||
+        _.each(unitsPosPeriods, function(unitPosObject) {
+            var positionPeriods = unitPosObject.posPeriods,
+                enemy = unitPosObject.unit;
+            if (unit === enemy ||
                 //doesn't register overlap if they're allies
-                    currentUnit.owner.id === otherUnit.owner.id) {
+                    unit.owner.id === enemy.owner.id) {
                 return;
             }
-            _.each(positions, function(posAndTime, index) {
-                var otherPeriod, nextPos = positions[index + 1];
-                if (!_.isEqual(posAndTime.pos, atPos)) {
+            _.each(positionPeriods, function(enemyPosPeriod) {
+                if (!_.isEqual(enemyPosPeriod.pos, atPos)) {
                     //if it's not the same position, it's not overlapping.
                     return;
                 }
-                otherPeriod = {
-                    start: posAndTime.time,
-                    end: nextPos ? nextPos.time : script.turnDuration
-                };
-                if (periodsOverlap(otherPeriod, atPeriod)) {
+                //The enemy unit has gone through that position,
+                //now check that it was at the given time period.
+                if (periodsOverlap(enemyPosPeriod, atPeriod)) {
                     overlaps.push({
-                        start: _.max([otherPeriod.start, atPeriod.start]),
-                        end: _.min([otherPeriod.end, atPeriod.end]),
-                        unitID: otherUnit.id
+                        start: _.max([enemyPosPeriod.start, atPeriod.start]),
+                        end: _.min([enemyPosPeriod.end, atPeriod.end]),
+                        unitID: enemy.id
                     });
                 }
             });
@@ -488,8 +492,7 @@ if (typeof exports !== 'undefined') {
                 nextAttack = unit.lastAttack ?
                         unit.lastAttack + unit.attackCooldown : 0;
             _.each(standing, function(st) {
-                var overlaps = getOverlaps(script, allUnitsPositions,
-                    st.pos, st, unit),
+                var overlaps = getOverlaps(unit, allUnitsPositions, st.pos, st),
                     overlap;
                 if (overlaps.length === 0) {
                     return;
@@ -605,7 +608,7 @@ if (typeof exports !== 'undefined') {
     //Exported for testing
     sh.forTesting.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
     sh.forTesting.fixActionsOverlap = fixActionsOverlap;
-    sh.forTesting.getPositionsForUnit = getPositionsForUnit;
+    sh.forTesting.getPositionPeriodsForUnit = getPositionPeriodsForUnit;
     sh.forTesting.getUnitsPositions = getUnitsPositions;
     sh.forTesting.getStandingPeriods = getStandingPeriods;
     sh.forTesting.getOverlaps = getOverlaps;
