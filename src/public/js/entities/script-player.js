@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global gs, me, TILE_SIZE*/
+/*global gs, me, TILE_SIZE, ui*/
 
 /**
  * Manages and reproduces actions on the screen
@@ -31,9 +31,14 @@ var ScriptPlayer = function(battleScreen) {
     }
 
     function playAttackAction(action) {
+        var receiver = gs.ship.getUnitByID(action.receiverID),
+            receiverVM = battleScreen.shipVM.getVM(receiver),
+            starHit = new ui.StarHit(receiverVM);
+        me.game.add(starHit, 2000);
+        me.game.sort();
+
         console.log('Unit ' + action.attackerID + ' hit ' + action.receiverID +
             ' with ' + action.damage + 'damage!');
-        //gs.ship.getUnitByID()
     }
 
     function playAction(action) {

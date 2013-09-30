@@ -234,6 +234,10 @@ var g_resources = [{
     name: 'creatures_16x16',
     type: 'image',
     src: 'data/img/render/creatures_16x16.png'
+}, {
+    name: 'star_hit_white',
+    type: 'image',
+    src: 'data/img/render/star_hit_white.png'
 }];
 
 var prebuilt = {

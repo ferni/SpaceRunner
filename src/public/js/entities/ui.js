@@ -70,3 +70,25 @@ ui.DragBox = me.Rect.extend({
         }
     }
 });
+
+/**
+ * A little star that shows up when a melee hit occurs.
+ * @type {*}
+ */
+ui.StarHit = me.ObjectEntity.extend({
+    init: function(unitVM) {
+        'use strict';
+        this.parent(unitVM.pos.x, unitVM.pos.y,
+            {image: 'star_hit_white', spritewidth: 16, spriteheight: 16});
+        this.fadeCountdown = 30;
+    },
+    update: function() {
+        'use strict';
+        this.parent();
+        this.alpha -= 0.03;
+        this.fadeCountdown--;
+        if (this.fadeCountdown === 0) {
+            me.game.remove(this);
+        }
+    }
+});
