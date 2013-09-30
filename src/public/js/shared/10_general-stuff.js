@@ -48,18 +48,10 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    sh.Player = sh.SharedClass.extendShared({
-        init: function(settings) {
+    sh.Player = sh.Jsonable.extendShared({
+        init: function(json) {
+            this.set(['id', 'name'], json);
             this.type = 'Player';
-            this.id = settings.id;
-            this.name = settings.name;
-        },
-        toJson: function() {
-            return {
-                type: this.type,
-                id: this.id,
-                name: this.name
-            };
         }
     });
 
