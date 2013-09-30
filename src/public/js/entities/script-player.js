@@ -26,15 +26,27 @@ var ScriptPlayer = function(battleScreen) {
         tween = new me.Tween(unitVM.pos)
             .to({x: (action.to.x - unitVM.cannonTile[0]) * TILE_SIZE,
                 y: (action.to.y - unitVM.cannonTile[1]) * TILE_SIZE},
-                duration);
+                duration)
+            .onComplete(function() {
+                action.applyChanges(gs.ship);
+            });
         tween.start();
     }
 
     function playAttackAction(action) {
-        var receiver = gs.ship.getUnitByID(action.receiverID),
-            receiverVM = battleScreen.shipVM.getVM(receiver),
-            starHit = new ui.StarHit(receiverVM);
+        var receiver, receiverVM, attacker, starHit;
+        receiver = gs.ship.getUnitByID(action.receiverID);
+        attacker = gs.ship.getUnitByID(action.attackerID);
+        if (!receiver || !attacker) {//any of the two is dead
+            return;
+        }
+        receiverVM = battleScreen.shipVM.getVM(receiver);
+        starHit = new ui.StarHit(receiverVM);
         me.game.add(starHit, 2000);
+        action.applyChanges(gs.ship);
+        /*if (receiver.hp <= 0) {
+            receiverVM.angle = Math.PI / 2;
+        }*/
         me.game.sort();
 
         console.log('Unit ' + action.attackerID + ' hit ' + action.receiverID +
