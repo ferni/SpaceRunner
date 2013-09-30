@@ -22,6 +22,32 @@ if (typeof exports !== 'undefined') {
     //SHARED ENTITIES
     sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
+    sh.Jsonable = sh.SharedClass.extendShared({
+        _properties: [],
+        /**
+         * Sets the properties found in the json param to the object.
+         * This properties are later used by toJson to return the json form
+         * of the object.
+         * @param {Array} properties An array of properties to be set and
+         * returned in toJson.
+         * @param {Object} json The json object.
+         */
+        set: function(properties, json) {
+            this._properties = this._properties.concat(properties);
+            _.each(properties, function(p) {
+                this[p] = json[p];
+            }, this);
+        },
+        toJson: function() {
+            var json = {};
+            _.each(this._properties, function(p) {
+                json[p] = this[p];
+            }, this);
+            json.type = this.type;
+            return json;
+        }
+    });
+
     sh.Player = sh.SharedClass.extendShared({
         init: function(settings) {
             this.type = 'Player';

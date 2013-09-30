@@ -20,18 +20,11 @@ if (typeof exports !== 'undefined') {
     'use strict';
     var Script, Action, pfFinder;
 
-    Action = sh.SharedClass.extendShared({
+    Action = sh.Jsonable.extendShared({
         start: 0,//ms
         end: 0,//ms
         init: function(json) {
-            this.start = json.start;
-            this.end = json.end;
-        },
-        toJson: function() {
-            return {
-                start: this.start,
-                end: this.end
-            };
+            this.set(['start', 'end'], json);
         },
         applyChanges: function(ship) {
             //(abstract)
@@ -43,18 +36,8 @@ if (typeof exports !== 'undefined') {
     sh.actions.Move = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.unitID = json.unitID;
-            this.from = json.from;
-            this.to = json.to;
+            this.set(['unitID', 'from', 'to'], json);
             this.type = 'Move';
-        },
-        toJson: function() {
-            var json = this.parent();
-            json.unitID = this.unitID;
-            json.from = this.from;
-            json.to = this.to;
-            json.type = 'Move';
-            return json;
         },
         applyChanges: function(ship) {
             var unit = ship.getUnitByID(this.unitID);
@@ -68,18 +51,8 @@ if (typeof exports !== 'undefined') {
     sh.actions.Attack = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.attackerID = json.attackerID;
-            this.receiverID = json.receiverID;
-            this.damage = json.damage;
+            this.set(['attackerID', 'receiverID', 'damage'], json);
             this.type = 'Attack';
-        },
-        toJson: function() {
-            var json = this.parent();
-            json.attackerID = this.attackerID;
-            json.receiverID = this.receiverID;
-            json.damage = this.damage;
-            json.type = 'Attack';
-            return json;
         },
         applyChanges: function(ship) {
             var attacker = ship.getUnitByID(this.attackerID),
