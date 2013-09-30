@@ -261,7 +261,7 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        //sh.updateShipByScript(gs.ship, this.scriptServer);
+        sh.updateShipByScript(gs.ship, this.scriptServer);
         this.updateUnitsImageOffset();
         this.shipVM.update();
 
