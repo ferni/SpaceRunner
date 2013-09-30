@@ -8,7 +8,12 @@
 /*global TileEntityVM, me*/
 
 /* The red overlay */
-var RedColorEntity = TileEntityVM.extend({
+var ui = {};
+/**
+ * A transparent red overlay.
+ * @type {*}
+ */
+ui.RedColorEntity = TileEntityVM.extend({
     init: function(x, y) {
         'use strict';
         this.size = [1, 1];
@@ -20,7 +25,11 @@ var RedColorEntity = TileEntityVM.extend({
     }
 });
 
-var DragBox = me.Rect.extend({
+/**
+ * A drag-box to select units.
+ * @type {*}
+ */
+ui.DragBox = me.Rect.extend({
     /**
      *
      * @param {me.Vector2d} pivot The pivot position.

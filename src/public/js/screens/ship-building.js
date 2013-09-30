@@ -8,7 +8,7 @@
 
 /*global GameScreen, screens, ShipVM, sh, server, make,
 $, Ship, me, utils, jsApp, width, height,
-items, RedColorEntity, hullMap, _*/
+items, ui, hullMap, _*/
 
 /* Screen where one builds the ship */
 screens.register('ship-building', GameScreen.extend({
@@ -333,7 +333,7 @@ screens.register('ship-building', GameScreen.extend({
     redIndex: 0,
     printRed: function(x, y) {
         'use strict';
-        this.redScreen[this.redIndex] = new RedColorEntity(x, y, {});
+        this.redScreen[this.redIndex] = new ui.RedColorEntity(x, y, {});
         me.game.add(this.redScreen[this.redIndex],
             this.redScreen[this.redIndex].zIndex + 1000);
         this.redIndex++;

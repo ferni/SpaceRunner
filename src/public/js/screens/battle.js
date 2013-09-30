@@ -6,7 +6,7 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, DragBox, make, TILE_SIZE*/
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE*/
 
 screens.register('battle', ConnectedScreen.extend({
     TURN_DURATION: 3000,
@@ -326,7 +326,7 @@ screens.register('battle', ConnectedScreen.extend({
     },
     startDragBox: function(pos) {
         'use strict';
-        this.dragBox = new DragBox(pos);
+        this.dragBox = new ui.DragBox(pos);
     },
     releaseDragBox: function() {
         'use strict';
