@@ -32,6 +32,7 @@ if (typeof exports === 'undefined') {
          */
         window.require = function(file) {
             var prevFile = sh.onClient.files[sh.onClient.files.length - 1];
+            file = file.replace(/\./gi, '');
             if (sh.onClient.files.length > 0 && prevFile >= file) {
                 console.error('The shared files are not loaded' +
                     ' in alphabetical order.');
