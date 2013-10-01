@@ -29,5 +29,14 @@ var draw = {
             (position.y * TILE_SIZE) + HALF_TILE,
             size, 0, Math.PI * 2, false);
         ctx.fill();
+    },
+    line: function(ctx, from, to, color, thickness) {
+        'use strict';
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = thickness;
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
     }
 };
