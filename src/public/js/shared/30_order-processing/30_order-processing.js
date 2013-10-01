@@ -18,13 +18,20 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    var Script, Action, pfFinder;
+    var Script, Action, pfFinder, ModelChange;
+
+    ModelChange = function(time, entityType, entityID, props) {
+        this.time = time;
+        this.entityType = entityType;
+        this.entityID = entityID;
+        this.props = props;
+    };
 
     Action = sh.Jsonable.extendShared({
-        start: 0,//ms
-        end: 0,//ms
+        time: 0,//ms
+        modelChanges: [],
         init: function(json) {
-            this.set(['start', 'end'], json);
+            this.set(['time'], json);
         },
         applyChanges: function(ship) {
             //(abstract)
@@ -33,11 +40,20 @@ if (typeof exports !== 'undefined') {
     });
 
     sh.actions = {};
+    /**
+     * The unit starts walking.
+     * @type {*}
+     */
     sh.actions.Move = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['unitID', 'from', 'to'], json);
+            this.set(['unitID', 'from', 'to', 'duration'], json);
             this.type = 'Move';
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            this.modelChanges = [new ModelChange(this.time + this.duration,
+                'Unit', this.unitID, {x: this.to.x, y: this.to.y})];
         },
         applyChanges: function(ship) {
             var unit = ship.getUnitByID(this.unitID);
@@ -53,6 +69,11 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.set(['attackerID', 'receiverID', 'damage'], json);
             this.type = 'Attack';
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            this.modelChanges = [new ModelChange(this.time,
+                'Unit', this.receiverID, {hp: '-' + this.damage})];
         },
         applyChanges: function(ship) {
             var attacker = ship.getUnitByID(this.attackerID),
@@ -134,7 +155,7 @@ if (typeof exports !== 'undefined') {
                     x: path[i][0],
                     y: path[i][1]
                 },
-                start: time
+                time: time
             });
             tileDistance = getTileDistance(action.from, action.to);
             if (isDiagonal(action.from, action.to)) {
@@ -142,7 +163,8 @@ if (typeof exports !== 'undefined') {
             } else {
                 step = tileDistance * oneTileTime;
             }
-            action.end = action.start + step;
+            action.duration = step;
+            action.updateModelChanges();
             actions.push(action);
         }
         return actions;
@@ -182,10 +204,11 @@ if (typeof exports !== 'undefined') {
     function fixActionsOverlap(actions) {
         var i, diff;
         for (i = 0; i < actions.length - 1; i++) {
-            if (actions[i + 1].start < actions[i].end) {
-                diff = actions[i].end - actions[i + 1].start;
-                actions[i + 1].start += diff;
-                actions[i + 1].end += diff;
+            if (actions[i + 1].time < actions[i].time + actions[i].duration) {
+                diff = (actions[i].time + actions[i].duration) -
+                    actions[i + 1].time;
+                actions[i + 1].time += diff;
+                actions[i + 1].updateModelChanges();
             }
         }
     }
@@ -195,7 +218,7 @@ if (typeof exports !== 'undefined') {
             var unit = ship.getUnitByID(unitID),
                 changed = false;
             _.each(actions, function(action) {
-                var others, duration;
+                var others;
                 if (action instanceof sh.actions.Move) {
                     others = ship.unitsMap.at(action.from.x, action.from.y);
                     others = _.without(others, unit);
@@ -209,9 +232,8 @@ if (typeof exports !== 'undefined') {
                                 {withinTurn: false})) {
 
                         //apply %25 speed
-                        duration = action.end - action.start;
-                        duration *= 4;
-                        action.end = action.start + duration;
+                        action.duration *= 4;
+                        action.updateModelChanges();
                         changed = true;
                     }
                 }
@@ -225,8 +247,8 @@ if (typeof exports !== 'undefined') {
     function insertDelay(actions, index, delay) {
         var i;
         for (i = index; i < actions.length; i++) {
-            actions[i].start += delay;
-            actions[i].end += delay;
+            actions[i].time += delay;
+            actions[i].updateModelChanges();
         }
     }
 
@@ -252,7 +274,7 @@ if (typeof exports !== 'undefined') {
 
         insertDelay(actions,
             actions.indexOf(lastMoveAction),
-            script.turnDuration - lastMoveAction.start);
+            script.turnDuration - lastMoveAction.time);
     }
 
     function fixEndOfTurnOverlap(script, ship) {
@@ -322,10 +344,13 @@ if (typeof exports !== 'undefined') {
             };
         },
         isWithinTurn: function(action) {
-            return action.end <= this.turnDuration;
+            if (action instanceof sh.actions.Move) {
+                return action.time + action.duration <= this.turnDuration;
+            }
+            return action.time < this.turnDuration;
         },
         sort: function() {
-            this.actions = _.sortBy(this.actions, 'start');
+            this.actions = _.sortBy(this.actions, 'time');
             this.byUnit = getActionsByUnit(this.actions);
         },
         /**
@@ -333,7 +358,7 @@ if (typeof exports !== 'undefined') {
          * @param {Action} action The action to be inserted.
          */
         insertAction: function(action) {
-            var insertionIndex = _.sortedIndex(this.actions, action, 'start');
+            var insertionIndex = _.sortedIndex(this.actions, action, 'time');
             this.actions.splice(insertionIndex, 0, action);
         }
     });
@@ -359,10 +384,10 @@ if (typeof exports !== 'undefined') {
         _.each(moveActions, function(a) {
             if (script.isWithinTurn(a) &&
                     !_.isEqual(a.to, _.last(posPeriods).pos)) {
-                prev.end = a.end;
+                prev.end = a.time + a.duration;
                 posPeriods.push({
                     pos: {x: a.to.x, y: a.to.y},
-                    start: a.end
+                    start: a.time + a.duration
                 });
                 prev = _.last(posPeriods);
             }
@@ -409,11 +434,11 @@ if (typeof exports !== 'undefined') {
         for (i = 0; i < script.byUnit[unit.id].length; i++) {
             action = script.byUnit[unit.id][i];
             if (action instanceof sh.actions.Move) {
-                newPeriod.end = action.start;
+                newPeriod.end = action.time;
                 if (newPeriod.start < newPeriod.end) {//(it's not the same)
                     periods.push(newPeriod);
                 }
-                newPeriod = {start: action.end,
+                newPeriod = {start: action.time + action.duration,
                     pos: action.to};
             }
         }
@@ -490,8 +515,12 @@ if (typeof exports !== 'undefined') {
                 nextAttack = unit.lastAttack ?
                         unit.lastAttack + unit.attackCooldown : 0;
             _.each(standing, function(st) {
-                var overlaps = getOverlaps(unit, allUnitsPositions, st.pos, st),
-                    overlap;
+                var overlaps, overlap;
+                try {
+                    overlaps = getOverlaps(unit, allUnitsPositions, st.pos, st);
+                } catch (e) {
+                    console.log(e);
+                }
                 if (overlaps.length === 0) {
                     return;
                 }
@@ -523,8 +552,7 @@ if (typeof exports !== 'undefined') {
                         //add attack
                         //noinspection JSValidateTypes
                         script.insertAction(new sh.actions.Attack({
-                            start: nextAttack,
-                            end: nextAttack,
+                            time: nextAttack,
                             attackerID: unit.id,
                             receiverID: overlap.unitID,
                             damage: unit.meleeDamage

@@ -18,8 +18,8 @@ test('script creation', function() {
     ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
     script = sh.createScript([order], ship);
     equal(script.actions.length, 2, 'Script has two actions');
-    equal(script.actions[0].start, 0, 'First action starts at 0');
-    equal(script.actions[1].start, 1000, 'Second action starts at 1000');
+    equal(script.actions[0].time, 0, 'First action starts at 0');
+    equal(script.actions[1].time, 1000, 'Second action starts at 1000');
 });
 
 test('Script.insertAction', function() {
@@ -27,29 +27,29 @@ test('Script.insertAction', function() {
     var script = new sh.Script({actions: [
         new sh.actions.Move({
             unitID: 1,
-            start: 800,
-            end: 1500,
+            time: 800,
+            duration: 700,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1}
         }),
         new sh.actions.Move({
             unitID: 2,
-            start: 200,
-            end: 1000,
+            time: 200,
+            duration: 800,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1}
         }),
         new sh.actions.Attack({
-            start: 500,
-            end: 600,
+            time: 500,
+            duration: 100,
             attackerID: 1,
             receiverID: 2,
             damage: 50
         })
     ], turnDuration: 5000}),
         actionForInsertion = new sh.actions.Attack({
-            start: 300,
-            end: 1500,
+            time: 300,
+            duration: 1200,
             attackerID: 2,
             receiverID: 1,
             damage: 70
@@ -62,18 +62,18 @@ test('Script.insertAction', function() {
 test('fix actions overlap', function() {
     'use strict';
     var actions = [
-        {start: 0, end: 10},
-        {start: 7, end: 17},
-        {start: 5, end: 15}
+        new sh.actions.Move({from: {x: 0, y: 0}, to: {x: 0, y: 0},
+            time: 0, duration: 10}),
+        new sh.actions.Move({from: {x: 0, y: 0}, to: {x: 0, y: 0},
+            time: 7, duration: 10}),
+        new sh.actions.Move({from: {x: 0, y: 0}, to: {x: 0, y: 0},
+            time: 5, duration: 10})
     ];
 
     sh.forTesting.fixActionsOverlap(actions);
-    equal(actions[0].start, 0);
-    equal(actions[0].end, 10);
-    equal(actions[1].start, 10);
-    equal(actions[1].end, 20);
-    equal(actions[2].start, 20);
-    equal(actions[2].end, 30);
+    equal(actions[0].time, 0);
+    equal(actions[1].time, 10);
+    equal(actions[2].time, 20);
 
 });
 
@@ -95,63 +95,67 @@ test('fixEndOfTurnOverlap', function() {
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         })], turnDuration: 3000});
 
+    equal(script.actions[0].modelChanges[0].time, 2000,
+        'before fix #1: change time correct');
     sh.forTesting.fixEndOfTurnOverlap(script, ship);
-    equal(script.actions[0].start, 3000);
-    equal(script.actions[0].end, 4000);
+    equal(script.actions[0].time, 3000,
+        'fix #1: time correct');
+    equal(script.actions[0].modelChanges[0].time, 4000,
+        'fix #1: change time correct');
 
     script = new sh.Script({actions: [
         new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         }),
         new sh.actions.Move({
             unitID: 2,
             from: {x: 2, y: 1},
             to: {x: 1, y: 1},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         })
     ], turnDuration: 3000});
 
     sh.forTesting.fixEndOfTurnOverlap(script, ship);
     //actions shouldn't change here
-    equal(script.actions[0].start, 1000);
-    equal(script.actions[0].end, 2000);
-    equal(script.actions[1].start, 1000);
-    equal(script.actions[1].end, 2000);
+    equal(script.actions[0].time, 1000);
+    equal(script.actions[0].modelChanges[0].time, 2000);
+    equal(script.actions[1].time, 1000);
+    equal(script.actions[1].modelChanges[0].time, 2000);
     script = new sh.Script({actions: [
         new sh.actions.Move({
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 2},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         }),
         new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 3, y: 1},
-            start: 2000,
-            end: 3000
+            time: 2000,
+            duration: 1000
         }),
         new sh.actions.Move({
             unitID: 2,
             from: {x: 2, y: 1},
             to: {x: 2, y: 2},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         })], turnDuration: 3000
         });
     sh.forTesting.fixEndOfTurnOverlap(script, ship);
-    ok(script.actions[0].start === 3000 ||
-        script.actions[2].start === 3000);
+    ok(script.actions[0].time === 3000 ||
+        script.actions[2].time === 3000);
 
 });
 
@@ -168,22 +172,22 @@ test('getStandingPeriods', function() {
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         }),
         new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 1},
             to: {x: 2, y: 2},
-            start: 2100,
-            end: 2200
+            time: 2100,
+            duration: 100
         }),
         new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 3, y: 2},
-            start: 2200,
-            end: 2800
+            time: 2200,
+            duration: 600
         })], turnDuration: 3000});
     periods = sh.forTesting.getStandingPeriods(script, unit);
     deepEqual(periods, [{start: 0, end: 1000, pos: {x: 1, y: 1}},
@@ -205,22 +209,22 @@ test('getPositionPeriodsForUnit', function() {
             unitID: 1,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         }),
         new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 1},
             to: {x: 2, y: 2},
-            start: 2100,
-            end: 2200
+            time: 2100,
+            duration: 100
         }),
         new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 3, y: 2},
-            start: 2200,
-            end: 2800
+            time: 2200,
+            duration: 600
         })], turnDuration: 3000});
     positions = sh.forTesting.getPositionPeriodsForUnit(script, unit);
     deepEqual(positions, [
@@ -252,29 +256,29 @@ test('getOverlaps', function() {
             unitID: 3,
             from: {x: 2, y: 1},
             to: {x: 1, y: 1},
-            start: 1500,
-            end: 1800
+            time: 1500,
+            duration: 300
         }),
         new sh.actions.Move({
             unitID: 3,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
-            start: 2800,
-            end: 4000
+            time: 2800,
+            duration: 1200
         }),
         new sh.actions.Move({
             unitID: 2,
             from: {x: 1, y: 1},
             to: {x: 2, y: 1},
-            start: 1000,
-            end: 2000
+            time: 1000,
+            duration: 1000
         }),
         new sh.actions.Move({
             unitID: 2,
             from: {x: 2, y: 1},
             to: {x: 1, y: 1},
-            start: 2100,
-            end: 2200
+            time: 2100,
+            duration: 100
         })], turnDuration: 3000});
     positions = sh.forTesting.getPositionPeriodsForUnit(script, u2);
     deepEqual(positions, [
@@ -326,22 +330,22 @@ test('addAttackActions', function() {
             unitID: 2,
             from: {x: 2, y: 2},
             to: {x: 1, y: 1},
-            start: 200,     //u1 attacks, u2 attacks (they share the 2,2 tile)
-            end: 750        //u1 attacks again (u2 doesn't because it's moving)
+            time: 200,     //u1 attacks, u2 attacks (they share the 2,2 tile)
+            duration: 550  //u1 attacks again (u2 doesn't because it's moving)
         }),
         new sh.actions.Move({
             unitID: 3,
             from: {x: 1, y: 1},
             to: {x: 2, y: 2},
-            start: 1000,
-            end: 1200 //u1 attacks at 1200, u3 also
+            time: 1000,
+            duration: 200 //u1 attacks at 1200, u3 also
         }),
         new sh.actions.Move({
             unitID: 1,
             from: {x: 2, y: 2},
             to: {x: 1, y: 1},
-            start: 1250,
-            end: 1300       //u2 attacks at 1300 and 1800, u1 at 1700
+            time: 1250,
+            duration: 50       //u2 attacks at 1300 and 1800, u1 at 1700
         })], turnDuration: 2000});
     sh.forTesting.addAttackActions(script, ship);
     attacks = _.filter(script.actions, function(action) {
@@ -350,31 +354,31 @@ test('addAttackActions', function() {
     equal(attacks.length, 8);
     u1Attack = attacks[0].attackerID === 1 ? attacks[0] : attacks[1];
     u2Attack = attacks[0].attackerID === 2 ? attacks[0] : attacks[1];
-    equal(u1Attack.start, 0);
+    equal(u1Attack.time, 0);
     equal(u1Attack.attackerID, 1);
     equal(u1Attack.receiverID, 2);
-    equal(u2Attack.start, 0);
+    equal(u2Attack.time, 0);
     equal(u2Attack.attackerID, 2);
     equal(u2Attack.receiverID, 1);
-    equal(attacks[2].start, 500);
+    equal(attacks[2].time, 500);
     equal(attacks[2].attackerID, 1);
     equal(attacks[2].receiverID, 2);
 
     u1Attack = attacks[3].attackerID === 1 ? attacks[3] : attacks[4];
     u3Attack = attacks[3].attackerID === 3 ? attacks[3] : attacks[4];
-    equal(u1Attack.start, 1200);
+    equal(u1Attack.time, 1200);
     equal(u1Attack.attackerID, 1);
     equal(u1Attack.receiverID, 3);
-    equal(u3Attack.start, 1200);
+    equal(u3Attack.time, 1200);
     equal(u3Attack.attackerID, 3);
     equal(u3Attack.receiverID, 1);
-    equal(attacks[5].start, 1300);
+    equal(attacks[5].time, 1300);
     equal(attacks[5].attackerID, 2);
     equal(attacks[5].receiverID, 1);
-    equal(attacks[6].start, 1700);
+    equal(attacks[6].time, 1700);
     equal(attacks[6].attackerID, 1);
     equal(attacks[6].receiverID, 2);
-    equal(attacks[7].start, 1800);
+    equal(attacks[7].time, 1800);
     equal(attacks[7].attackerID, 2);
     equal(attacks[7].receiverID, 1);
 });
@@ -398,18 +402,18 @@ test('addAttackActions: units standing still', function() {
     equal(attacks.length, 8);
     u1Attack = attacks[0].attackerID === 1 ? attacks[0] : attacks[1];
     u2Attack = attacks[0].attackerID === 2 ? attacks[0] : attacks[1];
-    equal(u1Attack.start, 0);
+    equal(u1Attack.time, 0);
     equal(u1Attack.attackerID, 1);
     equal(u1Attack.receiverID, 2);
-    equal(u2Attack.start, 0);
+    equal(u2Attack.time, 0);
     equal(u2Attack.attackerID, 2);
     equal(u2Attack.receiverID, 1);
     u1Attack = attacks[2].attackerID === 1 ? attacks[2] : attacks[3];
     u2Attack = attacks[2].attackerID === 2 ? attacks[2] : attacks[3];
-    equal(u1Attack.start, 500);
+    equal(u1Attack.time, 500);
     equal(u1Attack.attackerID, 1);
     equal(u1Attack.receiverID, 2);
-    equal(u2Attack.start, 500);
+    equal(u2Attack.time, 500);
     equal(u2Attack.attackerID, 2);
     equal(u2Attack.receiverID, 1);
 

@@ -20,7 +20,7 @@ var ScriptPlayer = function(battleScreen) {
         var duration, tween,
             unit = gs.ship.getUnitByID(action.unitID),
             unitVM = battleScreen.shipVM.getVM(unit);
-        duration = action.end - action.start;
+        duration = action.duration;
         unitVM.pos.x = (action.from.x - unitVM.cannonTile[0]) * TILE_SIZE;
         unitVM.pos.y = (action.from.y - unitVM.cannonTile[1]) * TILE_SIZE;
         tween = new me.Tween(unitVM.pos)
@@ -60,7 +60,7 @@ var ScriptPlayer = function(battleScreen) {
 
     this.update = function(elapsed) {
         var actions = script.actions;
-        if (next < actions.length && elapsed >= actions[next].start) {
+        if (next < actions.length && elapsed >= actions[next].time) {
             if (script.isWithinTurn(actions[next])) {
                 playAction(actions[next]);
             }
