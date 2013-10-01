@@ -238,6 +238,10 @@ var g_resources = [{
     name: 'star_hit_white',
     type: 'image',
     src: 'data/img/render/star_hit_white.png'
+}, {
+    name: 'nothing',
+    type: 'image',
+    src: 'data/img/render/nothing.png'
 }];
 
 var prebuilt = {

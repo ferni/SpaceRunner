@@ -32,13 +32,14 @@ var ScriptPlayer = function(battleScreen) {
 
     function playAttackAction(action) {
         var receiver = gs.ship.getUnitByID(action.receiverID),
-            receiverVM = battleScreen.shipVM.getVM(receiver),
-            starHit = new ui.StarHit(receiverVM);
-        me.game.add(starHit, 2000);
+            receiverVM = battleScreen.shipVM.getVM(receiver);
+        me.game.add(new ui.StarHit(receiverVM), 2000);
+        me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
+            2000);
         me.game.sort();
 
         console.log('Unit ' + action.attackerID + ' hit ' + action.receiverID +
-            ' with ' + action.damage + 'damage!');
+            ' with ' + action.damage + ' damage!');
     }
 
     function playAction(action) {
