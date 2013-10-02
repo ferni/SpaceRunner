@@ -77,9 +77,12 @@ var Unit = TileEntityVM.extend({
     },
     drawHealthBar: function(ctx) {
         'use strict';
-        if (this.prevHP !== this.m.hp) {
+        if (this.hp === undefined) {
+            this.hp = this.m.hp;
+        }
+        if (this.prevHP !== this.hp) {
             //recalculate health bar size
-            this.healthBarSize = (16 * this.m.hp) / this.m.maxHP;
+            this.healthBarSize = (16 * this.hp) / this.m.maxHP;
         }
         draw.line(ctx, {x: this.pos.x, y: this.pos.y + 17},
             {x: this.pos.x + this.healthBarSize, y: this.pos.y + 17},
@@ -87,7 +90,7 @@ var Unit = TileEntityVM.extend({
         draw.line(ctx, {x: this.pos.x + this.healthBarSize, y: this.pos.y + 17},
             {x: this.pos.x + 16, y: this.pos.y + 17},
             'whitesmoke', 3);
-        this.prevHP = this.m.hp;
+        this.prevHP = this.hp;
     },
     draw: function(ctx) {
         'use strict';

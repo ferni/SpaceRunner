@@ -32,7 +32,25 @@ var ScriptPlayer = function(battleScreen) {
 
     function playAttackAction(action) {
         var receiver = gs.ship.getUnitByID(action.receiverID),
-            receiverVM = battleScreen.shipVM.getVM(receiver);
+            receiverVM = battleScreen.shipVM.getVM(receiver),
+            attacker = gs.ship.getUnitByID(action.attackerID),
+            attackerVM = battleScreen.shipVM.getVM(attacker);
+
+        //temporary hack until the script generation is improved
+        //for processing deaths.
+        if (attackerVM.isDead || receiverVM.isDead) {
+            return;
+        }
+        if (receiverVM.hp === undefined) {
+            receiverVM.hp = receiver.maxHP;
+        }
+        receiverVM.hp -= action.damage;
+        if (receiverVM.hp <= 0) {
+            receiverVM.isDead = true;
+            receiverVM.alpha = 0;
+        }
+        //end of temporary hack
+
         me.game.add(new ui.StarHit(receiverVM), 2000);
         me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
             2000);
