@@ -111,7 +111,8 @@ if (typeof exports !== 'undefined') {
 
     //SCRIPT GENERATION
     pfFinder = new sh.PF.AStarFinder({
-        allowDiagonal: true
+        allowDiagonal: true,
+        dontCrossCorners: true
     });
 
     function getTileDistance(from, to) {
