@@ -156,18 +156,20 @@ exports.ChallengeBatte = exports.Battle.extend({
             '{"type":"weak_spot","x":15,"y":16,"r":false},' +
             '{"type":"weak_spot","x":19,"y":11,"r":false},' +
             '{"type":"door","x":18,"y":11,"r":true}],' +
-            '"units":[]}'});
-        ship.putUnit({owner: params.player, speed: 2});
-        ship.putUnit({owner: params.player, speed: 2});
-        ship.putUnit({owner: params.player, speed: 2});
+            '"units":[]}'}),
+            Zealot = sh.units.Zealot,
+            Critter = sh.units.Critter;
+        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
+        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
+        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         this.parent({id: params.id, ship: ship});
         this.playerLeft = params.player;
         this.playerRight = new exports.AIPlayer('Enemy');
-        ship.putUnit({owner: this.playerRight, type: 5});
-        ship.putUnit({owner: this.playerRight, type: 5});
-        ship.putUnit({owner: this.playerRight, type: 5});
-        ship.putUnit({owner: this.playerRight, type: 5});
-        ship.putUnit({owner: this.playerRight, type: 5});
+        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
+        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
+        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
+        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
+        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
     },
     nextTurn: function() {
         'use strict';
