@@ -4,7 +4,8 @@ IMPORTANT
 
 1) The client should reference the scripts in alphabetical order (index.js last).
 2) Each file except 00_init.js must start with the following code,
-    were previous-file-name is the alphabetically previous file name:
+    were previous-file-name is the alphabetically previous file name
+    (without the .js extension):
 
 /*global require, exports, module*/
 var sh = require('./previous-file-name'), _ = sh._;

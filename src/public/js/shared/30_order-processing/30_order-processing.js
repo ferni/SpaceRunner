@@ -623,7 +623,7 @@ if (typeof exports !== 'undefined') {
     sh.Script = Script;
     sh.createScript = createScript;
     sh.updateShipByScript = updateShipByScript;
-    //also: sh.actions
+    //also: sh.actions (defined at the top)
 
     //Exported for testing
     sh.forTesting.fixEndOfTurnOverlap = fixEndOfTurnOverlap;
