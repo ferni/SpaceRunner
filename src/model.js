@@ -55,19 +55,21 @@ function BattleTurn(params) {
  * @param {{id,ship}} parameters
  * @constructor
  */
-exports.Battle = function(parameters) {
-    'use strict';
-    this.id = parameters.id;
-    this.ship = parameters.ship;
+exports.Battle = Class.extend({
     //The players currently in this battle
-    this.playerLeft = null;
-    this.playerRight = null;
-    this.numberOfPlayers = 2;
-    this.turnCount = 0;
-    this.currentTurn = null;
+    playerLeft: null,
+    playerRight: null,
+    numberOfPlayers: 2,
+    turnCount: 0,
+    currentTurn: null,
 
-    this.receivedTheScript = []; //players ids that received the script
-    this.turnDuration = 3000;
+    receivedTheScript: [], //players ids that received the script
+    turnDuration: 3000,
+    init: function(parameters) {
+        'use strict';
+        this.id = parameters.id;
+        this.ship = parameters.ship;
+    },
     /**
      * Informs that some player has received the script.
      * When all players in the battle receive the script,
@@ -76,7 +78,8 @@ exports.Battle = function(parameters) {
      * @return {boolean} If the next turn was created or not.
      * @this exports.Battle
      */
-    this.registerScriptReceived = function(playerID) {
+    registerScriptReceived: function(playerID) {
+        'use strict';
         this.receivedTheScript.push(playerID);
         if (_.uniq(this.receivedTheScript).length >= this.numberOfPlayers) {
             //all players have received the script, create next turn
@@ -84,8 +87,9 @@ exports.Battle = function(parameters) {
             return true;
         }
         return false;
-    };
-    this.nextTurn = function() {
+    },
+    nextTurn: function() {
+        'use strict';
         this.turnCount++;
         this.currentTurn = new BattleTurn({id: this.turnCount, battle: this});
         this.receivedTheScript = [];
@@ -97,20 +101,80 @@ exports.Battle = function(parameters) {
             this.currentTurn.setPlayerReady(this.playerRight.id);
             this.registerScriptReceived(this.playerRight.id);
         }
-    };
-    this.isPlayerInIt = function(playerID) {
+    },
+    isPlayerInIt: function(playerID) {
+        'use strict';
         return (this.playerLeft && this.playerLeft.id === playerID) ||
             (this.playerRight && this.playerRight.id === playerID);
-    };
-    this.toJson = function() {
+    },
+    toJson: function() {
+        'use strict';
         return {
             id: this.id,
             ship: this.ship.toJsonString(),
             playerLeft: this.playerLeft.toJson(),
             playerRight: this.playerRight.toJson()
         };
-    };
-};
+    }
+});
+
+/**
+ * A battle for the "Challenge" menu option.
+ * @type {*}
+ */
+exports.ChallengeBatte = exports.Battle.extend({
+    init: function(params) {
+        'use strict';
+        var ship = new sh.Ship({jsonString: '{"tmxName":"Mechanoid_Cruiser",' +
+            '"buildings":[{"type":"door","x":14,"y":11,"r":true},' +
+            '{"type":"wall","x":14,"y":8,"r":false},' +
+            '{"type":"wall","x":17,"y":8,"r":false},' +
+            '{"type":"door","x":15,"y":8,"r":false},' +
+            '{"type":"wall","x":14,"y":15,"r":false},' +
+            '{"type":"wall","x":17,"y":15,"r":false},' +
+            '{"type":"door","x":15,"y":15,"r":false},' +
+            '{"type":"engine","x":10,"y":5,"r":false},' +
+            '{"type":"engine","x":10,"y":17,"r":false},' +
+            '{"type":"engine","x":11,"y":11,"r":false},' +
+            '{"type":"console","x":11,"y":10,"r":false},' +
+            '{"type":"weapon","x":24,"y":8,"r":false},' +
+            '{"type":"weapon","x":24,"y":14,"r":false},' +
+            '{"type":"weapon","x":20,"y":17,"r":false},' +
+            '{"type":"component","x":10,"y":7,"r":false},' +
+            '{"type":"component","x":10,"y":15,"r":false},' +
+            '{"type":"console","x":12,"y":5,"r":false},' +
+            '{"type":"console","x":12,"y":18,"r":false},' +
+            '{"type":"weapon","x":20,"y":5,"r":false},' +
+            '{"type":"power","x":20,"y":15,"r":false},' +
+            '{"type":"power","x":20,"y":7,"r":false},' +
+            '{"type":"console","x":25,"y":10,"r":false},' +
+            '{"type":"console","x":25,"y":13,"r":false},' +
+            '{"type":"console","x":19,"y":18,"r":false},' +
+            '{"type":"console","x":19,"y":5,"r":false},' +
+            '{"type":"door","x":22,"y":11,"r":true},' +
+            '{"type":"weak_spot","x":15,"y":6,"r":false},' +
+            '{"type":"weak_spot","x":15,"y":16,"r":false},' +
+            '{"type":"weak_spot","x":19,"y":11,"r":false},' +
+            '{"type":"door","x":18,"y":11,"r":true}],' +
+            '"units":[]}'});
+        ship.putUnit({owner: params.player, speed: 2});
+        ship.putUnit({owner: params.player, speed: 2});
+        ship.putUnit({owner: params.player, speed: 2});
+        this.parent({id: params.id, ship: ship});
+        this.playerLeft = params.player;
+        this.playerRight = new exports.AIPlayer('Enemy');
+        ship.putUnit({owner: this.playerRight, type: 5});
+        ship.putUnit({owner: this.playerRight, type: 5});
+        ship.putUnit({owner: this.playerRight, type: 5});
+        ship.putUnit({owner: this.playerRight, type: 5});
+        ship.putUnit({owner: this.playerRight, type: 5});
+    },
+    nextTurn: function() {
+        'use strict';
+        this.parent();
+    }
+});
+
 
 /**
  * A model representing the battle set up (for the battle-set-up screen)
