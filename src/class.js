@@ -108,23 +108,23 @@ Class.extend = function(prop) {
     }
 
     // The dummy class constructor
-    function Class() {
+    function ClassDummy() {
         if (!initializing && this.init) {
             this.init.apply(this, arguments);
         }
         //return this;
     }
     // Populate our constructed prototype object
-    Class.prototype = proto;
+    ClassDummy.prototype = proto;
     // Enforce the constructor to be what we expect
-    Class.constructor = Class;
+    ClassDummy.constructor = ClassDummy;
     // And make this class extendable
-    Class.extend = Class.extend;//arguments.callee;
-    Class.extendShared = function() {
+    ClassDummy.extend = Class.extend;//arguments.callee;
+    ClassDummy.extendShared = function() {
         throw new Error('"extendShared" is only for shared entities,' +
             ' use "extend" instead.');
     };
-    return Class;
+    return ClassDummy;
 };
 
 /**
