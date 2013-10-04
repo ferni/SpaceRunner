@@ -113,6 +113,64 @@ sh.Ship = sh.SharedClass.extendShared({
         this.addUnit(unit);
         return unit;
     },
+    /**
+     * Finds the closest position to x, y that satisfies the condition
+     * for the tile at that position.
+     * It searches the map in a spiral fashion from the starting tile.
+     * @param {int} x
+     * @param {int} y
+     * @param {Function} condition
+     * @return {{x: int, y: int}}
+     */
+    closestTile: function(x, y, condition) {
+        'use strict';
+        var squareWidth = 1,
+            going = 'right',
+            direction,
+            i,
+            widthTimes2,
+            heightTimes2;
+        if (condition(this.map.at(x, y))) {
+            return {x: x, y: y};
+        }
+        widthTimes2 = this.width * 2;
+        heightTimes2 = this.height * 2;
+        do {
+            //change direction
+            switch (going) {
+            case 'down':
+                going = 'left';
+                direction = [-1, 0];
+                break;
+            case 'left':
+                going = 'up';
+                direction = [0, -1];
+                break;
+            case 'up':
+                going = 'right';
+                direction = [1, 0];
+                break;
+            case 'right':
+                going = 'down';
+                direction = [0, 1];
+                //move to next outer square
+                squareWidth += 2;
+                x++;
+                y--;
+                break;
+            }
+            //traverse one side
+            for (i = 0; i < squareWidth - 1; i++) {
+                x += direction[0];
+                y += direction[1];
+                if (condition(this.map.at(x, y))) {
+                    return {x: x, y: y};
+                }
+            }
+        } while (squareWidth < widthTimes2 && squareWidth < heightTimes2);
+        //didn't find any
+        return null;
+    },
     //Adds an item to the ship ignoring its placement rules
     addItem: function(item) {
         'use strict';
