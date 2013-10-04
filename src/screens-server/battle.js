@@ -108,9 +108,9 @@ routes.add('ready', function(req, res, next) {
         if (_.uniq(turn.playersSubmitted).length === battle.numberOfPlayers &&
                 !turn.script) {
             //all orders have been submitted, generate the script
-            turn.generateScript();
+            battle.generateScript();
             //TODO: maybe make the function updateShip... server side only
-            //then send the updated ship to the clients
+            //and send the updated ship to the clients
             sh.updateShipByScript(battle.ship, turn.script);
         }
         return res.json({wasReady: false});

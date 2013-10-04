@@ -40,14 +40,6 @@ function BattleTurn(params) {
     this.setPlayerReady = function(playerID) {
         this.playersSubmitted.push(playerID);
     };
-    this.generateScript = function() {
-        var orders = _.extend(this.playersOrders[this.battle.playerLeft.id],
-                              this.playersOrders[this.battle.playerRight.id]);
-
-        console.log('all orders' + JSON.stringify(orders));
-        this.script = sh.createScript(orders, this.battle.ship,
-            this.battle.turnDuration);
-    };
 }
 
 /**
@@ -94,18 +86,20 @@ exports.Battle = Class.extend({
         this.currentTurn = new BattleTurn({id: this.turnCount, battle: this});
         this.receivedTheScript = [];
 
-        //register AI player orders
-        if (this.playerRight instanceof exports.AIPlayer) {
-            this.currentTurn.addOrders(this.playerRight.getOrders(this),
-                this.playerRight.id);
-            this.currentTurn.setPlayerReady(this.playerRight.id);
-            this.registerScriptReceived(this.playerRight.id);
-        }
     },
     isPlayerInIt: function(playerID) {
         'use strict';
         return (this.playerLeft && this.playerLeft.id === playerID) ||
             (this.playerRight && this.playerRight.id === playerID);
+    },
+    generateScript: function() {
+        'use strict';
+        var turn = this.currentTurn,
+            orders = _.extend(turn.playersOrders[this.playerLeft.id],
+                turn.playersOrders[this.playerRight.id]);
+
+        console.log('all orders' + JSON.stringify(orders));
+        turn.script = sh.createScript(orders, this.ship, this.turnDuration);
     },
     toJson: function() {
         'use strict';
@@ -174,6 +168,11 @@ exports.ChallengeBatte = exports.Battle.extend({
     nextTurn: function() {
         'use strict';
         this.parent();
+        //register AI player orders
+        this.currentTurn.addOrders(this.playerRight.getOrders(this),
+            this.playerRight.id);
+        this.currentTurn.setPlayerReady(this.playerRight.id);
+        this.registerScriptReceived(this.playerRight.id);
     }
 });
 
