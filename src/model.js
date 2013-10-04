@@ -178,17 +178,19 @@ exports.ChallengeBatte = exports.Battle.extend({
         'use strict';
         var script, i;
         this.parent();
-        script = this.currentTurn.script;
-        //add units for AI player
-        for (i = 0; i < 3; i++) {
-            //noinspection JSValidateTypes
-            script.insertAction(new sh.actions.Summon({
-                time: script.turnDuration - 1,
-                x: 13,
-                y: 11,
-                playerID: this.playerRight.id,
-                unitType: 'Critter'
-            }));
+        if (this.turnCount % 3 === 0) {
+            //add units for AI player
+            script = this.currentTurn.script;
+            for (i = 0; i < 3; i++) {
+                //noinspection JSValidateTypes
+                script.insertAction(new sh.actions.Summon({
+                    time: script.turnDuration - 1,
+                    x: 13,
+                    y: 11,
+                    playerID: this.playerRight.id,
+                    unitType: 'Critter'
+                }));
+            }
         }
     }
 });
