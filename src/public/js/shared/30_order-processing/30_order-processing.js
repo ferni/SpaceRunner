@@ -88,6 +88,30 @@ if (typeof exports !== 'undefined') {
         }
     });
 
+    /**
+     * Makes a unit appear on board.
+     * @type {*}
+     */
+    sh.actions.Summon = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set(['x', 'y', 'playerID', 'unitType'], json);
+            this.type = 'Summon';
+        },
+        applyChanges: function(ship) {
+            var unit = new sh.units[this.unitType](0, 0,
+                {owner: {id: this.playerID}}),
+                freePos = ship.closestTile(this.x, this.y, function(tile) {
+                    return tile === sh.tiles.clear;
+                });
+            if (freePos) {
+                unit.x = freePos.x;
+                unit.y = freePos.y;
+                ship.addUnit(unit);
+            }
+        }
+    });
+
     //ORDER VERIFICATION
     function verifyOrder(order, ship, playerID) {
         if (!order || !order.type || order.type !== 'Order-JSON-V1' ||
