@@ -173,6 +173,23 @@ exports.ChallengeBatte = exports.Battle.extend({
             this.playerRight.id);
         this.currentTurn.setPlayerReady(this.playerRight.id);
         this.registerScriptReceived(this.playerRight.id);
+    },
+    generateScript: function() {
+        'use strict';
+        var script, i;
+        this.parent();
+        script = this.currentTurn.script;
+        //add units for AI player
+        for (i = 0; i < 3; i++) {
+            //noinspection JSValidateTypes
+            script.insertAction(new sh.actions.Summon({
+                time: script.turnDuration - 1,
+                x: 13,
+                y: 11,
+                playerID: this.playerRight.id,
+                unitType: 'Critter'
+            }));
+        }
     }
 });
 
@@ -270,7 +287,7 @@ exports.BattleSetUp = function(params) {
     }
 
     function getUnoccupiedTile(weakSpot, units) {
-        var tile;
+        var tile = null;
         weakSpot.tiles(function(x, y) {
             if (!_.any(units, function(unit) {
                     return unit.x === x && unit.y === y;
