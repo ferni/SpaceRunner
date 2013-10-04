@@ -145,15 +145,18 @@ sh.CompoundMap = sh.Map.extendShared({
         }());
         this.width = maps[0].width;
         this.height = maps[0].height;
-        this.at = function(x, y) {
-            var i, what;
-            for (i = maps.length - 1; i >= 0; i--) {
-                what = maps[i].at(x, y);
-                if (what) {
-                    return what;
-                }
+        this.maps = maps;
+    },
+    at: function(x, y) {
+        'use strict';
+        var i, what;
+        for (i = this.maps.length - 1; i >= 0; i--) {
+            what = this.maps[i].at(x, y);
+            if (what) {
+                return what;
             }
-        };
+        }
+        return null;
     }
 });
 
