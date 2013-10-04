@@ -95,8 +95,8 @@ sh.units = (function() {
             this.type = 5;
             this.speed = 1;
             this.maxHP = 50;
-            this.attackCooldown = 400;
-            this.meleeDamage = 15;
+            this.attackCooldown = 420;
+            this.meleeDamage = 8;
             this.parent(x, y, settings);
         }
     });

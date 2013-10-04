@@ -156,14 +156,10 @@ exports.ChallengeBatte = exports.Battle.extend({
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
+        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         this.parent({id: params.id, ship: ship});
         this.playerLeft = params.player;
         this.playerRight = new exports.AIPlayer('Enemy');
-        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
-        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
-        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
-        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
-        ship.putUnit(new Critter(0, 0, {owner: this.playerRight}));
     },
     nextTurn: function() {
         'use strict';
@@ -180,7 +176,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             ship = this.ship;
         this.parent();
         //every 3 turns...
-        if (this.turnCount % 3 === 0) {
+        if ((this.turnCount - 1) % 3 === 0) {
             //...add units for AI player
             script = this.currentTurn.script;
             ship.map.tiles(function(x, y) {
