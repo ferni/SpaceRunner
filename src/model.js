@@ -176,17 +176,27 @@ exports.ChallengeBatte = exports.Battle.extend({
     },
     generateScript: function() {
         'use strict';
-        var script, i;
+        var script, i, clearTiles = [], summonPosition,
+            ship = this.ship;
         this.parent();
+        //every 3 turns...
         if (this.turnCount % 3 === 0) {
-            //add units for AI player
+            //...add units for AI player
             script = this.currentTurn.script;
+            ship.map.tiles(function(x, y) {
+                if (ship.map.at(x, y) === sh.tiles.clear ||
+                        ship.map.at(x, y) instanceof sh.Unit) {
+                    clearTiles.push({x: x, y: y});
+                }
+            });
+            //get random floor tile
+            summonPosition = clearTiles[_.random(clearTiles.length - 1)];
             for (i = 0; i < 3; i++) {
                 //noinspection JSValidateTypes
                 script.insertAction(new sh.actions.Summon({
                     time: script.turnDuration - 1,
-                    x: 13,
-                    y: 11,
+                    x: summonPosition.x,
+                    y: summonPosition.y,
                     playerID: this.playerRight.id,
                     unitType: 'Critter'
                 }));
