@@ -75,14 +75,9 @@ var ScriptPlayer = (function() {
                 duration = moveAction.duration,
                 unit = gs.ship.getUnitByID(moveAction.unitID),
                 unitVM = battleScreen.shipVM.getVM(unit),
-                fromPx = {x: moveAction.from.x * TILE_SIZE,
-                    y: moveAction.from.y * TILE_SIZE},
-                toPx = {x: moveAction.to.x * TILE_SIZE,
-                    y: moveAction.to.y * TILE_SIZE},
-                advancementPerMs = {
-                    x: (toPx.x - fromPx.x) / duration,
-                    y: (toPx.y - fromPx.y) / duration
-                };
+                fromPx = v.mul(moveAction.from, TILE_SIZE),
+                toPx = v.mul(moveAction.to, TILE_SIZE),
+                advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
             return {
                 update: function(elapsedInTurn) {
                     var index,
