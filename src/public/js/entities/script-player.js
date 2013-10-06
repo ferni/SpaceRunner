@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global gs, me, TILE_SIZE, ui, _, draw*/
+/*global gs, me, TILE_SIZE, ui, _, draw, sh*/
 
 /**
  * Manages and reproduces actions on the screen
@@ -66,20 +66,37 @@ var ScriptPlayer = (function() {
     }
 
     return function(battleScreen) {
-        var script, next;
-        function playMoveAction(action) {
-            var duration, tween,
-                unit = gs.ship.getUnitByID(action.unitID),
-                unitVM = battleScreen.shipVM.getVM(unit);
-            duration = action.duration;
-            unitVM.pos.x = (action.from.x - unitVM.cannonTile[0]) * TILE_SIZE;
-            unitVM.pos.y = (action.from.y - unitVM.cannonTile[1]) * TILE_SIZE;
-            //noinspection JSValidateTypes
-            tween = new me.Tween(unitVM.pos)
-                .to({x: (action.to.x - unitVM.cannonTile[0]) * TILE_SIZE,
-                    y: (action.to.y - unitVM.cannonTile[1]) * TILE_SIZE},
-                    duration);
-            tween.start();
+        var script, next, actionPlayers;
+
+        function MoveActionPlayer(moveAction, elapsed) {
+            var v = sh.v, //vector math
+                start = elapsed,
+                last,
+                duration = moveAction.duration,
+                unit = gs.ship.getUnitByID(moveAction.unitID),
+                unitVM = battleScreen.shipVM.getVM(unit),
+                fromPx = {x: moveAction.from.x * TILE_SIZE,
+                    y: moveAction.from.y * TILE_SIZE},
+                toPx = {x: moveAction.to.x * TILE_SIZE,
+                    y: moveAction.to.y * TILE_SIZE},
+                advancementPerMs = {
+                    x: (toPx.x - fromPx.x) / duration,
+                    y: (toPx.y - fromPx.y) / duration
+                };
+            return {
+                update: function(elapsedInTurn) {
+                    var index,
+                        elapsed = elapsedInTurn - start,
+                        delta = elapsed - (last || elapsed),
+                        advance = v.mul(advancementPerMs, delta);
+                    unitVM.pos = v.add(unitVM.pos, advance);
+                    last = elapsed;
+                    if (elapsed >= duration) {
+                        index = actionPlayers.indexOf(this);
+                        actionPlayers.splice(index, 1);
+                    }
+                }
+            };
         }
 
         function playAttackAction(action) {
@@ -112,20 +129,21 @@ var ScriptPlayer = (function() {
                 action.receiverID + ' with ' + action.damage + ' damage!');
         }
 
-        function playAction(action) {
+        function playAction(action, elapsed) {
             switch (action.type) {
-                case 'Move':
-                    playMoveAction(action);
-                    break;
-                case 'Attack':
-                    playAttackAction(action);
-                    break;
+            case 'Move':
+                actionPlayers.push(new MoveActionPlayer(action, elapsed));
+                break;
+            case 'Attack':
+                playAttackAction(action);
+                break;
             }
         }
 
         this.loadScript = function(s) {
             script = s;
             next = 0;
+            actionPlayers = [];
         };
 
 
@@ -133,10 +151,13 @@ var ScriptPlayer = (function() {
             var actions = script.actions;
             if (next < actions.length && elapsed >= actions[next].time) {
                 if (script.isWithinTurn(actions[next])) {
-                    playAction(actions[next]);
+                    playAction(actions[next], elapsed);
                 }
                 next++;
             }
+            _.each(actionPlayers, function(ap) {
+                ap.update(elapsed);
+            });
         };
     };
 
