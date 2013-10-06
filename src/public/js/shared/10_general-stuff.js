@@ -55,6 +55,28 @@ if (typeof exports !== 'undefined') {
         }
     });
 
+    /**
+     * Vector math.
+     * @type {{sub: Function, add: Function, mul: Function, div: Function, equal: Function}}
+     */
+    sh.v = {
+        sub: function(v1, v2) {
+            return { x: v1.x - v2.x, y: v1.y - v2.y };
+        },
+        add: function(v1, v2) {
+            return { x: v1.x + v2.x, y: v1.y + v2.y };
+        },
+        mul: function(v, scalar) {
+            return { x: v.x * scalar, y: v.y * scalar};
+        },
+        div: function(v, scalar) {
+            return { x: v.x / scalar, y: v.y / scalar};
+        },
+        equal: function(v1, v2) {
+            return v1.x === v2.x && v1.y === v2.y;
+        }
+    };
+
     sh.tiles = {
         solid: 's',
         front: 'f',
