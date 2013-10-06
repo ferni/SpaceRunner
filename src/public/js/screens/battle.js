@@ -98,6 +98,7 @@ screens.register('battle', ConnectedScreen.extend({
         }
     },
     logActions: function(script) {
+        'use strict';
         _.each(script.byUnit, function(actions, unitID) {
             console.log('Unit ' + unitID + '\'s actions:');
             _.each(actions, function(a) {
