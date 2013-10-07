@@ -72,6 +72,24 @@ var ScriptPlayer = (function() {
                 corrected.y / corrected.x === dir.y / dir.x;
     }
 
+    function getPerpendicularDistanceToLane(point, lane) {
+        //note: the point should be relative to the current tile
+        var distance = {},
+            dir = lane.direction;
+        point = v.sub(point, lane.entryPoint); //make relative to entry point
+        if (dir.x === 0) {
+            return {x: -point.x, y: 0};
+        }
+        if (dir.y === 0) {
+            return {x: 0, y: -point.y};
+        }
+        distance.y = ((point.x * (dir.y / dir.x)) - point.y) / 2;
+        distance.x = ((point.y * (dir.x / dir.y)) - point.x) / 2;
+        return distance;
+    }
+
+
+
     function drawLanes(ctx) {
         gs.ship.map.tiles(function(x, y) {
             var pixX = x * TILE_SIZE,
@@ -184,6 +202,7 @@ var ScriptPlayer = (function() {
         //export for testing
         this.getLane = getLane;
         this.isInLane = isInLane;
+        this.getPerpendicularDistanceToLane = getPerpendicularDistanceToLane;
     };
 
 }());
