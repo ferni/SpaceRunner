@@ -60,18 +60,6 @@ var ScriptPlayer = (function() {
         });
     }
 
-    function isInLane(pixelPos, lane) {
-        var dir, corrected;
-        if (v.equal(pixelPos, lane.entryPoint)) {
-            return true;
-        }
-        dir = lane.direction;
-        corrected = v.sub(pixelPos, lane.entryPoint);
-        return dir.x === 0 ?
-                corrected.x / corrected.y === dir.x / dir.y :
-                corrected.y / corrected.x === dir.y / dir.x;
-    }
-
     function getPerpendicularDistanceToLane(point, lane) {
         //note: the point should be relative to the current tile
         var distance = {},
@@ -86,23 +74,6 @@ var ScriptPlayer = (function() {
         distance.y = ((point.x * (dir.y / dir.x)) - point.y) / 2;
         distance.x = ((point.y * (dir.x / dir.y)) - point.x) / 2;
         return distance;
-    }
-
-
-
-    function drawLanes(ctx) {
-        gs.ship.map.tiles(function(x, y) {
-            var pixX = x * TILE_SIZE,
-                pixY = y * TILE_SIZE;
-            _.each(movementLanes, function(l) {
-                var nextX = (x + l.direction[0]) * TILE_SIZE,
-                    nextY = (y + l.direction[1]) * TILE_SIZE;
-                draw.line(ctx,
-                    {x: pixX + l.entryPoint[0], y: pixY + l.entryPoint[1]},
-                    {x: nextX + l.entryPoint[0], y: nextY + l.entryPoint[1]},
-                    'white', 1);
-            });
-        });
     }
 
     return function(battleScreen) {
@@ -210,8 +181,6 @@ var ScriptPlayer = (function() {
         };
 
         //export for testing
-        this.getLane = getLane;
-        this.isInLane = isInLane;
         this.getPerpendicularDistanceToLane = getPerpendicularDistanceToLane;
     };
 
