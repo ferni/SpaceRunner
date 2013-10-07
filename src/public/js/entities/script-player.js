@@ -15,46 +15,68 @@
  */
 var ScriptPlayer = (function() {
     'use strict';
-    var lanes = {
-        right: {
-            direction: [1, 0],
-            entryPoint: [0, 8]//in pixels
-        },
-        left: {
-            direction: [-1, 0],
-            entryPoint: [32, 24]//in pixels
-        },
-        down: {
-            direction: [0, 1],
-            entryPoint: [8, 0]//in pixels
-        },
-        up: {
-            direction: [0, -1],
-            entryPoint: [24, 32]//in pixels
-        },
-        right_down: {
-            direction: [1, 1],
-            entryPoint: [0, 8]
-        },
-        left_down: {
-            direction: [-1, 1],
-            entryPoint: [24, 0]
-        },
-        left_up: {
-            direction: [-1, -1],
-            entryPoint: [32, 24]
-        },
-        right_up: {
-            direction: [1, -1],
-            entryPoint: [8, 32]
+    var v = sh.v, //vector math
+        movementLanes = {
+            right: {
+                direction: {x: 1, y: 0},
+                entryPoint: {x: 0, y: 8}//in pixels
+            },
+            left: {
+                direction: {x: -1, y: 0},
+                entryPoint: {x: 32, y: 24}//in pixels
+            },
+            down: {
+                direction: {x: 0, y: 1},
+                entryPoint: {x: 8, y: 0}//in pixels
+            },
+            up: {
+                direction: {x: 0, y: -1},
+                entryPoint: {x: 24, y: 32}//in pixels
+            },
+            right_down: {
+                direction: {x: 1, y: 1},
+                entryPoint: {x: 0, y: 8}
+            },
+            left_down: {
+                direction: {x: -1, y: 1},
+                entryPoint: {x: 24, y: 0}
+            },
+            left_up: {
+                direction: {x: -1, y: -1},
+                entryPoint: {x: 32, y: 24}
+            },
+            right_up: {
+                direction: {x: 1, y: -1},
+                entryPoint: {x: 8, y: 32}
+            }
+        };
+
+    function sign(x) { return x ? x < 0 ? -1 : 1 : 0; }
+    function getLane(from, to) {
+        var diff = v.sub(to, from),
+            signs = v.map(diff, sign);
+        return _.find(movementLanes, function(l) {
+            return v.equal(l.direction, signs);
+        });
+    }
+
+    function isInLane(pixelPos, lane) {
+        var dir, corrected;
+        if (v.equal(pixelPos, lane.entryPoint)) {
+            return true;
         }
-    };
+        dir = lane.direction;
+        corrected = v.sub(pixelPos, lane.entryPoint);
+        return dir.x === 0 ?
+                corrected.x / corrected.y === dir.x / dir.y :
+                corrected.y / corrected.x === dir.y / dir.x;
+    }
 
     function drawLanes(ctx) {
         gs.ship.map.tiles(function(x, y) {
             var pixX = x * TILE_SIZE,
                 pixY = y * TILE_SIZE;
-            _.each(lanes, function(l) {
+            _.each(movementLanes, function(l) {
                 var nextX = (x + l.direction[0]) * TILE_SIZE,
                     nextY = (y + l.direction[1]) * TILE_SIZE;
                 draw.line(ctx,
@@ -69,15 +91,19 @@ var ScriptPlayer = (function() {
         var script, next, actionPlayers;
 
         function MoveActionPlayer(moveAction, elapsed) {
-            var v = sh.v, //vector math
-                start = elapsed,
+            var start = elapsed,
                 last,
                 duration = moveAction.duration,
                 unit = gs.ship.getUnitByID(moveAction.unitID),
                 unitVM = battleScreen.shipVM.getVM(unit),
                 fromPx = v.mul(moveAction.from, TILE_SIZE),
                 toPx = v.mul(moveAction.to, TILE_SIZE),
-                advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
+                advancementPerMs = v.div(v.sub(toPx, fromPx), duration),
+                lane = getLane(moveAction.from, moveAction.to),
+                advancementTowardsLanePerMs;
+
+
+
             return {
                 update: function(elapsedInTurn) {
                     var index,
@@ -154,7 +180,12 @@ var ScriptPlayer = (function() {
                 ap.update(elapsed);
             });
         };
+
+        //export for testing
+        this.getLane = getLane;
+        this.isInLane = isInLane;
     };
 
 }());
+
 
