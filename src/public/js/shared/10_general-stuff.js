@@ -74,6 +74,12 @@ if (typeof exports !== 'undefined') {
         },
         equal: function(v1, v2) {
             return v1.x === v2.x && v1.y === v2.y;
+        },
+        map: function(v, fun) {
+            return {x: fun(v.x), y: fun(v.y)};
+        },
+        str: function(v) {
+            return '(' + v.x + ', ' + v.y + ')';
         }
     };
 
