@@ -117,18 +117,28 @@ var ScriptPlayer = (function() {
                 fromPx = v.mul(moveAction.from, TILE_SIZE),
                 toPx = v.mul(moveAction.to, TILE_SIZE),
                 advancementPerMs = v.div(v.sub(toPx, fromPx), duration),
+            //vars related to sticking to a movement "lane":
                 lane = getLane(moveAction.from, moveAction.to),
-                advancementTowardsLanePerMs;
-
-
+                getInLaneTime = 300, //(ms)
+                disToLane = getPerpendicularDistanceToLane(
+                    //make relative to tile
+                    v.map(unitVM.pos, function(d) {return d % 32; }),
+                    lane
+                ),
+                advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
 
             return {
                 update: function(elapsedInTurn) {
                     var index,
                         elapsed = elapsedInTurn - start,
                         delta = elapsed - (last || elapsed),
-                        advance = v.mul(advancementPerMs, delta);
+                        advance = v.mul(advancementPerMs, delta),
+                        laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
                     unitVM.pos = v.add(unitVM.pos, advance);
+                    if (elapsed <= getInLaneTime) {
+                        //move a little closer to the movement lane
+                        unitVM.pos = v.add(unitVM.pos, laneAdvance);
+                    }
                     last = elapsed;
                     if (elapsed >= duration) {
                         index = actionPlayers.indexOf(this);
