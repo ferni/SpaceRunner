@@ -117,9 +117,28 @@ var ScriptPlayer = (function() {
                     }
                     last = elapsed;
                     if (elapsed >= duration) {
+                        //self remove from the actionPlayers
                         index = actionPlayers.indexOf(this);
                         actionPlayers.splice(index, 1);
                     }
+                }
+            };
+        }
+
+        function LockInCombatActionPlayer(action, elapsed) {
+            var start = elapsed,
+                last;
+
+            return {
+                update: function(elapsedInTurn) {
+                    var elapsed = elapsedInTurn - start,
+                        delta = elapsed - (last || elapsed),
+                        index;
+                    //noinspection JSValidateTypes
+
+                    me.game.sort();
+                    last = elapsed;
+
                 }
             };
         }
@@ -162,6 +181,12 @@ var ScriptPlayer = (function() {
             case 'Attack':
                 playAttackAction(action);
                 break;
+            case 'LockInCombat':
+                me.game.add(new ui.RedColorEntity(action.tile.x,
+                    action.tile.y), 3000);
+                /*actionPlayers.push(new LockInCombatActionPlayer(action,
+                    elapsed));            */
+                break;
             }
         }
 
@@ -190,5 +215,6 @@ var ScriptPlayer = (function() {
     };
 
 }());
+
 
 

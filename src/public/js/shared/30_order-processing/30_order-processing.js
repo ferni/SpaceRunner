@@ -64,6 +64,14 @@ if (typeof exports !== 'undefined') {
         }
     });
 
+    sh.actions.LockInCombat = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set(['unit1ID', 'unit2ID', 'tile'], json);
+            this.type = 'LockInCombat';
+        }
+    });
+
     sh.actions.Attack = Action.extendShared({
         init: function(json) {
             this.parent(json);
@@ -590,6 +598,34 @@ if (typeof exports !== 'undefined') {
         });
     }
 
+    function addLockInCombatActions(script, ship) {
+        var positions = _.map(ship.units, function(unit) {
+            return {unit: unit, pos: getEndPosition(unit, script)};
+        }), i, j, unitA, unitB, action;
+        function getStopTime(unit) {
+            var last = getLastMoveAction(script, unit);
+            return last ? last.time + last.duration : 0;
+        }
+        for (i = 0; i < positions.length; i++) {
+            for (j = i + 1; j < positions.length; j++) {
+                if (sh.v.equal(positions[i].pos, positions[j].pos)) {
+                    unitA = positions[i].unit;
+                    unitB = positions[j].unit;
+                    //noinspection JSValidateTypes
+
+                    action = new sh.actions.LockInCombat({
+                        time: _.max(getStopTime(unitA), getStopTime(unitB)),
+                        unit1ID: unitA.id,
+                        unit2ID: unitB.id,
+                        tile: positions[i].pos
+                    });
+                    script.insertAction(action);
+                    console.log('Inserted lock, time: ' + action.time);
+                }
+            }
+        }
+    }
+
     /**
      * Generates a "script" for the units given all the orders issued.
      * @param {Array} orders
@@ -622,6 +658,7 @@ if (typeof exports !== 'undefined') {
         fixEndOfTurnOverlap(script, ship);
         script.sort();
         addAttackActions(script, ship);
+        addLockInCombatActions(script, ship);
         return script;
     }
 
