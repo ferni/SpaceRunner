@@ -221,29 +221,6 @@ screens.register('battle', ConnectedScreen.extend({
                 });
         }
     },
-    updateUnitsImageOffset: function() {
-        'use strict';
-        var i, j, unitVMs = this.shipVM.unitVMs, unitA, unitB;
-        _.each(unitVMs, function(u) {
-            u.putInCenter();
-        });
-        for (i = unitVMs.length - 1; i >= 0; i--) {
-            unitA = unitVMs[i];
-            for (j = i - 1; j >= 0; j--) {
-                unitB = unitVMs[j];
-                if (unitA.m.x === unitB.m.x && unitA.m.y === unitB.m.y &&
-                        unitA.m.owner.id !== unitB.m.owner.id) {
-                    if (unitA.isMine()) {
-                        unitA.putInTopRight();
-                        unitB.putInBottomLeft();
-                    } else {
-                        unitA.putInBottomLeft();
-                        unitB.putInTopRight();
-                    }
-                }
-            }
-        }
-    },
     giveOrdersFromLeftOverPath: function() {
         'use strict';
         var self = this;
@@ -263,7 +240,6 @@ screens.register('battle', ConnectedScreen.extend({
         $('#elapsed').hide();
         this.readyButton.enable();
         sh.updateShipByScript(gs.ship, this.scriptServer);
-        this.updateUnitsImageOffset();
         this.shipVM.update();
 
         this.scriptPrediction.m = [];

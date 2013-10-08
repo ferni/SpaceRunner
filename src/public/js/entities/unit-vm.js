@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE*/
 
 var Unit = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -39,36 +39,12 @@ var Unit = TileEntityVM.extend({
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
         this.center = {x: 8, y: 8};
-    },
-    putInCenter: function() {
-        'use strict';
-        this.cannonTile = [-0.25, -0.25];
-        this.updatePixelX();
-        this.updatePixelY();
-    },
-    putInTopRight: function() {
-        'use strict';
-        this.cannonTile = [-0.5, 0];
-        this.updatePixelX();
-        this.updatePixelY();
-    },
-    putInBottomLeft: function() {
-        'use strict';
-        this.cannonTile = [0, -0.5];
-        this.updatePixelX();
-        this.updatePixelY();
+        this.pos.x = (this.m.x * TILE_SIZE) + HALF_TILE;
+        this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
     },
     update: function() {
         'use strict';
         this.parent();
-        if (this.prevPos.x !== this.m.x) {
-            this.setX(this.m.x);
-            this.prevPos.x = this.m.x;
-        }
-        if (this.prevPos.y !== this.m.y) {
-            this.setY(this.m.y);
-            this.prevPos.y = this.m.y;
-        }
 
         return true;
     },

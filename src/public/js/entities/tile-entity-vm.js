@@ -35,21 +35,13 @@ var TileEntityVM = me.ObjectEntity.extend({
         this.setX(x);
         this.setY(y);
     },
-    updatePixelX: function() {
-        'use strict';
-        this.pos.x = (this.x - this.cannonTile[0]) * TILE_SIZE;
-    },
-    updatePixelY: function() {
-        'use strict';
-        this.pos.y = (this.y - this.cannonTile[1]) * TILE_SIZE;
-    },
     setX: function(x) { //sets the column at which it is located
         'use strict';
         if (x === this.x) {
             return this;
         }
         this.x = x;
-        this.updatePixelX();
+        this.pos.x = (this.x - this.cannonTile[0]) * TILE_SIZE;
         return this;
     },
     setY: function(y) { //sets the row
@@ -58,7 +50,7 @@ var TileEntityVM = me.ObjectEntity.extend({
             return this;
         }
         this.y = y;
-        this.updatePixelY();
+        this.pos.y = (this.y - this.cannonTile[1]) * TILE_SIZE;
         return this;
     },
     _hidden: false,
