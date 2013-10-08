@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh*/
 
 var Unit = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -54,7 +54,9 @@ var Unit = TileEntityVM.extend({
     },
     drawHealthBar: function(ctx) {
         'use strict';
-        var color = 'green';
+        var color = 'green',
+            relPosition = {x: -8, y: 10},
+            absPosition = sh.v.add(this.pos, relPosition);
         if (this.hp === undefined) {
             this.hp = this.m.hp;
         }
@@ -68,12 +70,13 @@ var Unit = TileEntityVM.extend({
         if (this.healthBarSize <= 6) {
             color = 'red';
         }
-        draw.line(ctx, {x: this.pos.x, y: this.pos.y + 17},
-            {x: this.pos.x + this.healthBarSize, y: this.pos.y + 17},
+        draw.line(ctx, absPosition,
+            {x: absPosition.x + this.healthBarSize, y: absPosition.y},
             color, 3);
+        /*
         draw.line(ctx, {x: this.pos.x + this.healthBarSize, y: this.pos.y + 17},
             {x: this.pos.x + 16, y: this.pos.y + 17},
-            'whitesmoke', 3);
+            'whitesmoke', 3);*/
         this.prevHP = this.hp;
     },
     draw: function(ctx) {
