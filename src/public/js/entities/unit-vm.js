@@ -38,6 +38,7 @@ var Unit = TileEntityVM.extend({
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
+        this.center = {x: 8, y: 8};
     },
     putInCenter: function() {
         'use strict';
@@ -94,8 +95,12 @@ var Unit = TileEntityVM.extend({
     },
     draw: function(ctx) {
         'use strict';
-        var color;
+        var color,
+            originalPos = this.pos.clone();
+
+        this.pos.sub(this.center);
         this.parent(ctx);
+        this.pos = originalPos;
         if (this.selected) {
             //draw rectangle around each selected unit
             color = this.isMine() ? 'limegreen' : 'red';
