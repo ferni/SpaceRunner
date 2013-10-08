@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, me*/
+/*global TileEntityVM, me, sh*/
 
 var ui = (function() {
     'use strict';
@@ -90,7 +90,7 @@ var ui = (function() {
      */
     ui.StarHit = me.ObjectEntity.extend({
         init: function(unitVM) {
-            this.parent(unitVM.pos.x, unitVM.pos.y,
+            this.parent(unitVM.pos.x - 8, unitVM.pos.y - 8,
                 {image: 'star_hit_white', spritewidth: 16, spriteheight: 16,
                     name: 'star_hit'});
         },
