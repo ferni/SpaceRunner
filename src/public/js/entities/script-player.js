@@ -19,11 +19,11 @@ var ScriptPlayer = (function() {
         movementLanes = {
             right: {
                 direction: {x: 1, y: 0},
-                entryPoint: {x: 0, y: 8}//in pixels
+                entryPoint: {x: 0, y: 24}//in pixels
             },
             left: {
                 direction: {x: -1, y: 0},
-                entryPoint: {x: 32, y: 24}//in pixels
+                entryPoint: {x: 32, y: 8}//in pixels
             },
             down: {
                 direction: {x: 0, y: 1},
@@ -88,12 +88,13 @@ var ScriptPlayer = (function() {
                 fromPx = v.mul(moveAction.from, TILE_SIZE),
                 toPx = v.mul(moveAction.to, TILE_SIZE),
                 advancementPerMs = v.div(v.sub(toPx, fromPx), duration),
-            //vars related to sticking to a movement "lane":
+
+                //vars related to sticking to a movement "lane":
                 lane = getLane(moveAction.from, moveAction.to),
                 getInLaneTime = 300, //(ms)
                 disToLane = getPerpendicularDistanceToLane(
                     //make relative to tile
-                    v.map(unitVM.pos, function(d) {return d % 32; }),
+                    {x: unitVM.pos.x % 32, y: unitVM.pos.y % 32},
                     lane
                 ),
                 advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
@@ -105,10 +106,14 @@ var ScriptPlayer = (function() {
                         delta = elapsed - (last || elapsed),
                         advance = v.mul(advancementPerMs, delta),
                         laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
-                    unitVM.pos = v.add(unitVM.pos, advance);
+                    //unitVM.pos is a me.Vector2d, that is why x and y
+                    //are assigned manually instead of using v.add
+                    unitVM.pos.x += advance.x;
+                    unitVM.pos.y += advance.y;
                     if (elapsed <= getInLaneTime) {
                         //move a little closer to the movement lane
-                        unitVM.pos = v.add(unitVM.pos, laneAdvance);
+                        unitVM.pos.x += laneAdvance.x;
+                        unitVM.pos.y += laneAdvance.y;
                     }
                     last = elapsed;
                     if (elapsed >= duration) {
