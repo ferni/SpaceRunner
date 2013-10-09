@@ -365,7 +365,7 @@ if (typeof exports !== 'undefined') {
             this.actions = _.map(json.actions, function(actionJson) {
                 return new sh.actions[actionJson.type](actionJson);
             });
-            this.byUnit = getActionsByUnit(json.actions);
+            this.byUnit = getActionsByUnit(this.actions);
             return this;
         },
         toJson: function() {
