@@ -166,21 +166,22 @@ var ScriptPlayer = (function() {
             var start = elapsed,
                 last,
                 cartoonCloud,
+                leftToEnd = script.turnDuration - elapsed,
                 mineCombatPos = {x: 24, y: 8},
                 enemyCombatPos = {x: 8, y: 24},
-                moveDuration = 200,
-                unitA = battleScreen.shipVM.getUnitVMByID(action.unit1ID),
-                unitAFloorPos = v.mul(utils.toTileVector(unitA.pos), TILE_SIZE),
-                unitACombatPos = unitA.isMine() ?
-                        v.add(unitAFloorPos, mineCombatPos) :
-                        v.add(unitAFloorPos, enemyCombatPos),
-                moveAPerMs = v.div(v.sub(unitACombatPos, unitA.pos), moveDuration),
-                unitB = battleScreen.shipVM.getUnitVMByID(action.unit2ID),
-                unitBFloorPos = v.mul(utils.toTileVector(unitB.pos), TILE_SIZE),
-                unitBCombatPos = unitB.isMine() ?
-                        v.add(unitBFloorPos, mineCombatPos) :
-                        v.add(unitBFloorPos, enemyCombatPos),
-                moveBPerMs = v.div(v.sub(unitBCombatPos, unitB.pos), moveDuration);
+                moveDuration = leftToEnd < 200 && leftToEnd > 0 ?
+                        leftToEnd : 200,
+                units = [],
+                movePerMs = [];
+            units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
+            units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
+            _.each(units, function(u, index) {
+                var floorPos = v.mul(utils.toTileVector(u.pos), TILE_SIZE),
+                    combatPos = u.isMine() ?
+                            v.add(floorPos, mineCombatPos) :
+                            v.add(floorPos, enemyCombatPos);
+                movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
+            });
 
             cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
             //noinspection JSValidateTypes
@@ -188,19 +189,19 @@ var ScriptPlayer = (function() {
             me.game.sort();
             return {
                 update: function(elapsedInTurn) {
-                    var elapsed, delta, moveA, moveB;
+                    var elapsed, delta;
                     elapsed = elapsedInTurn - start;
                     delta = elapsed - (last || elapsed);
                     if (elapsed <= moveDuration) {
-                        moveA = v.mul(moveAPerMs, delta);
-                        moveB = v.mul(moveBPerMs, delta);
-                        unitA.pos.x += moveA.x;
-                        unitA.pos.y += moveA.y;
-                        unitB.pos.x += moveB.x;
-                        unitB.pos.y += moveB.y;
+                        _.each(units, function(u, index) {
+                            var move = v.mul(movePerMs[index], delta);
+                            u.pos.x += move.x;
+                            u.pos.y += move.y;
+
+                        });
                     }
 
-                    if (unitA.isDead || unitB.isDead) {
+                    if (units[0].isDead || units[1].isDead) {
                         me.game.remove(cartoonCloud, false);
                         actionPlayers.splice(actionPlayers.indexOf(this), 1);
                     }
