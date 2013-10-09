@@ -106,4 +106,10 @@ var ShipVM = function(shipModel) {
         }
         throw 'Invalid type of model.';
     };
+
+    this.getUnitVMByID = function(id) {
+        return _.find(this.unitVMs, function(uVM) {
+            return uVM.m.id === id;
+        });
+    };
 };
