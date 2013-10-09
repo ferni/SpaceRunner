@@ -285,25 +285,14 @@ if (typeof exports !== 'undefined') {
         }
     }
 
-    function getLastMoveAction(script, unit) {
-        var moveActions = _.filter(script.byUnit[unit.id], function(a) {
-            return a instanceof sh.actions.Move &&
-                script.isWithinTurn(a);
-        });
-        if (moveActions && moveActions.length > 0) {
-            return moveActions[moveActions.length - 1];
-        }
-        return null;
-    }
-
     function getEndPosition(unit, script) {
-        var lastMoveAction = getLastMoveAction(script, unit);
+        var lastMoveAction = script.getLastMoveAction(unit);
         return lastMoveAction ? lastMoveAction.to : {x: unit.x, y: unit.y};
     }
 
     function delayLastMovement(unit, script) {
         var actions = script.byUnit[unit.id],
-            lastMoveAction = getLastMoveAction(script, unit);
+            lastMoveAction = script.getLastMoveAction(unit);
 
         insertDelay(actions,
             actions.indexOf(lastMoveAction),
@@ -393,6 +382,16 @@ if (typeof exports !== 'undefined') {
         insertAction: function(action) {
             var insertionIndex = _.sortedIndex(this.actions, action, 'time');
             this.actions.splice(insertionIndex, 0, action);
+        },
+        getLastMoveAction: function(unit) {
+            var moveActions = _.filter(this.byUnit[unit.id], function(a) {
+                return a instanceof sh.actions.Move &&
+                    this.isWithinTurn(a);
+            }, this);
+            if (moveActions && moveActions.length > 0) {
+                return moveActions[moveActions.length - 1];
+            }
+            return null;
         }
     });
 
@@ -603,7 +602,7 @@ if (typeof exports !== 'undefined') {
             return {unit: unit, pos: getEndPosition(unit, script)};
         }), i, j, unitA, unitB, action;
         function getStopTime(unit) {
-            var last = getLastMoveAction(script, unit);
+            var last = script.getLastMoveAction(unit);
             return last ? last.time + last.duration : 0;
         }
         for (i = 0; i < positions.length; i++) {

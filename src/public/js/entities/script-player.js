@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global gs, me, TILE_SIZE, ui, _, draw, sh*/
+/*global gs, me, TILE_SIZE, HALF_TILE, ui, _, draw, sh, utils*/
 
 /**
  * Manages and reproduces actions on the screen
@@ -80,38 +80,55 @@ var ScriptPlayer = (function() {
         var script, next, actionPlayers = [];
 
         function MoveActionPlayer(moveAction, elapsed) {
-            var start = elapsed,
-                last,
-                duration = moveAction.duration,
-                unit = gs.ship.getUnitByID(moveAction.unitID),
-                unitVM = battleScreen.shipVM.getVM(unit),
-                fromPx = v.mul(moveAction.from, TILE_SIZE),
-                toPx = v.mul(moveAction.to, TILE_SIZE),
-                advancementPerMs = v.div(v.sub(toPx, fromPx), duration),
+            var start, last, duration, unitVM, fromPx, toPx, advancementPerMs,
+                lane, getInLaneTime, disToLane, advancementTowardsLanePerMs,
+                isLast;
+            start = elapsed;
+            duration = moveAction.duration;
+            unitVM = battleScreen.shipVM.getUnitVMByID(
+                moveAction.unitID
+            );
+            isLast = script.getLastMoveAction(unitVM.m) === moveAction;
+            if (isLast) {
+                fromPx = unitVM.pos;
+            } else {
+                fromPx = v.mul(moveAction.from, TILE_SIZE);
+            }
 
-                //vars related to sticking to a movement "lane":
-                lane = getLane(moveAction.from, moveAction.to),
-                getInLaneTime = 300, //(ms)
+            toPx = v.mul(moveAction.to, TILE_SIZE);
+
+            if (isLast) {
+                //in the last move go to the center of the tile.
+                toPx.x += HALF_TILE;
+                toPx.y += HALF_TILE;
+            }
+            advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
+
+            //Movement lane
+            if (!isLast) {
+                lane = getLane(moveAction.from, moveAction.to);
+                getInLaneTime = 300;
                 disToLane = getPerpendicularDistanceToLane(
                     //make relative to tile
                     {x: unitVM.pos.x % 32, y: unitVM.pos.y % 32},
                     lane
-                ),
+                );
                 advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
-
+            }
             return {
                 update: function(elapsedInTurn) {
                     var index,
                         elapsed = elapsedInTurn - start,
                         delta = elapsed - (last || elapsed),
                         advance = v.mul(advancementPerMs, delta),
-                        laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
+                        laneAdvance;
                     //unitVM.pos is a me.Vector2d, that is why x and y
                     //are assigned manually instead of using v.add
                     unitVM.pos.x += advance.x;
                     unitVM.pos.y += advance.y;
-                    if (elapsed <= getInLaneTime) {
+                    if (!isLast && elapsed <= getInLaneTime) {
                         //move a little closer to the movement lane
+                        laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
                         unitVM.pos.x += laneAdvance.x;
                         unitVM.pos.y += laneAdvance.y;
                     }
