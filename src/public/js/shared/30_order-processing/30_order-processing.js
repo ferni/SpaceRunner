@@ -614,7 +614,7 @@ if (typeof exports !== 'undefined') {
                     //noinspection JSValidateTypes
 
                     action = new sh.actions.LockInCombat({
-                        time: _.max(getStopTime(unitA), getStopTime(unitB)),
+                        time: _.max([getStopTime(unitA), getStopTime(unitB)]),
                         unit1ID: unitA.id,
                         unit2ID: unitB.id,
                         tile: positions[i].pos
