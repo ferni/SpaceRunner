@@ -77,7 +77,7 @@ var ScriptPlayer = (function() {
     }
 
     return function(battleScreen) {
-        var script, next, actionPlayers;
+        var script, next, actionPlayers = [];
 
         function MoveActionPlayer(moveAction, elapsed) {
             var start = elapsed,
@@ -121,24 +121,35 @@ var ScriptPlayer = (function() {
                         index = actionPlayers.indexOf(this);
                         actionPlayers.splice(index, 1);
                     }
-                }
+                },
+                onNextTurn: function() {}
             };
         }
 
         function LockInCombatActionPlayer(action, elapsed) {
             var start = elapsed,
-                last;
-
+                last,
+                cartoonCloud;
+            cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
+            //noinspection JSValidateTypes
+            me.game.add(cartoonCloud, 3000);
+            me.game.sort();
             return {
                 update: function(elapsedInTurn) {
-                    var elapsed = elapsedInTurn - start,
-                        delta = elapsed - (last || elapsed),
-                        index;
-                    //noinspection JSValidateTypes
-
-                    me.game.sort();
+                    var elapsed, delta, unitA, unitB;
+                    elapsed = elapsedInTurn - start;
+                    delta = elapsed - (last || elapsed);
+                    unitA = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
+                    unitB = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
+                    if (unitA.isDead || unitB.isDead) {
+                        me.game.remove(cartoonCloud, false);
+                        actionPlayers.splice(actionPlayers.indexOf(this), 1);
+                    }
                     last = elapsed;
 
+                },
+                onNextTurn: function() {
+                    me.game.remove(cartoonCloud, false);
                 }
             };
         }
@@ -182,10 +193,8 @@ var ScriptPlayer = (function() {
                 playAttackAction(action);
                 break;
             case 'LockInCombat':
-                me.game.add(new ui.RedColorEntity(action.tile.x,
-                    action.tile.y), 3000);
-                /*actionPlayers.push(new LockInCombatActionPlayer(action,
-                    elapsed));            */
+                actionPlayers.push(new LockInCombatActionPlayer(action,
+                    elapsed));
                 break;
             }
         }
@@ -193,6 +202,9 @@ var ScriptPlayer = (function() {
         this.loadScript = function(s) {
             script = s;
             next = 0;
+            _.each(actionPlayers, function(ap) {
+                ap.onNextTurn();
+            });
             actionPlayers = [];
         };
 
