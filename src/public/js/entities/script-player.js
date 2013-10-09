@@ -98,9 +98,28 @@ var ScriptPlayer = (function() {
             toPx = v.mul(moveAction.to, TILE_SIZE);
 
             if (isLast) {
-                //in the last move go to the center of the tile.
-                toPx.x += HALF_TILE;
-                toPx.y += HALF_TILE;
+                if (_.any(script.actions, function(action) {
+                        //there's a "lock in combat" action ahead
+                        return action instanceof sh.actions.LockInCombat &&
+                            (action.unit1ID === moveAction.unitID ||
+                            action.unit2ID === moveAction.unitID) &&
+                            v.equal(action.tile, moveAction.to);
+                    })) {
+                    //go to the combat position
+                    if (unitVM.isMine()) {
+                        //up right
+                        toPx.x += 24;
+                        toPx.y += 8;
+                    } else {
+                        //down left
+                        toPx.x += 8;
+                        toPx.y += 24;
+                    }
+                } else {
+                    //go to the center of the tile.
+                    toPx.x += HALF_TILE;
+                    toPx.y += HALF_TILE;
+                }
             }
             advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
 
@@ -146,24 +165,46 @@ var ScriptPlayer = (function() {
         function LockInCombatActionPlayer(action, elapsed) {
             var start = elapsed,
                 last,
-                cartoonCloud;
+                cartoonCloud,
+                mineCombatPos = {x: 24, y: 8},
+                enemyCombatPos = {x: 8, y: 24},
+                moveDuration = 200,
+                unitA = battleScreen.shipVM.getUnitVMByID(action.unit1ID),
+                unitAFloorPos = v.mul(utils.toTileVector(unitA.pos), TILE_SIZE),
+                unitACombatPos = unitA.isMine() ?
+                        v.add(unitAFloorPos, mineCombatPos) :
+                        v.add(unitAFloorPos, enemyCombatPos),
+                moveAPerMs = v.div(v.sub(unitACombatPos, unitA.pos), moveDuration),
+                unitB = battleScreen.shipVM.getUnitVMByID(action.unit2ID),
+                unitBFloorPos = v.mul(utils.toTileVector(unitB.pos), TILE_SIZE),
+                unitBCombatPos = unitB.isMine() ?
+                        v.add(unitBFloorPos, mineCombatPos) :
+                        v.add(unitBFloorPos, enemyCombatPos),
+                moveBPerMs = v.div(v.sub(unitBCombatPos, unitB.pos), moveDuration);
+
             cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
             //noinspection JSValidateTypes
             me.game.add(cartoonCloud, 3000);
             me.game.sort();
             return {
                 update: function(elapsedInTurn) {
-                    var elapsed, delta, unitA, unitB;
+                    var elapsed, delta, moveA, moveB;
                     elapsed = elapsedInTurn - start;
                     delta = elapsed - (last || elapsed);
-                    unitA = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
-                    unitB = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
+                    if (elapsed <= moveDuration) {
+                        moveA = v.mul(moveAPerMs, delta);
+                        moveB = v.mul(moveBPerMs, delta);
+                        unitA.pos.x += moveA.x;
+                        unitA.pos.y += moveA.y;
+                        unitB.pos.x += moveB.x;
+                        unitB.pos.y += moveB.y;
+                    }
+
                     if (unitA.isDead || unitB.isDead) {
                         me.game.remove(cartoonCloud, false);
                         actionPlayers.splice(actionPlayers.indexOf(this), 1);
                     }
                     last = elapsed;
-
                 },
                 onNextTurn: function() {
                     me.game.remove(cartoonCloud, false);
