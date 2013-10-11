@@ -23,6 +23,7 @@ if (typeof exports !== 'undefined') {
 sh.Ship = sh.SharedClass.extendShared({
     hullMap: {},
     itemsMap: {},
+    hp: 1000,
     init: function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.jsonString) {
