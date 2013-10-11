@@ -119,4 +119,15 @@ if (typeof exports !== 'undefined') {
             }
         }
     });
+
+    sh.actions.DamageShip = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set(['tile', 'damage'], json);
+            this.type = 'DamageShip';
+        },
+        applyChanges: function(ship) {
+            ship.hp -= this.damage;
+        }
+    });
 }());
