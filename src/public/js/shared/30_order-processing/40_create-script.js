@@ -7,7 +7,7 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('../20_placement-rules'), _ = sh._;
+var sh = require('../30_order-processing/30_verify-order'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports
@@ -18,134 +18,11 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    var Script, Action, pfFinder, ModelChange;
-
-    ModelChange = function(time, entityType, entityID, props) {
-        this.time = time;
-        this.entityType = entityType;
-        this.entityID = entityID;
-        this.props = props;
-    };
-
-    Action = sh.Jsonable.extendShared({
-        time: 0,//ms
-        modelChanges: [],
-        init: function(json) {
-            this.set(['time'], json);
-        },
-        applyChanges: function(ship) {
-            //(abstract)
-            return ship;
-        }
-    });
-
-    sh.actions = {};
-    /**
-     * The unit starts walking.
-     * @type {*}
-     */
-    sh.actions.Move = Action.extendShared({
-        init: function(json) {
-            this.parent(json);
-            this.set(['unitID', 'from', 'to', 'duration'], json);
-            this.type = 'Move';
-            this.updateModelChanges();
-        },
-        updateModelChanges: function() {
-            this.modelChanges = [new ModelChange(this.time + this.duration,
-                'Unit', this.unitID, {x: this.to.x, y: this.to.y})];
-        },
-        applyChanges: function(ship) {
-            var unit = ship.getUnitByID(this.unitID);
-            if (unit) { //is alive
-                unit.y = this.to.y;
-                unit.x = this.to.x;
-            }
-        }
-    });
-
-    sh.actions.LockInCombat = Action.extendShared({
-        init: function(json) {
-            this.parent(json);
-            this.set(['unit1ID', 'unit2ID', 'tile'], json);
-            this.type = 'LockInCombat';
-        }
-    });
-
-    sh.actions.Attack = Action.extendShared({
-        init: function(json) {
-            this.parent(json);
-            this.set(['attackerID', 'receiverID', 'damage'], json);
-            this.type = 'Attack';
-            this.updateModelChanges();
-        },
-        updateModelChanges: function() {
-            this.modelChanges = [new ModelChange(this.time,
-                'Unit', this.receiverID, {hp: '-' + this.damage})];
-        },
-        applyChanges: function(ship) {
-            var attacker = ship.getUnitByID(this.attackerID),
-                receiver = ship.getUnitByID(this.receiverID);
-            if (attacker && receiver) { //(both are alive)
-                receiver.hp -= this.damage;
-                if (receiver.hp <= 0) {
-                    //unit dies
-                    ship.removeUnit(receiver);
-                }
-            }
-        }
-    });
-
-    /**
-     * Makes a unit appear on board.
-     * @type {*}
-     */
-    sh.actions.Summon = Action.extendShared({
-        init: function(json) {
-            this.parent(json);
-            this.set(['x', 'y', 'playerID', 'unitType'], json);
-            this.type = 'Summon';
-        },
-        applyChanges: function(ship) {
-            var unit = new sh.units[this.unitType](0, 0,
-                {owner: {id: this.playerID}}),
-                freePos = ship.closestTile(this.x, this.y, function(tile) {
-                    return tile === sh.tiles.clear;
-                });
-            if (freePos) {
-                unit.x = freePos.x;
-                unit.y = freePos.y;
-                ship.addUnit(unit);
-            }
-        }
-    });
-
-    //ORDER VERIFICATION
-    function verifyOrder(order, ship, playerID) {
-        if (!order || !order.type || order.type !== 'Order-JSON-V1' ||
-                !order.variant) {
-            return false;
-        }
-        switch (order.variant) {
-        case 'move':
-            var dest = order.destination,
-                unit = ship.getUnitByID(order.unitID);
-            return unit &&
-                //is destination a walkable area
-                ship.isWalkable(dest.x, dest.y) &&
-                //unit owned by the issuer
-                unit.owner.id === playerID;
-        default:
-            return false;
-        }
-    }
-
-
-    //SCRIPT GENERATION
-    pfFinder = new sh.PF.AStarFinder({
-        allowDiagonal: true,
-        dontCrossCorners: true
-    });
+    var Script = sh.Script,
+        pfFinder = new sh.PF.AStarFinder({
+            allowDiagonal: true,
+            dontCrossCorners: true
+        });
 
     function getTileDistance(from, to) {
         var a = to.x - from.x,
@@ -219,19 +96,6 @@ if (typeof exports !== 'undefined') {
             return action instanceof sh.actions.Move &&
                 (!withinTurn || script.isWithinTurn(action));
         });
-    }
-
-    function getActionsByUnit(actions) {
-        var actionsByUnit = {};
-        _.each(actions, function(action) {
-            if (action.unitID !== undefined) {
-                if (!actionsByUnit[action.unitID]) {
-                    actionsByUnit[action.unitID] = [];
-                }
-                actionsByUnit[action.unitID].push(action);
-            }
-        });
-        return actionsByUnit;
     }
 
     function fixActionsOverlap(actions) {
@@ -336,64 +200,6 @@ if (typeof exports !== 'undefined') {
             }
         } while (somethingChanged);
     }
-
-    Script = sh.SharedClass.extendShared({
-        turnDuration: 0,
-        actions: [],
-        byUnit: {},
-        init: function(parameters) {
-            if (parameters) {
-                this.actions = parameters.actions;
-                this.turnDuration = parameters.turnDuration;
-                this.sort();
-            }
-        },
-        fromJson: function(json) {
-            //logic here
-            this.turnDuration = json.turnDuration;
-            this.actions = _.map(json.actions, function(actionJson) {
-                return new sh.actions[actionJson.type](actionJson);
-            });
-            this.byUnit = getActionsByUnit(this.actions);
-            return this;
-        },
-        toJson: function() {
-            return {
-                turnDuration: this.turnDuration,
-                actions: _.map(this.actions, function(action) {
-                    return action.toJson();
-                })
-            };
-        },
-        isWithinTurn: function(action) {
-            if (action instanceof sh.actions.Move) {
-                return action.time + action.duration <= this.turnDuration;
-            }
-            return action.time < this.turnDuration;
-        },
-        sort: function() {
-            this.actions = _.sortBy(this.actions, 'time');
-            this.byUnit = getActionsByUnit(this.actions);
-        },
-        /**
-         * Inserts an action maintaining their order
-         * @param {Action} action The action to be inserted.
-         */
-        insertAction: function(action) {
-            var insertionIndex = _.sortedIndex(this.actions, action, 'time');
-            this.actions.splice(insertionIndex, 0, action);
-        },
-        getLastMoveAction: function(unit) {
-            var moveActions = _.filter(this.byUnit[unit.id], function(a) {
-                return a instanceof sh.actions.Move &&
-                    this.isWithinTurn(a);
-            }, this);
-            if (moveActions && moveActions.length > 0) {
-                return moveActions[moveActions.length - 1];
-            }
-            return null;
-        }
-    });
 
     /**
      * Gets an array describing how the position of a unit changes
@@ -661,29 +467,8 @@ if (typeof exports !== 'undefined') {
         return script;
     }
 
-    /**
-     * Modifies the ship and its elements according with the script given
-     * and the time.
-     * @param {sh.Ship} ship
-     * @param {Script} script
-     */
-    function updateShipByScript(ship, script) {
-        _.each(script.actions, function(action) {
-            if (script.isWithinTurn(action)) {
-                action.applyChanges(ship);
-            }
-        });
-        ship.itemsMap.update();
-        ship.unitsMap.update();
-    }
-
     //Export
-
-    sh.verifyOrder = verifyOrder;
-    sh.Script = Script;
     sh.createScript = createScript;
-    sh.updateShipByScript = updateShipByScript;
-    //also: sh.actions (defined at the top)
 
     //Exported for testing
     sh.forTesting.fixEndOfTurnOverlap = fixEndOfTurnOverlap;

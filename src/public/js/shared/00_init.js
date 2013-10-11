@@ -31,13 +31,22 @@ if (typeof exports === 'undefined') {
          * @return {*}
          */
         window.require = function(file) {
-            var prevFile = sh.onClient.files[sh.onClient.files.length - 1];
+            var prevFile = sh.onClient.files[sh.onClient.files.length - 1],
+                files = sh.onClient.files,
+                filesStr = '',
+                i;
             file = file.replace(/\./gi, '');
-            if (sh.onClient.files.length > 0 && prevFile >= file) {
+            if (files.length > 0 && prevFile >= file) {
+                for (i = 0; i < files.length; i++) {
+                    filesStr += files[i];
+                    if (i < files.length - 1) {
+                        filesStr += ' -> ';
+                    }
+                }
                 console.error('The shared files are not loaded' +
-                    ' in alphabetical order.');
+                    ' in alphabetical order: ' + filesStr);
             }
-            sh.onClient.files.push(file);
+            files.push(file);
             return sh;
         };
         sh._ = _;
