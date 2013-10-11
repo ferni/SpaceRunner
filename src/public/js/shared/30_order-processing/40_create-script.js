@@ -425,10 +425,93 @@ if (typeof exports !== 'undefined') {
                         tile: positions[i].pos
                     });
                     script.insertAction(action);
-                    console.log('Inserted lock, time: ' + action.time);
                 }
             }
         }
+    }
+
+    function addDamageShipActions(script, ship) {
+        var enemyUnits = _.filter(ship.units, function(u) {
+            return u.owner.id === -1;
+        }),
+            combats = _.filter(script.actions, function(a) {
+                return a instanceof sh.actions.LockInCombat;
+            });
+
+        _.each(enemyUnits, function(u) {
+            var periods = getStandingPeriods(script, u),
+                combat,
+                attacks,
+                attackPeriods,
+                lastAttack;
+            if (periods.length === 0) {
+                return;
+            }
+
+            //filter, should be in the weak spot
+            periods = _.filter(periods, function(p) {
+                return ship.itemsMap.at(p.pos.x, p.pos.y) instanceof
+                    sh.items.WeakSpot;
+            });
+            if (periods.length === 0) {
+                return;
+            }
+
+            //filter/crop: should be alone
+            combat = _.find(combats, function(c) {
+                return c.unit1ID === u.id || c.unit2ID === u.id;
+            });
+            if (combat) {
+                _.each(periods, function(p) {
+                    if (combat.time < p.end) {
+                        p.end = combat.time;
+                    }
+                });
+                periods = _.filter(periods, function(p) {
+                    return p.start < p.end;
+                });
+            }
+            if (periods.length === 0) {
+                return;
+            }
+
+            //filter/crop: should be after attack is ready
+            attacks = _.filter(script.actions, function(a) {
+                return a instanceof sh.actions.Attack &&
+                    a.attackerID === u.id;
+            });
+            attackPeriods = _.map(attacks, function(att) {
+                return {start: att.time, end: att.time + u.attackCooldown};
+            });
+
+            _.each(periods, function(p) {
+                _.each(attackPeriods, function(attPeriod) {
+                    if (periodsOverlap(p, attPeriod)) {
+                        p.start = attPeriod.end;
+                    }
+                });
+            });
+            periods = _.filter(periods, function(p) {
+                return p.start < p.end;
+            });
+
+            //add ShipDamage actions for periods
+            _.each(periods, function(p) {
+                var time = p.start;
+                if (lastAttack && lastAttack + u.attackCooldown > p.start) {
+                    time = lastAttack + u.attackCooldown;
+                }
+                for (time; time < p.end; time += u.attackCooldown) {
+                    //noinspection JSValidateTypes
+                    script.insertAction(new sh.actions.DamageShip({
+                        time: time,
+                        damage: u.meleeDamage,
+                        tile: p.pos
+                    }));
+                    lastAttack = time;
+                }
+            });
+        });
     }
 
     /**
@@ -464,6 +547,7 @@ if (typeof exports !== 'undefined') {
         script.sort();
         addAttackActions(script, ship);
         addLockInCombatActions(script, ship);
+        addDamageShipActions(script, ship);
         return script;
     }
 
