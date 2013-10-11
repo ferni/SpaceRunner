@@ -13,9 +13,10 @@
  * @param {*} battleScreen The battle screen.
  * @constructor
  */
-var ScriptPlayer = (function() {
+var ScriptPlayer = function(battleScreen) {
     'use strict';
-    var v = sh.v, //vector math
+    var script, next, actionPlayers = [],
+        v = sh.v, //vector math
         movementLanes = {
             right: {
                 direction: {x: 1, y: 0},
@@ -76,216 +77,211 @@ var ScriptPlayer = (function() {
         return distance;
     }
 
-    return function(battleScreen) {
-        var script, next, actionPlayers = [];
+    function MoveActionPlayer(moveAction, elapsed) {
+        var start, last, duration, unitVM, fromPx, toPx, advancementPerMs,
+            lane, getInLaneTime, disToLane, advancementTowardsLanePerMs,
+            isLast;
+        start = elapsed;
+        duration = moveAction.duration;
+        unitVM = battleScreen.shipVM.getUnitVMByID(
+            moveAction.unitID
+        );
+        isLast = script.getLastMoveAction(unitVM.m) === moveAction;
+        if (isLast) {
+            fromPx = unitVM.pos;
+        } else {
+            fromPx = v.mul(moveAction.from, TILE_SIZE);
+        }
 
-        function MoveActionPlayer(moveAction, elapsed) {
-            var start, last, duration, unitVM, fromPx, toPx, advancementPerMs,
-                lane, getInLaneTime, disToLane, advancementTowardsLanePerMs,
-                isLast;
-            start = elapsed;
-            duration = moveAction.duration;
-            unitVM = battleScreen.shipVM.getUnitVMByID(
-                moveAction.unitID
-            );
-            isLast = script.getLastMoveAction(unitVM.m) === moveAction;
-            if (isLast) {
-                fromPx = unitVM.pos;
-            } else {
-                fromPx = v.mul(moveAction.from, TILE_SIZE);
-            }
+        toPx = v.mul(moveAction.to, TILE_SIZE);
 
-            toPx = v.mul(moveAction.to, TILE_SIZE);
-
-            if (isLast) {
-                if (_.any(script.actions, function(action) {
-                        //there's a "lock in combat" action ahead
-                        return action instanceof sh.actions.LockInCombat &&
-                            (action.unit1ID === moveAction.unitID ||
-                            action.unit2ID === moveAction.unitID) &&
-                            v.equal(action.tile, moveAction.to);
-                    })) {
-                    //go to the combat position
-                    if (unitVM.isMine()) {
-                        //up right
-                        toPx.x += 24;
-                        toPx.y += 8;
-                    } else {
-                        //down left
-                        toPx.x += 8;
-                        toPx.y += 24;
-                    }
+        if (isLast) {
+            if (_.any(script.actions, function(action) {
+                    //there's a "lock in combat" action ahead
+                    return action instanceof sh.actions.LockInCombat &&
+                        (action.unit1ID === moveAction.unitID ||
+                        action.unit2ID === moveAction.unitID) &&
+                        v.equal(action.tile, moveAction.to);
+                })) {
+                //go to the combat position
+                if (unitVM.isMine()) {
+                    //up right
+                    toPx.x += 24;
+                    toPx.y += 8;
                 } else {
-                    //go to the center of the tile.
-                    toPx.x += HALF_TILE;
-                    toPx.y += HALF_TILE;
+                    //down left
+                    toPx.x += 8;
+                    toPx.y += 24;
                 }
+            } else {
+                //go to the center of the tile.
+                toPx.x += HALF_TILE;
+                toPx.y += HALF_TILE;
             }
-            advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
-
-            //Movement lane
-            if (!isLast) {
-                lane = getLane(moveAction.from, moveAction.to);
-                getInLaneTime = 300;
-                disToLane = getPerpendicularDistanceToLane(
-                    //make relative to tile
-                    {x: unitVM.pos.x % 32, y: unitVM.pos.y % 32},
-                    lane
-                );
-                advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
-            }
-            return {
-                update: function(elapsedInTurn) {
-                    var index,
-                        elapsed = elapsedInTurn - start,
-                        delta = elapsed - (last || elapsed),
-                        advance = v.mul(advancementPerMs, delta),
-                        laneAdvance;
-                    //unitVM.pos is a me.Vector2d, that is why x and y
-                    //are assigned manually instead of using v.add
-                    unitVM.pos.x += advance.x;
-                    unitVM.pos.y += advance.y;
-                    if (!isLast && elapsed <= getInLaneTime) {
-                        //move a little closer to the movement lane
-                        laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
-                        unitVM.pos.x += laneAdvance.x;
-                        unitVM.pos.y += laneAdvance.y;
-                    }
-                    last = elapsed;
-                    if (elapsed >= duration) {
-                        //self remove from the actionPlayers
-                        index = actionPlayers.indexOf(this);
-                        actionPlayers.splice(index, 1);
-                    }
-                },
-                onNextTurn: function() {}
-            };
         }
+        advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
 
-        function LockInCombatActionPlayer(action, elapsed) {
-            var start = elapsed,
-                last,
-                cartoonCloud,
-                leftToEnd = script.turnDuration - elapsed,
-                mineCombatPos = {x: 24, y: 8},
-                enemyCombatPos = {x: 8, y: 24},
-                moveDuration = leftToEnd < 200 && leftToEnd > 0 ?
-                        leftToEnd : 200,
-                units = [],
-                movePerMs = [];
-            units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
-            units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
-            _.each(units, function(u, index) {
-                var floorPos = v.mul(utils.toTileVector(u.pos), TILE_SIZE),
-                    combatPos = u.isMine() ?
-                            v.add(floorPos, mineCombatPos) :
-                            v.add(floorPos, enemyCombatPos);
-                movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
-            });
+        //Movement lane
+        if (!isLast) {
+            lane = getLane(moveAction.from, moveAction.to);
+            getInLaneTime = 300;
+            disToLane = getPerpendicularDistanceToLane(
+                //make relative to tile
+                {x: unitVM.pos.x % 32, y: unitVM.pos.y % 32},
+                lane
+            );
+            advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
+        }
+        return {
+            update: function(elapsedInTurn) {
+                var index,
+                    elapsed = elapsedInTurn - start,
+                    delta = elapsed - (last || elapsed),
+                    advance = v.mul(advancementPerMs, delta),
+                    laneAdvance;
+                //unitVM.pos is a me.Vector2d, that is why x and y
+                //are assigned manually instead of using v.add
+                unitVM.pos.x += advance.x;
+                unitVM.pos.y += advance.y;
+                if (!isLast && elapsed <= getInLaneTime) {
+                    //move a little closer to the movement lane
+                    laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
+                    unitVM.pos.x += laneAdvance.x;
+                    unitVM.pos.y += laneAdvance.y;
+                }
+                last = elapsed;
+                if (elapsed >= duration) {
+                    //self remove from the actionPlayers
+                    index = actionPlayers.indexOf(this);
+                    actionPlayers.splice(index, 1);
+                }
+            },
+            onNextTurn: function() {}
+        };
+    }
 
-            cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
-            //noinspection JSValidateTypes
-            me.game.add(cartoonCloud, 3000);
-            me.game.sort();
-            return {
-                update: function(elapsedInTurn) {
-                    var elapsed, delta;
-                    elapsed = elapsedInTurn - start;
-                    delta = elapsed - (last || elapsed);
-                    if (elapsed <= moveDuration) {
-                        _.each(units, function(u, index) {
-                            var move = v.mul(movePerMs[index], delta);
-                            u.pos.x += move.x;
-                            u.pos.y += move.y;
+    function LockInCombatActionPlayer(action, elapsed) {
+        var start = elapsed,
+            last,
+            cartoonCloud,
+            leftToEnd = script.turnDuration - elapsed,
+            mineCombatPos = {x: 24, y: 8},
+            enemyCombatPos = {x: 8, y: 24},
+            moveDuration = leftToEnd < 200 && leftToEnd > 0 ?
+                    leftToEnd : 200,
+            units = [],
+            movePerMs = [];
+        units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
+        units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
+        _.each(units, function(u, index) {
+            var floorPos = v.mul(utils.toTileVector(u.pos), TILE_SIZE),
+                combatPos = u.isMine() ?
+                        v.add(floorPos, mineCombatPos) :
+                        v.add(floorPos, enemyCombatPos);
+            movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
+        });
 
-                        });
-                    }
+        cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
+        //noinspection JSValidateTypes
+        me.game.add(cartoonCloud, 3000);
+        me.game.sort();
+        return {
+            update: function(elapsedInTurn) {
+                var elapsed, delta;
+                elapsed = elapsedInTurn - start;
+                delta = elapsed - (last || elapsed);
+                if (elapsed <= moveDuration) {
+                    _.each(units, function(u, index) {
+                        var move = v.mul(movePerMs[index], delta);
+                        u.pos.x += move.x;
+                        u.pos.y += move.y;
 
-                    if (units[0].isDead || units[1].isDead) {
-                        me.game.remove(cartoonCloud, false);
-                        actionPlayers.splice(actionPlayers.indexOf(this), 1);
-                    }
-                    last = elapsed;
-                },
-                onNextTurn: function() {
+                    });
+                }
+
+                if (units[0].isDead || units[1].isDead) {
                     me.game.remove(cartoonCloud, false);
+                    actionPlayers.splice(actionPlayers.indexOf(this), 1);
                 }
-            };
-        }
-
-        function playAttackAction(action) {
-            var receiver = gs.ship.getUnitByID(action.receiverID),
-                receiverVM = battleScreen.shipVM.getVM(receiver),
-                attacker = gs.ship.getUnitByID(action.attackerID),
-                attackerVM = battleScreen.shipVM.getVM(attacker);
-
-            //temporary hack until the script generation is improved
-            //for processing deaths.
-            if (attackerVM.isDead || receiverVM.isDead) {
-                return;
+                last = elapsed;
+            },
+            onNextTurn: function() {
+                me.game.remove(cartoonCloud, false);
             }
-            if (receiverVM.hp === undefined) {
-                receiverVM.hp = receiver.maxHP;
-            }
-            receiverVM.hp -= action.damage;
-            if (receiverVM.hp <= 0) {
-                receiverVM.isDead = true;
-                receiverVM.alpha = 0;
-            }
-            //end of temporary hack
-
-            me.game.add(new ui.StarHit(receiverVM), 2000);
-            me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
-                2000);
-            me.game.sort();
-
-            console.log('Unit ' + action.attackerID + ' hit ' +
-                action.receiverID + ' with ' + action.damage + ' damage!');
-        }
-
-        function playAction(action, elapsed) {
-            switch (action.type) {
-            case 'Move':
-                actionPlayers.push(new MoveActionPlayer(action, elapsed));
-                break;
-            case 'Attack':
-                playAttackAction(action);
-                break;
-            case 'LockInCombat':
-                actionPlayers.push(new LockInCombatActionPlayer(action,
-                    elapsed));
-                break;
-            }
-        }
-
-        this.loadScript = function(s) {
-            script = s;
-            next = 0;
-            _.each(actionPlayers, function(ap) {
-                ap.onNextTurn();
-            });
-            actionPlayers = [];
         };
+    }
 
+    function playAttackAction(action) {
+        var receiver = gs.ship.getUnitByID(action.receiverID),
+            receiverVM = battleScreen.shipVM.getVM(receiver),
+            attacker = gs.ship.getUnitByID(action.attackerID),
+            attackerVM = battleScreen.shipVM.getVM(attacker);
 
-        this.update = function(elapsed) {
-            var actions = script.actions;
-            if (next < actions.length && elapsed >= actions[next].time) {
-                if (script.isWithinTurn(actions[next])) {
-                    playAction(actions[next], elapsed);
-                }
-                next++;
-            }
-            _.each(actionPlayers, function(ap) {
-                ap.update(elapsed);
-            });
-        };
+        //temporary hack until the script generation is improved
+        //for processing deaths.
+        if (attackerVM.isDead || receiverVM.isDead) {
+            return;
+        }
+        if (receiverVM.hp === undefined) {
+            receiverVM.hp = receiver.maxHP;
+        }
+        receiverVM.hp -= action.damage;
+        if (receiverVM.hp <= 0) {
+            receiverVM.isDead = true;
+            receiverVM.alpha = 0;
+        }
+        //end of temporary hack
 
-        //export for testing
-        this.getPerpendicularDistanceToLane = getPerpendicularDistanceToLane;
+        me.game.add(new ui.StarHit(receiverVM), 2000);
+        me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
+            2000);
+        me.game.sort();
+
+        console.log('Unit ' + action.attackerID + ' hit ' +
+            action.receiverID + ' with ' + action.damage + ' damage!');
+    }
+
+    function playAction(action, elapsed) {
+        switch (action.type) {
+        case 'Move':
+            actionPlayers.push(new MoveActionPlayer(action, elapsed));
+            break;
+        case 'Attack':
+            playAttackAction(action);
+            break;
+        case 'LockInCombat':
+            actionPlayers.push(new LockInCombatActionPlayer(action,
+                elapsed));
+            break;
+        }
+    }
+
+    this.loadScript = function(s) {
+        script = s;
+        next = 0;
+        _.each(actionPlayers, function(ap) {
+            ap.onNextTurn();
+        });
+        actionPlayers = [];
     };
 
-}());
+
+    this.update = function(elapsed) {
+        var actions = script.actions;
+        if (next < actions.length && elapsed >= actions[next].time) {
+            if (script.isWithinTurn(actions[next])) {
+                playAction(actions[next], elapsed);
+            }
+            next++;
+        }
+        _.each(actionPlayers, function(ap) {
+            ap.update(elapsed);
+        });
+    };
+
+    //export for testing
+    this.getPerpendicularDistanceToLane = getPerpendicularDistanceToLane;
+};
 
 
 
