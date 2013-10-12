@@ -152,8 +152,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             '{"type":"weak_spot","x":19,"y":11,"r":false},' +
             '{"type":"door","x":18,"y":11,"r":true}],' +
             '"units":[]}'}),
-            Zealot = sh.units.Zealot,
-            Critter = sh.units.Critter;
+            Zealot = sh.units.Zealot;
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
