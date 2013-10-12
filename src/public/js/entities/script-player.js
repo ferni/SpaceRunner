@@ -188,7 +188,7 @@ var ScriptPlayer = function(battleScreen) {
                 spritewidth: 32,
                 spriteheight: 32
             });
-        cloud.alpha = 0.5;
+        cloud.alpha = 0.3;
         //noinspection JSValidateTypes
         me.game.add(cloud, 3000);
         me.game.sort();
