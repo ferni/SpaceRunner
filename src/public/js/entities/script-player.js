@@ -278,6 +278,10 @@ var ScriptPlayer = function(battleScreen) {
         case 'DamageShip':
             playDamageShipAction(action);
             break;
+        case 'DeclareWinner':
+            alert('Winner: ' + action.playerID);
+            me.state.change('lobby');
+            break;
         }
     }
 

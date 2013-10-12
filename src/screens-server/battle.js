@@ -100,7 +100,8 @@ routes.add('sendorders', function(req, res, next) {
 routes.add('ready', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle, playerID) {
-        var turn = battle.currentTurn;
+        var turn = battle.currentTurn,
+            winnerDeclared;
         if (turn.isPlayerReady(playerID)) {
             return res.json({wasReady: true});
         }
@@ -112,6 +113,12 @@ routes.add('ready', function(req, res, next) {
             //TODO: maybe make the function updateShip... server side only
             //and send the updated ship to the clients
             sh.updateShipByScript(battle.ship, turn.script);
+            winnerDeclared = _.find(turn.script.actions, function(a) {
+                return a instanceof sh.actions.DeclareWinner;
+            });
+            if (winnerDeclared) {
+                battle.winner = winnerDeclared.playerID;
+            }
         }
         return res.json({wasReady: false});
     });
@@ -128,9 +135,15 @@ routes.add('getscript', function(req, res, next) {
 routes.add('scriptreceived', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle, playerID) {
-        var nextTurnCreated = battle.registerScriptReceived(playerID);
+        var nextTurnCreated = battle.registerScriptReceived(playerID),
+            index;
         if (nextTurnCreated) {
-            chat.log('All players received the script, created next turn.');
+            if (battle.winner !== null) {
+                index = _.indexOf(battles, battle);
+                battles.splice(index, 1);
+            } else {
+                chat.log('All players received the script, created next turn.');
+            }
         }
         return res.json({ok: true});
     });

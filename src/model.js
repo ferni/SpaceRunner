@@ -57,6 +57,7 @@ exports.Battle = Class.extend({
 
     receivedTheScript: [], //players ids that received the script
     turnDuration: 3000,
+    winner: null,
     init: function(parameters) {
         'use strict';
         this.id = parameters.id;
@@ -172,13 +173,14 @@ exports.ChallengeBatte = exports.Battle.extend({
     },
     generateScript: function() {
         'use strict';
-        var script, i, clearTiles = [], summonPosition,
-            ship = this.ship;
+        var i, clearTiles = [], summonPosition, script,
+            ship = this.ship,
+            damageShipActions;
         this.parent();
+        script = this.currentTurn.script;
         //every 3 turns...
         if ((this.turnCount - 1) % 3 === 0) {
             //...add units for AI player
-            script = this.currentTurn.script;
             ship.map.tiles(function(x, y) {
                 if (ship.map.at(x, y) === sh.tiles.clear ||
                         ship.map.at(x, y) instanceof sh.Unit) {
@@ -197,6 +199,22 @@ exports.ChallengeBatte = exports.Battle.extend({
                     unitType: 'Critter'
                 }));
             }
+        }
+        damageShipActions = script.byType('DamageShip');
+        if (_.reduce(damageShipActions, function(memo, value) {
+                return memo - value.damage;
+            }, ship.hp) <= 0) {
+            //ship is destroyed
+            script.insertAction(new sh.actions.DeclareWinner({
+                time: script.turnDuration - 10,
+                playerID: this.playerRight.id
+            }));
+        } else if (this.turnCount >= 5) {
+            //survived 15 turns!
+            script.insertAction(new sh.actions.DeclareWinner({
+                time: script.turnDuration - 10,
+                playerID: this.playerLeft.id
+            }));
         }
     }
 });
