@@ -90,6 +90,15 @@ if (typeof exports !== 'undefined') {
                 return moveActions[moveActions.length - 1];
             }
             return null;
+        },
+        /**
+         * Filter the actions by type (String).
+         * @param {String} type
+         */
+        byType: function(type) {
+            return _.filter(this.actions, function(a) {
+                return a.type === type;
+            });
         }
     });
 }());
