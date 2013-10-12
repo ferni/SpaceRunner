@@ -242,6 +242,10 @@ var g_resources = [{
     name: 'nothing',
     type: 'image',
     src: 'data/img/render/nothing.png'
+}, {
+    name: 'cloud',
+    type: 'image',
+    src: 'data/img/render/cloud.png'
 }];
 
 var prebuilt = {

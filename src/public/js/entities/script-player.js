@@ -163,7 +163,7 @@ var ScriptPlayer = function(battleScreen) {
     function LockInCombatActionPlayer(action, elapsed) {
         var start = elapsed,
             last,
-            cartoonCloud,
+            cloud,
             leftToEnd = script.turnDuration - elapsed,
             mineCombatPos = {x: 24, y: 8},
             enemyCombatPos = {x: 8, y: 24},
@@ -181,9 +181,16 @@ var ScriptPlayer = function(battleScreen) {
             movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
         });
 
-        //cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
+        cloud = new me.ObjectEntity(action.tile.x * TILE_SIZE,
+            action.tile.y * TILE_SIZE,
+            {
+                image: 'cloud',
+                spritewidth: 32,
+                spriteheight: 32
+            });
+        cloud.alpha = 0.5;
         //noinspection JSValidateTypes
-//        me.game.add(cartoonCloud, 3000);
+        me.game.add(cloud, 3000);
         me.game.sort();
         return {
             update: function(elapsedInTurn) {
@@ -198,15 +205,15 @@ var ScriptPlayer = function(battleScreen) {
 
                     });
                 }
-
+                cloud.angle += 0.1;
                 if (units[0].isDead || units[1].isDead) {
-//                    me.game.remove(cartoonCloud, false);
+                    me.game.remove(cloud, false);
                     actionPlayers.splice(actionPlayers.indexOf(this), 1);
                 }
                 last = elapsed;
             },
             onNextTurn: function() {
-                //me.game.remove(cartoonCloud, false);
+                me.game.remove(cloud, false);
             }
         };
     }
