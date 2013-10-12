@@ -130,4 +130,12 @@ if (typeof exports !== 'undefined') {
             ship.hp -= this.damage;
         }
     });
+
+    sh.actions.DeclareWinner = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set(['playerID'], json);
+            this.type = 'DeclareWinner';
+        }
+    });
 }());
