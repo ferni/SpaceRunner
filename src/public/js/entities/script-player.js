@@ -181,9 +181,9 @@ var ScriptPlayer = function(battleScreen) {
             movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
         });
 
-        cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
+        //cartoonCloud = new ui.RedColorEntity(action.tile.x, action.tile.y);
         //noinspection JSValidateTypes
-        me.game.add(cartoonCloud, 3000);
+//        me.game.add(cartoonCloud, 3000);
         me.game.sort();
         return {
             update: function(elapsedInTurn) {
@@ -200,13 +200,13 @@ var ScriptPlayer = function(battleScreen) {
                 }
 
                 if (units[0].isDead || units[1].isDead) {
-                    me.game.remove(cartoonCloud, false);
+//                    me.game.remove(cartoonCloud, false);
                     actionPlayers.splice(actionPlayers.indexOf(this), 1);
                 }
                 last = elapsed;
             },
             onNextTurn: function() {
-                me.game.remove(cartoonCloud, false);
+                //me.game.remove(cartoonCloud, false);
             }
         };
     }
@@ -241,6 +241,19 @@ var ScriptPlayer = function(battleScreen) {
             action.receiverID + ' with ' + action.damage + ' damage!');
     }
 
+    function playDamageShipAction(action) {
+        console.log('The ship received ' + action.damage + ' damage!');
+        var red = new ui.RedColorEntity(action.tile.x, action.tile.y),
+            tween;
+        me.game.add(red, 1000);
+        me.game.sort();
+        tween = new me.Tween(red).to({alpha: 0}, 200).onComplete(function() {
+            me.game.remove(red);
+        });
+        tween.start();
+    }
+
+
     function playAction(action, elapsed) {
         switch (action.type) {
         case 'Move':
@@ -252,6 +265,9 @@ var ScriptPlayer = function(battleScreen) {
         case 'LockInCombat':
             actionPlayers.push(new LockInCombatActionPlayer(action,
                 elapsed));
+            break;
+        case 'DamageShip':
+            playDamageShipAction(action);
             break;
         }
     }
