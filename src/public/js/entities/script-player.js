@@ -181,13 +181,15 @@ var ScriptPlayer = function(battleScreen) {
             movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
         });
 
-        cloud = new me.ObjectEntity(action.tile.x * TILE_SIZE,
+        cloud = new me.ObjectEntity(
+            action.tile.x * TILE_SIZE,
             action.tile.y * TILE_SIZE,
             {
                 image: 'cloud',
                 spritewidth: 32,
                 spriteheight: 32
-            });
+            }
+        );
         cloud.alpha = 0.3;
         //noinspection JSValidateTypes
         me.game.add(cloud, 1800);
