@@ -190,7 +190,7 @@ var ScriptPlayer = function(battleScreen) {
             });
         cloud.alpha = 0.3;
         //noinspection JSValidateTypes
-        me.game.add(cloud, 3000);
+        me.game.add(cloud, 1800);
         me.game.sort();
         return {
             update: function(elapsedInTurn) {
