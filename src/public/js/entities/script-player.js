@@ -138,7 +138,8 @@ var ScriptPlayer = function(battleScreen) {
                     elapsed = elapsedInTurn - start,
                     delta = elapsed - (last || elapsed),
                     advance = v.mul(advancementPerMs, delta),
-                    laneAdvance;
+                    laneAdvance,
+                    prevPosX = unitVM.pos.x;
                 //unitVM.pos is a me.Vector2d, that is why x and y
                 //are assigned manually instead of using v.add
                 unitVM.pos.x += advance.x;
@@ -149,6 +150,7 @@ var ScriptPlayer = function(battleScreen) {
                     unitVM.pos.x += laneAdvance.x;
                     unitVM.pos.y += laneAdvance.y;
                 }
+                unitVM.faceRight(prevPosX - unitVM.pos.x > 0);
                 last = elapsed;
                 if (elapsed >= duration) {
                     //self remove from the actionPlayers
@@ -237,7 +239,8 @@ var ScriptPlayer = function(battleScreen) {
         receiverVM.hp -= action.damage;
         if (receiverVM.hp <= 0) {
             receiverVM.isDead = true;
-            receiverVM.alpha = 0;
+            receiverVM.setCurrentAnimation('dead');
+            receiverVM.alpha = 0.8;
         }
         //end of temporary hack
 

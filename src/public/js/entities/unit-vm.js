@@ -35,6 +35,7 @@ var Unit = TileEntityVM.extend({
             return array;
         }
         this.addAnimation('idle', toImgRow([0, 1, 2, 1]));
+        this.addAnimation('dead', toImgRow([3]));
 
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
@@ -97,5 +98,13 @@ var Unit = TileEntityVM.extend({
     isMine: function() {
         'use strict';
         return utils.isMine(this.m);
+    },
+    /**
+     * Sets if the unit should face right.
+     * @param {Boolean} faceRight
+     */
+    faceRight: function(faceRight) {
+        'use strict';
+        this.flipX(!faceRight);
     }
 });
