@@ -281,8 +281,12 @@ var ScriptPlayer = function(battleScreen) {
             playDamageShipAction(action);
             break;
         case 'DeclareWinner':
-            alert('Winner: ' + action.playerID);
-            me.state.change('lobby');
+            if (action.playerID === gs.player.id) {
+                alert('Victory!');
+            } else {
+                alert('Defeat');
+            }
+            location.reload();
             break;
         }
     }
