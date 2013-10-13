@@ -157,6 +157,7 @@ exports.ChallengeBatte = exports.Battle.extend({
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         ship.putUnit(new Zealot(0, 0, {owner: params.player}));
+        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
         this.parent({id: params.id, ship: ship});
         this.playerLeft = params.player;
         this.playerRight = new exports.AIPlayer('Enemy');
@@ -205,13 +206,13 @@ exports.ChallengeBatte = exports.Battle.extend({
             }, ship.hp) <= 0) {
             //ship is destroyed
             script.insertAction(new sh.actions.DeclareWinner({
-                time: script.turnDuration - 10,
+                time: script.turnDuration - 100,
                 playerID: this.playerRight.id
             }));
-        } else if (this.turnCount >= 5) {
+        } else if (this.turnCount >= 15) {
             //survived 15 turns!
             script.insertAction(new sh.actions.DeclareWinner({
-                time: script.turnDuration - 10,
+                time: script.turnDuration - 100,
                 playerID: this.playerLeft.id
             }));
         }
