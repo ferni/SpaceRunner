@@ -100,7 +100,7 @@ var Unit = TileEntityVM.extend({
         return utils.isMine(this.m);
     },
     /**
-     * Sets if the unit should face right.
+     * Sets if the unit should face left.
      * @param {Boolean} faceLeft
      */
     faceLeft: function(faceLeft) {
