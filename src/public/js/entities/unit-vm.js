@@ -105,6 +105,9 @@ var Unit = TileEntityVM.extend({
      */
     faceRight: function(faceRight) {
         'use strict';
+        if (this.m.imageFacesRight) {
+            faceRight = !faceRight;
+        }
         this.flipX(!faceRight);
     }
 });

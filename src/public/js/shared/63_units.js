@@ -29,6 +29,7 @@ sh.Unit = sh.TileEntity.extendShared({
     attackCooldown: 500,//time (ms) between each attack
     lastAttack: null,  //when was the last time the unit attacked
                     // (relative to turn's start)
+    imageFacesRight: true,
     init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];
@@ -47,6 +48,9 @@ sh.Unit = sh.TileEntity.extendShared({
         if (settings.attackCooldown) {
             this.attackCooldown = settings.attackCooldown;
         }
+        if (settings.imageFacesRight) {
+            this.imageFacesRight = settings.imageFacesRight;
+        }
         this.hp = this.maxHP;
         this.owner = settings.owner;
         this.parent(x, y);
@@ -63,6 +67,7 @@ sh.Unit = sh.TileEntity.extendShared({
                 maxHP: this.maxHP,
                 meleeDamage: this.meleeDamage,
                 attackCooldown: this.attackCooldown,
+                imageFacesRight: this.imageFacesRight,
                 owner: this.owner.toJson()
             }
 
@@ -97,6 +102,7 @@ sh.units = (function() {
             this.maxHP = 50;
             this.attackCooldown = 420;
             this.meleeDamage = 8;
+            this.imageFacesRight = false;
             this.parent(x, y, settings);
         }
     });
