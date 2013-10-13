@@ -28,7 +28,7 @@
     position: fixed;
     top: 10px;
     left: 10px;
-    font-size: 24pt;
+    font-size: 18pt;
     color:white;
 }
 
@@ -36,5 +36,14 @@
     position: fixed;
     top: 10px;
     left: 70px;
+    font-size: 18pt;
     color: white;
+}
+
+#battle-screen #hp {
+    position: fixed;
+    top: 10px;
+    left: 180px;
+    font-size: 18pt;
+    color: limegreen;
 }

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global gs, me, TILE_SIZE, HALF_TILE, ui, _, draw, sh, utils*/
+/*global gs, me, TILE_SIZE, HALF_TILE, ui, _, draw, sh, utils, $*/
 
 /**
  * Manages and reproduces actions on the screen
@@ -260,6 +260,8 @@ var ScriptPlayer = function(battleScreen) {
             me.game.remove(red);
         });
         tween.start();
+        battleScreen.shipVM.hp -= action.damage;
+        $('#hp').html('[' + battleScreen.shipVM.hp + ']');
     }
 
 

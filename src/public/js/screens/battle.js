@@ -24,6 +24,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
+        $('#hp').html('[' + this.shipVM.hp + ']');
         this.scriptPrediction = new ScriptPrediction(this);
         this.scriptPlayer = new ScriptPlayer(this);
         me.input.registerMouseEvent('mouseup', me.game.viewport,

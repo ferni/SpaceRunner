@@ -18,6 +18,7 @@ var ShipVM = function(shipModel) {
     this.unitVMs = [];
 
     this.m = shipModel;
+    this.hp = shipModel.hp;
     this.showInScreen = function() {
         me.levelDirector.loadLevel(this.m.tmxName);
     };
