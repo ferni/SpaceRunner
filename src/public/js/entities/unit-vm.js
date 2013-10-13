@@ -34,7 +34,8 @@ var Unit = TileEntityVM.extend({
             }
             return array;
         }
-        this.addAnimation('idle', toImgRow([0, 1, 2, 1]));
+        this.addAnimation('idle', toImgRow([0, 0, 0, 1, 0, 0, 0, 0]));
+        this.addAnimation('walking', toImgRow([0, 1, 2, 1]));
         this.addAnimation('dead', toImgRow([3]));
 
         this.setCurrentAnimation('idle');

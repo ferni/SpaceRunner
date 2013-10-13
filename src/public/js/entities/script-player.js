@@ -94,8 +94,10 @@ var ScriptPlayer = function(battleScreen) {
         }
 
         toPx = v.mul(moveAction.to, TILE_SIZE);
-
-        if (isLast) {
+        if (script.byUnit[unitVM.m.id][0] === moveAction) { //first one
+            unitVM.setCurrentAnimation('walking', false);
+        }
+        if (isLast) { //is last move action the unit would take this turn
             if (_.any(script.actions, function(action) {
                     //there's a "lock in combat" action ahead
                     return action instanceof sh.actions.LockInCombat &&
@@ -118,11 +120,8 @@ var ScriptPlayer = function(battleScreen) {
                 toPx.x += HALF_TILE;
                 toPx.y += HALF_TILE;
             }
-        }
-        advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
-
-        //Movement lane
-        if (!isLast) {
+        } else {
+            //get in the lane
             lane = getLane(moveAction.from, moveAction.to);
             getInLaneTime = 300;
             disToLane = getPerpendicularDistanceToLane(
@@ -132,6 +131,7 @@ var ScriptPlayer = function(battleScreen) {
             );
             advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
         }
+        advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
         return {
             update: function(elapsedInTurn) {
                 var index,
@@ -153,6 +153,9 @@ var ScriptPlayer = function(battleScreen) {
                 unitVM.faceLeft(prevPosX - unitVM.pos.x > 0);
                 last = elapsed;
                 if (elapsed >= duration) {
+                    if (isLast) {
+                        unitVM.setCurrentAnimation('idle', true);
+                    }
                     //self remove from the actionPlayers
                     index = actionPlayers.indexOf(this);
                     actionPlayers.splice(index, 1);
@@ -292,7 +295,7 @@ var ScriptPlayer = function(battleScreen) {
             if (action.playerID === gs.player.id) {
                 alert('Victory!');
             } else {
-                alert('Defeat');
+                alert('Defeat.');
             }
             location.reload();
             break;
