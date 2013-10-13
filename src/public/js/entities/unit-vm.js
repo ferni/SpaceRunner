@@ -101,13 +101,13 @@ var Unit = TileEntityVM.extend({
     },
     /**
      * Sets if the unit should face right.
-     * @param {Boolean} faceRight
+     * @param {Boolean} faceLeft
      */
-    faceRight: function(faceRight) {
+    faceLeft: function(faceLeft) {
         'use strict';
         if (this.m.imageFacesRight) {
-            faceRight = !faceRight;
+            faceLeft = !faceLeft;
         }
-        this.flipX(!faceRight);
+        this.flipX(!faceLeft);
     }
 });

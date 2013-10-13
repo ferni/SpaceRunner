@@ -150,7 +150,7 @@ var ScriptPlayer = function(battleScreen) {
                     unitVM.pos.x += laneAdvance.x;
                     unitVM.pos.y += laneAdvance.y;
                 }
-                unitVM.faceRight(prevPosX - unitVM.pos.x > 0);
+                unitVM.faceLeft(prevPosX - unitVM.pos.x > 0);
                 last = elapsed;
                 if (elapsed >= duration) {
                     //self remove from the actionPlayers
@@ -176,10 +176,15 @@ var ScriptPlayer = function(battleScreen) {
         units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
         units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
         _.each(units, function(u, index) {
-            var floorPos = v.mul(utils.toTileVector(u.pos), TILE_SIZE),
-                combatPos = u.isMine() ?
-                        v.add(floorPos, mineCombatPos) :
-                        v.add(floorPos, enemyCombatPos);
+            var floorPos, combatPos;
+            floorPos = v.mul(utils.toTileVector(u.pos), TILE_SIZE);
+            if (u.isMine()) {
+                combatPos = v.add(floorPos, mineCombatPos);
+                u.faceLeft(true);
+            } else {
+                combatPos = v.add(floorPos, enemyCombatPos);
+                u.faceLeft(false);
+            }
             movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
         });
 
