@@ -61,14 +61,14 @@ if (typeof exports !== 'undefined') {
         };
     }());
 
-    function insertInQueue(queue, item) {
-        var insertionIndex = _.sortedIndex(queue, item, 'time');
-        queue.splice(insertionIndex, 0, item);
+    function insertByTime(array, item) {
+        var insertionIndex = _.sortedIndex(array, item, 'time');
+        array.splice(insertionIndex, 0, item);
     }
 
     function makeMoveAction(ship, time, data, queue) {
         var moveAction,
-            index = data.index,
+            pathIdx = data.index,
             path = data.path;
         moveAction = new sh.actions.Move({
             time: time,
@@ -77,18 +77,17 @@ if (typeof exports !== 'undefined') {
             to: data.to,
             duration: getTimeForMoving(data.unit, data.from, data.to)
         });
-
-        index++;
-        if (index < path.length) {
-            insertInQueue(queue, {
+        pathIdx++;
+        if (pathIdx < path.length) {
+            insertByTime(queue, {
                 time: time + moveAction.duration,
                 type: 'Move',
                 data: {
                     path: path,
-                    index: index,
+                    index: pathIdx,
                     unit: data.unit,
-                    from: {x: path[index - 1][0], y: path[index - 1][1]},
-                    to: {x: path[index][0], y: path[index][1]}
+                    from: {x: path[pathIdx - 1][0], y: path[pathIdx - 1][1]},
+                    to: {x: path[pathIdx][0], y: path[pathIdx][1]}
                 }
             });
         }
@@ -101,14 +100,20 @@ if (typeof exports !== 'undefined') {
      * @param {Array} orders
      * @param {sh.Ship} ship
      * @param {int} turnDuration
+     * @param {Boolean} turnOnly
      * @return {sh.Script}
      */
-    function createScript(orders, ship, turnDuration) {
+    function createScript(orders, ship, turnDuration, turnOnly) {
         var script = new sh.Script({turnDuration: turnDuration}),
             queue = [],//the actions that need to be added to the script
             paths = {},
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
-            next;
+            next,
+            action;
+
+        function insertInQueue(item) {
+            insertByTime(queue, item);
+        }
 
         _.each(orders, function(order) {
             var unit = ship.getUnitByID(order.unitID),
@@ -120,7 +125,7 @@ if (typeof exports !== 'undefined') {
                 path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
                     grid.clone());
                 if (path.length > 0) {
-                    insertInQueue(queue, {
+                    insertInQueue({
                         time: 0,
                         type: 'Move',
                         data: {
@@ -135,14 +140,23 @@ if (typeof exports !== 'undefined') {
                 break;
             }
         });
-
-        while (queue.length > 0) {
+        while (queue.length > 0 &&
+                (!turnOnly || queue[0].time < turnDuration)) {
             next = queue[0];
             queue.shift();
-            //make according to next.type
-            script.actions.push(makeMoveAction(ship, next.time, next.data,
-                queue));
+            if (next.type === 'change') {
+                //apply changes to the ship
+                next.apply(ship);
+            } else {
+                //make according to next.type
+                action = makeMoveAction(ship, next.time, next.data, queue);
+                script.actions.push(action);
+                _.each(action.modelChanges, insertInQueue);
+            }
+
+
         }
+
         script.updateActionsByUnit();
         return script;
     }

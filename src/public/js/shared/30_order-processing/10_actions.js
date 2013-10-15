@@ -20,11 +20,10 @@ if (typeof exports !== 'undefined') {
     'use strict';
     var Action, ModelChange;
 
-    ModelChange = function(time, entityType, entityID, props) {
+    ModelChange = function(time, apply) {
+        this.type = 'change';
         this.time = time;
-        this.entityType = entityType;
-        this.entityID = entityID;
-        this.props = props;
+        this.apply = apply;
     };
 
     Action = sh.Jsonable.extendShared({
@@ -52,15 +51,15 @@ if (typeof exports !== 'undefined') {
             this.updateModelChanges();
         },
         updateModelChanges: function() {
+            var self = this;
             this.modelChanges = [new ModelChange(this.time + this.duration,
-                'Unit', this.unitID, {x: this.to.x, y: this.to.y})];
-        },
-        applyChanges: function(ship) {
-            var unit = ship.getUnitByID(this.unitID);
-            if (unit) { //is alive
-                unit.y = this.to.y;
-                unit.x = this.to.x;
-            }
+                function(ship) {
+                    var unit = ship.getUnitByID(self.unitID);
+                    if (unit) { //is alive
+                        unit.y = self.to.y;
+                        unit.x = self.to.x;
+                    }
+                })];
         }
     });
 
@@ -80,19 +79,19 @@ if (typeof exports !== 'undefined') {
             this.updateModelChanges();
         },
         updateModelChanges: function() {
+            var self = this;
             this.modelChanges = [new ModelChange(this.time,
-                'Unit', this.receiverID, {hp: '-' + this.damage})];
-        },
-        applyChanges: function(ship) {
-            var attacker = ship.getUnitByID(this.attackerID),
-                receiver = ship.getUnitByID(this.receiverID);
-            if (attacker && receiver) { //(both are alive)
-                receiver.hp -= this.damage;
-                if (receiver.hp <= 0) {
-                    //unit dies
-                    ship.removeUnit(receiver);
-                }
-            }
+                function(ship) {
+                    var attacker = ship.getUnitByID(self.attackerID),
+                        receiver = ship.getUnitByID(self.receiverID);
+                    if (attacker && receiver) { //(both are alive)
+                        receiver.hp -= self.damage;
+                        if (receiver.hp <= 0) {
+                            //unit dies
+                            ship.removeUnit(receiver);
+                        }
+                    }
+                })];
         }
     });
 
@@ -105,18 +104,23 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.set(['x', 'y', 'playerID', 'unitType'], json);
             this.type = 'Summon';
+            this.updateModelChanges();
         },
-        applyChanges: function(ship) {
-            var unit = new sh.units[this.unitType](0, 0,
-                {owner: {id: this.playerID}}),
-                freePos = ship.closestTile(this.x, this.y, function(tile) {
-                    return tile === sh.tiles.clear;
-                });
-            if (freePos) {
-                unit.x = freePos.x;
-                unit.y = freePos.y;
-                ship.addUnit(unit);
-            }
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [new ModelChange(this.time,
+                function(ship) {
+                    var unit = new sh.units[this.unitType](0, 0,
+                            {owner: {id: self.playerID}}),
+                        freePos = ship.closestTile(self.x, self.y, function(t) {
+                            return t === sh.tiles.clear;
+                        });
+                    if (freePos) {
+                        unit.x = freePos.x;
+                        unit.y = freePos.y;
+                        ship.addUnit(unit);
+                    }
+                })];
         }
     });
 
@@ -125,9 +129,13 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.set(['tile', 'damage'], json);
             this.type = 'DamageShip';
+            this.updateModelChanges();
         },
-        applyChanges: function(ship) {
-            ship.hp -= this.damage;
+        updateModelChanges: function() {
+            this.modelChanges = [new ModelChange(this.time,
+                function(ship) {
+                    ship.hp -= this.damage;
+                })];
         }
     });
 

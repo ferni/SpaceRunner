@@ -40,7 +40,7 @@ screens.register('battle', ConnectedScreen.extend({
             this.verifiedOrders = battleModel.orders;
             //update script prediction with new script model
             this.scriptPrediction.m = sh.createScript(this.verifiedOrders,
-                gs.ship, this.TURN_DURATION);
+                gs.ship.clone(), this.TURN_DURATION, false);
         }
     },
     onDestroy: function() {
@@ -211,7 +211,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (_.size(newOrders) > 0) {
             //update script prediction with new script model
             self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
-                gs.ship, self.TURN_DURATION);
+                gs.ship.clone(), self.TURN_DURATION, false);
             //send order to server
             $.post('/battle/sendorders',
                 {id: this.id, orders: newOrders}, function() {
@@ -240,7 +240,6 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        sh.updateShipByScript(gs.ship, this.scriptServer);
         this.shipVM.update();
 
         this.scriptPrediction.m = [];
