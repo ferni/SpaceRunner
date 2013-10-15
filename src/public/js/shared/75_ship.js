@@ -183,7 +183,9 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         this.units.push(unit);
         unit.ship = this;
-        unit.id = this.units.length;
+        if (unit.id === null) {
+            unit.id = this.units.length;
+        }
         this.unitsMap.update();
     },
     getUnitByID: function(id) {
@@ -260,6 +262,7 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     toJsonString: function() {
         'use strict';
+        //TODO: replace with toJson
         return JSON.stringify({
             'tmxName': this.tmxName,
             'buildings': _.map(this.built, function(b) {
@@ -272,6 +275,7 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     fromJsonString: function(jsonString) {
         'use strict';
+        //TODO: replace with fromJson
         var json,
             ship = this;
         ship.removeAll();
@@ -301,6 +305,10 @@ sh.Ship = sh.SharedClass.extendShared({
         //clear tiles and units are walkable
         return tile === sh.tiles.clear || this.hasUnits({x: x, y: y}) ||
             (tile instanceof sh.Item && tile.walkable);
+    },
+    clone: function() {
+        'use strict';
+        return new sh.Ship({jsonString: this.toJsonString()});
     }
 });
 
