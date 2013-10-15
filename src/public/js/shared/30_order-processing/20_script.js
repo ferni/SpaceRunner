@@ -18,19 +18,6 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    function getActionsByUnit(actions) {
-        var actionsByUnit = {};
-        _.each(actions, function(action) {
-            if (action.unitID !== undefined) {
-                if (!actionsByUnit[action.unitID]) {
-                    actionsByUnit[action.unitID] = [];
-                }
-                actionsByUnit[action.unitID].push(action);
-            }
-        });
-        return actionsByUnit;
-    }
-
     /**
      * A collection of Actions.
      * @type {*}
@@ -52,7 +39,7 @@ if (typeof exports !== 'undefined') {
             this.actions = _.map(json.actions, function(actionJson) {
                 return new sh.actions[actionJson.type](actionJson);
             });
-            this.byUnit = getActionsByUnit(this.actions);
+            this.updateActionsByUnit();
             return this;
         },
         toJson: function() {
@@ -71,7 +58,7 @@ if (typeof exports !== 'undefined') {
         },
         sort: function() {
             this.actions = _.sortBy(this.actions, 'time');
-            this.byUnit = getActionsByUnit(this.actions);
+            this.updateActionsByUnit();
         },
         /**
          * Inserts an action maintaining their order
@@ -99,6 +86,18 @@ if (typeof exports !== 'undefined') {
             return _.filter(this.actions, function(a) {
                 return a.type === type;
             });
+        },
+        updateActionsByUnit: function() {
+            var actionsByUnit = {};
+            _.each(this.actions, function(action) {
+                if (action.unitID !== undefined) {
+                    if (!actionsByUnit[action.unitID]) {
+                        actionsByUnit[action.unitID] = [];
+                    }
+                    actionsByUnit[action.unitID].push(action);
+                }
+            });
+            this.byUnit = actionsByUnit;
         }
     });
 }());
