@@ -16,6 +16,8 @@
 var ScriptPlayer = function(battleScreen) {
     'use strict';
     var script, next, actionPlayers = [],
+        nextChange,
+        modelChanges = [],
         v = sh.v, //vector math
         movementLanes = {
             right: {
@@ -305,21 +307,32 @@ var ScriptPlayer = function(battleScreen) {
     this.loadScript = function(s) {
         script = s;
         next = 0;
+        nextChange = 0;
         _.each(actionPlayers, function(ap) {
             ap.onNextTurn();
         });
         actionPlayers = [];
+        modelChanges = script.getSortedModelChanges();
     };
 
 
     this.update = function(elapsed) {
         var actions = script.actions;
+        //play actions
         if (next < actions.length && elapsed >= actions[next].time) {
             if (script.isWithinTurn(actions[next])) {
                 playAction(actions[next], elapsed);
             }
             next++;
         }
+
+        //apply model changes to ship
+        if (nextChange < modelChanges.length &&
+                elapsed >= modelChanges[nextChange].time) {
+            modelChanges[nextChange].apply(gs.ship);
+            nextChange++;
+        }
+
         _.each(actionPlayers, function(ap) {
             ap.update(elapsed);
         });
