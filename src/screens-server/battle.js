@@ -110,9 +110,6 @@ routes.add('ready', function(req, res, next) {
                 !turn.script) {
             //all orders have been submitted, generate the script
             battle.generateScript();
-            //TODO: maybe make the function updateShip... server side only
-            //and send the updated ship to the clients
-            sh.updateShipByScript(battle.ship, turn.script);
             winnerDeclared = _.find(turn.script.actions, function(a) {
                 return a instanceof sh.actions.DeclareWinner;
             });
