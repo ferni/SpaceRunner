@@ -100,7 +100,8 @@ exports.Battle = Class.extend({
                 turn.playersOrders[this.playerRight.id]);
 
         console.log('all orders' + JSON.stringify(orders));
-        turn.script = sh.createScript(orders, this.ship, this.turnDuration);
+        turn.script = sh.createScript(orders, this.ship, this.turnDuration,
+            true);
     },
     toJson: function() {
         'use strict';
