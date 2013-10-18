@@ -62,7 +62,7 @@ if (typeof exports !== 'undefined') {
         },
         /**
          * Inserts an action maintaining their order
-         * @param {sh.Action} action The action to be inserted.
+         * @param {Action} action The action to be inserted.
          */
         insertAction: function(action) {
             var insertionIndex = _.sortedIndex(this.actions, action, 'time');
@@ -98,6 +98,13 @@ if (typeof exports !== 'undefined') {
                 }
             });
             this.byUnit = actionsByUnit;
+        },
+        getSortedModelChanges: function() {
+            var changes = [];
+            _.each(this.actions, function(a) {
+                changes = changes.concat(a.modelChanges);
+            });
+            return _.sortBy(changes, 'time');
         }
     });
 }());
