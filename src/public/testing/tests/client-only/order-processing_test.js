@@ -22,6 +22,19 @@ test('script creation', function() {
     equal(script.actions[1].time, 1000, 'Second action starts at 1000');
 });
 
+test('script creation\'s ship modifications', function() {
+    'use strict';
+    var order,
+        ship = new sh.Ship({tmxName: 'test'}),
+        unit = ship.putUnit({speed: 1}),
+        prevX = unit.x;
+    unit.owner = new sh.Player({id: 1, name: 'juan'});
+    order = sh.make.moveOrder(unit, {x: unit.x + 2, y: unit.y});
+    ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
+    sh.createScript([order], ship, 5000, true);
+    equal(unit.x, prevX + 2, 'The unit position has been modified');
+});
+
 test('Script.insertAction', function() {
     'use strict';
     var script = new sh.Script({actions: [
