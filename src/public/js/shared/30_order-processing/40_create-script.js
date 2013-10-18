@@ -106,7 +106,6 @@ if (typeof exports !== 'undefined') {
     function createScript(orders, ship, turnDuration, turnOnly) {
         var script = new sh.Script({turnDuration: turnDuration}),
             queue = [],//the actions that need to be added to the script
-            paths = {},
             grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
             next,
             action;
@@ -124,7 +123,7 @@ if (typeof exports !== 'undefined') {
                 //this assumes the orders array is ordered by orders given
                 path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
                     grid.clone());
-                if (path.length > 0) {
+                if (path.length > 1) {
                     insertInQueue({
                         time: 0,
                         type: 'Move',
