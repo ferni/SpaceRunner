@@ -123,7 +123,7 @@ if (typeof exports !== 'undefined') {
                         //there's only one unit...
                             others.length === 1 &&
                             //is enemy unit
-                            others[0].owner.id !== unit.owner.id &&
+                            others[0].ownerID !== unit.ownerID &&
                             //unit will stand still
                             !willUnitMove(others[0].id, script,
                                 {withinTurn: false})) {
@@ -176,7 +176,7 @@ if (typeof exports !== 'undefined') {
                 }
                 for (j = i - 1; j >= 0; j--) {
                     b = ship.units[j];
-                    if (a.owner.id === b.owner.id &&//units are of the same team
+                    if (a.ownerID === b.ownerID &&//units are of the same team
                             _.isEqual(getEndPosition(a, script),
                                 getEndPosition(b, script))) {
                         //same end position, one will need to change
@@ -316,7 +316,7 @@ if (typeof exports !== 'undefined') {
                 enemy = unitPosObject.unit;
             if (unit === enemy ||
                 //doesn't register overlap if they're allies
-                    unit.owner.id === enemy.owner.id) {
+                    unit.ownerID === enemy.ownerID) {
                 return;
             }
             _.each(positionPeriods, function(enemyPosPeriod) {
@@ -432,7 +432,7 @@ if (typeof exports !== 'undefined') {
 
     function addDamageShipActions(script, ship) {
         var enemyUnits = _.filter(ship.units, function(u) {
-            return u.owner.id === -1;
+            return u.ownerID === -1;
         }),
             combats = _.filter(script.actions, function(a) {
                 return a instanceof sh.actions.LockInCombat;

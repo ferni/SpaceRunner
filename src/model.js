@@ -154,11 +154,11 @@ exports.ChallengeBatte = exports.Battle.extend({
             '{"type":"door","x":18,"y":11,"r":true}],' +
             '"units":[]}'}),
             Zealot = sh.units.Zealot;
-        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
-        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
-        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
-        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
-        ship.putUnit(new Zealot(0, 0, {owner: params.player}));
+        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
+        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
+        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
+        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
+        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
         this.parent({id: params.id, ship: ship});
         this.playerLeft = params.player;
         this.playerRight = new exports.AIPlayer('Enemy');
@@ -274,15 +274,15 @@ exports.BattleSetUp = function(params) {
         try {
             ship = new sh.Ship({jsonString: this.shipJsonString});
             battle = new exports.Battle({id: battles.length, ship: ship});
-            ship.putUnit({type: 6, speed: 2, owner: this.creator});
-            ship.putUnit({type: 6, speed: 2, owner: this.creator});
-            ship.putUnit({type: 0, speed: 1.5, owner: this.creator});
-            ship.putUnit({type: 0, speed: 1.5, owner: this.creator});
+            ship.putUnit({type: 6, speed: 2, ownerID: this.creator.id});
+            ship.putUnit({type: 6, speed: 2, ownerID: this.creator.id});
+            ship.putUnit({type: 0, speed: 1.5, ownerID: this.creator.id});
+            ship.putUnit({type: 0, speed: 1.5, ownerID: this.creator.id});
 
-            ship.putUnit({type: 7, speed: 1.5, owner: this.challenger});
-            ship.putUnit({type: 7, speed: 1.5, owner: this.challenger});
-            ship.putUnit({type: 12, speed: 2, owner: this.challenger});
-            ship.putUnit({type: 12, speed: 2, owner: this.challenger});
+            ship.putUnit({type: 7, speed: 1.5, ownerID: this.challenger.id});
+            ship.putUnit({type: 7, speed: 1.5, ownerID: this.challenger.id});
+            ship.putUnit({type: 12, speed: 2, ownerID: this.challenger.id});
+            ship.putUnit({type: 12, speed: 2, ownerID: this.challenger.id});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
             battles.push(battle);

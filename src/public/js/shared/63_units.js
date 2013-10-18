@@ -52,7 +52,7 @@ sh.Unit = sh.TileEntity.extendShared({
             this.imageFacesRight = settings.imageFacesRight;
         }
         this.hp = this.maxHP;
-        this.owner = settings.owner;
+        this.ownerID = settings.ownerID;
         this.parent(x, y);
     },
     toJson: function() {
@@ -68,7 +68,7 @@ sh.Unit = sh.TileEntity.extendShared({
                 meleeDamage: this.meleeDamage,
                 attackCooldown: this.attackCooldown,
                 imageFacesRight: this.imageFacesRight,
-                owner: this.owner.toJson()
+                ownerID: this.ownerID
             }
 
         };

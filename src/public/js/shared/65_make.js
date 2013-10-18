@@ -57,9 +57,6 @@ sh.make = (function() {
 
     //UNITS
     make.unitFromJson = function(json) {
-        if (json.settings) {
-            json.settings.owner = make.playerFromJson(json.settings.owner);
-        }
         return new sh.Unit(json.x, json.y, json.settings);
     };
     make.playerFromJson = function(json) {

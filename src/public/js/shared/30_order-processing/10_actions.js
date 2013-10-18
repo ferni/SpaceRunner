@@ -110,7 +110,7 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.modelChanges = [new ModelChange(this.time,
                 function(ship) {
-                    var unit = new sh.units[this.unitType](0, 0,
+                    var unit = new sh.units[self.unitType](0, 0,
                             {owner: {id: self.playerID}}),
                         freePos = ship.closestTile(self.x, self.y, function(t) {
                             return t === sh.tiles.clear;
@@ -132,9 +132,10 @@ if (typeof exports !== 'undefined') {
             this.updateModelChanges();
         },
         updateModelChanges: function() {
+            var self = this;
             this.modelChanges = [new ModelChange(this.time,
                 function(ship) {
-                    ship.hp -= this.damage;
+                    ship.hp -= self.damage;
                 })];
         }
     });

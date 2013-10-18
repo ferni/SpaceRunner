@@ -197,7 +197,7 @@ sh.Ship = sh.SharedClass.extendShared({
     getPlayerUnits: function(playerID) {
         'use strict';
         return _.filter(this.units, function(unit) {
-            return unit.owner.id === playerID;
+            return unit.ownerID === playerID;
         });
     },
     removeAt: function(x, y) {

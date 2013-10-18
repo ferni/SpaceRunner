@@ -37,7 +37,7 @@ sh.verifyOrder = function(order, ship, playerID) {
             //is destination a walkable area
             ship.isWalkable(dest.x, dest.y) &&
             //unit owned by the issuer
-            unit.owner.id === playerID;
+            unit.ownerID === playerID;
     default:
         return false;
     }

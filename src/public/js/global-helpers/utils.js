@@ -133,7 +133,7 @@ var utils = {
     },
     isMine: function(unit) {
         'use strict';
-        return gs.player.id === unit.owner.id;
+        return gs.player.id === unit.ownerID;
     }
 };
 

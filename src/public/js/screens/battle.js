@@ -240,6 +240,7 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
+        this.scriptPlayer.onPause();
         this.shipVM.update();
 
         this.scriptPrediction.m = [];
