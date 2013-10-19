@@ -26,11 +26,11 @@ sh.Ship = sh.SharedClass.extendShared({
     hp: 500,
     init: function(settings) {
         'use strict';
-        if (!settings.tmxName && !settings.jsonString) {
+        if (!settings.tmxName && !settings.json) {
             throw 'Ship settings must have tmxName or jsonData';
         }
-        if (settings.jsonString) {
-            this.tmxName = JSON.parse(settings.jsonString).tmxName;
+        if (settings.json) {
+            this.tmxName = settings.json.tmxName;
         } else {
             this.tmxName = settings.tmxName;
         }
@@ -45,8 +45,8 @@ sh.Ship = sh.SharedClass.extendShared({
         this.map = new sh.CompoundMap([
             new sh.Map(this.hullMap), this.itemsMap, this.unitsMap
         ]);
-        if (settings.jsonString) {
-            this.fromJsonString(settings.jsonString);
+        if (settings.json) {
+            this.fromJson(settings.json);
         }
     },
     loadMap: function() {
@@ -260,10 +260,9 @@ sh.Ship = sh.SharedClass.extendShared({
         return tile !== sh.tiles.solid && tile !== sh.tiles.front &&
             tile !== sh.tiles.back;
     },
-    toJsonString: function() {
+    toJson: function() {
         'use strict';
-        //TODO: replace with toJson
-        return JSON.stringify({
+        return {
             'tmxName': this.tmxName,
             'buildings': _.map(this.built, function(b) {
                 return b.toJson();
@@ -271,15 +270,12 @@ sh.Ship = sh.SharedClass.extendShared({
             'units': _.map(this.units, function(u) {
                 return u.toJson();
             })
-        });
+        };
     },
-    fromJsonString: function(jsonString) {
+    fromJson: function(json) {
         'use strict';
-        //TODO: replace with fromJson
-        var json,
-            ship = this;
+        var ship = this;
         ship.removeAll();
-        json = JSON.parse(jsonString);
         _.each(json.buildings, function(b) {
             ship.addItem(sh.make.itemFromJson(b));
         });
@@ -308,7 +304,7 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     clone: function() {
         'use strict';
-        return new sh.Ship({jsonString: this.toJsonString()});
+        return new sh.Ship({json: this.toJson()});
     }
 });
 

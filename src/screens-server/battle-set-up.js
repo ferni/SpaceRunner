@@ -74,13 +74,13 @@ routes.add('create', function(req, res, next) {
     var id = battleSetUps.length,
         bsu;
     console.log('creating...');
-    if (!req.body.shipJsonString) {
-        next(new Error('shipJsonString must be provided'));
+    if (!req.body.shipJson) {
+        next(new Error('shipJson must be provided'));
     }
     bsu = new model.BattleSetUp({
         id: id,
         creator: auth.getPlayer(req),
-        shipJsonString: req.body.shipJsonString
+        shipJson: req.body.shipJson
     });
     battleSetUps.push(bsu);
     res.json(bsu.toJson());

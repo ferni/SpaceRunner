@@ -151,16 +151,16 @@ asyncTest('at out of bounds', function() {
 
 });
 
-asyncTest('fromJsonString', function() {
+asyncTest('fromJson', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         var power, door;
         screen.ship.removeAll();
-        screen.ship.fromJsonString('{"tmxName":"test",' +
-            '"buildings":[{"type":"power", "x":0, "y":0},' +
-            '{"type":"door", "x":2, "y":3, "r":true}]}');
+        screen.ship.fromJson({'tmxName': 'test',
+            'buildings': [{'type': 'power', 'x': 0, 'y': 0},
+                {'type': 'door', 'x': 2, 'y': 3, 'r': true}]});
 
         power = screen.ship.at(0, 0);
         equal(power.type, 'power', 'power successfully added to the ship');
@@ -179,7 +179,7 @@ asyncTest('fromJsonString', function() {
     });
 });
 
-asyncTest('fromJsonString clears buildings', function() {
+asyncTest('fromJson clears buildings', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
@@ -189,14 +189,14 @@ asyncTest('fromJsonString clears buildings', function() {
             th.shipPositions.free.y, 'power'), 'power successfully built');
         ok(screen.ship.buildAt(th.shipPositions.engine.x,
             th.shipPositions.engine.y, 'engine'), 'engine succesfully built');
-        screen.ship.fromJsonString('{"tmxName":"test",' +
-            '"buildings":[{"type":"wall", "x":0, "y":0}]}');
+        screen.ship.fromJson({'tmxName': 'test',
+            'buildings': [{'type': 'wall', 'x': 0, 'y': 0}]});
         equal(screen.ship.built.length, 1,
             'ship has only one building after loading');
         equal(screen.ship.built[0].type, 'wall',
             'that only building is a wall (loaded through json)');
 
-        screen.ship.fromJsonString('{"tmxName":"test","buildings":[]}');
+        screen.ship.fromJson({'tmxName': 'test', 'buildings': []});
         equal(screen.ship.built.length, 0,
             'ship has 0 buildings after loading empty array');
         start();
@@ -204,7 +204,7 @@ asyncTest('fromJsonString clears buildings', function() {
 
 });
 
-asyncTest('toJsonString', function() {
+asyncTest('toJson', function() {
     'use strict';
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
@@ -218,7 +218,7 @@ asyncTest('toJsonString', function() {
         screen.ship.at(th.shipPositions.engine.x, th.shipPositions.engine.y)
             .rotated(true);
 
-        jsonObject = JSON.parse(screen.ship.toJsonString());
+        jsonObject = screen.ship.toJson();
         buildings = jsonObject.buildings;
         equal(buildings.length, 2, 'JSON object (array) has 2 objects');
 

@@ -18,7 +18,7 @@ screens.register('battle', ConnectedScreen.extend({
     onReset: function(battleModel) {
         'use strict';
         this.parent({id: battleModel.id});
-        gs.ship = new sh.Ship({jsonString: battleModel.ship});
+        gs.ship = new sh.Ship({json: battleModel.ship});
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);

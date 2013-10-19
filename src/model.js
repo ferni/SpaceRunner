@@ -107,7 +107,7 @@ exports.Battle = Class.extend({
         'use strict';
         return {
             id: this.id,
-            ship: this.ship.toJsonString(),
+            ship: this.ship.toJson(),
             playerLeft: this.playerLeft.toJson(),
             playerRight: this.playerRight.toJson()
         };
@@ -121,38 +121,38 @@ exports.Battle = Class.extend({
 exports.ChallengeBatte = exports.Battle.extend({
     init: function(params) {
         'use strict';
-        var ship = new sh.Ship({jsonString: '{"tmxName":"Mechanoid_Cruiser",' +
-            '"buildings":[{"type":"door","x":14,"y":11,"r":true},' +
-            '{"type":"wall","x":14,"y":8,"r":false},' +
-            '{"type":"wall","x":17,"y":8,"r":false},' +
-            '{"type":"door","x":15,"y":8,"r":false},' +
-            '{"type":"wall","x":14,"y":15,"r":false},' +
-            '{"type":"wall","x":17,"y":15,"r":false},' +
-            '{"type":"door","x":15,"y":15,"r":false},' +
-            '{"type":"engine","x":10,"y":5,"r":false},' +
-            '{"type":"engine","x":10,"y":17,"r":false},' +
-            '{"type":"engine","x":11,"y":11,"r":false},' +
-            '{"type":"console","x":11,"y":10,"r":false},' +
-            '{"type":"weapon","x":24,"y":8,"r":false},' +
-            '{"type":"weapon","x":24,"y":14,"r":false},' +
-            '{"type":"weapon","x":20,"y":17,"r":false},' +
-            '{"type":"component","x":10,"y":7,"r":false},' +
-            '{"type":"component","x":10,"y":15,"r":false},' +
-            '{"type":"console","x":12,"y":5,"r":false},' +
-            '{"type":"console","x":12,"y":18,"r":false},' +
-            '{"type":"weapon","x":20,"y":5,"r":false},' +
-            '{"type":"power","x":20,"y":15,"r":false},' +
-            '{"type":"power","x":20,"y":7,"r":false},' +
-            '{"type":"console","x":25,"y":10,"r":false},' +
-            '{"type":"console","x":25,"y":13,"r":false},' +
-            '{"type":"console","x":19,"y":18,"r":false},' +
-            '{"type":"console","x":19,"y":5,"r":false},' +
-            '{"type":"door","x":22,"y":11,"r":true},' +
-            '{"type":"weak_spot","x":15,"y":6,"r":false},' +
-            '{"type":"weak_spot","x":15,"y":16,"r":false},' +
-            '{"type":"weak_spot","x":19,"y":11,"r":false},' +
-            '{"type":"door","x":18,"y":11,"r":true}],' +
-            '"units":[]}'}),
+        var ship = new sh.Ship({json: {'tmxName': 'Mechanoid_Cruiser',
+            'buildings': [{'type': 'door', 'x': 14, 'y': 11, 'r': true},
+                {'type': 'wall', 'x': 14, 'y': 8, 'r': false},
+                {'type': 'wall', 'x': 17, 'y': 8, 'r': false},
+                {'type': 'door', 'x': 15, 'y': 8, 'r': false},
+                {'type': 'wall', 'x': 14, 'y': 15, 'r': false},
+                {'type': 'wall', 'x': 17, 'y': 15, 'r': false},
+                {'type': 'door', 'x': 15, 'y': 15, 'r': false},
+                {'type': 'engine', 'x': 10, 'y': 5, 'r': false},
+                {'type': 'engine', 'x': 10, 'y': 17, 'r': false},
+                {'type': 'engine', 'x': 11, 'y': 11, 'r': false},
+                {'type': 'console', 'x': 11, 'y': 10, 'r': false},
+                {'type': 'weapon', 'x': 24, 'y': 8, 'r': false},
+                {'type': 'weapon', 'x': 24, 'y': 14, 'r': false},
+                {'type': 'weapon', 'x': 20, 'y': 17, 'r': false},
+                {'type': 'component', 'x': 10, 'y': 7, 'r': false},
+                {'type': 'component', 'x': 10, 'y': 15, 'r': false},
+                {'type': 'console', 'x': 12, 'y': 5, 'r': false},
+                {'type': 'console', 'x': 12, 'y': 18, 'r': false},
+                {'type': 'weapon', 'x': 20, 'y': 5, 'r': false},
+                {'type': 'power', 'x': 20, 'y': 15, 'r': false},
+                {'type': 'power', 'x': 20, 'y': 7, 'r': false},
+                {'type': 'console', 'x': 25, 'y': 10, 'r': false},
+                {'type': 'console', 'x': 25, 'y': 13, 'r': false},
+                {'type': 'console', 'x': 19, 'y': 18, 'r': false},
+                {'type': 'console', 'x': 19, 'y': 5, 'r': false},
+                {'type': 'door', 'x': 22, 'y': 11, 'r': true},
+                {'type': 'weak_spot', 'x': 15, 'y': 6, 'r': false},
+                {'type': 'weak_spot', 'x': 15, 'y': 16, 'r': false},
+                {'type': 'weak_spot', 'x': 19, 'y': 11, 'r': false},
+                {'type': 'door', 'x': 18, 'y': 11, 'r': true}],
+            'units': []}}),
             Zealot = sh.units.Zealot;
         ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
         ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
@@ -223,14 +223,14 @@ exports.ChallengeBatte = exports.Battle.extend({
 
 /**
  * A model representing the battle set up (for the battle-set-up screen)
- * @param {{id, creator, shipJsonString}} params
+ * @param {{id, creator, shipJson}} params
  * @constructor
  */
 exports.BattleSetUp = function(params) {
     'use strict';
     this.id = params.id;
     this.creator = params.creator;
-    this.shipJsonString = params.shipJsonString;
+    this.shipJson = params.shipJson;
     this.challenger = null; //player that joins
     this.battle = null;
     this.toJson = function() {
@@ -272,7 +272,7 @@ exports.BattleSetUp = function(params) {
             ship,
             battle;
         try {
-            ship = new sh.Ship({jsonString: this.shipJsonString});
+            ship = new sh.Ship({json: this.shipJson});
             battle = new exports.Battle({id: battles.length, ship: ship});
             ship.putUnit({type: 6, speed: 2, ownerID: this.creator.id});
             ship.putUnit({type: 6, speed: 2, ownerID: this.creator.id});

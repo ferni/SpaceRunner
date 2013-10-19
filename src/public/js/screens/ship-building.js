@@ -108,7 +108,7 @@ screens.register('ship-building', GameScreen.extend({
 
         //Save
         $('#file_save').click(function() {
-            var shipData = screen.ship.toJsonString(),
+            var shipData = screen.ship.toJson(),
                 name = prompt('Enter the ship name.');
             $.post('/save', {name: name, buildings: shipData},
                 function(response) {
@@ -124,7 +124,7 @@ screens.register('ship-building', GameScreen.extend({
             var name = prompt('Enter the ship name you wish to load.');
             $.post('/load', {name: name}, function(response) {
                 if (response) {
-                    me.state.change('ship-building', {jsonString: response});
+                    me.state.change('ship-building', {json: response});
                 } else {
                     alert('Error: Could not load ship.');
                 }

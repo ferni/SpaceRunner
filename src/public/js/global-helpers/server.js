@@ -26,7 +26,7 @@ var server = {
     createBattle: function(ship, onDone) {
         'use strict';
         console.log('Creating battle...');
-        $.post('/battle-set-up/create', {shipJsonString: ship.toJsonString()},
+        $.post('/battle-set-up/create', {shipJson: ship.toJson()},
             function(data) {
                 console.log('Battle created');
                 data.creator = sh.make.playerFromJson(data.creator);
