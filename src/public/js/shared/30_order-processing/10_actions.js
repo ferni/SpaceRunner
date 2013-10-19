@@ -54,10 +54,15 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.modelChanges = [new ModelChange(this.time + this.duration,
                 function(ship) {
-                    var unit = ship.getUnitByID(self.unitID);
+                    var unit = ship.getUnitByID(self.unitID),
+                        prev;
                     if (unit) { //is alive
+                        prev = {x: unit.x, y: unit.y};
                         unit.y = self.to.y;
                         unit.x = self.to.x;
+                        if (!sh.v.equal(prev, self.to)) {
+                            ship.unitsMap.update();
+                        }
                     }
                 })];
         }
