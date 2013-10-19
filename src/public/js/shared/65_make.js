@@ -50,14 +50,16 @@ sh.make = (function() {
     };
 
     make.itemFromJson = function(json) {
-        var item = make.itemModel(json.type, [null, json.x, json.y]);
+        var item = make.itemModel(json.type,
+            [null, parseInt(json.x, 10), parseInt(json.y, 10)]);
         item.rotated(json.r);
         return item;
     };
 
     //UNITS
     make.unitFromJson = function(json) {
-        return new sh.Unit(json.x, json.y, json.settings);
+        return new sh.Unit(parseInt(json.x, 10), parseInt(json.y, 10),
+            json.settings);
     };
     make.playerFromJson = function(json) {
         return new sh.Player(json);
