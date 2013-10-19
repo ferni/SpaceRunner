@@ -36,21 +36,26 @@ sh.Map = sh.SharedClass.extendShared({
         }
         this.width = width;
         this.height = raw.length;
-        this.at = function(x, y) {
-            return raw[y] !== undefined ? raw[y][x] : undefined;
-        };
-        this.set = function(x, y, value) {
-            if (this.isInBounds(x, y)) {
-                raw[y][x] = value;
-            } else {
-                throw 'Cannot set map at ' + x + ',' + y + ': out of bounds.';
-            }
-        };
-        this.clear = function() {
-            this.tiles(function(x, y) {
-                raw[y][x] = 0;
-            });
-        };
+        this.raw = raw;
+    },
+    clear: function() {
+        'use strict';
+        var raw = this.raw;
+        this.tiles(function(x, y) {
+            raw[y][x] = 0;
+        });
+    },
+    set: function(x, y, value) {
+        'use strict';
+        if (this.isInBounds(x, y)) {
+            this.raw[y][x] = value;
+        } else {
+            throw 'Cannot set map at ' + x + ',' + y + ': out of bounds.';
+        }
+    },
+    at: function(x, y) {
+        'use strict';
+        return this.raw[y] !== undefined ? this.raw[y][x] : undefined;
     },
     isInBounds: function(x, y) {
         'use strict';
