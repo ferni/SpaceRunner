@@ -82,29 +82,9 @@ var ScriptPlayer = function(battleScreen) {
         if (isLast) { //is last move action the unit would take this turn
             //split duration between going to entry point and going to end pos
             timeForEndPos = duration / 4;
-            /*if (timeForEndPos < 150) {
-                timeForEndPos = 150;
-            }*/
             duration -= timeForEndPos;
-            if (_.any(script.actions, function(action) {
-                    //there's a "lock in combat" action ahead
-                    return action instanceof sh.actions.LockInCombat &&
-                        (action.unit1ID === moveAction.unitID ||
-                        action.unit2ID === moveAction.unitID) &&
-                        v.equal(action.tile, moveAction.to);
-                })) {
-                //go to the combat position
-                if (unitVM.isMine()) {
-                    //up right
-                    endPos = v.add(tilePx, {x: 24, y: 8});
-                } else {
-                    //down left
-                    endPos = v.add(tilePx, {x: 8, y: 24});
-                }
-            } else {
-                //go to the center of the tile.
-                endPos = v.add(tilePx, {x: HALF_TILE, y: HALF_TILE});
-            }
+            //go to the center of the tile.
+            endPos = v.add(tilePx, {x: HALF_TILE, y: HALF_TILE});
             advancementPerMsToEnd = v.div(v.sub(endPos, toPx), timeForEndPos);
         }
         advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
@@ -117,22 +97,19 @@ var ScriptPlayer = function(battleScreen) {
                             v.mul(advancementPerMsToEnd, delta) :
                             v.mul(advancementPerMs, delta),
                     prevPosX = unitVM.pos.x;
-                //unitVM.pos is a me.Vector2d, that is why x and y
-                //are assigned manually instead of using v.add
-
                 if (elapsed >= totalDuration) {
                     if (isLast) {
                         unitVM.setCurrentAnimation('idle', true);
                         console.log('Unit positioned in ' + timeForEndPos +
                             'ms');
                     }
-
-
                     //self remove from the actionPlayers
                     index = actionPlayers.indexOf(this);
                     actionPlayers.splice(index, 1);
 
                 } else {
+                    //unitVM.pos is a me.Vector2d, that is why x and y
+                    //are assigned manually instead of using v.add
                     unitVM.pos.x += advance.x;
                     unitVM.pos.y += advance.y;
                     unitVM.faceLeft(prevPosX - unitVM.pos.x > 0);
