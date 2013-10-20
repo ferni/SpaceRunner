@@ -61,43 +61,31 @@ var ScriptPlayer = function(battleScreen) {
         });
     }
 
-    function getPerpendicularDistanceToLane(point, lane) {
-        //note: the point should be relative to the current tile
-        var distance = {},
-            dir = lane.direction;
-        point = v.sub(point, lane.entryPoint); //make relative to entry point
-        if (dir.x === 0) {
-            return {x: -point.x, y: 0};
-        }
-        if (dir.y === 0) {
-            return {x: 0, y: -point.y};
-        }
-        distance.y = ((point.x * (dir.y / dir.x)) - point.y) / 2;
-        distance.x = ((point.y * (dir.x / dir.y)) - point.x) / 2;
-        return distance;
-    }
-
     function MoveActionPlayer(moveAction, elapsed) {
         var start, last, duration, unitVM, fromPx, toPx, advancementPerMs,
-            lane, getInLaneTime, disToLane, advancementTowardsLanePerMs,
-            isLast;
+            advancementPerMsToEnd,
+            lane, isLast, timeForEndPos, endPos, tilePx, totalDuration;
         start = elapsed;
-        duration = moveAction.duration;
+        totalDuration = duration = moveAction.duration;
         unitVM = battleScreen.shipVM.getUnitVMByID(
             moveAction.unitID
         );
         isLast = script.getLastMoveAction(unitVM.m) === moveAction;
-        if (isLast) {
-            fromPx = unitVM.pos;
-        } else {
-            fromPx = v.mul(moveAction.from, TILE_SIZE);
-        }
-
-        toPx = v.mul(moveAction.to, TILE_SIZE);
+        fromPx = unitVM.pos;
+        tilePx = v.mul(moveAction.to, TILE_SIZE);
+        lane = getLane(moveAction.from, moveAction.to);
+        //adjust for entry point
+        toPx = v.add(tilePx, lane.entryPoint);
         if (script.byUnit[unitVM.m.id][0] === moveAction) { //first one
             unitVM.setCurrentAnimation('walking', false);
         }
         if (isLast) { //is last move action the unit would take this turn
+            //split duration between going to entry point and going to end pos
+            timeForEndPos = duration / 4;
+            /*if (timeForEndPos < 150) {
+                timeForEndPos = 150;
+            }*/
+            duration -= timeForEndPos;
             if (_.any(script.actions, function(action) {
                     //there's a "lock in combat" action ahead
                     return action instanceof sh.actions.LockInCombat &&
@@ -108,28 +96,16 @@ var ScriptPlayer = function(battleScreen) {
                 //go to the combat position
                 if (unitVM.isMine()) {
                     //up right
-                    toPx.x += 24;
-                    toPx.y += 8;
+                    endPos = v.add(tilePx, {x: 24, y: 8});
                 } else {
                     //down left
-                    toPx.x += 8;
-                    toPx.y += 24;
+                    endPos = v.add(tilePx, {x: 8, y: 24});
                 }
             } else {
                 //go to the center of the tile.
-                toPx.x += HALF_TILE;
-                toPx.y += HALF_TILE;
+                endPos = v.add(tilePx, {x: HALF_TILE, y: HALF_TILE});
             }
-        } else {
-            //get in the lane
-            lane = getLane(moveAction.from, moveAction.to);
-            getInLaneTime = 300;
-            disToLane = getPerpendicularDistanceToLane(
-                //make relative to tile
-                {x: unitVM.pos.x % 32, y: unitVM.pos.y % 32},
-                lane
-            );
-            advancementTowardsLanePerMs = v.div(disToLane, getInLaneTime);
+            advancementPerMsToEnd = v.div(v.sub(endPos, toPx), timeForEndPos);
         }
         advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
         return {
@@ -137,28 +113,30 @@ var ScriptPlayer = function(battleScreen) {
                 var index,
                     elapsed = elapsedInTurn - start,
                     delta = elapsed - (last || elapsed),
-                    advance = v.mul(advancementPerMs, delta),
-                    laneAdvance,
+                    advance = duration <= elapsed && isLast ?
+                            v.mul(advancementPerMsToEnd, delta) :
+                            v.mul(advancementPerMs, delta),
                     prevPosX = unitVM.pos.x;
                 //unitVM.pos is a me.Vector2d, that is why x and y
                 //are assigned manually instead of using v.add
-                unitVM.pos.x += advance.x;
-                unitVM.pos.y += advance.y;
-                if (!isLast && elapsed <= getInLaneTime) {
-                    //move a little closer to the movement lane
-                    laneAdvance = v.mul(advancementTowardsLanePerMs, delta);
-                    unitVM.pos.x += laneAdvance.x;
-                    unitVM.pos.y += laneAdvance.y;
-                }
-                unitVM.faceLeft(prevPosX - unitVM.pos.x > 0);
-                last = elapsed;
-                if (elapsed >= duration) {
+
+                if (elapsed >= totalDuration) {
                     if (isLast) {
                         unitVM.setCurrentAnimation('idle', true);
+                        console.log('Unit positioned in ' + timeForEndPos +
+                            'ms');
                     }
+
+
                     //self remove from the actionPlayers
                     index = actionPlayers.indexOf(this);
                     actionPlayers.splice(index, 1);
+
+                } else {
+                    unitVM.pos.x += advance.x;
+                    unitVM.pos.y += advance.y;
+                    unitVM.faceLeft(prevPosX - unitVM.pos.x > 0);
+                    last = elapsed;
                 }
             },
             onNextTurn: function() {}
@@ -324,9 +302,6 @@ var ScriptPlayer = function(battleScreen) {
             ap.update(elapsed);
         });
     };
-
-    //export for testing
-    this.getPerpendicularDistanceToLane = getPerpendicularDistanceToLane;
 };
 
 
