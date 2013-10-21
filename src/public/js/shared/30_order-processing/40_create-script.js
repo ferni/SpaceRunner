@@ -345,7 +345,7 @@ if (typeof exports !== 'undefined') {
         _.each(ship.units, function(unit) {
             if (unit.lastAttack) {
                 //update lastAttack for the current turn
-                unit.lastAttack = script.turnDuration - unit.lastAttack;
+                unit.lastAttack = unit.lastAttack - script.turnDuration;
             }
             //The units attack when standing
             var standing = getStandingPeriods(script, unit),
