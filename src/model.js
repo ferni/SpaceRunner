@@ -301,27 +301,61 @@ exports.BattleSetUp = function(params) {
         allowDiagonal: true
     }),
         AIPlayer;
-    function getNearestWeakSpot(ship, pos) {
-        var grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
-            weakSpots = _.filter(ship.built, function(i) {
+    function getWeakSpotsTiles(ship) {
+        var weakSpots = _.filter(ship.built, function(i) {
                 return i instanceof sh.items.WeakSpot;
+            }),
+            tiles = [];
+        _.each(weakSpots, function(ws) {
+            ws.tiles(function(x, y) {
+                tiles.push({x: x, y: y});
             });
-        return _.min(weakSpots, function(ws) {
-            return pfFinder.findPath(pos.x, pos.y, ws.x, ws.y,
-                grid.clone()).length;
+        });
+        return tiles;
+    }
+
+    function makeUnitsUnwalkable(ship, grid) {
+        var units = ship.units;
+        _.each(units, function(u) {
+            if (u.x >= 0 && u.x < grid.width &&
+                    u.y >= 0 && u.y < grid.height) {
+                grid.setWalkableAt(u.x, u.y, false);
+            }
+        });
+        return grid;
+    }
+
+    function getPaths(grid, from, destinations) {
+        var paths = [];
+        _.each(destinations, function(d) {
+            var path = pfFinder.findPath(from.x, from.y, d.x, d.y,
+                grid.clone());
+            if (path.length > 1) {
+                paths.push(path);
+            }
+        });
+        return paths;
+    }
+
+    function getShortest(arrays) {
+        return _.min(arrays, function(a) {
+            return a.length;
         });
     }
 
-    function getUnoccupiedTile(weakSpot, units) {
-        var tile = null;
-        weakSpot.tiles(function(x, y) {
-            if (!_.any(units, function(unit) {
-                    return unit.x === x && unit.y === y;
-                })) {
-                tile = {x: x, y: y};
-            }
-        });
-        return tile;
+    function pathDestination(path) {
+        var dest = _.last(path);
+        return {x: dest[0], y: dest[1]};
+    }
+
+    function setOrderForShortestPath(grid, unit, destinations, orders) {
+        var paths = getPaths(grid.clone(), unit, destinations);
+        if (paths.length > 0) {
+            orders[unit.id] = sh.make.moveOrder(unit,
+                pathDestination(getShortest(paths)));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -339,20 +373,47 @@ exports.BattleSetUp = function(params) {
          */
         getOrders: function(battle) {
             var ship = battle.ship,
-                units = ship.getPlayerUnits(this.id),
-                orders = {};
-            _.each(units, function(unit) {
+                grid = new sh.PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix()),
+                gridWithUnits = makeUnitsUnwalkable(ship, grid.clone()),
+                myUnits = ship.getPlayerUnits(this.id),
+                orders = {},
+                tiles = getWeakSpotsTiles(ship),
+                free = [],
+                occupied = [];
+            _.each(tiles, function(t) {
+                if (_.any(myUnits, function(unit) {
+                        return unit.x === t.x && unit.y === t.y;
+                    })) {
+                    occupied.push(t);
+                } else {
+                    free.push(t);
+                }
+            });
+            _.each(myUnits, function(unit) {
                 if (ship.itemsMap.at(unit.x, unit.y) instanceof
                         sh.items.WeakSpot) {
                     //already at the spot, don't move
                     return;
                 }
-                var ws = getNearestWeakSpot(ship, unit),
-                    destination = getUnoccupiedTile(ws, units);
-                if (!destination) {
-                    destination = ws;
+                //optimal: to free tile avoiding units
+                if (setOrderForShortestPath(gridWithUnits.clone(), unit,
+                        free, orders)) {
+                    return;
                 }
-                orders[unit.id] = sh.make.moveOrder(unit, destination);
+                //2nd optimal: to free tile through units
+                if (setOrderForShortestPath(grid.clone(), unit,
+                        free, orders)) {
+                    return;
+                }
+                //3rd optimal: to occupied tile avoiding units
+                if (setOrderForShortestPath(gridWithUnits.clone(), unit,
+                        occupied, orders)) {
+                    return;
+                }
+                //4th optimal: to occupied tile through units
+                setOrderForShortestPath(grid.clone(), unit,
+                        occupied, orders);
             });
             return orders;
         }
