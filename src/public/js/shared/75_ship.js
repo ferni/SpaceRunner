@@ -23,7 +23,7 @@ if (typeof exports !== 'undefined') {
 sh.Ship = sh.SharedClass.extendShared({
     hullMap: {},
     itemsMap: {},
-    hp: 500,
+    hp: 10500,
     init: function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.jsonString) {
@@ -183,7 +183,9 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         this.units.push(unit);
         unit.ship = this;
-        unit.id = this.units.length;
+        unit.id = _.max(this.units, function(u) {
+            return u.id;
+        }).id + 1;
         this.unitsMap.update();
     },
     getUnitByID: function(id) {
