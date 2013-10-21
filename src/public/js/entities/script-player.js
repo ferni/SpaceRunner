@@ -97,12 +97,17 @@ var ScriptPlayer = function(battleScreen) {
                             v.mul(advancementPerMsToEnd, delta) :
                             v.mul(advancementPerMs, delta),
                     prevPosX = unitVM.pos.x;
+                if (unitVM.inCombat) {
+                    return;
+                }
                 if (elapsed >= totalDuration) {
                     if (isLast) {
                         unitVM.setCurrentAnimation('idle', true);
                         console.log('Unit positioned in ' + timeForEndPos +
                             'ms');
                     }
+                    unitVM.m.x = moveAction.to.x;
+                    unitVM.m.y = moveAction.to.y;
                     //self remove from the actionPlayers
                     index = actionPlayers.indexOf(this);
                     actionPlayers.splice(index, 1);
@@ -130,12 +135,20 @@ var ScriptPlayer = function(battleScreen) {
             moveDuration = leftToEnd < 200 && leftToEnd > 0 ?
                     leftToEnd : 200,
             units = [],
-            movePerMs = [];
+            movePerMs = [],
+            destinations = [],
+            closeToSnap = function(pos1, pos2) {
+                return Math.abs(pos1.x - pos2.x) <= 3 &&
+                    Math.abs(pos1.y - pos2.y) <= 3;
+            };
+
         units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
         units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
+        units[0].inCombat = true;
+        units[1].inCombat = true;
         _.each(units, function(u, index) {
             var floorPos, combatPos;
-            floorPos = v.mul(utils.toTileVector(u.pos), TILE_SIZE);
+            floorPos = v.mul(action.tile, TILE_SIZE);
             if (u.isMine()) {
                 combatPos = v.add(floorPos, mineCombatPos);
                 u.faceLeft(true);
@@ -143,6 +156,7 @@ var ScriptPlayer = function(battleScreen) {
                 combatPos = v.add(floorPos, enemyCombatPos);
                 u.faceLeft(false);
             }
+            destinations[index] = combatPos;
             movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
         });
 
@@ -166,7 +180,13 @@ var ScriptPlayer = function(battleScreen) {
                 delta = elapsed - (last || elapsed);
                 if (elapsed <= moveDuration) {
                     _.each(units, function(u, index) {
-                        var move = v.mul(movePerMs[index], delta);
+                        var move;
+                        if (closeToSnap(destinations[index], u.pos)) {
+                            u.pos.x = destinations[index].x;
+                            u.pos.y = destinations[index].y;
+                            return;
+                        }
+                        move = v.mul(movePerMs[index], delta);
                         u.pos.x += move.x;
                         u.pos.y += move.y;
 
@@ -175,11 +195,15 @@ var ScriptPlayer = function(battleScreen) {
                 cloud.angle += 0.1;
                 if (units[0].isDead || units[1].isDead) {
                     me.game.remove(cloud, false);
+                    units[0].inCombat = false;
+                    units[1].inCombat = false;
                     actionPlayers.splice(actionPlayers.indexOf(this), 1);
                 }
                 last = elapsed;
             },
             onNextTurn: function() {
+                units[0].inCombat = false;
+                units[1].inCombat = false;
                 me.game.remove(cloud, false);
             }
         };
