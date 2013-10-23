@@ -13,7 +13,7 @@ test('script creation', function() {
     var order, script,
         ship = new sh.Ship({tmxName: 'test'}),
         unit = ship.putUnit({speed: 1});
-    unit.owner = new sh.Player({id: 1, name: 'juan'});
+    unit.ownerID = 1;
     order = sh.make.moveOrder(unit, {x: unit.x + 2, y: unit.y});
     ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
     script = sh.createScript([order], ship);
@@ -28,7 +28,7 @@ test('script creation\'s ship modifications', function() {
         ship = new sh.Ship({tmxName: 'test'}),
         unit = ship.putUnit({speed: 1}),
         prevX = unit.x;
-    unit.owner = new sh.Player({id: 1, name: 'juan'});
+    unit.ownerID = 1;
     order = sh.make.moveOrder(unit, {x: unit.x + 2, y: unit.y});
     ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
     sh.createScript([order], ship, 5000, true);
