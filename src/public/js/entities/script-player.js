@@ -103,8 +103,6 @@ var ScriptPlayer = function(battleScreen) {
                 if (elapsed >= totalDuration) {
                     if (isLast) {
                         unitVM.setCurrentAnimation('idle', true);
-                        console.log('Unit positioned in ' + timeForEndPos +
-                            'ms');
                     }
                     unitVM.m.x = moveAction.to.x;
                     unitVM.m.y = moveAction.to.y;
