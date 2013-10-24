@@ -56,7 +56,7 @@ exports.Battle = Class.extend({
     currentTurn: null,
 
     receivedTheScript: [], //players ids that received the script
-    turnDuration: 3000,
+    turnDuration: 4000,
     winner: null,
     init: function(parameters) {
         'use strict';
@@ -197,7 +197,7 @@ exports.ChallengeBatte = exports.Battle.extend({
                     x: summonPosition.x,
                     y: summonPosition.y,
                     playerID: this.playerRight.id,
-                    unitType: 'Critter'
+                    unitType: i === 2 ? 'MetalSpider' : 'Critter'
                 }));
             }
         }
