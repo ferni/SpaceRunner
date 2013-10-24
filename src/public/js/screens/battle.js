@@ -9,16 +9,16 @@
 ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE*/
 
 screens.register('battle', ConnectedScreen.extend({
-    TURN_DURATION: 3000,
     verifiedOrders: {},
     currentTurnID: null,
     scriptPrediction: null,
     scriptPlayer: null,
     scriptServer: [],
-    onReset: function(battleModel) {
+    onReset: function(battleJson) {
         'use strict';
-        this.parent({id: battleModel.id});
-        gs.ship = new sh.Ship({jsonString: battleModel.ship});
+        this.parent({id: battleJson.id});
+        this.turnDuration = battleJson.turnDuration;
+        gs.ship = new sh.Ship({jsonString: battleJson.ship});
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
@@ -36,11 +36,11 @@ screens.register('battle', ConnectedScreen.extend({
 
         this.pause();
 
-        if (battleModel.orders) {
-            this.verifiedOrders = battleModel.orders;
+        if (battleJson.orders) {
+            this.verifiedOrders = battleJson.orders;
             //update script prediction with new script model
             this.scriptPrediction.m = sh.createScript(this.verifiedOrders,
-                gs.ship, this.TURN_DURATION);
+                gs.ship, this.turnDuration);
         }
     },
     onDestroy: function() {
@@ -117,7 +117,7 @@ screens.register('battle', ConnectedScreen.extend({
 
             //update counter
             $('#elapsed').html(elapsed);
-            if (elapsed >= this.TURN_DURATION) {
+            if (elapsed >= this.turnDuration) {
                 this.pause();
             }
         }
@@ -211,7 +211,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (_.size(newOrders) > 0) {
             //update script prediction with new script model
             self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
-                gs.ship, self.TURN_DURATION);
+                gs.ship, self.turnDuration);
             //send order to server
             $.post('/battle/sendorders',
                 {id: this.id, orders: newOrders}, function() {

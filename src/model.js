@@ -108,7 +108,8 @@ exports.Battle = Class.extend({
             id: this.id,
             ship: this.ship.toJsonString(),
             playerLeft: this.playerLeft.toJson(),
-            playerRight: this.playerRight.toJson()
+            playerRight: this.playerRight.toJson(),
+            turnDuration: this.turnDuration
         };
     }
 });
