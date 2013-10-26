@@ -9,7 +9,6 @@
 ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE*/
 
 screens.register('battle', ConnectedScreen.extend({
-    TURN_DURATION: 3000,
     verifiedOrders: {},
     currentTurnID: null,
     scriptPrediction: null,
@@ -18,6 +17,7 @@ screens.register('battle', ConnectedScreen.extend({
     onReset: function(battleModel) {
         'use strict';
         this.parent({id: battleModel.id});
+        this.turnDuration = battleModel.turnDuration;
         gs.ship = new sh.Ship({json: battleModel.ship});
         this.stopFetching();
         console.log('Battle id is ' + this.id);
@@ -40,7 +40,7 @@ screens.register('battle', ConnectedScreen.extend({
             this.verifiedOrders = battleModel.orders;
             //update script prediction with new script model
             this.scriptPrediction.m = sh.createScript(this.verifiedOrders,
-                gs.ship.clone(), this.TURN_DURATION, false);
+                gs.ship.clone(), this.turnDuration);
         }
     },
     onDestroy: function() {
@@ -117,7 +117,7 @@ screens.register('battle', ConnectedScreen.extend({
 
             //update counter
             $('#elapsed').html(elapsed);
-            if (elapsed >= this.TURN_DURATION) {
+            if (elapsed >= this.turnDuration) {
                 this.pause();
             }
         }
@@ -211,7 +211,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (_.size(newOrders) > 0) {
             //update script prediction with new script model
             self.scriptPrediction.m = sh.createScript(self.verifiedOrders,
-                gs.ship.clone(), self.TURN_DURATION, false);
+                gs.ship.clone(), self.turnDuration);
             //send order to server
             $.post('/battle/sendorders',
                 {id: this.id, orders: newOrders}, function() {

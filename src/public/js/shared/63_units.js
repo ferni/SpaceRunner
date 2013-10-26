@@ -106,6 +106,16 @@ sh.units = (function() {
             this.parent(x, y, settings);
         }
     });
-
+    u.MetalSpider = sh.Unit.extendShared({
+        init: function(x, y, settings) {
+            this.type = 28;
+            this.speed = 3;
+            this.maxHP = 200;
+            this.attackCooldown = 1500;
+            this.meleeDamage = 15;
+            this.imageFacesRight = false;
+            this.parent(x, y, settings);
+        }
+    });
     return u;
 }());
