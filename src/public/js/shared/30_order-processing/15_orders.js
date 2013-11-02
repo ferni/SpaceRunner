@@ -29,11 +29,11 @@ if (typeof exports !== 'undefined') {
 
     sh.orders = {};
     sh.orders.Move = Order.extendShared({
-        init: function(unit, ship, from, to) {
-            this.unit = unit;
-            this.ship = ship;
-            this.from = from;
-            this.to = to;
+        init: function(json) {
+            this.unit = json.unit;
+            this.ship = json.ship;
+            this.from = json.from;
+            this.to = json.to;
         },
         execute: function(time) {
             if (this.conditionsOK()) {
@@ -42,7 +42,7 @@ if (typeof exports !== 'undefined') {
                     unitID: this.unit.id,
                     from: this.from,
                     to: this.to,
-                    duration: this.unit.getTimeForOneTile()
+                    duration: this.unit.getTimeForMoving(this.from, this.to)
                 });
             }
             return null;

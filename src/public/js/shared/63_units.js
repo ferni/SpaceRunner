@@ -30,6 +30,7 @@ sh.Unit = sh.TileEntity.extendShared({
     lastAttack: null,  //when was the last time the unit attacked
                     // (relative to turn's start)
     imageFacesRight: true,
+    orders: [],
     init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];

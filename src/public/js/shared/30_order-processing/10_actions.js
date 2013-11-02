@@ -25,7 +25,7 @@ if (typeof exports !== 'undefined') {
         this.time = time;
         this.apply = apply;
     };
-
+    sh.ModelChange = ModelChange;
     Action = sh.Jsonable.extendShared({
         time: 0,//ms
         modelChanges: [],

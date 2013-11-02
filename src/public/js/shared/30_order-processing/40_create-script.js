@@ -21,40 +21,43 @@ if (typeof exports !== 'undefined') {
     var pfFinder = new sh.PF.AStarFinder({
             allowDiagonal: true,
             dontCrossCorners: true
-        });
+        }),
+        Finish;
+    //-- EVENTS --
+    /**
+     * When a unit finishes executing an action.
+     * @param {int} time Time for when this happens.
+     * @param {sh.Unit} unit
+     * @constructor
+     */
+    Finish = function(time, unit) {
+        this.time = time;
+        this.unit = unit;
+    };
 
     function insertByTime(array, item) {
         var insertionIndex = _.sortedIndex(array, item, 'time');
         array.splice(insertionIndex, 0, item);
     }
 
-    function makeMoveAction(ship, time, data, queue) {
-        var moveAction,
-            pathIdx = data.index,
-            path = data.path;
-        moveAction = new sh.actions.Move({
-            time: time,
-            unitID: data.unit.id,
-            from: data.from,
-            to: data.to,
-            duration: data.unit.getTimeForMoving(data.from, data.to)
-        });
-        pathIdx++;
-        if (pathIdx < path.length) {
-            insertByTime(queue, {
-                time: time + moveAction.duration,
-                type: 'Move',
-                data: {
-                    path: path,
-                    index: pathIdx,
-                    unit: data.unit,
-                    from: {x: path[pathIdx - 1][0], y: path[pathIdx - 1][1]},
-                    to: {x: path[pathIdx][0], y: path[pathIdx][1]}
-                }
-            });
-        }
 
-        return moveAction;
+    function setOrdersFromPath(unit, ship, path) {
+        var prevPos;
+        unit.orders = [];
+        if (path.length > 1) {
+            _.each(path, function(pos) {
+                if (prevPos) {
+                    unit.orders.push(new sh.orders.Move({
+                        unit: unit,
+                        ship: ship,
+                        from: {x: prevPos[0], y: prevPos[1]},
+                        to: {x: pos[0], y: pos[1]}
+                    }));
+                }
+                prevPos = pos;
+            });
+
+        }
     }
 
     /**
@@ -66,53 +69,80 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, ship, turnDuration, turnOnly) {
-        var script = new sh.Script({turnDuration: turnDuration}),
-            queue = [],//the actions that need to be added to the script
-            grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix()),
-            next,
-            action;
+        var script, queue, grid, event, unit, action, pendingUnits,
+            i;
+        script = new sh.Script({turnDuration: turnDuration});
+        queue = [];
+        grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
+        pendingUnits = [];
 
         function insertInQueue(item) {
             insertByTime(queue, item);
         }
 
+        function registerAction(unit, action) {
+            unit.orders.shift();
+            insertInQueue(new Finish(action.time +
+                action.duration, unit));
+            script.actions.push(action);
+            _.each(action.modelChanges, insertInQueue);
+        }
+
+        //set the orders to the units
         _.each(orders, function(order) {
             var unit = ship.getUnitByID(order.unitID),
                 dest = order.destination,
                 path;
             switch (order.variant) {
             case 'move':
-                //this assumes the orders array is ordered by orders given
                 path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
                     grid.clone());
-                if (path.length > 1) {
-                    insertInQueue({
-                        time: 0,
-                        type: 'Move',
-                        data: {
-                            path: path,
-                            index: 1,
-                            unit: unit,
-                            from: {x: unit.x, y: unit.y},
-                            to: {x: path[1][0], y: path[1][1]}
-                        }
-                    });
-                }
+                setOrdersFromPath(unit, ship, path);
                 break;
             }
         });
+
+        //execute first order of each unit
+        _.each(ship.units, function(u) {
+            if (u.orders.length > 0) {
+                action = u.orders[0].execute(0);
+                if (action) {//action started executing
+                    registerAction(u, action);
+                } else {
+                    pendingUnits.push(u);
+                }
+            }
+        });
+
+        //simulation loop (the ship gets modified and actions get added
+        // to the script over time)
         while (queue.length > 0 &&
                 (!turnOnly || queue[0].time < turnDuration)) {
-            next = queue[0];
+            event = queue[0];
             queue.shift();
-            if (next.type === 'change') {
+            if (event instanceof sh.ModelChange) {
                 //apply changes to the ship
-                next.apply(ship);
-            } else {
-                //make according to next.type
-                action = makeMoveAction(ship, next.time, next.data, queue);
-                script.actions.push(action);
-                _.each(action.modelChanges, insertInQueue);
+                event.apply(ship);
+                for (i = 0; i < pendingUnits.length; i++) {
+                    unit = pendingUnits[i];
+                    action = unit.orders[0].execute(event.time);
+
+                    if (action) {//action started executing
+                        pendingUnits.splice(_.indexOf(unit), 1);
+                        i--;
+                        registerAction(unit, action);
+                    }
+                }
+            } else if (event instanceof Finish) {
+                //execute next action for unit
+                if (event.unit.orders.length > 0) {
+                    action = event.unit.orders[0].execute(event.time);
+                    if (action) {
+                        registerAction(event.unit, action);
+                    } else {
+                        pendingUnits.push(event.unit);
+                    }
+                }
             }
 
 
