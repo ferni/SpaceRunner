@@ -22,7 +22,7 @@ if (typeof exports !== 'undefined') {
             allowDiagonal: true,
             dontCrossCorners: true
         }),
-        Finish;
+        ActionFinished;
     //-- EVENTS --
     /**
      * When a unit finishes executing an action.
@@ -30,7 +30,7 @@ if (typeof exports !== 'undefined') {
      * @param {sh.Unit} unit
      * @constructor
      */
-    Finish = function(time, unit) {
+    ActionFinished = function(time, unit) {
         this.time = time;
         this.unit = unit;
     };
@@ -82,7 +82,7 @@ if (typeof exports !== 'undefined') {
 
         function registerAction(unit, action) {
             unit.orders.shift();
-            insertInQueue(new Finish(action.time +
+            insertInQueue(new ActionFinished(action.time +
                 action.duration, unit));
             script.actions.push(action);
             _.each(action.modelChanges, insertInQueue);
@@ -133,7 +133,7 @@ if (typeof exports !== 'undefined') {
                         registerAction(unit, action);
                     }
                 }
-            } else if (event instanceof Finish) {
+            } else if (event instanceof ActionFinished) {
                 //execute next action for unit
                 if (event.unit.orders.length > 0) {
                     action = event.unit.orders[0].execute(event.time);
