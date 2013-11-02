@@ -76,6 +76,34 @@ sh.Unit = sh.TileEntity.extendShared({
     getTimeForOneTile: function() {
         'use strict';
         return 1000 / this.speed;
+    },
+    getTimeForMoving: function(from, to) {
+        'use strict';
+        var oneTileTime = this.getTimeForOneTile(),
+            tileDistance,
+            isDiagonal,
+            time;
+        tileDistance = (function() {
+            var a = to.x - from.x,
+                b = to.y - from.y;
+            if (a === 0) {
+                if (b < 0) {
+                    return -b;
+                }
+                return b;
+            }
+            if (a < 0) {
+                return -a;
+            }
+            return a;
+        }());
+        isDiagonal = to.x - from.x !== 0 && to.y - from.y !== 0;
+        if (isDiagonal) {
+            time = tileDistance * oneTileTime * 1.41421356;
+        } else {
+            time = tileDistance * oneTileTime;
+        }
+        return time;
     }
 });
 
