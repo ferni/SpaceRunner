@@ -177,6 +177,7 @@ exports.ChallengeBatte = exports.Battle.extend({
         'use strict';
         var i, clearTiles = [], summonPosition, script,
             ship = this.ship,
+            newActions = [],
             damageShipActions;
         this.parent();
         script = this.currentTurn.script;
@@ -193,7 +194,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             summonPosition = clearTiles[_.random(clearTiles.length - 1)];
             for (i = 0; i < 3; i++) {
                 //noinspection JSValidateTypes
-                script.insertAction(new sh.actions.Summon({
+                newActions.push(new sh.actions.Summon({
                     time: script.turnDuration - 1,
                     x: summonPosition.x,
                     y: summonPosition.y,
@@ -207,17 +208,25 @@ exports.ChallengeBatte = exports.Battle.extend({
                 return memo - value.damage;
             }, ship.hp) <= 0) {
             //ship is destroyed
-            script.insertAction(new sh.actions.DeclareWinner({
+            newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 100,
                 playerID: this.playerRight.id
             }));
         } else if (this.turnCount >= 15) {
             //survived 15 turns!
-            script.insertAction(new sh.actions.DeclareWinner({
+            newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 100,
                 playerID: this.playerLeft.id
             }));
         }
+
+        //workaround until summon gets converted to teleport
+        _.each(newActions, function(a) {
+            script.insertAction(a);
+            _.each(a.modelChanges, function(change) {
+                change.apply(ship);
+            });
+        });
     }
 });
 
