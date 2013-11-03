@@ -85,7 +85,7 @@ if (typeof exports !== 'undefined') {
     sh.actions.Attack = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['attackerID', 'receiverID', 'damage'], json);
+            this.set(['attackerID', 'receiverID', 'damage', 'duration'], json);
             this.type = 'Attack';
             this.updateModelChanges();
         },
@@ -96,6 +96,7 @@ if (typeof exports !== 'undefined') {
                     var attacker = ship.getUnitByID(self.attackerID),
                         receiver = ship.getUnitByID(self.receiverID);
                     if (attacker && receiver) { //(both are alive)
+                        attacker.lastAttack = self.time;
                         receiver.hp -= self.damage;
                         if (receiver.hp <= 0) {
                             //unit dies

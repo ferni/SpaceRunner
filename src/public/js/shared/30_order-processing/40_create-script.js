@@ -27,12 +27,10 @@ if (typeof exports !== 'undefined') {
     /**
      * When a unit finishes executing an action.
      * @param {int} time Time for when this happens.
-     * @param {sh.Unit} unit
      * @constructor
      */
-    ActionFinished = function(time, unit) {
+    ActionFinished = function(time) {
         this.time = time;
-        this.unit = unit;
     };
 
     function insertByTime(array, item) {
@@ -69,24 +67,31 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, ship, turnDuration, turnOnly) {
-        var script, queue, grid, event, unit, action, pendingUnits,
-            i;
+        var script, queue, grid, event, unit, actions, i;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
         grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
-        pendingUnits = [];
 
         function insertInQueue(item) {
             insertByTime(queue, item);
         }
 
-        function registerAction(unit, action) {
-            unit.orders.shift();
-            insertInQueue(new ActionFinished(action.time +
-                action.duration, unit));
+        function registerAction(action) {
             script.actions.push(action);
+            insertInQueue(new ActionFinished(action.time +
+                action.duration));
             _.each(action.modelChanges, insertInQueue);
         }
+
+        function hasInstantEffect(action) {
+            return action.modelChanges[0].time === action.time;
+        }
+
+        //Reset what needs to reset every turn
+        _.each(ship.units, function(u) {
+            u.lastAttack -= turnDuration;
+            u.lastGetActionsCall -= turnDuration;
+        });
 
         //set the orders to the units
         _.each(orders, function(order) {
@@ -98,9 +103,6 @@ if (typeof exports !== 'undefined') {
                 path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
                     grid.clone());
                 setOrdersFromPath(unit, ship, path);
-                if (unit.orders.length > 0) {
-                    pendingUnits.push(unit);
-                }
                 break;
             }
         });
@@ -117,33 +119,19 @@ if (typeof exports !== 'undefined') {
             if (event instanceof sh.ModelChange) {
                 //apply changes to the ship
                 event.apply(ship);
-                for (i = 0; i < pendingUnits.length; i++) {
-                    unit = pendingUnits[i];
-                    action = unit.orders[0].execute(event.time);
-
-                    if (action) {//action started executing
-                        pendingUnits.splice(_.indexOf(pendingUnits, unit), 1);
-                        i--;
-                        registerAction(unit, action);
-                        if (action.modelChanges[0].time ===
-                                action.time) { //has an instantaneous effect
-                            break;//stop processing units, the effect should
-                                  //be applied first ( event.apply(ship) )
-                        }
-                    }
-                }
-            } else if (event instanceof ActionFinished) {
-                //execute next action for unit
-                if (event.unit.orders.length > 0) {
-                    action = event.unit.orders[0].execute(event.time);
-                    if (action) {
-                        registerAction(event.unit, action);
-                    } else {
-                        pendingUnits.push(event.unit);
+            }
+            //ship.units would be battle.objects in the future
+            for (i = 0; i < ship.units.length; i++) {
+                unit = ship.units[i];
+                if (event.time > unit.lastGetActionsCall) {
+                    actions = unit.getActions(event.time, ship);
+                    _.each(actions, registerAction);
+                    if (_.any(actions, hasInstantEffect)) {
+                        break;//stop processing units, the effect should
+                             //be applied first ( event.apply(ship) )
                     }
                 }
             }
-
 
         }
 

@@ -31,6 +31,7 @@ sh.Unit = sh.TileEntity.extendShared({
                     // (relative to turn's start)
     imageFacesRight: true,
     orders: [],
+    lastGetActionsCall: -1,
     init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];
@@ -105,7 +106,60 @@ sh.Unit = sh.TileEntity.extendShared({
             time = tileDistance * oneTileTime;
         }
         return time;
+    },
+    getAttackActions: function(turnTime, ship) {
+        'use strict';
+        var actions = [],
+            self = this,
+            enemies;
+        if (turnTime >= this.lastAttack + this.attackCooldown) {//attack ready
+            enemies = _.filter(ship.unitsMap.at(this.x, this.y),
+                function(u) {
+                    return u.ownerID !== self.ownerID;
+                });
+            if (enemies.length > 0) {
+                actions.push(new sh.actions.Attack({
+                    time: turnTime,
+                    attackerID: self.id,
+                    receiverID: enemies[0].id,
+                    damage: self.meleeDamage,
+                    duration: self.attackCooldown
+                }));
+            }
+        }
+        return actions;
+    },
+    getOrdersActions: function(turnTime, ship) {
+        'use strict';
+        var action;
+        if (!this.moving && this.orders.length > 0) {
+            action = this.orders[0].execute(turnTime);
+            if (action) {
+                this.orders.shift();
+                return [action];
+            }
+        }
+        return [];
+    },
+    /**
+     * This method will be called by the script creator every time something
+     * happens. (The model changed or some action finished)
+     * @param {int} turnTime The current turn's time.
+     * @param {sh.Ship} ship The ship, representing the entire model (should be
+     * Battle in the future.
+     * @return {Array}
+     */
+    getActions: function(turnTime, ship) {
+        'use strict';
+        var actions = [];
+        this.lastGetActionsCall = turnTime;
+        //TODO: ship should later be battle and the unit
+        //should have a reference to it, being a "battle object"
+        actions = actions.concat(this.getAttackActions(turnTime, ship));
+        actions = actions.concat(this.getOrdersActions(turnTime, ship));
+        return actions;
     }
+
 });
 
 /**
