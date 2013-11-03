@@ -112,7 +112,7 @@ sh.Unit = sh.TileEntity.extendShared({
         var actions = [],
             self = this,
             enemies;
-        if (turnTime >= this.lastAttack + this.attackCooldown) {//attack ready
+        if (!this.onCooldown) {//attack ready
             enemies = _.filter(ship.unitsMap.at(this.x, this.y),
                 function(u) {
                     return u.ownerID !== self.ownerID;

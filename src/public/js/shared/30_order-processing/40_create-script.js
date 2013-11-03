@@ -21,17 +21,7 @@ if (typeof exports !== 'undefined') {
     var pfFinder = new sh.PF.AStarFinder({
             allowDiagonal: true,
             dontCrossCorners: true
-        }),
-        ActionFinished;
-    //-- EVENTS --
-    /**
-     * When a unit finishes executing an action.
-     * @param {int} time Time for when this happens.
-     * @constructor
-     */
-    ActionFinished = function(time) {
-        this.time = time;
-    };
+        });
 
     function insertByTime(array, item) {
         var insertionIndex = _.sortedIndex(array, item, 'time');
@@ -63,10 +53,9 @@ if (typeof exports !== 'undefined') {
      * @param {Array} orders
      * @param {sh.Ship} ship
      * @param {int} turnDuration
-     * @param {Boolean} turnOnly
      * @return {sh.Script}
      */
-    function createScript(orders, ship, turnDuration, turnOnly) {
+    function createScript(orders, ship, turnDuration) {
         var script, queue, grid, event, unit, actions, i;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
@@ -78,8 +67,6 @@ if (typeof exports !== 'undefined') {
 
         function registerAction(action) {
             script.actions.push(action);
-            insertInQueue(new ActionFinished(action.time +
-                action.duration));
             _.each(action.modelChanges, insertInQueue);
         }
 
@@ -89,7 +76,7 @@ if (typeof exports !== 'undefined') {
 
         //Reset what needs to reset every turn
         _.each(ship.units, function(u) {
-            u.lastAttack -= turnDuration;
+            u.onCooldown = false;
             u.lastGetActionsCall -= turnDuration;
         });
 
@@ -112,8 +99,7 @@ if (typeof exports !== 'undefined') {
 
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)
-        while (queue.length > 0 &&
-                (!turnOnly || queue[0].time < turnDuration)) {
+        while (queue.length > 0 && queue[0].time < turnDuration) {
             event = queue[0];
             queue.shift();
             if (event instanceof sh.ModelChange) {
@@ -128,7 +114,7 @@ if (typeof exports !== 'undefined') {
                     _.each(actions, registerAction);
                     if (_.any(actions, hasInstantEffect)) {
                         break;//stop processing units, the effect should
-                             //be applied first ( event.apply(ship) )
+                             //be applied first ( event.apply(ship) above)
                     }
                 }
             }
