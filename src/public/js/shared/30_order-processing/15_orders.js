@@ -48,8 +48,12 @@ if (typeof exports !== 'undefined') {
             return null;
         },
         conditionsOK: function() {
-            //there's no unit ahead
-            return this.ship.unitsMap.at(this.to.x, this.to.y) === 0;
+            var self = this,
+                units = this.ship.unitsMap.at(this.to.x, this.to.y);
+            return !units || //there's no unit ahead
+                _.all(units, function(u) { //... or it's from a different team
+                    return u.ownerID !== self.unit.ownerID;
+                });
         }
     });
 }());
