@@ -31,10 +31,6 @@ if (typeof exports !== 'undefined') {
         modelChanges: [],
         init: function(json) {
             this.set(['time'], json);
-        },
-        applyChanges: function(ship) {
-            //(abstract)
-            return ship;
         }
     });
 
@@ -52,19 +48,29 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(this.time + this.duration,
-                function(ship) {
-                    var unit = ship.getUnitByID(self.unitID),
-                        prev;
-                    if (unit) { //is alive
-                        prev = {x: unit.x, y: unit.y};
-                        unit.y = self.to.y;
-                        unit.x = self.to.x;
-                        if (!sh.v.equal(prev, self.to)) {
-                            ship.unitsMap.update();
+            this.modelChanges = [
+                new ModelChange(this.time,
+                    function(ship) {
+                        var unit = ship.getUnitByID(self.unitID);
+                        unit.moving = {
+                            dest: self.to,
+                            arrivalTime: self.time + self.duration
+                        };
+                    }),
+                new ModelChange(this.time + this.duration,
+                    function(ship) {
+                        var unit = ship.getUnitByID(self.unitID),
+                            prev;
+                        if (unit) { //is alive
+                            prev = {x: unit.x, y: unit.y};
+                            unit.y = self.to.y;
+                            unit.x = self.to.x;
+                            unit.moving = null;
+                            if (!sh.v.equal(prev, self.to)) {
+                                ship.unitsMap.update();
+                            }
                         }
-                    }
-                })];
+                    })];
         }
     });
 

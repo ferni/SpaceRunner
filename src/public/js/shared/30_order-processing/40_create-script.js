@@ -98,21 +98,15 @@ if (typeof exports !== 'undefined') {
                 path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
                     grid.clone());
                 setOrdersFromPath(unit, ship, path);
+                if (unit.orders.length > 0) {
+                    pendingUnits.push(unit);
+                }
                 break;
             }
         });
 
-        //execute first order of each unit
-        _.each(ship.units, function(u) {
-            if (u.orders.length > 0) {
-                action = u.orders[0].execute(0);
-                if (action) {//action started executing
-                    registerAction(u, action);
-                } else {
-                    pendingUnits.push(u);
-                }
-            }
-        });
+        //null change to kick-start the process
+        queue.push(new sh.ModelChange(0, function() {}));
 
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)
@@ -128,9 +122,14 @@ if (typeof exports !== 'undefined') {
                     action = unit.orders[0].execute(event.time);
 
                     if (action) {//action started executing
-                        pendingUnits.splice(_.indexOf(unit), 1);
+                        pendingUnits.splice(_.indexOf(pendingUnits, unit), 1);
                         i--;
                         registerAction(unit, action);
+                        if (action.modelChanges[0].time ===
+                                action.time) { //has an instantaneous effect
+                            break;//stop processing units, the effect should
+                                  //be applied first ( event.apply(ship) )
+                        }
                     }
                 }
             } else if (event instanceof ActionFinished) {

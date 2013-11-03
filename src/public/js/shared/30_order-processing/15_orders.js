@@ -36,7 +36,7 @@ if (typeof exports !== 'undefined') {
             this.to = json.to;
         },
         execute: function(time) {
-            if (this.conditionsOK()) {
+            if (this.conditionsOK(time)) {
                 return new sh.actions.Move({
                     time: time,
                     unitID: this.unit.id,
@@ -47,13 +47,26 @@ if (typeof exports !== 'undefined') {
             }
             return null;
         },
-        conditionsOK: function() {
+        conditionsOK: function(time) {
             var self = this,
-                units = this.ship.unitsMap.at(this.to.x, this.to.y);
-            return !units || //there's no unit ahead
-                _.all(units, function(u) { //... or it's from a different team
-                    return u.ownerID !== self.unit.ownerID;
-                });
+                units = this.ship.unitsMap.at(this.to.x, this.to.y),
+                arrivalTime = time +
+                    this.unit.getTimeForMoving(this.from, this.to);
+            return (!units || //there's no unit ahead
+                _.all(units, function(u) { //or...
+                    //it's from a different team
+                    return u.ownerID !== self.unit.ownerID ||
+                        //or it's going away
+                            (u.moving &&
+                            !_.isEqual(u.moving.dest, self.to) &&
+                            u.moving.arrivalTime <= arrivalTime
+                            );
+                })) &&
+                //no unit is moving there
+                !_.any(self.ship.getPlayerUnits(self.unit.ownerID),
+                    function(u) {
+                        return u.moving && _.isEqual(u.moving.dest, self.to);
+                    });
         }
     });
 }());
