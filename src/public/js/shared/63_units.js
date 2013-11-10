@@ -112,7 +112,7 @@ sh.Unit = sh.TileEntity.extendShared({
         var actions = [],
             self = this,
             enemies;
-        if (!this.onCooldown) {//attack ready
+        if (turnTime >= this.lastAttack + this.attackCooldown) {//attack ready
             enemies = _.filter(ship.unitsMap.at(this.x, this.y),
                 function(u) {
                     return u.ownerID !== self.ownerID;
@@ -144,19 +144,19 @@ sh.Unit = sh.TileEntity.extendShared({
     /**
      * This method will be called by the script creator every time something
      * happens. (The model changed or some action finished)
-     * @param {int} turnTime The current turn's time.
+     * @param {{time:{int}}} event The event that triggered calling getActions.
      * @param {sh.Ship} ship The ship, representing the entire model (should be
      * Battle in the future.
      * @return {Array}
      */
-    getActions: function(turnTime, ship) {
+    getActions: function(event, ship) {
         'use strict';
         var actions = [];
-        this.lastGetActionsCall = turnTime;
+        this.lastGetActionsCall = event.time;
         //TODO: ship should later be battle and the unit
         //should have a reference to it, being a "battle object"
-        actions = actions.concat(this.getAttackActions(turnTime, ship));
-        actions = actions.concat(this.getOrdersActions(turnTime, ship));
+        actions = actions.concat(this.getAttackActions(event.time, ship));
+        actions = actions.concat(this.getOrdersActions(event.time, ship));
         return actions;
     }
 
