@@ -31,6 +31,7 @@ sh.Unit = sh.TileEntity.extendShared({
                     // (relative to turn's start)
     imageFacesRight: true,
     orders: [],
+    executingOrder: false,
     lastGetActionsCall: -1,
     init: function(x, y, settings) {
         'use strict';
@@ -107,19 +108,19 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return time;
     },
-    getAttackActions: function(turnTime, ship) {
+    getAttackActions: function(event, ship) {
         'use strict';
         var actions = [],
             self = this,
             enemies;
-        if (turnTime >= this.lastAttack + this.attackCooldown) {//attack ready
+        if (event.time >= this.lastAttack + this.attackCooldown) {//attack ready
             enemies = _.filter(ship.unitsMap.at(this.x, this.y),
                 function(u) {
                     return u.ownerID !== self.ownerID;
                 });
             if (enemies.length > 0) {
                 actions.push(new sh.actions.Attack({
-                    time: turnTime,
+                    time: event.time,
                     attackerID: self.id,
                     receiverID: enemies[0].id,
                     damage: self.meleeDamage,
@@ -129,14 +130,21 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return actions;
     },
-    getOrdersActions: function(turnTime, ship) {
+    getActionsFromOrders: function(event, ship) {
         'use strict';
         var action;
-        if (!this.moving && this.orders.length > 0) {
-            action = this.orders[0].execute(turnTime);
+        if ((event instanceof sh.ActionFinished &&
+                event.action.unitID === this.id) ||
+                (event instanceof sh.ModelChange && !this.executingOrder)) {
+            action = this.orders[0].execute(event.time);
             if (action) {
+                action.origin = this;
                 this.orders.shift();
+                this.executingOrder = true;
                 return [action];
+            }
+            if (event instanceof sh.ActionFinished) {
+                this.executingOrder = false;
             }
         }
         return [];
@@ -153,10 +161,10 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var actions = [];
         this.lastGetActionsCall = event.time;
-        //TODO: ship should later be battle and the unit
-        //should have a reference to it, being a "battle object"
-        actions = actions.concat(this.getAttackActions(event.time, ship));
-        actions = actions.concat(this.getOrdersActions(event.time, ship));
+        if (this.orders.length > 0) {
+            actions = actions.concat(this.getActionsFromOrders(event, ship));
+        }
+        actions = actions.concat(this.getAttackActions(event, ship));
         return actions;
     }
 

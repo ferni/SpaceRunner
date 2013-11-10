@@ -27,10 +27,12 @@ if (typeof exports !== 'undefined') {
     /**
      * When a unit finishes executing an action.
      * @param {int} time Time for when this happens.
+     * @param {sh.Unit} unit
      * @constructor
      */
-    ActionFinished = function(time) {
+    ActionFinished = function(time, action) {
         this.time = time;
+        this.action = action;
     };
 
     function insertByTime(array, item) {
@@ -63,11 +65,10 @@ if (typeof exports !== 'undefined') {
      * @param {Array} orders
      * @param {sh.Ship} ship
      * @param {int} turnDuration
-     * @param {Boolean} turnOnly
      * @return {sh.Script}
      */
-    function createScript(orders, ship, turnDuration, turnOnly) {
-        var script, queue, grid, event, unit, actions, i;
+    function createScript(orders, ship, turnDuration) {
+        var script, queue, grid, event, unit, i;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
         grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
@@ -79,18 +80,18 @@ if (typeof exports !== 'undefined') {
         function registerAction(action) {
             script.actions.push(action);
             insertInQueue(new ActionFinished(action.time +
-                action.duration));
-            _.each(action.modelChanges, insertInQueue);
-        }
-
-        function hasInstantEffect(action) {
-            return action.modelChanges[0].time === action.time;
+                action.duration, action));
+            _.chain(action.modelChanges)
+                .filter(function(mc) {
+                    return mc.time > action.time;
+                })
+                .each(insertInQueue);
         }
 
         //Reset what needs to reset every turn
         _.each(ship.units, function(u) {
             u.lastAttack -= turnDuration;
-            u.lastGetActionsCall -= turnDuration;
+            u.executingOrder = false;
         });
 
         //set the orders to the units
@@ -112,8 +113,7 @@ if (typeof exports !== 'undefined') {
 
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)
-        while (queue.length > 0 &&
-                (!turnOnly || queue[0].time < turnDuration)) {
+        while (queue.length > 0 && queue[0].time < turnDuration) {
             event = queue[0];
             queue.shift();
             if (event instanceof sh.ModelChange) {
@@ -123,14 +123,16 @@ if (typeof exports !== 'undefined') {
             //ship.units would be battle.objects in the future
             for (i = 0; i < ship.units.length; i++) {
                 unit = ship.units[i];
-                if (event.time > unit.lastGetActionsCall) {
-                    actions = unit.getActions(event, ship);
-                    _.each(actions, registerAction);
-                    if (_.any(actions, hasInstantEffect)) {
-                        break;//stop processing units, the effect should
-                             //be applied first ( event.apply(ship) )
-                    }
-                }
+
+                _.chain(unit.getActions(event, ship))
+                    //register in the queue
+                    .each(registerAction)
+
+                    //apply immediate changes
+                    .pluck('modelChanges')
+                    .flatten()
+                    .where({time: event.time})
+                    .invoke('apply', ship);
             }
 
         }
