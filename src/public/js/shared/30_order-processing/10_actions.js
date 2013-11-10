@@ -35,8 +35,22 @@ if (typeof exports !== 'undefined') {
     });
 
     sh.actions = {};
+
+    sh.actions.PrepareOrder = Action.extendShared({
+        init: function(json) {
+            var self = this;
+            this.parent(json);
+            this.set(['unitID'], json);
+            this.type = 'PrepareOrder';
+            this.modelChanges = [new ModelChange(this.time, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                unit.orderState = 'prepared';
+            })];
+        }
+    });
+
     /**
-     * The unit starts walking.
+     * The unit changes tiles.
      * @type {*}
      */
     sh.actions.Move = Action.extendShared({

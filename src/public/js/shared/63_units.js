@@ -31,6 +31,7 @@ sh.Unit = sh.TileEntity.extendShared({
                     // (relative to turn's start)
     imageFacesRight: true,
     orders: [],
+    orderToExecute: null,
     orderState: 'pending',
     init: function(x, y, settings) {
         'use strict';
@@ -132,11 +133,20 @@ sh.Unit = sh.TileEntity.extendShared({
     getOrdersActions: function(turnTime) {
         'use strict';
         var action;
-        if (this.orderState === 'pending' && this.orders.length > 0) {
-            action = this.orders[0].execute(turnTime);
-            if (action) {
-                this.orders.shift();
-                return [action];
+        if (this.orders.length > 0) {
+            if (this.orderState === 'pending') {
+                if (this.orders[0].conditionsOK(turnTime)) {
+                    return [new sh.actions.PrepareOrder({
+                        time: turnTime,
+                        unitID: this.id
+                    })];
+                }
+            } else if (this.orderState === 'prepared') {
+                action = this.orders[0].execute(turnTime);
+                if (action) {
+                    this.orders.shift();
+                    return [action];
+                }
             }
         }
         return [];

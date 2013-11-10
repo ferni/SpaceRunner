@@ -62,10 +62,16 @@ if (typeof exports !== 'undefined') {
                             u.moving.arrivalTime <= arrivalTime
                             );
                 })) &&
-                //no unit is moving there
+
                 !_.any(self.ship.getPlayerUnits(self.unit.ownerID),
                     function(u) {
-                        return u.moving && _.isEqual(u.moving.dest, self.to);
+                        //no unit is moving there
+                        return (u.moving &&
+                            _.isEqual(u.moving.dest, self.to)) ||
+                        //no unit with higher rank has prepared to move there
+                            (u.id > self.unit.id &&
+                                u.orderState === 'prepared' &&
+                                _.isEqual(u.orders[0].to, self.to));
                     });
         }
     });
