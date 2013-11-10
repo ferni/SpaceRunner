@@ -31,8 +31,7 @@ sh.Unit = sh.TileEntity.extendShared({
                     // (relative to turn's start)
     imageFacesRight: true,
     orders: [],
-    executingOrder: false,
-    lastGetActionsCall: -1,
+    orderState: 'pending',
     init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];
@@ -108,19 +107,19 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return time;
     },
-    getAttackActions: function(event, ship) {
+    getAttackActions: function(turnTime, ship) {
         'use strict';
         var actions = [],
             self = this,
             enemies;
-        if (event.time >= this.lastAttack + this.attackCooldown) {//attack ready
+        if (!this.onCooldown) {//attack ready
             enemies = _.filter(ship.unitsMap.at(this.x, this.y),
                 function(u) {
                     return u.ownerID !== self.ownerID;
                 });
             if (enemies.length > 0) {
                 actions.push(new sh.actions.Attack({
-                    time: event.time,
+                    time: turnTime,
                     attackerID: self.id,
                     receiverID: enemies[0].id,
                     damage: self.meleeDamage,
@@ -130,41 +129,31 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return actions;
     },
-    getActionsFromOrders: function(event, ship) {
+    getOrdersActions: function(turnTime) {
         'use strict';
         var action;
-        if ((event instanceof sh.ActionFinished &&
-                event.action.unitID === this.id) ||
-                (event instanceof sh.ModelChange && !this.executingOrder)) {
-            action = this.orders[0].execute(event.time);
+        if (this.orderState === 'pending' && this.orders.length > 0) {
+            action = this.orders[0].execute(turnTime);
             if (action) {
-                action.origin = this;
                 this.orders.shift();
-                this.executingOrder = true;
                 return [action];
-            }
-            if (event instanceof sh.ActionFinished) {
-                this.executingOrder = false;
             }
         }
         return [];
     },
     /**
      * This method will be called by the script creator every time something
-     * happens. (The model changed or some action finished)
-     * @param {{time:{int}}} event The event that triggered calling getActions.
+     * changed.
+     * @param {int} turnTime The current time.
      * @param {sh.Ship} ship The ship, representing the entire model (should be
      * Battle in the future.
      * @return {Array}
      */
-    getActions: function(event, ship) {
+    getActions: function(turnTime, ship) {
         'use strict';
         var actions = [];
-        this.lastGetActionsCall = event.time;
-        if (this.orders.length > 0) {
-            actions = actions.concat(this.getActionsFromOrders(event, ship));
-        }
-        actions = actions.concat(this.getAttackActions(event, ship));
+        actions = actions.concat(this.getAttackActions(turnTime, ship));
+        actions = actions.concat(this.getOrdersActions(turnTime, ship));
         return actions;
     }
 

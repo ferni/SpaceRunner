@@ -21,19 +21,7 @@ if (typeof exports !== 'undefined') {
     var pfFinder = new sh.PF.AStarFinder({
             allowDiagonal: true,
             dontCrossCorners: true
-        }),
-        ActionFinished;
-    //-- EVENTS --
-    /**
-     * When a unit finishes executing an action.
-     * @param {int} time Time for when this happens.
-     * @param {sh.Unit} unit
-     * @constructor
-     */
-    ActionFinished = function(time, action) {
-        this.time = time;
-        this.action = action;
-    };
+        });
 
     function insertByTime(array, item) {
         var insertionIndex = _.sortedIndex(array, item, 'time');
@@ -68,7 +56,7 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, ship, turnDuration) {
-        var script, queue, grid, event, unit, i;
+        var script, queue, grid, changes, time, unit, i;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
         grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
@@ -79,20 +67,8 @@ if (typeof exports !== 'undefined') {
 
         function registerAction(action) {
             script.actions.push(action);
-            insertInQueue(new ActionFinished(action.time +
-                action.duration, action));
-            _.chain(action.modelChanges)
-                .filter(function(mc) {
-                    return mc.time > action.time;
-                })
-                .each(insertInQueue);
+            _.each(action.modelChanges, insertInQueue);
         }
-
-        //Reset what needs to reset every turn
-        _.each(ship.units, function(u) {
-            u.lastAttack -= turnDuration;
-            u.executingOrder = false;
-        });
 
         //set the orders to the units
         _.each(orders, function(order) {
@@ -114,27 +90,16 @@ if (typeof exports !== 'undefined') {
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)
         while (queue.length > 0 && queue[0].time < turnDuration) {
-            event = queue[0];
-            queue.shift();
-            if (event instanceof sh.ModelChange) {
-                //apply changes to the ship
-                event.apply(ship);
-            }
+            time = queue[0].time;
+            changes = _.where(queue, {time: time});
+            _.invoke(changes, 'apply', ship);
+            queue = queue.slice(changes.length);
+
             //ship.units would be battle.objects in the future
             for (i = 0; i < ship.units.length; i++) {
                 unit = ship.units[i];
-
-                _.chain(unit.getActions(event, ship))
-                    //register in the queue
-                    .each(registerAction)
-
-                    //apply immediate changes
-                    .pluck('modelChanges')
-                    .flatten()
-                    .where({time: event.time})
-                    .invoke('apply', ship);
+                _.each(unit.getActions(time, ship), registerAction);
             }
-
         }
 
         script.updateActionsByUnit();
@@ -142,6 +107,5 @@ if (typeof exports !== 'undefined') {
     }
 
     //export
-    sh.ActionFinished = ActionFinished;
     sh.createScript = createScript;
 }());

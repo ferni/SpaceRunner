@@ -56,6 +56,7 @@ if (typeof exports !== 'undefined') {
                             dest: self.to,
                             arrivalTime: self.time + self.duration
                         };
+                        unit.orderState = 'executing';
                     }),
                 new ModelChange(this.time + this.duration,
                     function(ship) {
@@ -66,6 +67,7 @@ if (typeof exports !== 'undefined') {
                             unit.y = self.to.y;
                             unit.x = self.to.x;
                             unit.moving = null;
+                            unit.orderState = 'pending';
                             if (!sh.v.equal(prev, self.to)) {
                                 ship.unitsMap.update();
                             }
@@ -96,12 +98,18 @@ if (typeof exports !== 'undefined') {
                     var attacker = ship.getUnitByID(self.attackerID),
                         receiver = ship.getUnitByID(self.receiverID);
                     if (attacker && receiver) { //(both are alive)
-                        attacker.lastAttack = self.time;
+                        attacker.onCooldown = true;
                         receiver.hp -= self.damage;
                         if (receiver.hp <= 0) {
                             //unit dies
                             ship.removeUnit(receiver);
                         }
+                    }
+                }),
+                new ModelChange(this.time + this.duration, function(ship) {
+                    var attacker = ship.getUnitByID(self.attackerID);
+                    if (attacker) { //is alive
+                        attacker.onCooldown = false;
                     }
                 })];
         }
