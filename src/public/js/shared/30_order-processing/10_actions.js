@@ -20,12 +20,30 @@ if (typeof exports !== 'undefined') {
     'use strict';
     var Action, ModelChange;
 
+    /**
+     * A point in time in the Script in which a change in the model happens.
+     * Each action has a modelChanges Array,
+     * with the model changes made by that action.
+     * @param {int} time The time in ms in which this change occurs.
+     * @param {Function} apply The function that would change stuff around.
+     * @constructor
+     */
     ModelChange = function(time, apply) {
         this.type = 'change';
         this.time = time;
         this.apply = apply;
     };
     sh.ModelChange = ModelChange;
+
+    /**
+     * A point in time in the Script in which an action happens.
+     * Whereas ModelChange represents a raw change in the model,
+     * the action describes why those changes occurred.
+     * Example:
+     * If I have the action "Attack" , the change in the model from that attack
+     * is that some unit loses health.
+     * @type {*|extendShared}
+     */
     Action = sh.Jsonable.extendShared({
         time: 0,//ms
         modelChanges: [],
