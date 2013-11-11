@@ -163,7 +163,7 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var actions = [];
         actions = actions.concat(this.getAttackActions(turnTime, ship));
-        actions = actions.concat(this.getOrdersActions(turnTime, ship));
+        actions = actions.concat(this.getOrdersActions(turnTime));
         return actions;
     }
 
