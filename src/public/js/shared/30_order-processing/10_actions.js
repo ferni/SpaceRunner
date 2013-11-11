@@ -84,17 +84,19 @@ if (typeof exports !== 'undefined') {
                 new ModelChange(this.time,
                     function(ship) {
                         var unit = ship.getUnitByID(self.unitID);
-                        unit.moving = {
-                            dest: self.to,
-                            arrivalTime: self.time + self.duration
-                        };
-                        unit.orderState = 'executing';
+                        if (unit.isAlive()) {
+                            unit.moving = {
+                                dest: self.to,
+                                arrivalTime: self.time + self.duration
+                            };
+                            unit.orderState = 'executing';
+                        }
                     }),
                 new ModelChange(this.time + this.duration,
                     function(ship) {
                         var unit = ship.getUnitByID(self.unitID),
                             prev;
-                        if (unit) { //is alive
+                        if (unit.isAlive()) {
                             prev = {x: unit.x, y: unit.y};
                             unit.y = self.to.y;
                             unit.x = self.to.x;
@@ -129,20 +131,14 @@ if (typeof exports !== 'undefined') {
                 function(ship) {
                     var attacker = ship.getUnitByID(self.attackerID),
                         receiver = ship.getUnitByID(self.receiverID);
-                    if (attacker && receiver) { //(both are alive)
-                        attacker.onCooldown = true;
+                    attacker.onCooldown = true;
+                    if (attacker.isAlive() && receiver.isAlive()) {
                         receiver.hp -= self.damage;
-                        if (receiver.hp <= 0) {
-                            //unit dies
-                            ship.removeUnit(receiver);
-                        }
                     }
                 }),
                 new ModelChange(this.time + this.duration, function(ship) {
                     var attacker = ship.getUnitByID(self.attackerID);
-                    if (attacker) { //is alive
-                        attacker.onCooldown = false;
-                    }
+                    attacker.onCooldown = false;
                 })];
         }
     });

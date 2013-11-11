@@ -76,6 +76,10 @@ sh.Unit = sh.TileEntity.extendShared({
 
         };
     },
+    isAlive: function() {
+        'use strict';
+        return this.hp > 0;
+    },
     getTimeForOneTile: function() {
         'use strict';
         return 1000 / this.speed;
@@ -116,7 +120,8 @@ sh.Unit = sh.TileEntity.extendShared({
         if (!this.onCooldown) {//attack ready
             enemies = _.filter(ship.unitsMap.at(this.x, this.y),
                 function(u) {
-                    return u.ownerID !== self.ownerID;
+                    return u.isAlive() &&
+                        u.ownerID !== self.ownerID;
                 });
             if (enemies.length > 0) {
                 actions.push(new sh.actions.Attack({
@@ -162,6 +167,9 @@ sh.Unit = sh.TileEntity.extendShared({
     getActions: function(turnTime, ship) {
         'use strict';
         var actions = [];
+        if (!this.isAlive()) {
+            return [];
+        }
         actions = actions.concat(this.getAttackActions(turnTime, ship));
         actions = actions.concat(this.getOrdersActions(turnTime));
         return actions;

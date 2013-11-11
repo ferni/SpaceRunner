@@ -105,6 +105,14 @@ if (typeof exports !== 'undefined') {
         //make remaining changes
         _.invoke(queue, 'apply', ship);
 
+        //clean up
+        _.each(ship.units, function(u) {
+            if (!u.isAlive()) {
+                ship.removeUnit(u);
+            }
+        });
+        ship.unitsMap.update();
+
         script.updateActionsByUnit();
         return script;
     }
