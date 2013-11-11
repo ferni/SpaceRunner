@@ -102,6 +102,9 @@ if (typeof exports !== 'undefined') {
             }
         }
 
+        //make remaining changes
+        _.invoke(queue, 'apply', ship);
+
         script.updateActionsByUnit();
         return script;
     }
