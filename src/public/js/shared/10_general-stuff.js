@@ -38,6 +38,9 @@ if (typeof exports !== 'undefined') {
             this._properties = this._properties.concat(properties);
             this._numbers = {};
             _.each(properties, function(p) {
+                if (json[p] === undefined) {
+                    return;
+                }
                 this[p] = json._numbers && json._numbers[p] ?
                         parseInt(json[p], 10) : json[p];
                 //workaround for nodejs converting numbers in a
