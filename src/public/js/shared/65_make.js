@@ -61,9 +61,6 @@ sh.make = (function() {
         return new sh.Unit(parseInt(json.x, 10), parseInt(json.y, 10),
             json.settings);
     };
-    make.playerFromJson = function(json) {
-        return new sh.Player(json);
-    };
 
     make.moveOrder = function(unit, destination) {
         return {

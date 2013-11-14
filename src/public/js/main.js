@@ -333,7 +333,7 @@ var jsApp = {
 
         screens.loadHtmls(function() {
             server.init(function(data) {
-                gs.player = sh.make.playerFromJson(data.player);
+                gs.player = new sh.Player(data.player);
                 if (data.battleID !== undefined) {
                     //player was in a battle, resume it
                     server.getBattle(data.battleID, function(battle) {

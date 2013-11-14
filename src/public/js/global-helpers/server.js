@@ -29,7 +29,7 @@ var server = {
         $.post('/battle-set-up/create', {shipJson: ship.toJson()},
             function(data) {
                 console.log('Battle created');
-                data.creator = sh.make.playerFromJson(data.creator);
+                data.creator = new sh.Player(data.creator);
                 onDone(data);
             }, 'json');
     },
