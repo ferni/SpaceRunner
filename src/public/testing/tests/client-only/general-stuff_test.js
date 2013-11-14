@@ -23,4 +23,6 @@ test('Jsonable conserving numbers types', function() {
     johnJson.age = '21';
     john = new Person(johnJson);
     strictEqual(john.age, 21);
+    john = new Person(john.toJson());
+    strictEqual(john.age, 21);
 });
