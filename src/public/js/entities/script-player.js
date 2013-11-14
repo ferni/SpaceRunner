@@ -211,25 +211,7 @@ var ScriptPlayer = function(battleScreen) {
 
     function playAttackAction(action) {
         var receiver = gs.ship.getUnitByID(action.receiverID),
-            receiverVM = battleScreen.shipVM.getVM(receiver),
-            attacker = gs.ship.getUnitByID(action.attackerID),
-            attackerVM = battleScreen.shipVM.getVM(attacker);
-
-        //temporary hack until the script generation is improved
-        //for processing deaths.
-        if (attackerVM.isDead || receiverVM.isDead) {
-            return;
-        }
-        if (receiverVM.hp === undefined) {
-            receiverVM.hp = receiver.maxHP;
-        }
-        receiverVM.hp -= action.damage;
-        if (receiverVM.hp <= 0) {
-            receiverVM.isDead = true;
-            receiverVM.setCurrentAnimation('dead');
-            receiverVM.alpha = 0.8;
-        }
-        //end of temporary hack
+            receiverVM = battleScreen.shipVM.getVM(receiver);
 
         me.game.add(new ui.StarHit(receiverVM), 2000);
         me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
@@ -322,6 +304,13 @@ var ScriptPlayer = function(battleScreen) {
                 nextChange++) {
             modelChanges[nextChange].apply(gs.ship);
         }
+        //clean up
+        _.each(gs.ship.units, function(u) {
+            if (!u.isAlive()) {
+                gs.ship.removeUnit(u);
+            }
+        });
+        gs.ship.unitsMap.update();
     };
 
 };

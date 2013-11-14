@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _*/
 
 var Unit = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -15,10 +15,6 @@ var Unit = TileEntityVM.extend({
     init: function(unitModel) {
         'use strict';
         this.m = unitModel;
-        this.prevPos = {
-            x: this.m.x,
-            y: this.m.y
-        };
         this.size = unitModel.size;
         this.speed = unitModel.speed;
         this.parent(unitModel.x, unitModel.y, {
@@ -43,11 +39,41 @@ var Unit = TileEntityVM.extend({
         this.center = {x: 8, y: 8};
         this.pos.x = (this.m.x * TILE_SIZE) + HALF_TILE;
         this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
+        this.updateHealthBar();
+        this.prevModelState = {
+            x: this.m.x,
+            y: this.m.y,
+            hp: this.m.hp
+        };
+    },
+    getChanged: function() {
+        'use strict';
+        var self = this,
+            changes = {};
+        _.each(this.prevModelState, function(value, propName) {
+            if (self.m[propName] !== value) {
+                changes[propName] = true;
+                self.prevModelState[propName] = self.m[propName];
+            }
+        });
+        return changes;
+    },
+    updateHealthBar: function() {
+        'use strict';
+        this.healthBarSize = (16 * this.m.hp) / this.m.maxHP;
     },
     update: function() {
         'use strict';
+        var changed = this.getChanged();
         this.parent();
-
+        if (changed.hp) {
+            if (!this.m.isAlive()) {
+                this.setCurrentAnimation('dead');
+                this.alpha = 0.8;
+                console.log('Changed to dead animation for unit ' + this.m.id);
+            }
+            this.updateHealthBar();
+        }
         return true;
     },
     onShip: function() {
@@ -59,13 +85,6 @@ var Unit = TileEntityVM.extend({
         var color = 'green',
             relPosition = {x: -8, y: 10},
             absPosition = sh.v.add(this.pos, relPosition);
-        if (this.hp === undefined) {
-            this.hp = this.m.hp;
-        }
-        if (this.prevHP !== this.hp) {
-            //recalculate health bar size
-            this.healthBarSize = (16 * this.hp) / this.m.maxHP;
-        }
         if (this.healthBarSize <= 10) {
             color = 'orange';
         }
@@ -75,11 +94,6 @@ var Unit = TileEntityVM.extend({
         draw.line(ctx, absPosition,
             {x: absPosition.x + this.healthBarSize, y: absPosition.y},
             color, 3);
-        /*
-        draw.line(ctx, {x: this.pos.x + this.healthBarSize, y: this.pos.y + 17},
-            {x: this.pos.x + 16, y: this.pos.y + 17},
-            'whitesmoke', 3);*/
-        this.prevHP = this.hp;
     },
     draw: function(ctx) {
         'use strict';
