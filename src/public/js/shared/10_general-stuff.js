@@ -36,8 +36,18 @@ if (typeof exports !== 'undefined') {
         set: function(type, properties, json) {
             this.type = type;
             this._properties = this._properties.concat(properties);
+            this._numbers = {};
             _.each(properties, function(p) {
-                this[p] = json[p];
+                this[p] = json._numbers && json._numbers[p] ?
+                        parseInt(json[p], 10) : json[p];
+                //workaround for nodejs converting numbers in a
+                //json string to string when the client sends it to
+                // the server.
+                //TODO: remove when socket.io is implemented (if it doesn't
+                // have this problem)
+                if (_.isNumber(this[p])) {
+                    this._numbers[p] = 1;
+                }
             }, this);
         },
         toJson: function() {
@@ -46,6 +56,7 @@ if (typeof exports !== 'undefined') {
                 json[p] = this[p];
             }, this);
             json.type = this.type;
+            json._numbers = this._numbers;
             return json;
         }
     });
