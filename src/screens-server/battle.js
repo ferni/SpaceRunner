@@ -125,7 +125,10 @@ routes.add('ready', function(req, res, next) {
 routes.add('getscript', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle) {
-        return res.json({script: battle.currentTurn.script.toJson()});
+        return res.json({
+            script: battle.currentTurn.script.toJson(),
+            resultingShip: battle.ship.toJson()
+        });
     });
 });
 

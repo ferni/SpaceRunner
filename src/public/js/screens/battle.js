@@ -87,6 +87,7 @@ screens.register('battle', ConnectedScreen.extend({
                 screen.scriptServer = script;
                 screen.scriptPlayer.loadScript(script);
                 screen.shipVM.update();
+                screen.resultingShip = data.resultingShip;
                 //screen.logActions(script);
                 screen.resume();
                 screen.stopFetching();
@@ -242,7 +243,12 @@ screens.register('battle', ConnectedScreen.extend({
         this.readyButton.enable();
         this.scriptPlayer.onPause();
         this.shipVM.update();
-
+        if (gs.ship.compareJson(this.resultingShip)) {
+            console.log('The resulting ship correctly matches the server');
+        } else {
+            console.warn('The resulting ship is different than the one' +
+                'in the server.');
+        }
         this.scriptPrediction.m = [];
         this.giveOrdersFromLeftOverPath();
         me.game.sort();
