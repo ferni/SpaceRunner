@@ -31,8 +31,10 @@ if (typeof exports !== 'undefined') {
          * @param {Array} properties An array of properties to be set and
          * returned in toJson.
          * @param {Object} json The json object.
+         * @param {String} type The name of the constructor.
          */
-        set: function(properties, json) {
+        set: function(type, properties, json) {
+            this.type = type;
             this._properties = this._properties.concat(properties);
             _.each(properties, function(p) {
                 this[p] = json[p];
@@ -50,8 +52,7 @@ if (typeof exports !== 'undefined') {
 
     sh.Player = sh.Jsonable.extendShared({
         init: function(json) {
-            this.set(['id', 'name'], json);
-            this.type = 'Player';
+            this.set('Player', ['id', 'name'], json);
         }
     });
 

@@ -48,7 +48,7 @@ if (typeof exports !== 'undefined') {
         time: 0,//ms
         modelChanges: [],
         init: function(json) {
-            this.set(['time'], json);
+            this.set('Action', ['time'], json);
         }
     });
 
@@ -58,8 +58,7 @@ if (typeof exports !== 'undefined') {
         init: function(json) {
             var self = this;
             this.parent(json);
-            this.set(['unitID'], json);
-            this.type = 'PrepareOrder';
+            this.set('PrepareOrder', ['unitID'], json);
             this.modelChanges = [new ModelChange(this.time, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
                 unit.orderState = 'prepared';
@@ -74,8 +73,7 @@ if (typeof exports !== 'undefined') {
     sh.actions.Move = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['unitID', 'from', 'to', 'duration'], json);
-            this.type = 'Move';
+            this.set('Move', ['unitID', 'from', 'to', 'duration'], json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
@@ -113,16 +111,15 @@ if (typeof exports !== 'undefined') {
     sh.actions.LockInCombat = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['unit1ID', 'unit2ID', 'tile'], json);
-            this.type = 'LockInCombat';
+            this.set('LockInCombat', ['unit1ID', 'unit2ID', 'tile'], json);
         }
     });
 
     sh.actions.Attack = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['attackerID', 'receiverID', 'damage', 'duration'], json);
-            this.type = 'Attack';
+            this.set('Attack',
+                ['attackerID', 'receiverID', 'damage', 'duration'], json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
@@ -150,8 +147,7 @@ if (typeof exports !== 'undefined') {
     sh.actions.Summon = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['x', 'y', 'playerID', 'unitType'], json);
-            this.type = 'Summon';
+            this.set('Summon', ['x', 'y', 'playerID', 'unitType'], json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
@@ -175,8 +171,7 @@ if (typeof exports !== 'undefined') {
     sh.actions.DamageShip = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['tile', 'damage'], json);
-            this.type = 'DamageShip';
+            this.set('DamageShip', ['tile', 'damage'], json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
@@ -191,8 +186,7 @@ if (typeof exports !== 'undefined') {
     sh.actions.DeclareWinner = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set(['playerID'], json);
-            this.type = 'DeclareWinner';
+            this.set('DeclareWinner', ['playerID'], json);
         }
     });
 }());
