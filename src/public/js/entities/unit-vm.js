@@ -26,7 +26,7 @@ var Unit = TileEntityVM.extend({
         function toImgRow(array) {
             var i;
             for (i = 0; i < array.length; i++) {
-                array[i] += unitModel.type * 4;
+                array[i] += unitModel.imgIndex * 4;
             }
             return array;
         }

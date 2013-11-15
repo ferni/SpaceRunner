@@ -22,7 +22,7 @@ if (typeof exports !== 'undefined') {
  */
 sh.Unit = sh.TileEntity.extendShared({
     id: null, //the ship is in charge of setting the id
-    type: 0,
+    imgIndex: 0,
     speed: 1, //tiles per second
     maxHP: 100,
     meleeDamage: 20,
@@ -36,8 +36,8 @@ sh.Unit = sh.TileEntity.extendShared({
     init: function(x, y, settings) {
         'use strict';
         this.size = [1, 1];
-        if (settings.type) {
-            this.type = settings.type;
+        if (settings.imgIndex) {
+            this.imgIndex = settings.imgIndex;
         }
         if (settings.speed) {
             this.speed = settings.speed;
@@ -65,7 +65,7 @@ sh.Unit = sh.TileEntity.extendShared({
             x: this.x,
             y: this.y,
             settings: {
-                type: this.type,
+                imgIndex: this.imgIndex,
                 speed: this.speed,
                 maxHP: this.maxHP,
                 meleeDamage: this.meleeDamage,
@@ -185,7 +185,7 @@ sh.units = (function() {
     var u = {};
     u.Zealot = sh.Unit.extendShared({
         init: function(x, y, settings) {
-            this.type = 0;
+            this.imgIndex = 0;
             this.speed = 2;
             this.maxHP = 100;
             this.attackCooldown = 800;
@@ -195,7 +195,7 @@ sh.units = (function() {
     });
     u.Critter = sh.Unit.extendShared({
         init: function(x, y, settings) {
-            this.type = 5;
+            this.imgIndex = 5;
             this.speed = 1;
             this.maxHP = 50;
             this.attackCooldown = 420;
@@ -206,7 +206,7 @@ sh.units = (function() {
     });
     u.MetalSpider = sh.Unit.extendShared({
         init: function(x, y, settings) {
-            this.type = 28;
+            this.imgIndex = 28;
             this.speed = 3;
             this.maxHP = 200;
             this.attackCooldown = 1500;
