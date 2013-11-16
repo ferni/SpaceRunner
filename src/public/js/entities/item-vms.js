@@ -219,7 +219,7 @@ itemVMs.ConsoleVM = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';
-        this.type = 'console';
+        this.type = 'Console';
         this.size = consoleModel.size;
         this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});

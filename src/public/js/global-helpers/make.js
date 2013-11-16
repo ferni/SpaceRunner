@@ -19,7 +19,7 @@ var make = (function() {
         weapon: itemVMs.WeaponVM,
         Engine: itemVMs.EngineVM,
         Power: itemVMs.PowerVM,
-        console: itemVMs.ConsoleVM,
+        Console: itemVMs.ConsoleVM,
         component: itemVMs.ComponentVM,
         door: itemVMs.DoorVM,
         wall: itemVMs.WallVM,

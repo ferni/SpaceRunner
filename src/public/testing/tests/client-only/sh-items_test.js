@@ -48,10 +48,10 @@ test('Console placement', function() {
     x = th.shipPositions.free.x;
     y = th.shipPositions.free.y;
 
-    ok(!ship.buildAt(x, y, 'console'),
+    ok(!ship.buildAt(x, y, 'Console'),
         'Console building fails in the middle of nowhere');
     ok(ship.buildAt(x, y, 'Power'), 'Power built');
-    ok(ship.buildAt(x - 1, y, 'console'),
+    ok(ship.buildAt(x - 1, y, 'Console'),
         'Console building succeeds next to Power');
 });
 

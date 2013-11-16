@@ -55,9 +55,9 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/Power_01.png'
 }, {
-    name: 'console',
+    name: 'Console',
     type: 'image',
-    src: 'data/img/render/console_02.png'
+    src: 'data/img/render/Console_02.png'
 }, {
     name: 'component',
     type: 'image',
@@ -256,10 +256,10 @@ var prebuilt = {
         '{"type":"Weapon","x":22,"y":9,"r":false},' +
         '{"type":"Weapon","x":22,"y":13,"r":false},' +
         '{"type":"component","x":19,"y":11,"r":false},' +
-        '{"type":"console","x":11,"y":11,"r":false},' +
-        '{"type":"console","x":11,"y":12,"r":false},' +
-        '{"type":"console","x":21,"y":9,"r":false},' +
-        '{"type":"console","x":21,"y":14,"r":false}],' +
+        '{"type":"Console","x":11,"y":11,"r":false},' +
+        '{"type":"Console","x":11,"y":12,"r":false},' +
+        '{"type":"Console","x":21,"y":9,"r":false},' +
+        '{"type":"Console","x":21,"y":14,"r":false}],' +
         '"units":[]}'
 };
 

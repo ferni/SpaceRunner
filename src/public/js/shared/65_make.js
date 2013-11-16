@@ -28,7 +28,7 @@ sh.make = (function() {
         Weapon: sh.items.Weapon,
         Engine: sh.items.Engine,
         Power: sh.items.Power,
-        console: sh.items.Console,
+        Console: sh.items.Console,
         component: sh.items.Component,
         door: sh.items.Door,
         wall: sh.items.Wall,
