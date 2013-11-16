@@ -24,7 +24,6 @@ if (typeof exports !== 'undefined') {
 
     sh.Jsonable = sh.SharedClass.extendShared({
         _properties: [],
-        _numbers: {},
         /**
          * Sets the properties found in the json param to the object.
          * This properties are later used by toJson to return the json form
@@ -44,25 +43,28 @@ if (typeof exports !== 'undefined') {
                 if (json[p] === undefined) {
                     return;
                 }
-                this[p] = json._numbers && json._numbers[p] ?
-                        parseInt(json[p], 10) : json[p];
                 //workaround for nodejs converting numbers in a
                 //json string to string when the client sends it to
                 // the server.
                 //TODO: remove when socket.io is implemented (if it doesn't
                 // have this problem)
-                if (_.isNumber(this[p])) {
-                    this._numbers[p] = 1;
-                }
+                this[p] = json._numbers && json._numbers[p] ?
+                        parseInt(json[p], 10) : json[p];
+
+
             }, this);
         },
         toJson: function() {
-            var json = {};
+            var json = {
+                    _numbers: {},
+                    type: this.type
+                };
             _.each(this._properties, function(p) {
                 json[p] = this[p];
+                if (_.isNumber(this[p])) {
+                    json._numbers[p] = 1;
+                }
             }, this);
-            json.type = this.type;
-            json._numbers = this._numbers;
             return json;
         }
     });
