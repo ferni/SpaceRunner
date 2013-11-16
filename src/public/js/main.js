@@ -43,17 +43,17 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/pause-icon.png'
 }, {
-    name: 'weapon',
+    name: 'Weapon',
     type: 'image',
-    src: 'data/img/render/weapon_01.png'
+    src: 'data/img/render/Weapon_01.png'
 }, {
-    name: 'engine',
+    name: 'Engine',
     type: 'image',
-    src: 'data/img/render/engine_01.png'
+    src: 'data/img/render/Engine_01.png'
 }, {
-    name: 'power',
+    name: 'Power',
     type: 'image',
-    src: 'data/img/render/power_01.png'
+    src: 'data/img/render/Power_01.png'
 }, {
     name: 'console',
     type: 'image',
@@ -250,11 +250,11 @@ var g_resources = [{
 
 var prebuilt = {
     humanoid: '{"tmxName":"Humanoid_Cruiser","buildings":[' +
-        '{"type":"power","x":15,"y":11,"r":false},' +
-        '{"type":"engine","x":11,"y":9,"r":false},' +
-        '{"type":"engine","x":11,"y":13,"r":false},' +
-        '{"type":"weapon","x":22,"y":9,"r":false},' +
-        '{"type":"weapon","x":22,"y":13,"r":false},' +
+        '{"type":"Power","x":15,"y":11,"r":false},' +
+        '{"type":"Engine","x":11,"y":9,"r":false},' +
+        '{"type":"Engine","x":11,"y":13,"r":false},' +
+        '{"type":"Weapon","x":22,"y":9,"r":false},' +
+        '{"type":"Weapon","x":22,"y":13,"r":false},' +
         '{"type":"component","x":19,"y":11,"r":false},' +
         '{"type":"console","x":11,"y":11,"r":false},' +
         '{"type":"console","x":11,"y":12,"r":false},' +

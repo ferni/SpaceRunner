@@ -108,7 +108,9 @@ sh.Ship = sh.SharedClass.extendShared({
             unit.x = empty.x;
             unit.y = empty.y;
         } else {
-            unit = new sh.Unit(empty.x, empty.y, settings);
+            settings.x = empty.x;
+            settings.y = empty.y;
+            unit = new sh.Unit(settings);
 
         }
         this.addUnit(unit);
@@ -277,10 +279,14 @@ sh.Ship = sh.SharedClass.extendShared({
         var ship = this;
         ship.removeAll();
         _.each(json.buildings, function(b) {
-            ship.addItem(sh.make.itemFromJson(b));
+            ship.addItem(new sh.items[b.type](b));
         });
         _.each(json.units, function(u) {
-            ship.addUnit(sh.make.unitFromJson(u));
+            if (u.type === 'Unit') {//is generic unit
+                ship.addUnit(new sh.Unit(u));
+            } else { //is specific unit
+                ship.addUnit(new sh.units[u.type](u));
+            }
         });
         this.buildingsChanged();
     },

@@ -5,8 +5,7 @@
 * All rights reserved.
 */
 
-/*global WeaponVM, EngineVM, PowerVM, ConsoleVM, ComponentVM, DoorVM, WallVM,
-WeakSpotVM, sh, Unit*/
+/*global itemVMs, sh, Unit*/
 
 /**
  * Factories for entities
@@ -17,14 +16,14 @@ var make = (function() {
 
     //ITEMS VMS
     make.itemTypes = {
-        weapon: WeaponVM,
-        engine: EngineVM,
-        power: PowerVM,
-        console: ConsoleVM,
-        component: ComponentVM,
-        door: DoorVM,
-        wall: WallVM,
-        weak_spot: WeakSpotVM
+        weapon: itemVMs.WeaponVM,
+        Engine: itemVMs.EngineVM,
+        Power: itemVMs.PowerVM,
+        console: itemVMs.ConsoleVM,
+        component: itemVMs.ComponentVM,
+        door: itemVMs.DoorVM,
+        wall: itemVMs.WallVM,
+        weak_spot: itemVMs.WeakSpotVM
     };
     make.item = function(type, params) {
         var Constructor,
@@ -45,7 +44,7 @@ var make = (function() {
     make.vm = function(model) {
         var VMConstructor;
         if (model instanceof sh.Item) {
-            VMConstructor = make.itemTypes[model.type];
+            VMConstructor = itemVMs[model.type + 'VM'];
         } else if (model instanceof sh.Unit) {
             VMConstructor = Unit;
         } else {

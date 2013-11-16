@@ -152,18 +152,22 @@ var ItemVM = TileEntityVM.extend({
     }
 });
 
-
+var itemVMs = {};
 
 
 /*
     In each item, set size and type before calling parent()
 */
-// weapon object
-var WeaponVM = ItemVM.extend({
+
+/**
+ * Weapon view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.WeaponVM = ItemVM.extend({
     // init function
     init: function(weaponModel) {
         'use strict';
-        this.type = 'weapon';
+        this.type = 'Weapon';
         this.size = weaponModel.size;
         this.totalSize = [3, 2];
         this.m = weaponModel;
@@ -172,24 +176,30 @@ var WeaponVM = ItemVM.extend({
     }
 });
 
-// engine object
-var EngineVM = ItemVM.extend({
+/**
+ * Engine view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.EngineVM = ItemVM.extend({
     // init function
-    init: function(engineModel) {
+    init: function(EngineModel) {
         'use strict';
-        this.type = 'engine';
-        this.size = engineModel.size;
+        this.type = 'Engine';
+        this.size = EngineModel.size;
         this.totalSize = [3, 2];
         this.cannonTile = [1, 0];
-        this.m = engineModel;
-        this.parent(engineModel.x, engineModel.y, {});
-        this.onShip(engineModel.onShip());
+        this.m = EngineModel;
+        this.parent(EngineModel.x, EngineModel.y, {});
+        this.onShip(EngineModel.onShip());
     }
 });
 
 
-// power object
-var PowerVM = ItemVM.extend({
+/**
+ * Power view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.PowerVM = ItemVM.extend({
     // init function
     init: function(powerModel) {
         'use strict';
@@ -201,8 +211,11 @@ var PowerVM = ItemVM.extend({
     }
 });
 
-// console object class
-var ConsoleVM = ItemVM.extend({
+/**
+ * Console view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.ConsoleVM = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';
@@ -214,8 +227,11 @@ var ConsoleVM = ItemVM.extend({
     }
 });
 
-// component object class
-var ComponentVM = ItemVM.extend({
+/**
+ * Component view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.ComponentVM = ItemVM.extend({
     // init function
     init: function(componentModel) {
         'use strict';
@@ -236,8 +252,11 @@ var ComponentVM = ItemVM.extend({
     }
 });
 
-// door object class
-var DoorVM = ItemVM.extend({
+/**
+ * Door view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.DoorVM = ItemVM.extend({
     // init function
     init: function(doorModel) {
         'use strict';
@@ -269,8 +288,12 @@ var DoorVM = ItemVM.extend({
     }
 
 });
-// wall object class
-var WallVM = ItemVM.extend({
+
+/**
+ * Wall view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.WallVM = ItemVM.extend({
     // init function
     init: function(wallModel) {
         'use strict';
@@ -418,7 +441,11 @@ var WallVM = ItemVM.extend({
     }
 });
 
-var WeakSpotVM = ItemVM.extend({
+/**
+ * WeakSpot view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
+itemVMs.WeakSpotVM = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';

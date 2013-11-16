@@ -199,7 +199,7 @@ sh.pr = {
         }]
     }));
 
-    pr.engine = and(space2x2, new sh.pr.PlacementRule({
+    pr.Engine = and(space2x2, new sh.pr.PlacementRule({
         tile: sh.tiles.back,
         inAll: [{
             x: -1,
@@ -211,8 +211,8 @@ sh.pr = {
     }));
 
     pr.console = and(space1x1, sh.pr.make.nextToRule(function(tile) {
-        return tile.type === 'weapon' || tile.type === 'engine' ||
-            tile.type === 'power';
+        return tile.type === 'Weapon' || tile.type === 'Engine' ||
+            tile.type === 'Power';
     }, 1, 1));
 
     pr.door = or(pr.make.spaceRule(function(tile) {

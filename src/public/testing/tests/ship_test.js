@@ -25,9 +25,9 @@ asyncTest('buildAt', function() {
     }, function(screen) {
         screen.ship.removeAll();
         ok(screen.ship.buildAt(th.shipPositions.free.x,
-            th.shipPositions.free.y, 'power'), 'could build power');
-        equal(screen.ship.built[0].type, 'power',
-            'first building is power');
+            th.shipPositions.free.y, 'Power'), 'could build Power');
+        equal(screen.ship.built[0].type, 'Power',
+            'first building is Power');
         start();
     });
 });
@@ -39,38 +39,38 @@ asyncTest('add/at/removeAt', function() {
     }, function(screen) {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y,
-            engine = make.item('engine', [x, y]);
+            engine = make.item('Engine', [x, y]);
         screen.ship.removeAll();
         //(ignores placement rules)
         screen.ship.addItem(engine);
-        equal(screen.ship.built[0].type, 'engine',
+        equal(screen.ship.built[0].type, 'Engine',
             'First building is engine after adding');
 
         //at
-        equal(screen.ship.at(x, y).type, 'engine', 'at(x, y) is engine');
-        equal(screen.ship.at(x + 1, y).type, 'engine',
+        equal(screen.ship.at(x, y).type, 'Engine', 'at(x, y) is engine');
+        equal(screen.ship.at(x + 1, y).type, 'Engine',
             'at(x + 1, y) is engine');
-        equal(screen.ship.at(x, y + 1).type, 'engine',
+        equal(screen.ship.at(x, y + 1).type, 'Engine',
             'at(x, y + 1) is engine');
-        equal(screen.ship.at(x + 1, y + 1).type, 'engine',
+        equal(screen.ship.at(x + 1, y + 1).type, 'Engine',
             'at(x + 1, y + 1) is engine');
-        notEqual(screen.ship.at(x + 2, y + 1).type, 'engine',
+        notEqual(screen.ship.at(x + 2, y + 1).type, 'Engine',
             'at(x + 2, y + 1) is not engine');
-        notEqual(screen.ship.at(x, y - 1).type, 'engine',
+        notEqual(screen.ship.at(x, y - 1).type, 'Engine',
             'at(x, y - 1) is not engine');
 
         //removeAt
         screen.ship.removeAt(x + 1, y); //random engine tile
         equal(screen.ship.built.length, 0,
             'Ship has 0 buildings after removing');
-        notEqual(screen.ship.at(x, y), 'engine',
-            'at(x, y) no longer engine');
-        notEqual(screen.ship.at(x, y + 1), 'engine',
-            'at(x, y + 1) no longer engine');
-        notEqual(screen.ship.at(x + 1, y), 'engine',
-            'at(x+1, y) no longer engine');
-        notEqual(screen.ship.at(x + 1, y + 1), 'engine',
-            'at(x+1, y + 1) no longer engine');
+        notEqual(screen.ship.at(x, y), 'Engine',
+            'at(x, y) no longer Engine');
+        notEqual(screen.ship.at(x, y + 1), 'Engine',
+            'at(x, y + 1) no longer Engine');
+        notEqual(screen.ship.at(x + 1, y), 'Engine',
+            'at(x+1, y) no longer Engine');
+        notEqual(screen.ship.at(x + 1, y + 1), 'Engine',
+            'at(x+1, y + 1) no longer Engine');
         start();
     });
 });
@@ -159,14 +159,14 @@ asyncTest('fromJson', function() {
         var power, door;
         screen.ship.removeAll();
         screen.ship.fromJson({'tmxName': 'test',
-            'buildings': [{'type': 'power', 'x': 0, 'y': 0},
+            'buildings': [{'type': 'Power', 'x': 0, 'y': 0},
                 {'type': 'door', 'x': 2, 'y': 3, 'r': true}]});
 
         power = screen.ship.at(0, 0);
-        equal(power.type, 'power', 'power successfully added to the ship');
+        equal(power.type, 'Power', 'Power successfully added to the ship');
         equal(power.x, 0, 'it has correct x position');
         equal(power.y, 0, 'it has correct y position');
-        ok(!power.rotated(), 'power is not rotated');
+        ok(!power.rotated(), 'Power is not rotated');
 
         door = screen.ship.at(2, 3);
         equal(door.type, 'door', 'door successfully added to the ship');
@@ -186,9 +186,9 @@ asyncTest('fromJson clears buildings', function() {
     }, function(screen) {
         screen.ship.removeAll();
         ok(screen.ship.buildAt(th.shipPositions.free.x,
-            th.shipPositions.free.y, 'power'), 'power successfully built');
+            th.shipPositions.free.y, 'Power'), 'Power successfully built');
         ok(screen.ship.buildAt(th.shipPositions.engine.x,
-            th.shipPositions.engine.y, 'engine'), 'engine succesfully built');
+            th.shipPositions.engine.y, 'Engine'), 'Engine succesfully built');
         screen.ship.fromJson({'tmxName': 'test',
             'buildings': [{'type': 'wall', 'x': 0, 'y': 0}]});
         equal(screen.ship.built.length, 1,
@@ -212,9 +212,9 @@ asyncTest('toJson', function() {
         var jsonObject, power, engine, buildings;
         screen.ship.removeAll();
         ok(screen.ship.buildAt(th.shipPositions.free.x,
-            th.shipPositions.free.y, 'power'), 'power successfully built');
+            th.shipPositions.free.y, 'Power'), 'Power successfully built');
         ok(screen.ship.buildAt(th.shipPositions.engine.x,
-            th.shipPositions.engine.y, 'engine'), 'engine succesfully built');
+            th.shipPositions.engine.y, 'Engine'), 'Engine succesfully built');
         screen.ship.at(th.shipPositions.engine.x, th.shipPositions.engine.y)
             .rotated(true);
 
@@ -223,22 +223,22 @@ asyncTest('toJson', function() {
         equal(buildings.length, 2, 'JSON object (array) has 2 objects');
 
         power = _.find(buildings, function(i) {
-            return i.type === 'power';
+            return i.type === 'Power';
         });
         equal(power.x, th.shipPositions.free.x,
-            'power saved with correct x position');
+            'Power saved with correct x position');
         equal(power.y, th.shipPositions.free.y,
-            'power saved with correct y position');
-        ok(!power.r, 'power saved as not rotated');
+            'Power saved with correct y position');
+        ok(!power.r, 'Power saved as not rotated');
 
         engine = _.find(buildings, function(i) {
-            return i.type === 'engine';
+            return i.type === 'Engine';
         });
         equal(engine.x, th.shipPositions.engine.x,
-            'engine saved with correct x position');
+            'Engine saved with correct x position');
         equal(engine.y, th.shipPositions.engine.y,
-            'engine saved with correct y position');
-        ok(engine.r, 'engine saved as rotated');
+            'Engine saved with correct y position');
+        ok(engine.r, 'Engine saved as rotated');
         start();
     });
 });

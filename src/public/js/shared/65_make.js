@@ -25,9 +25,9 @@ sh.make = (function() {
 
     //ITEMS
     make.itemModels = {
-        weapon: sh.items.Weapon,
-        engine: sh.items.Engine,
-        power: sh.items.Power,
+        Weapon: sh.items.Weapon,
+        Engine: sh.items.Engine,
+        Power: sh.items.Power,
         console: sh.items.Console,
         component: sh.items.Component,
         door: sh.items.Door,
@@ -47,19 +47,6 @@ sh.make = (function() {
             return new Constructor(params[0], params[1], params[2]);
         }
         return new Constructor(null, 0, 0);
-    };
-
-    make.itemFromJson = function(json) {
-        var item = make.itemModel(json.type,
-            [null, parseInt(json.x, 10), parseInt(json.y, 10)]);
-        item.rotated(json.r);
-        return item;
-    };
-
-    //UNITS
-    make.unitFromJson = function(json) {
-        return new sh.Unit(parseInt(json.x, 10), parseInt(json.y, 10),
-            json.settings);
     };
 
     make.moveOrder = function(unit, destination) {

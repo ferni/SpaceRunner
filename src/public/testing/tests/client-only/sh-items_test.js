@@ -9,20 +9,20 @@
 me, utils, ui, make, sh, me*/
 
 module('shared/items');
-test('engine proper placement', function() {
+test('Engine proper placement', function() {
     'use strict';
     var ship;
     ship = new sh.Ship({tmxName: 'test'});
     ok(ship.buildAt(th.shipPositions.engine.x, th.shipPositions.engine.y,
-        'engine'), 'building succeeds');
+        'Engine'), 'building succeeds');
 });
 
-test('engine invalid placement', function() {
+test('Engine invalid placement', function() {
     'use strict';
     var ship;
     ship = new sh.Ship({tmxName: 'test'});
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
-        'engine'), 'building fails');
+        'Engine'), 'building fails');
 });
 
 test('weapon proper placement', function() {
@@ -30,7 +30,7 @@ test('weapon proper placement', function() {
     var ship;
     ship = new sh.Ship({tmxName: 'test'});
     ok(ship.buildAt(th.shipPositions.weapon.x, th.shipPositions.weapon.y,
-        'weapon'), 'building succeeds');
+        'Weapon'), 'building succeeds');
 });
 
 test('weapon invalid placement', function() {
@@ -38,7 +38,7 @@ test('weapon invalid placement', function() {
     var ship;
     ship = new sh.Ship({tmxName: 'test'});
     ok(!ship.buildAt(th.shipPositions.free.x, th.shipPositions.free.y,
-        'weapon'), 'building fails');
+        'Weapon'), 'building fails');
 });
 
 test('Console placement', function() {
@@ -50,9 +50,9 @@ test('Console placement', function() {
 
     ok(!ship.buildAt(x, y, 'console'),
         'Console building fails in the middle of nowhere');
-    ok(ship.buildAt(x, y, 'power'), 'Power built');
+    ok(ship.buildAt(x, y, 'Power'), 'Power built');
     ok(ship.buildAt(x - 1, y, 'console'),
-        'Console building succeeds next to power');
+        'Console building succeeds next to Power');
 });
 
 

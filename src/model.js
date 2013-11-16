@@ -123,43 +123,43 @@ exports.ChallengeBatte = exports.Battle.extend({
     init: function(params) {
         'use strict';
         var ship = new sh.Ship({json: {'tmxName': 'Mechanoid_Cruiser',
-            'buildings': [{'type': 'door', 'x': 14, 'y': 11, 'r': true},
-                {'type': 'wall', 'x': 14, 'y': 8, 'r': false},
-                {'type': 'wall', 'x': 17, 'y': 8, 'r': false},
-                {'type': 'door', 'x': 15, 'y': 8, 'r': false},
-                {'type': 'wall', 'x': 14, 'y': 15, 'r': false},
-                {'type': 'wall', 'x': 17, 'y': 15, 'r': false},
-                {'type': 'door', 'x': 15, 'y': 15, 'r': false},
-                {'type': 'engine', 'x': 10, 'y': 5, 'r': false},
-                {'type': 'engine', 'x': 10, 'y': 17, 'r': false},
-                {'type': 'engine', 'x': 11, 'y': 11, 'r': false},
-                {'type': 'console', 'x': 11, 'y': 10, 'r': false},
-                {'type': 'weapon', 'x': 24, 'y': 8, 'r': false},
-                {'type': 'weapon', 'x': 24, 'y': 14, 'r': false},
-                {'type': 'weapon', 'x': 20, 'y': 17, 'r': false},
-                {'type': 'component', 'x': 10, 'y': 7, 'r': false},
-                {'type': 'component', 'x': 10, 'y': 15, 'r': false},
-                {'type': 'console', 'x': 12, 'y': 5, 'r': false},
-                {'type': 'console', 'x': 12, 'y': 18, 'r': false},
-                {'type': 'weapon', 'x': 20, 'y': 5, 'r': false},
-                {'type': 'power', 'x': 20, 'y': 15, 'r': false},
-                {'type': 'power', 'x': 20, 'y': 7, 'r': false},
-                {'type': 'console', 'x': 25, 'y': 10, 'r': false},
-                {'type': 'console', 'x': 25, 'y': 13, 'r': false},
-                {'type': 'console', 'x': 19, 'y': 18, 'r': false},
-                {'type': 'console', 'x': 19, 'y': 5, 'r': false},
-                {'type': 'door', 'x': 22, 'y': 11, 'r': true},
-                {'type': 'weak_spot', 'x': 15, 'y': 6, 'r': false},
-                {'type': 'weak_spot', 'x': 15, 'y': 16, 'r': false},
-                {'type': 'weak_spot', 'x': 19, 'y': 11, 'r': false},
-                {'type': 'door', 'x': 18, 'y': 11, 'r': true}],
+            'buildings': [{'type': 'Door', 'x': 14, 'y': 11, 'r': true},
+                {'type': 'Wall', 'x': 14, 'y': 8, 'r': false},
+                {'type': 'Wall', 'x': 17, 'y': 8, 'r': false},
+                {'type': 'Door', 'x': 15, 'y': 8, 'r': false},
+                {'type': 'Wall', 'x': 14, 'y': 15, 'r': false},
+                {'type': 'Wall', 'x': 17, 'y': 15, 'r': false},
+                {'type': 'Door', 'x': 15, 'y': 15, 'r': false},
+                {'type': 'Engine', 'x': 10, 'y': 5, 'r': false},
+                {'type': 'Engine', 'x': 10, 'y': 17, 'r': false},
+                {'type': 'Engine', 'x': 11, 'y': 11, 'r': false},
+                {'type': 'Console', 'x': 11, 'y': 10, 'r': false},
+                {'type': 'Weapon', 'x': 24, 'y': 8, 'r': false},
+                {'type': 'Weapon', 'x': 24, 'y': 14, 'r': false},
+                {'type': 'Weapon', 'x': 20, 'y': 17, 'r': false},
+                {'type': 'Component', 'x': 10, 'y': 7, 'r': false},
+                {'type': 'Component', 'x': 10, 'y': 15, 'r': false},
+                {'type': 'Console', 'x': 12, 'y': 5, 'r': false},
+                {'type': 'Console', 'x': 12, 'y': 18, 'r': false},
+                {'type': 'Weapon', 'x': 20, 'y': 5, 'r': false},
+                {'type': 'Power', 'x': 20, 'y': 15, 'r': false},
+                {'type': 'Power', 'x': 20, 'y': 7, 'r': false},
+                {'type': 'Console', 'x': 25, 'y': 10, 'r': false},
+                {'type': 'Console', 'x': 25, 'y': 13, 'r': false},
+                {'type': 'Console', 'x': 19, 'y': 18, 'r': false},
+                {'type': 'Console', 'x': 19, 'y': 5, 'r': false},
+                {'type': 'Door', 'x': 22, 'y': 11, 'r': true},
+                {'type': 'WeakSpot', 'x': 15, 'y': 6, 'r': false},
+                {'type': 'WeakSpot', 'x': 15, 'y': 16, 'r': false},
+                {'type': 'WeakSpot', 'x': 19, 'y': 11, 'r': false},
+                {'type': 'Door', 'x': 18, 'y': 11, 'r': true}],
             'units': []}}),
             Zealot = sh.units.Zealot;
-        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
-        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
-        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
-        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
-        ship.putUnit(new Zealot(0, 0, {ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
         this.parent({id: params.id, ship: ship});
         this.playerLeft = params.player;
         this.playerRight = new exports.AIPlayer('Enemy');

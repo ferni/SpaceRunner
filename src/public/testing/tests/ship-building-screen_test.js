@@ -17,7 +17,7 @@ asyncTest('ESC key un-chooses the item', function() {
         th.loadScreen(function() {
             me.state.change('ship-building', {tmxName: 'test'});
         }, function(screen) {
-            screen.choose('power');
+            screen.choose('Power');
             ok(screen.chosen, 'something chosen');
             me.input.triggerKeyEvent(me.input.KEY.ESC, true);
             screen.update();
@@ -82,23 +82,23 @@ asyncTest('drag and drop', function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         var power;
-        ok(screen.ship.buildAt(3, 4, 'power'), 'power succesfully built');
+        ok(screen.ship.buildAt(3, 4, 'Power'), 'Power succesfully built');
         th.mouseBegin(screen);
         th.moveMouse(3, 4);
         screen.mouseDown({
             which: me.input.mouse.LEFT
         });
-        equal(screen.dragging.type, 'power', 'power being dragged');
+        equal(screen.dragging.type, 'Power', 'Power being dragged');
 
         th.moveMouse(5, 4);
         screen.mouseUp({
             which: me.input.mouse.LEFT
         });
         ok(!screen.dragging, 'not dragging after mouse up');
-        notEqual(screen.ship.at(3, 4).type, 'power',
-            'power is not on original position');
+        notEqual(screen.ship.at(3, 4).type, 'Power',
+            'Power is not on original position');
         power = screen.ship.at(5, 4);
-        equal(power.x, 5, 'power is at new position');
+        equal(power.x, 5, 'Power is at new position');
         th.mouseEnd();
         start();
     });
@@ -109,8 +109,8 @@ asyncTest('choose', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        screen.choose('engine');
-        equal(screen.chosen.type, 'engine');
+        screen.choose('Engine');
+        equal(screen.chosen.type, 'Engine');
         start();
     });
 });
@@ -120,8 +120,8 @@ asyncTest('moveGhost', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        screen.choose('power');
-        equal(screen.chosen.type, 'power');
+        screen.choose('Power');
+        equal(screen.chosen.type, 'Power');
 
         screen.moveGhost(12, 13);
         equal(screen.chosen.x, 12);
@@ -143,13 +143,13 @@ asyncTest('beginDrag/endDrag', function() {
         screen.ship.removeAll();
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
-        power = screen.ship.buildAt(x, y, 'power');
-        ok(power, 'power built');
+        power = screen.ship.buildAt(x, y, 'Power');
+        ok(power, 'Power built');
         equal(power.x, x, 'x before dragging');
         equal(power.y, y, 'y before dragging');
 
-        screen.beginDrag(power);
-        equal(screen.chosen.type, 'power');
+        screen.beginDrag(Power);
+        equal(screen.chosen.type, 'Power');
         equal(screen.dragging, power);
         th.mouseBegin(screen);
         th.setMouse(x + 1, y);
@@ -232,13 +232,13 @@ asyncTest('draw/at', function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         var items;
-        screen.drawItem(4, 5, 'engine');
+        screen.drawItem(4, 5, 'Engine');
         items = screen.drawingScreen;
         ok(_.some(items, function(item) {
-            return item.type === 'engine' && item.x === 4 && item.y === 5;
+            return item.type === 'Engine' && item.x === 4 && item.y === 5;
         }), 'Engine drawn at correct position');
 
-        equal(screen.at(4, 5).type, 'engine', 'at(4,5) is engine');
+        equal(screen.at(4, 5).type, 'Engine', 'at(4,5) is Engine');
         start();
     });
 });

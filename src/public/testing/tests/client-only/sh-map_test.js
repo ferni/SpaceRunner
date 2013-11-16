@@ -27,8 +27,8 @@ test('Basic map', function() {
 test('Entity map', function() {
     'use strict';
     var entities, map,
-        power = new sh.items.Power(null, 1, 1),
-        console = new sh.items.Console(null, 0, 1);
+        power = new sh.items.Power({x: 1, y: 1}),
+        console = new sh.items.Console({x: 0, y: 1});
     entities = [
         console,
         power
@@ -68,8 +68,8 @@ test('Entity map', function() {
 test('CompoundMap', function() {
     'use strict';
     var entities, entityMap, power, console, numberMap, map;
-    power = new sh.items.Power(null, 1, 1);
-    console = new sh.items.Console(null, 0, 1);
+    power = new sh.items.Power({x: 1, y: 1});
+    console = new sh.items.Console({x: 0, y: 1});
     entities = [
         console,
         power

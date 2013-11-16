@@ -135,7 +135,7 @@ sh.items.Power = sh.Item.extendShared({
 });
 
 /**
- * The console next to the power, Weapon or Engine.
+ * The console next to the Power, Weapon or Engine.
  * A unit must run these items from the console.
  * @type {*}
  */
