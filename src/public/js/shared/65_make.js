@@ -43,10 +43,7 @@ sh.make = (function() {
                 "' (utils.makeItem)");
             return null;
         }
-        if (json) {
-            return new Constructor(json);
-        }
-        return new Constructor({});
+        return new Constructor(json);
     };
 
     make.moveOrder = function(unit, destination) {

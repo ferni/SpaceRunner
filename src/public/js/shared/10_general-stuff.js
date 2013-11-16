@@ -34,6 +34,9 @@ if (typeof exports !== 'undefined') {
          * @param {String} type The name of the constructor.
          */
         set: function(type, properties, json) {
+            if (!json) {
+                json = {};
+            }
             this.type = type;
             this._properties = this._properties.concat(properties);
             this._numbers = {};
