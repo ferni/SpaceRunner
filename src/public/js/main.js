@@ -43,37 +43,37 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/pause-icon.png'
 }, {
-    name: 'Weapon',
+    name: 'weapon',
     type: 'image',
-    src: 'data/img/render/Weapon_01.png'
+    src: 'data/img/render/weapon_01.png'
 }, {
-    name: 'Engine',
+    name: 'engine',
     type: 'image',
-    src: 'data/img/render/Engine_01.png'
+    src: 'data/img/render/engine_01.png'
 }, {
-    name: 'Power',
+    name: 'power',
     type: 'image',
-    src: 'data/img/render/Power_01.png'
+    src: 'data/img/render/power_01.png'
 }, {
-    name: 'Console',
+    name: 'console',
     type: 'image',
-    src: 'data/img/render/Console_02.png'
+    src: 'data/img/render/console_02.png'
 }, {
-    name: 'Component',
+    name: 'component',
     type: 'image',
-    src: 'data/img/render/Components_01.png'
+    src: 'data/img/render/components_01.png'
 }, {
-    name: 'Door',
+    name: 'door',
     type: 'image',
-    src: 'data/img/render/Door_01.png'
+    src: 'data/img/render/door_01.png'
 }, {
-    name: 'Wall',
+    name: 'wall',
     type: 'image',
-    src: 'data/img/render/Wall_001.png'
+    src: 'data/img/render/wall_001.png'
 }, {
-    name: 'WeakSpot',
+    name: 'weakspot',
     type: 'image',
-    src: 'data/img/render/WeakSpot.png'
+    src: 'data/img/render/weakspot.png'
 }, {
     name: 'metatiles32x32',
     type: 'image',

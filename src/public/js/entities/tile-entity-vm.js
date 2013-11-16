@@ -17,8 +17,10 @@ var TileEntityVM = me.ObjectEntity.extend({
     cannonTile: [0, 0], //image offset
     init: function(x, y, settings) {
         'use strict';
+        var type;
         if (this.type !== 0) {
-            settings.image = this.type;
+            type = this.type;
+            settings.image = this.type.toLowerCase();
         }
         if (!this.totalSize) {
             this.totalSize = [this.size[0], this.size[1]];
@@ -31,7 +33,7 @@ var TileEntityVM = me.ObjectEntity.extend({
         }
         this.parent(x, y, settings);
         //restore type reset on this.parent()
-        this.type = settings.image;
+        this.type = type;
         this.setX(x);
         this.setY(y);
     },
