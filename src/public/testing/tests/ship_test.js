@@ -107,7 +107,7 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         var x, y, door;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
-        door = make.itemModel('DDoor');
+        door = make.itemModel('Door');
         ok(!door.canBuildAt(x, y, screen.ship),
             "Cannot build at x,y (there's no wall)");
         ok(!door.canBuildRotated(x, y, screen.ship),
