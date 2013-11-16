@@ -413,7 +413,7 @@ itemVMs.WallVM = ItemVM.extend({
     lockedMouseUp: function() {
         'use strict';
         var ui = me.state.current();
-        _.each(ui.drawingScreen, function(Wall) {
+        _.each(ui.drawingScreen, function(wall) {
             ui.ship.buildAt(wall.x, wall.y, 'Wall');
         });
         this.alpha = 1;
