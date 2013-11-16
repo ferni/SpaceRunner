@@ -27,7 +27,9 @@ sh.Item = sh.TileEntity.extendShared({
         'use strict';
         this.parent(json);
         this.set('Item', ['ship'], json);
-        this.rotated(json.r);
+        if (json) {
+            this.rotated(json.r);
+        }
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
