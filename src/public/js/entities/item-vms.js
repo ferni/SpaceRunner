@@ -203,7 +203,7 @@ itemVMs.PowerVM = ItemVM.extend({
     // init function
     init: function(powerModel) {
         'use strict';
-        this.type = 'power';
+        this.type = 'Power';
         this.size = powerModel.size;
         this.m = powerModel;
         this.parent(powerModel.x, powerModel.y, {});
