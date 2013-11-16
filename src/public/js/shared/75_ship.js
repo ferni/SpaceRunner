@@ -185,9 +185,11 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         this.units.push(unit);
         unit.ship = this;
-        unit.id = _.max(this.units, function(u) {
-            return u.id;
-        }).id + 1;
+        if (unit.id === undefined || unit.id === null) {
+            unit.id = _.max(this.units, function(u) {
+                return u.id;
+            }).id + 1;
+        }
         this.unitsMap.update();
     },
     getUnitByID: function(id) {
