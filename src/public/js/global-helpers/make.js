@@ -28,7 +28,7 @@ var make = (function() {
     make.item = function(type, params) {
         var Constructor,
             model = sh.make.itemModel(type,
-                [null, params ? params[0] : 0, params ? params[1] : 0]);
+                {x: params ? params[0] : 0, y: params ? params[1] : 0});
         Constructor = make.itemTypes[type];
         if (!Constructor) {
             console.warn("No such item type '" + type +

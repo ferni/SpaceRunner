@@ -35,7 +35,7 @@ sh.make = (function() {
         WeakSpot: sh.items.WeakSpot
     };
 
-    make.itemModel = function(type, params) {
+    make.itemModel = function(type, json) {
         var Constructor;
         Constructor = make.itemModels[type];
         if (!Constructor) {
@@ -43,10 +43,10 @@ sh.make = (function() {
                 "' (utils.makeItem)");
             return null;
         }
-        if (params) {
-            return new Constructor(params[0], params[1], params[2]);
+        if (json) {
+            return new Constructor(json);
         }
-        return new Constructor(null, 0, 0);
+        return new Constructor({});
     };
 
     make.moveOrder = function(unit, destination) {
