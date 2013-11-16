@@ -59,9 +59,9 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/Console_02.png'
 }, {
-    name: 'component',
+    name: 'Component',
     type: 'image',
-    src: 'data/img/render/components_01.png'
+    src: 'data/img/render/Components_01.png'
 }, {
     name: 'door',
     type: 'image',
@@ -255,7 +255,7 @@ var prebuilt = {
         '{"type":"Engine","x":11,"y":13,"r":false},' +
         '{"type":"Weapon","x":22,"y":9,"r":false},' +
         '{"type":"Weapon","x":22,"y":13,"r":false},' +
-        '{"type":"component","x":19,"y":11,"r":false},' +
+        '{"type":"Component","x":19,"y":11,"r":false},' +
         '{"type":"Console","x":11,"y":11,"r":false},' +
         '{"type":"Console","x":11,"y":12,"r":false},' +
         '{"type":"Console","x":21,"y":9,"r":false},' +

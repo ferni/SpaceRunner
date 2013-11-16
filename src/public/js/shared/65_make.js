@@ -29,7 +29,7 @@ sh.make = (function() {
         Engine: sh.items.Engine,
         Power: sh.items.Power,
         Console: sh.items.Console,
-        component: sh.items.Component,
+        Component: sh.items.Component,
         door: sh.items.Door,
         wall: sh.items.Wall,
         weak_spot: sh.items.WeakSpot

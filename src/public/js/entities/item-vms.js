@@ -235,7 +235,7 @@ itemVMs.ComponentVM = ItemVM.extend({
     // init function
     init: function(componentModel) {
         'use strict';
-        this.type = 'component';
+        this.type = 'Component';
         this.size = componentModel.size;
         this.m = componentModel;
         this.parent(componentModel.x, componentModel.y, {});

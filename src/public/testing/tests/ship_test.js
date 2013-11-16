@@ -85,15 +85,15 @@ asyncTest('remove', function() {
         y = th.shipPositions.free.y;
         screen.ship.removeAll();
 
-        screen.ship.buildAt(x, y, 'component');
-        equal(screen.ship.built[0].type, 'component',
-            'Ship has component built');
-        equal(screen.ship.at(x, y).type, 'component',
-            'at(x,y) is component');
+        screen.ship.buildAt(x, y, 'Component');
+        equal(screen.ship.built[0].type, 'Component',
+            'Ship has Component built');
+        equal(screen.ship.at(x, y).type, 'Component',
+            'at(x,y) is Component');
         item = screen.ship.built[0];
         screen.ship.remove(item);
-        notEqual(screen.ship.at(x, y).type, 'component',
-            'at(x,y) is no longer component after removing');
+        notEqual(screen.ship.at(x, y).type, 'Component',
+            'at(x,y) is no longer Component after removing');
         equal(screen.ship.built.length, 0, 'ship has no buildings');
         start();
     });

@@ -49,12 +49,12 @@ asyncTest('right click removes item', function() {
     }, function(screen) {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y;
-        screen.ship.buildAt(x, y, 'component');
-        equal(screen.ship.at(x, y).type, 'component', 'Component built');
+        screen.ship.buildAt(x, y, 'Component');
+        equal(screen.ship.at(x, y).type, 'Component', 'Component built');
         th.mouseBegin(screen);
-        th.rightClick(x + 1, y + 1); //botton right of component
+        th.rightClick(x + 1, y + 1); //botton right of Component
         th.mouseEnd();
-        notEqual(screen.ship.at(x, y).type, 'component',
+        notEqual(screen.ship.at(x, y).type, 'Component',
             'Component removed');
         start();
     });
