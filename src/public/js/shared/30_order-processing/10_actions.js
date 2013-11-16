@@ -154,8 +154,9 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.modelChanges = [new ModelChange(this.time,
                 function(ship) {
-                    var unit = new sh.units[self.unitType](0, 0,
-                            {owner: {id: self.playerID}}),
+                    var unit = new sh.units[self.unitType](
+                            {ownerID: self.playerID}
+                        ),
                         freePos = ship.closestTile(self.x, self.y, function(t) {
                             return t === sh.tiles.clear;
                         });
