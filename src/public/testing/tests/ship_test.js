@@ -17,7 +17,7 @@ test('Globals are set', function() {
 
 
 
-module('ship-building/ship');
+module('ship');
 asyncTest('buildAt', function() {
     'use strict';
     th.loadScreen(function() {
@@ -169,7 +169,7 @@ asyncTest('fromJson', function() {
         ok(!power.rotated(), 'Power is not rotated');
 
         door = screen.ship.at(2, 3);
-        equal(door.type, 'DDoor', 'door successfully added to the ship');
+        equal(door.type, 'Door', 'door successfully added to the ship');
         equal(door.x, 2, 'it has correct x position');
         equal(door.y, 3, 'it has correct y position');
         ok(door.rotated(), 'door is rotated');
