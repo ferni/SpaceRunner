@@ -62,7 +62,7 @@ if (typeof exports !== 'undefined') {
             _.each(this._properties, function(p) {
                 json[p] = this[p];
                 if (_.isNumber(this[p])) {
-                    json._numbers[p] = 1;
+                    json._numbers[p] = true;
                 }
             }, this);
             return json;
