@@ -148,7 +148,7 @@ asyncTest('beginDrag/endDrag', function() {
         equal(power.x, x, 'x before dragging');
         equal(power.y, y, 'y before dragging');
 
-        screen.beginDrag(Power);
+        screen.beginDrag(power);
         equal(screen.chosen.type, 'Power');
         equal(screen.dragging, power);
         th.mouseBegin(screen);
