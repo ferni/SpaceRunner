@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, module, exports */
+/*global require, module, exports*/
 
 var sh = require('./09_shared-class'), _ = sh._,
     PF = sh.PF;
@@ -48,21 +48,24 @@ if (typeof exports !== 'undefined') {
                 // the server.
                 //TODO: remove when socket.io is implemented (if it doesn't
                 // have this problem)
-                this[p] = json._numbers && json._numbers[p] ?
-                        parseInt(json[p], 10) : json[p];
+                if (json._numbers && _.contains(json._numbers, p)) {
+                    this[p] = parseInt(json[p], 10);
+                } else {
+                    this[p] = json[p];
+                }
 
 
             }, this);
         },
         toJson: function() {
             var json = {
-                    _numbers: {},
+                    _numbers: [],
                     type: this.type
                 };
             _.each(this._properties, function(p) {
                 json[p] = this[p];
                 if (_.isNumber(this[p])) {
-                    json._numbers[p] = true;
+                    json._numbers.push(p);
                 }
             }, this);
             return json;
