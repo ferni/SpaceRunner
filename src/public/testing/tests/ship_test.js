@@ -113,17 +113,17 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         ok(!door.canBuildRotated(x, y, screen.ship),
             'It cannot be built rotated either');
 
-        screen.ship.buildAt(x, y, 'wall');
-        screen.ship.buildAt(x, y + 1, 'wall');
+        screen.ship.buildAt(x, y, 'Wall');
+        screen.ship.buildAt(x, y + 1, 'Wall');
 
         ok(screen.ship.at(x, y) instanceof sh.items.Wall,
-            'wall built at x, y');
+            'Wall built at x, y');
         ok(screen.ship.at(x, y + 1) instanceof sh.items.Wall,
-            'wall built at x, y + 1');
+            'Wall built at x, y + 1');
         ok(screen.ship.at(x, y).isVertical());
         ok(screen.ship.at(x, y + 1).isVertical());
         ok(!door.canBuildAt(x, y, screen.ship),
-            'After building vertical wall,' +
+            'After building vertical Wall,' +
             'door still cannot be built at x,y...');
         ok(door.canBuildRotated(x, y, screen.ship), '... but it can rotated.');
 
@@ -190,11 +190,11 @@ asyncTest('fromJson clears buildings', function() {
         ok(screen.ship.buildAt(th.shipPositions.engine.x,
             th.shipPositions.engine.y, 'Engine'), 'Engine succesfully built');
         screen.ship.fromJson({'tmxName': 'test',
-            'buildings': [{'type': 'wall', 'x': 0, 'y': 0}]});
+            'buildings': [{'type': 'Wall', 'x': 0, 'y': 0}]});
         equal(screen.ship.built.length, 1,
             'ship has only one building after loading');
-        equal(screen.ship.built[0].type, 'wall',
-            'that only building is a wall (loaded through json)');
+        equal(screen.ship.built[0].type, 'Wall',
+            'that only building is a Wall (loaded through json)');
 
         screen.ship.fromJson({'tmxName': 'test', 'buildings': []});
         equal(screen.ship.built.length, 0,

@@ -31,8 +31,8 @@ sh.make = (function() {
         Console: sh.items.Console,
         Component: sh.items.Component,
         Door: sh.items.Door,
-        wall: sh.items.Wall,
-        weak_spot: sh.items.WeakSpot
+        Wall: sh.items.Wall,
+        WeakSpot: sh.items.WeakSpot
     };
 
     make.itemModel = function(type, params) {

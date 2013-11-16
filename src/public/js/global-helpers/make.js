@@ -16,14 +16,14 @@ var make = (function() {
 
     //ITEMS VMS
     make.itemTypes = {
-        weapon: itemVMs.WeaponVM,
+        Weapon: itemVMs.WeaponVM,
         Engine: itemVMs.EngineVM,
         Power: itemVMs.PowerVM,
         Console: itemVMs.ConsoleVM,
         Component: itemVMs.ComponentVM,
         Door: itemVMs.DoorVM,
-        wall: itemVMs.WallVM,
-        weak_spot: itemVMs.WeakSpotVM
+        Wall: itemVMs.WallVM,
+        WeakSpot: itemVMs.WeakSpotVM
     };
     make.item = function(type, params) {
         var Constructor,

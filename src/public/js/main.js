@@ -67,13 +67,13 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/Door_01.png'
 }, {
-    name: 'wall',
+    name: 'Wall',
     type: 'image',
-    src: 'data/img/render/wall_001.png'
+    src: 'data/img/render/Wall_001.png'
 }, {
-    name: 'weak_spot',
+    name: 'WeakSpot',
     type: 'image',
-    src: 'data/img/render/weak_spot.png'
+    src: 'data/img/render/WeakSpot.png'
 }, {
     name: 'metatiles32x32',
     type: 'image',

@@ -194,20 +194,20 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         var hX, hY, door, vX, vY;
         hX = th.shipPositions.engine.x;
         hY = th.shipPositions.engine.y;
-        screen.ship.buildAt(hX, hY, 'wall');
-        screen.ship.buildAt(hX + 1, hY, 'wall');
+        screen.ship.buildAt(hX, hY, 'Wall');
+        screen.ship.buildAt(hX + 1, hY, 'Wall');
         screen.mouseLockedOn = null;
         door = make.itemModel('DDoor');
         ok(door.canBuildAt(hX, hY, screen.ship),
-            'door can be built without rotation at horizontal wall');
+            'door can be built without rotation at horizontal Wall');
 
         vX = th.shipPositions.free.x;
         vY = th.shipPositions.free.y;
-        screen.ship.buildAt(vX, vY, 'wall');
-        screen.ship.buildAt(vX, vY + 1, 'wall');
+        screen.ship.buildAt(vX, vY, 'Wall');
+        screen.ship.buildAt(vX, vY + 1, 'Wall');
         screen.mouseLockedOn = null;
         ok(door.canBuildRotated(vX, vY, screen.ship),
-            'door can be built rotated at vertical wall');
+            'door can be built rotated at vertical Wall');
 
         screen.choose('Door');
         ok(!screen.chosen.rotated(),
@@ -216,12 +216,12 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         screen.moveGhost(vX, vY);
         screen.mouseMove({});
         ok(screen.chosen.rotated(),
-            'Door ghost has rotated when hovered over vertical wall');
+            'Door ghost has rotated when hovered over vertical Wall');
 
         screen.moveGhost(hX, hY);
         screen.mouseMove({});
         ok(!screen.chosen.rotated(),
-            'Door ghost back to not rotated when hovered over horizontal wall');
+            'Door ghost back to not rotated when hovered over horizontal Wall');
         start();
     });
 });
@@ -286,18 +286,18 @@ asyncTest('Wall building', function() {
         me.state.change('ship-building', {tmxName: 'test'});
     },
         function(screen) {
-            screen.buildItem(x, y, 'wall');
+            screen.buildItem(x, y, 'Wall');
             ok(screen.mouseLockedOn, 'Mouse locked on something');
-            equal(screen.mouseLockedOn.type, 'wall', 'Mouse locked on wall');
+            equal(screen.mouseLockedOn.type, 'Wall', 'Mouse locked on Wall');
 
             th.mouseBegin(screen);
             th.leftClick(x + 2, y + 2);
             ok(!screen.mouseLockedOn, 'Mouse unlocked after click');
-            equal(screen.ship.at(x, y).type, 'wall');
-            equal(screen.ship.at(x + 1, y).type, 'wall');
-            equal(screen.ship.at(x + 2, y).type, 'wall');
-            equal(screen.ship.at(x + 2, y + 1).type, 'wall');
-            equal(screen.ship.at(x + 2, y + 2).type, 'wall');
+            equal(screen.ship.at(x, y).type, 'Wall');
+            equal(screen.ship.at(x + 1, y).type, 'Wall');
+            equal(screen.ship.at(x + 2, y).type, 'Wall');
+            equal(screen.ship.at(x + 2, y + 1).type, 'Wall');
+            equal(screen.ship.at(x + 2, y + 2).type, 'Wall');
 
             th.mouseEnd();
             start();
@@ -311,42 +311,42 @@ asyncTest('Wall building canceled by escape key', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        screen.choose('wall');
+        screen.choose('Wall');
         th.mouseBegin(screen);
         th.leftClick(x, y);
-        equal(screen.mouseLockedOn.type, 'wall', 'Mouse locked on wall');
+        equal(screen.mouseLockedOn.type, 'Wall', 'Mouse locked on Wall');
 
         th.moveMouse(x + 2, y + 2);
         th.mouseEnd();
-        //entire wall is seen on the screen...
-        equal(screen.at(x, y).type, 'wall', 'wall appears at x,y');
-        equal(screen.at(x + 1, y).type, 'wall');
-        equal(screen.at(x + 2, y).type, 'wall');
-        equal(screen.at(x + 2, y + 1).type, 'wall');
-        equal(screen.at(x + 2, y + 2).type, 'wall');
+        //entire Wall is seen on the screen...
+        equal(screen.at(x, y).type, 'Wall', 'Wall appears at x,y');
+        equal(screen.at(x + 1, y).type, 'Wall');
+        equal(screen.at(x + 2, y).type, 'Wall');
+        equal(screen.at(x + 2, y + 1).type, 'Wall');
+        equal(screen.at(x + 2, y + 2).type, 'Wall');
         //...but only the first one is built
-        equal(screen.ship.at(x, y).type, 'wall');
-        notEqual(screen.ship.at(x + 1, y).type, 'wall');
-        notEqual(screen.ship.at(x + 2, y).type, 'wall');
-        notEqual(screen.ship.at(x + 2, y + 1).type, 'wall');
-        notEqual(screen.ship.at(x + 2, y + 2).type, 'wall');
+        equal(screen.ship.at(x, y).type, 'Wall');
+        notEqual(screen.ship.at(x + 1, y).type, 'Wall');
+        notEqual(screen.ship.at(x + 2, y).type, 'Wall');
+        notEqual(screen.ship.at(x + 2, y + 1).type, 'Wall');
+        notEqual(screen.ship.at(x + 2, y + 2).type, 'Wall');
 
         me.input.triggerKeyEvent(me.input.KEY.ESC, true);
         screen.update();
         me.input.triggerKeyEvent(me.input.KEY.ESC, false);
 
         ok(!screen.mouseLockedOn,
-            'Mouse no longer locked on wall after ESC key');
-        //wall does no longer appear on the screen (except the cursor)
-        equal(screen.at(x, y).type, 'wall',
+            'Mouse no longer locked on Wall after ESC key');
+        //Wall does no longer appear on the screen (except the cursor)
+        equal(screen.at(x, y).type, 'Wall',
             'Cursor still appears on the screen');
-        notEqual(screen.at(x + 1, y).type, 'wall',
+        notEqual(screen.at(x + 1, y).type, 'Wall',
             'The rest of the wall is gone');
-        notEqual(screen.at(x + 2, y).type, 'wall');
-        notEqual(screen.at(x + 2, y + 1).type, 'wall');
-        notEqual(screen.at(x + 2, y + 2).type, 'wall');
+        notEqual(screen.at(x + 2, y).type, 'Wall');
+        notEqual(screen.at(x + 2, y + 1).type, 'Wall');
+        notEqual(screen.at(x + 2, y + 2).type, 'Wall');
         //the first wall has been removed
-        notEqual(screen.ship.at(x, y).type, 'wall');
+        notEqual(screen.ship.at(x, y).type, 'Wall');
         start();
     });
 });

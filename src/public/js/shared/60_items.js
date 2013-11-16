@@ -167,7 +167,7 @@ sh.items.Component = sh.Item.extendShared({
 });
 
 /**
- * Door. Can be placed on top of a wall or between two walls.
+ * Door. Can be placed on top of a Wall or between two Walls.
  * @type {*}
  */
 sh.items.Door = sh.Item.extendShared({
@@ -189,7 +189,7 @@ sh.items.Door = sh.Item.extendShared({
 });
 
 /**
- * An individual wall tile.
+ * An individual Wall tile.
  * @type {*}
  */
 sh.items.Wall = sh.Item.extendShared({
@@ -221,7 +221,7 @@ sh.items.Wall = sh.Item.extendShared({
     },
     updateConnections: function(top, left, bot, right) {
         'use strict';
-        //modify self and surrounding walls' connections
+        //modify self and surrounding Walls' connections
         var it = sh.items,
             x = this.x,
             y = this.y;

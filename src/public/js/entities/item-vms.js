@@ -297,7 +297,7 @@ itemVMs.WallVM = ItemVM.extend({
     // init function
     init: function(wallModel) {
         'use strict';
-        this.type = 'wall';
+        this.type = 'Wall';
         this.size = wallModel.size;
         this.m = wallModel;
         this.parent(wallModel.x, wallModel.y, {});
@@ -406,15 +406,15 @@ itemVMs.WallVM = ItemVM.extend({
             mouseTile.x, mouseTile.y, cloneGrid);
         _.each(t.path, function(p, index) {
             if (index > 0) {
-                ui.drawItem(p[0], p[1], 'wall');
+                ui.drawItem(p[0], p[1], 'Wall');
             }
         });
     },
     lockedMouseUp: function() {
         'use strict';
         var ui = me.state.current();
-        _.each(ui.drawingScreen, function(wall) {
-            ui.ship.buildAt(wall.x, wall.y, 'wall');
+        _.each(ui.drawingScreen, function(Wall) {
+            ui.ship.buildAt(wall.x, wall.y, 'Wall');
         });
         this.alpha = 1;
         if (ui.chosen) {
@@ -449,7 +449,7 @@ itemVMs.WeakSpotVM = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';
-        this.type = 'weak_spot';
+        this.type = 'WeakSpot';
         this.size = consoleModel.size;
         this.m = consoleModel;
         this.parent(consoleModel.x, consoleModel.y, {});
