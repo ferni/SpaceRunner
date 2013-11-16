@@ -33,48 +33,13 @@ sh.Unit = sh.TileEntity.extendShared({
     orders: [],
     orderToExecute: null,
     orderState: 'pending',
-    init: function(x, y, settings) {
+    init: function(json) {
         'use strict';
+        this.parent(json);
         this.size = [1, 1];
-        if (settings.imgIndex) {
-            this.imgIndex = settings.imgIndex;
-        }
-        if (settings.speed) {
-            this.speed = settings.speed;
-        }
-        if (settings.maxHP) {
-            this.maxHP = settings.maxHP;
-        }
-        if (settings.meleeDamage) {
-            this.meleeDamage = settings.meleeDamage;
-        }
-        if (settings.attackCooldown) {
-            this.attackCooldown = settings.attackCooldown;
-        }
-        if (settings.imageFacesRight) {
-            this.imageFacesRight = settings.imageFacesRight;
-        }
+        this.set('Unit', ['id', 'imgIndex', 'speed', 'mapHP', 'meleeDamage',
+            'attackCooldown', 'imageFacesRight', 'ownerID'], json);
         this.hp = this.maxHP;
-        this.ownerID = settings.ownerID;
-        this.parent(x, y);
-    },
-    toJson: function() {
-        'use strict';
-        return {
-            id: this.id,
-            x: this.x,
-            y: this.y,
-            settings: {
-                imgIndex: this.imgIndex,
-                speed: this.speed,
-                maxHP: this.maxHP,
-                meleeDamage: this.meleeDamage,
-                attackCooldown: this.attackCooldown,
-                imageFacesRight: this.imageFacesRight,
-                ownerID: this.ownerID
-            }
-
-        };
     },
     isAlive: function() {
         'use strict';
@@ -184,35 +149,38 @@ sh.units = (function() {
     'use strict';
     var u = {};
     u.Zealot = sh.Unit.extendShared({
-        init: function(x, y, settings) {
+        init: function(json) {
+            this.parent(json);
+            this.set('Zealot', [], json);
             this.imgIndex = 0;
             this.speed = 2;
             this.maxHP = 100;
             this.attackCooldown = 800;
             this.meleeDamage = 30;
-            this.parent(x, y, settings);
         }
     });
     u.Critter = sh.Unit.extendShared({
-        init: function(x, y, settings) {
+        init: function(json) {
+            this.parent(json);
+            this.set('Critter', [], json);
             this.imgIndex = 5;
             this.speed = 1;
             this.maxHP = 50;
             this.attackCooldown = 420;
             this.meleeDamage = 8;
             this.imageFacesRight = false;
-            this.parent(x, y, settings);
         }
     });
     u.MetalSpider = sh.Unit.extendShared({
-        init: function(x, y, settings) {
+        init: function(json) {
+            this.parent(json);
+            this.set('MetalSpider', [], json);
             this.imgIndex = 28;
             this.speed = 3;
             this.maxHP = 200;
             this.attackCooldown = 1500;
             this.meleeDamage = 15;
             this.imageFacesRight = false;
-            this.parent(x, y, settings);
         }
     });
     return u;

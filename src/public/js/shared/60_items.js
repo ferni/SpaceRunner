@@ -17,16 +17,17 @@ if (typeof exports !== 'undefined') {
 }
 
 /**
- * Represents a component from the ship (engine, weapon, etc).
+ * Represents a component from the ship (Engine, Weapon, etc).
  * @type {*}
  */
 sh.Item = sh.TileEntity.extendShared({
     size: [1, 1],
     walkable: false,
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.parent(x, y);
-        this.ship = ship;
+        this.parent(json);
+        this.set('Item', ['ship'], json);
+        this.rotated(json.r);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
@@ -74,13 +75,9 @@ sh.Item = sh.TileEntity.extendShared({
     },
     toJson: function() {
         'use strict';
-        var self = this;
-        return {
-            type: self.type,
-            x: self.x,
-            y: self.y,
-            r: self.rotated()
-        };
+        var json = this.parent();
+        json.r = this.rotated();
+        return json;
     }
 });
 
@@ -90,20 +87,16 @@ sh.Item = sh.TileEntity.extendShared({
  */
 sh.items = {};
 
-/*
- In each item, set size and type before calling parent()
- */
-
 /**
  * A Weapon.
  * @type {*}
  */
 sh.items.Weapon = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'weapon';
+        this.parent(json);
+        this.set('Weapon', [], json);
         this.size = [2, 2];
-        this.parent(ship, x, y);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
@@ -112,19 +105,19 @@ sh.items.Weapon = sh.Item.extendShared({
 });
 
 /**
- * An engine.
+ * An Engine.
  * @type {*}
  */
 sh.items.Engine = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'engine';
+        this.parent(json);
+        this.set('Engine', [], json);
         this.size = [2, 2];
-        this.parent(ship, x, y);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return sh.pr.engine.compliesAt(x, y, ship.map);
+        return sh.pr.Engine.compliesAt(x, y, ship.map);
     }
 });
 
@@ -133,25 +126,25 @@ sh.items.Engine = sh.Item.extendShared({
  * @type {*}
  */
 sh.items.Power = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'power';
+        this.parent(json);
+        this.set('Power', [], json);
         this.size = [2, 2];
-        this.parent(ship, x, y);
     }
 });
 
 /**
- * The console next to the power, weapon or engine.
+ * The console next to the power, Weapon or Engine.
  * A unit must run these items from the console.
  * @type {*}
  */
 sh.items.Console = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'console';
+        this.parent(json);
+        this.set('Console', [], json);
         this.size = [1, 1];
-        this.parent(ship, x, y);
         this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
@@ -165,11 +158,11 @@ sh.items.Console = sh.Item.extendShared({
  * @type {*}
  */
 sh.items.Component = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'component';
+        this.parent(json);
+        this.set('Component', [], json);
         this.size = [2, 2];
-        this.parent(ship, x, y);
     }
 });
 
@@ -178,11 +171,11 @@ sh.items.Component = sh.Item.extendShared({
  * @type {*}
  */
 sh.items.Door = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'door';
+        this.parent(json);
+        this.set('Door', [], json);
         this.size = [2, 1];
-        this.parent(ship, x, y);
         this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
@@ -200,11 +193,11 @@ sh.items.Door = sh.Item.extendShared({
  * @type {*}
  */
 sh.items.Wall = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'wall';
+        this.parent(json);
+        this.set('Wall', [], json);
         this.size = [1, 1];
-        this.parent(ship, x, y);
         this.connected = {
             top: false,
             left: true,
@@ -284,11 +277,11 @@ sh.items.Wall = sh.Item.extendShared({
  * @type {*}
  */
 sh.items.WeakSpot = sh.Item.extendShared({
-    init: function(ship, x, y) {
+    init: function(json) {
         'use strict';
-        this.type = 'weak_spot';
+        this.parent(json);
+        this.set('WeakSpot', [], json);
         this.size = [2, 2];
-        this.parent(ship, x, y);
         this.walkable = true;
     }
 });

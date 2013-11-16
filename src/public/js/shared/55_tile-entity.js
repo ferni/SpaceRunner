@@ -20,12 +20,11 @@ if (typeof exports !== 'undefined') {
  * An object on the ship. (An item, an unit, etc)
  * @type {*}
  */
-sh.TileEntity = sh.SharedClass.extendShared({
+sh.TileEntity = sh.Jsonable.extendShared({
     id: null,
-    init: function(x, y) {
+    init: function(json) {
         'use strict';
-        this.x = x;
-        this.y = y;
+        this.set('TileEntity', ['x', 'y'], json);
     },
     //takes rotation into account
     trueSize: function(index) {
