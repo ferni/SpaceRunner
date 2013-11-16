@@ -299,9 +299,7 @@ var ScriptPlayer = function(battleScreen) {
 
     this.onPause = function() {
         //finish applying remaining model changes
-        for (nextChange; nextChange < modelChanges.length &&
-                modelChanges[nextChange].time < script.turnDuration;
-                nextChange++) {
+        for (nextChange; nextChange < modelChanges.length; nextChange++) {
             modelChanges[nextChange].apply(gs.ship);
         }
         //clean up
