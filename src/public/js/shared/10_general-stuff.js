@@ -24,6 +24,7 @@ if (typeof exports !== 'undefined') {
 
     sh.Jsonable = sh.SharedClass.extendShared({
         _properties: [],
+        _numbers: {},
         /**
          * Sets the properties found in the json param to the object.
          * This properties are later used by toJson to return the json form
@@ -39,7 +40,6 @@ if (typeof exports !== 'undefined') {
             }
             this.type = type;
             this._properties = this._properties.concat(properties);
-            this._numbers = {};
             _.each(properties, function(p) {
                 if (json[p] === undefined) {
                     return;
