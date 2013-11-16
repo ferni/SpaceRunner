@@ -63,9 +63,9 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/Components_01.png'
 }, {
-    name: 'door',
+    name: 'Door',
     type: 'image',
-    src: 'data/img/render/door_01.png'
+    src: 'data/img/render/Door_01.png'
 }, {
     name: 'wall',
     type: 'image',

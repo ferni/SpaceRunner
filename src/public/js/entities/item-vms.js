@@ -260,7 +260,7 @@ itemVMs.DoorVM = ItemVM.extend({
     // init function
     init: function(doorModel) {
         'use strict';
-        this.type = 'door';
+        this.type = 'Door';
         this.size = doorModel.size;
         this.m = doorModel;
         this.parent(doorModel.x, doorModel.y, {});

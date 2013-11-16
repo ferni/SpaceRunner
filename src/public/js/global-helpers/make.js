@@ -21,7 +21,7 @@ var make = (function() {
         Power: itemVMs.PowerVM,
         Console: itemVMs.ConsoleVM,
         Component: itemVMs.ComponentVM,
-        door: itemVMs.DoorVM,
+        Door: itemVMs.DoorVM,
         wall: itemVMs.WallVM,
         weak_spot: itemVMs.WeakSpotVM
     };

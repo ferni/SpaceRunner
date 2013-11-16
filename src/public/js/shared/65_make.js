@@ -30,7 +30,7 @@ sh.make = (function() {
         Power: sh.items.Power,
         Console: sh.items.Console,
         Component: sh.items.Component,
-        door: sh.items.Door,
+        Door: sh.items.Door,
         wall: sh.items.Wall,
         weak_spot: sh.items.WeakSpot
     };

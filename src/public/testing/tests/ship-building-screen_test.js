@@ -197,7 +197,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         screen.ship.buildAt(hX, hY, 'wall');
         screen.ship.buildAt(hX + 1, hY, 'wall');
         screen.mouseLockedOn = null;
-        door = make.itemModel('door');
+        door = make.itemModel('DDoor');
         ok(door.canBuildAt(hX, hY, screen.ship),
             'door can be built without rotation at horizontal wall');
 
@@ -209,7 +209,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         ok(door.canBuildRotated(vX, vY, screen.ship),
             'door can be built rotated at vertical wall');
 
-        screen.choose('door');
+        screen.choose('Door');
         ok(!screen.chosen.rotated(),
             'Door ghost is not rotated when first chosen');
 

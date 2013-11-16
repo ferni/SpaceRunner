@@ -107,7 +107,7 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
         var x, y, door;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
-        door = make.itemModel('door');
+        door = make.itemModel('DDoor');
         ok(!door.canBuildAt(x, y, screen.ship),
             "Cannot build at x,y (there's no wall)");
         ok(!door.canBuildRotated(x, y, screen.ship),
@@ -127,11 +127,11 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
             'door still cannot be built at x,y...');
         ok(door.canBuildRotated(x, y, screen.ship), '... but it can rotated.');
 
-        screen.ship.buildAt(x, y, 'door');
-        equal(screen.ship.at(x, y + 1).type, 'door',
-            'at(x, y+1) is door (it should be rotated, that is, vertical)');
-        notEqual(screen.ship.at(x + 1, y).type, 'door',
-            'at(x+1,y) is not door');
+        screen.ship.buildAt(x, y, 'Door');
+        equal(screen.ship.at(x, y + 1).type, 'Door',
+            'at(x, y+1) is Door (it should be rotated, that is, vertical)');
+        notEqual(screen.ship.at(x + 1, y).type, 'Door',
+            'at(x+1,y) is not Door');
         ok(screen.ship.at(x, y + 1).rotated(), "Door has 'rotated' status");
         start();
     });
@@ -160,7 +160,7 @@ asyncTest('fromJson', function() {
         screen.ship.removeAll();
         screen.ship.fromJson({'tmxName': 'test',
             'buildings': [{'type': 'Power', 'x': 0, 'y': 0},
-                {'type': 'door', 'x': 2, 'y': 3, 'r': true}]});
+                {'type': 'Door', 'x': 2, 'y': 3, 'r': true}]});
 
         power = screen.ship.at(0, 0);
         equal(power.type, 'Power', 'Power successfully added to the ship');
@@ -169,7 +169,7 @@ asyncTest('fromJson', function() {
         ok(!power.rotated(), 'Power is not rotated');
 
         door = screen.ship.at(2, 3);
-        equal(door.type, 'door', 'door successfully added to the ship');
+        equal(door.type, 'DDoor', 'door successfully added to the ship');
         equal(door.x, 2, 'it has correct x position');
         equal(door.y, 3, 'it has correct y position');
         ok(door.rotated(), 'door is rotated');

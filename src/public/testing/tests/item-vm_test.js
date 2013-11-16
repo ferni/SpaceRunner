@@ -11,7 +11,7 @@ me, utils, ui, make, sh, me*/
 module('entities/tile-entity-vm.js');
 test('Item.trueSize()', function() {
     'use strict';
-    var door = make.item('door');
+    var door = make.item('DDoor');
     deepEqual(door.size, [2, 1]);
     deepEqual(door.trueSize(), [2, 1]);
 
@@ -23,7 +23,7 @@ test('Item.trueSize()', function() {
 
 test('Item onShip/offShip animations', function() {
     'use strict';
-    var door = make.item('door');
+    var door = make.item('DDoor');
     ok(!door.onShip(), 'door is not on ship');
     ok(!door.rotated(), 'door is not rotated');
 
