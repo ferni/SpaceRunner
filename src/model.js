@@ -221,10 +221,14 @@ exports.ChallengeBatte = exports.Battle.extend({
         }
 
         //workaround until summon gets converted to teleport
+        _.each(newActions, script.insertAction, script);
         _.each(newActions, function(a) {
-            script.insertAction(a);
-            _.each(a.modelChanges, function(change) {
-                change.apply(ship);
+            var actionIndex = _.indexOf(script.actions, a);
+            _.each(a.modelChanges, function(mc, index) {
+                mc.apply(ship);
+                mc.actionIndex = actionIndex;
+                mc.index = index;
+                script.indexChange(mc);
             });
         });
     }

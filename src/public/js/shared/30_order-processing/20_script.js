@@ -26,12 +26,14 @@ if (typeof exports !== 'undefined') {
         turnDuration: 0,
         actions: [],
         byUnit: {},
+        sortedModelChangesIndex: [],
         init: function(parameters) {
             if (parameters) {
                 this.actions = parameters.actions;
                 this.turnDuration = parameters.turnDuration;
                 this.sort();
             }
+            this.sortedModelChangesIndex = [];
         },
         fromJson: function(json) {
             //logic here
@@ -39,6 +41,7 @@ if (typeof exports !== 'undefined') {
             this.actions = _.map(json.actions, function(actionJson) {
                 return new sh.actions[actionJson.type](actionJson);
             });
+            this.sortedModelChangesIndex = json.sortedModelChangesIndex;
             this.updateActionsByUnit();
             return this;
         },
@@ -47,19 +50,26 @@ if (typeof exports !== 'undefined') {
                 turnDuration: this.turnDuration,
                 actions: _.map(this.actions, function(action) {
                     return action.toJson();
-                })
+                }),
+                sortedModelChangesIndex: this.sortedModelChangesIndex
             };
         },
         isWithinTurn: function(action) {
             return action.time < this.turnDuration;
         },
+        sort: function() {
+            this.actions = _.sortBy(this.actions, 'time');
+            this.updateActionsByUnit();
+        },
         /**
          * Inserts an action maintaining their order
          * @param {Action} action The action to be inserted.
+         * @return {int} the index of the action.
          */
         insertAction: function(action) {
             var insertionIndex = _.sortedIndex(this.actions, action, 'time');
             this.actions.splice(insertionIndex, 0, action);
+            return insertionIndex;
         },
         getLastMoveAction: function(unit) {
             var moveActions = _.filter(this.byUnit[unit.id], function(a) {
@@ -92,12 +102,19 @@ if (typeof exports !== 'undefined') {
             });
             this.byUnit = actionsByUnit;
         },
-        getSortedModelChanges: function() {
-            var changes = [];
-            _.each(this.actions, function(a) {
-                changes = changes.concat(a.modelChanges);
+        indexChange: function(modelChange) {
+            if (modelChange.actionIndex === undefined) {
+                return;
+            }
+            this.sortedModelChangesIndex.push({
+                actionIndex: modelChange.actionIndex,
+                index: modelChange.index
             });
-            return _.sortBy(changes, 'time');
+        },
+        getSortedModelChanges: function() {
+            return _.map(this.sortedModelChangesIndex, function(i) {
+                return this.actions[i.actionIndex].modelChanges[i.index];
+            }, this);
         }
     });
 }());

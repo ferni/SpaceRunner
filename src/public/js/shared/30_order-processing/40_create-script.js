@@ -67,7 +67,13 @@ if (typeof exports !== 'undefined') {
 
         function registerAction(action) {
             script.actions.push(action);
-            _.each(action.modelChanges, insertInQueue);
+            _.each(action.modelChanges, function(mc, index) {
+                insertInQueue(mc);
+                //Add actionIndex and index for adding sorted modelChanges
+                //to the script in the order in which they are applied.
+                mc.actionIndex = script.actions.length - 1;
+                mc.index = index;
+            });
         }
 
         //set the orders to the units
@@ -93,6 +99,7 @@ if (typeof exports !== 'undefined') {
             time = queue[0].time;
             changes = _.where(queue, {time: time});
             _.invoke(changes, 'apply', ship);
+            _.each(changes, script.indexChange, script);
             queue = queue.slice(changes.length);
 
             //ship.units would be battle.objects in the future
@@ -104,6 +111,7 @@ if (typeof exports !== 'undefined') {
 
         //make remaining changes
         _.invoke(queue, 'apply', ship);
+        _.each(queue, script.indexChange, script);
 
         //clean up
         _.each(ship.units, function(u) {
