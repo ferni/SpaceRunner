@@ -53,10 +53,6 @@ if (typeof exports !== 'undefined') {
         isWithinTurn: function(action) {
             return action.time < this.turnDuration;
         },
-        sort: function() {
-            this.actions = _.sortBy(this.actions, 'time');
-            this.updateActionsByUnit();
-        },
         /**
          * Inserts an action maintaining their order
          * @param {Action} action The action to be inserted.
