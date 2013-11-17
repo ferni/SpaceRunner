@@ -27,11 +27,13 @@ if (typeof exports !== 'undefined') {
      * @param {int} time The time in ms in which this change occurs.
      * @param {Function} apply The function that would change stuff around.
      * @constructor
+     * @param {Action} action The action that originated the model change.
      */
-    ModelChange = function(time, apply) {
+    ModelChange = function(time, apply, action) {
         this.type = 'change';
         this.time = time;
         this.apply = apply;
+        this.action = action;
     };
     sh.ModelChange = ModelChange;
 
@@ -62,7 +64,7 @@ if (typeof exports !== 'undefined') {
             this.modelChanges = [new ModelChange(this.time, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
                 unit.orderState = 'prepared';
-            })];
+            }, this)];
         }
     });
 
@@ -90,7 +92,7 @@ if (typeof exports !== 'undefined') {
                             unit.orderState = 'executing';
                             unit.blocking = false;
                         }
-                    }),
+                    }, this),
                 new ModelChange(this.time + this.duration,
                     function(ship) {
                         var unit = ship.getUnitByID(self.unitID),
@@ -105,7 +107,7 @@ if (typeof exports !== 'undefined') {
                                 ship.unitsMap.update();
                             }
                         }
-                    })];
+                    }, this)];
         }
     });
 
@@ -133,11 +135,11 @@ if (typeof exports !== 'undefined') {
                     if (attacker.isAlive() && receiver.isAlive()) {
                         receiver.hp -= self.damage;
                     }
-                }),
+                }, this),
                 new ModelChange(this.time + this.duration, function(ship) {
                     var attacker = ship.getUnitByID(self.attackerID);
                     attacker.onCooldown = false;
-                })];
+                }, this)];
         }
     });
 
@@ -166,7 +168,7 @@ if (typeof exports !== 'undefined') {
                         unit.y = freePos.y;
                         ship.addUnit(unit);
                     }
-                })];
+                }, this)];
         }
     });
 
@@ -181,7 +183,7 @@ if (typeof exports !== 'undefined') {
             this.modelChanges = [new ModelChange(this.time,
                 function(ship) {
                     ship.hp -= self.damage;
-                })];
+                }, this)];
         }
     });
 
