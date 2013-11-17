@@ -33,6 +33,7 @@ sh.Unit = sh.TileEntity.extendShared({
     orders: [],
     orderToExecute: null,
     orderState: 'pending',
+    blocking: true,//if it slows enemy units passing by
     init: function(json) {
         'use strict';
         this.parent(json);
@@ -49,9 +50,10 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         return 1000 / this.speed;
     },
-    getTimeForMoving: function(from, to) {
+    getTimeForMoving: function(from, to, ship) {
         'use strict';
-        var oneTileTime = this.getTimeForOneTile(),
+        var self = this,
+            oneTileTime = this.getTimeForOneTile(),
             tileDistance,
             isDiagonal,
             time;
@@ -74,6 +76,13 @@ sh.Unit = sh.TileEntity.extendShared({
             time = tileDistance * oneTileTime * 1.41421356;
         } else {
             time = tileDistance * oneTileTime;
+        }
+        if (_.any(ship.at(from.x, from.y), function(u) {
+                //an enemy blocks
+                return u.ownerID !== self.ownerID && u.blocking;
+            })) {
+            //takes 4 times longer
+            time *= 4;
         }
         return time;
     },
@@ -134,6 +143,10 @@ sh.Unit = sh.TileEntity.extendShared({
         var actions = [];
         if (!this.isAlive()) {
             return [];
+        }
+        //turn start reset
+        if (turnTime === 0 && !this.moving) {
+            this.blocking = true;
         }
         actions = actions.concat(this.getAttackActions(turnTime, ship));
         actions = actions.concat(this.getOrdersActions(turnTime));

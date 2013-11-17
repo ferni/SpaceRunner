@@ -88,6 +88,7 @@ if (typeof exports !== 'undefined') {
                                 arrivalTime: self.time + self.duration
                             };
                             unit.orderState = 'executing';
+                            unit.blocking = false;
                         }
                     }),
                 new ModelChange(this.time + this.duration,

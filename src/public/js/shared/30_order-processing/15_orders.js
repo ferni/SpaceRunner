@@ -42,7 +42,8 @@ if (typeof exports !== 'undefined') {
                     unitID: this.unit.id,
                     from: this.from,
                     to: this.to,
-                    duration: this.unit.getTimeForMoving(this.from, this.to)
+                    duration: this.unit.getTimeForMoving(this.from, this.to,
+                        this.ship)
                 });
             }
             return null;
@@ -51,7 +52,7 @@ if (typeof exports !== 'undefined') {
             var self = this,
                 units = this.ship.unitsMap.at(this.to.x, this.to.y),
                 arrivalTime = time +
-                    this.unit.getTimeForMoving(this.from, this.to);
+                    this.unit.getTimeForMoving(this.from, this.to, this.ship);
             return (!units || //there's no unit ahead
                 _.all(units, function(u) { //or...
                     //it's from a different team
