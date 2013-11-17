@@ -248,6 +248,15 @@ screens.register('battle', ConnectedScreen.extend({
         return 'http://tlrobinson.net/projects/javascript-fun/jsondiff/#' +
             encodeURIComponent(JSON.stringify(hashObject));
     },
+    compareModelWithServer: function() {
+        'use strict';
+        if (gs.ship.compareJson(this.resultingShip)) {
+            console.log('The resulting ship correctly matches the server');
+        } else {
+            console.warn('The resulting ship is different than the one' +
+                ' in the server: ' + this.getModelDifferenceUrl());
+        }
+    },
     pause: function() {
         'use strict';
         $('#paused-indicator, #ready-button').show();
@@ -255,11 +264,8 @@ screens.register('battle', ConnectedScreen.extend({
         this.readyButton.enable();
         this.scriptPlayer.onPause();
         this.shipVM.update();
-        if (gs.ship.compareJson(this.resultingShip)) {
-            console.log('The resulting ship correctly matches the server');
-        } else {
-            console.warn('The resulting ship is different than the one' +
-                ' in the server: ' + this.getModelDifferenceUrl());
+        if (this.resultingShip) {
+            this.compareModelWithServer();
         }
         this.scriptPrediction.m = [];
         this.giveOrdersFromLeftOverPath();
