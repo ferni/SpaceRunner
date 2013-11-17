@@ -51,9 +51,6 @@ if (typeof exports !== 'undefined') {
             };
         },
         isWithinTurn: function(action) {
-            if (action instanceof sh.actions.Move) {
-                return action.time + action.duration < this.turnDuration;
-            }
             return action.time < this.turnDuration;
         },
         sort: function() {
