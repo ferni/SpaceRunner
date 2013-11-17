@@ -236,6 +236,18 @@ screens.register('battle', ConnectedScreen.extend({
             }
         });
     },
+    getModelDifferenceUrl: function() {
+        'use strict';
+        var screen = this,
+            hashObject = {
+                d: {
+                    a: JSON.stringify(gs.ship.toJson()),
+                    b: JSON.stringify(screen.resultingShip)
+                }
+            };
+        return 'http://tlrobinson.net/projects/javascript-fun/jsondiff/#' +
+            encodeURIComponent(JSON.stringify(hashObject));
+    },
     pause: function() {
         'use strict';
         $('#paused-indicator, #ready-button').show();
@@ -247,7 +259,7 @@ screens.register('battle', ConnectedScreen.extend({
             console.log('The resulting ship correctly matches the server');
         } else {
             console.warn('The resulting ship is different than the one' +
-                'in the server.');
+                ' in the server: ' + this.getModelDifferenceUrl());
         }
         this.scriptPrediction.m = [];
         this.giveOrdersFromLeftOverPath();
