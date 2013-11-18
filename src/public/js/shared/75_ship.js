@@ -317,6 +317,17 @@ sh.Ship = sh.SharedClass.extendShared({
     clone: function() {
         'use strict';
         return new sh.Ship({json: this.toJson()});
+    },
+    endOfTurnReset: function() {
+        'use strict';
+        var self = this;
+        _.each(this.units, function(u) {
+            if (!u.isAlive()) {
+                self.removeUnit(u);
+            }
+            u.inCombat = false;
+        });
+        this.unitsMap.update();
     }
 });
 

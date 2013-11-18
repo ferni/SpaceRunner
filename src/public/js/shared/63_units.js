@@ -41,6 +41,7 @@ sh.Unit = sh.TileEntity.extendShared({
         this.set('Unit', ['id', 'imgIndex', 'speed', 'maxHP', 'meleeDamage',
             'attackCooldown', 'imageFacesRight', 'ownerID'], json);
         this.hp = this.maxHP;
+        this.inCombat = false;
     },
     isAlive: function() {
         'use strict';

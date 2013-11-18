@@ -303,12 +303,7 @@ var ScriptPlayer = function(battleScreen) {
             modelChanges[nextChange].apply(gs.ship);
         }
         //clean up
-        _.each(gs.ship.units, function(u) {
-            if (!u.isAlive()) {
-                gs.ship.removeUnit(u);
-            }
-        });
-        gs.ship.unitsMap.update();
+        gs.ship.endOfTurnReset();
     };
 
 };

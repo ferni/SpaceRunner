@@ -114,12 +114,7 @@ if (typeof exports !== 'undefined') {
         _.each(queue, script.indexChange, script);
 
         //clean up
-        _.each(ship.units, function(u) {
-            if (!u.isAlive()) {
-                ship.removeUnit(u);
-            }
-        });
-        ship.unitsMap.update();
+        ship.endOfTurnReset();
 
         script.updateActionsByUnit();
         return script;
