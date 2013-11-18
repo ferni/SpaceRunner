@@ -115,6 +115,17 @@ if (typeof exports !== 'undefined') {
         init: function(json) {
             this.parent(json);
             this.set('LockInCombat', ['unit1ID', 'unit2ID', 'tile'], json);
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [new ModelChange(this.time,
+                function(ship) {
+                    var unit1 = ship.getUnitByID(self.unit1ID),
+                        unit2 = ship.getUnitByID(self.unit2ID);
+                    unit1.inCombat = true;
+                    unit2.inCombat = true;
+                }, this)];
         }
     });
 

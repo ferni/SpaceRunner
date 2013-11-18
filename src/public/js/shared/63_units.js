@@ -131,6 +131,35 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return [];
     },
+    getCombatActions: function(turnTime, ship) {
+        'use strict';
+        var self = this,
+            unitsInTile,
+            enemiesNotInCombat;
+        if (!this.inCombat) {
+            unitsInTile = ship.at(this.x, this.y);
+            if (unitsInTile) {
+                enemiesNotInCombat = _.filter(unitsInTile, function(u) {
+                    return self.isEnemy(u) &&
+                        !u.moving &&
+                        !u.inCombat;
+                });
+                if (enemiesNotInCombat.length > 0) {
+                    //engage with one enemy
+                    return [new sh.actions.LockInCombat({
+                        time: turnTime,
+                        unit1ID: this.id,
+                        unit2ID: enemiesNotInCombat[0].id,
+                        tile: {
+                            x: this.x,
+                            y: this.y
+                        }
+                    })];
+                }
+            }
+        }
+        return [];
+    },
     /**
      * This method will be called by the script creator every time something
      * changed.
@@ -151,7 +180,17 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         actions = actions.concat(this.getAttackActions(turnTime, ship));
         actions = actions.concat(this.getOrdersActions(turnTime));
+        actions = actions.concat(this.getCombatActions(turnTime, ship));
+
         return actions;
+    },
+    isEnemy: function(unit) {
+        'use strict';
+        return unit.ownerID !== this.ownerID;
+    },
+    isAlly: function(unit) {
+        'use strict';
+        return unit.ownerID === this.ownerID;
     }
 
 });
