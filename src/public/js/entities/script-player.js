@@ -63,66 +63,15 @@ var ScriptPlayer = function(battleScreen) {
         });
     }
 
-    function MoveActionPlayer(moveAction, elapsed) {
-        var start, last, duration, unitVM, fromPx, toPx, advancementPerMs,
-            advancementPerMsToEnd,
-            lane, isLast, timeForEndPos, endPos, tilePx, totalDuration;
-        start = elapsed;
-        totalDuration = duration = moveAction.duration;
-        unitVM = battleScreen.shipVM.getUnitVMByID(
-            moveAction.unitID
-        );
-        isLast = script.getLastMoveAction(unitVM.m) === moveAction;
-        fromPx = unitVM.pos;
-        tilePx = v.mul(moveAction.to, TILE_SIZE);
-        lane = getLane(moveAction.from, moveAction.to);
-        //adjust for entry point
-        toPx = v.add(tilePx, lane.entryPoint);
-        if (script.byUnit[unitVM.m.id][0] === moveAction) { //first one
-            unitVM.setCurrentAnimation('walking', false);
-        }
-        if (isLast) { //is last move action the unit would take this turn
-            //split duration between going to entry point and going to end pos
-            timeForEndPos = duration / 4;
-            duration -= timeForEndPos;
-            //go to the center of the tile.
-            endPos = v.add(tilePx, {x: HALF_TILE, y: HALF_TILE});
-            advancementPerMsToEnd = v.div(v.sub(endPos, toPx), timeForEndPos);
-        }
-        advancementPerMs = v.div(v.sub(toPx, fromPx), duration);
-        return {
-            update: function(elapsedInTurn) {
-                var index,
-                    elapsed = elapsedInTurn - start,
-                    delta = elapsed - (last || elapsed),
-                    advance = duration <= elapsed && isLast ?
-                            v.mul(advancementPerMsToEnd, delta) :
-                            v.mul(advancementPerMs, delta),
-                    prevPosX = unitVM.pos.x;
-                if (unitVM.inCombat) {
-                    return;
-                }
-                if (elapsed >= totalDuration) {
-                    if (isLast) {
-                        unitVM.setCurrentAnimation('idle', true);
-                    }
-                    unitVM.m.x = moveAction.to.x;
-                    unitVM.m.y = moveAction.to.y;
-                    //self remove from the actionPlayers
-                    index = actionPlayers.indexOf(this);
-                    actionPlayers.splice(index, 1);
-
-                } else {
-                    //unitVM.pos is a me.Vector2d, that is why x and y
-                    //are assigned manually instead of using v.add
-                    unitVM.pos.x += advance.x;
-                    unitVM.pos.y += advance.y;
-                    unitVM.faceLeft(prevPosX - unitVM.pos.x > 0);
-                    last = elapsed;
-                }
-            },
-            onNextTurn: function() {}
-        };
+    function playMoveAction(action) {
+        var unitVM = battleScreen.shipVM.getUnitVMByID(
+            action.unitID
+        ),
+            tilePx = v.mul(action.to, TILE_SIZE),
+            lane = getLane(action.from, action.to),
+            //adjust for entry point
+            toPx = v.add(tilePx, lane.entryPoint);
+        unitVM.tweenTo(toPx, action.duration);
     }
 
     function LockInCombatActionPlayer(action, elapsed) {
@@ -240,7 +189,7 @@ var ScriptPlayer = function(battleScreen) {
     function playAction(action, elapsed) {
         switch (action.type) {
         case 'Move':
-            actionPlayers.push(new MoveActionPlayer(action, elapsed));
+            playMoveAction(action);
             break;
         case 'Attack':
             playAttackAction(action);
