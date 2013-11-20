@@ -75,38 +75,22 @@ var ScriptPlayer = function(battleScreen) {
     }
 
     function LockInCombatActionPlayer(action, elapsed) {
-        var start = elapsed,
-            last,
-            cloud,
-            leftToEnd = script.turnDuration - elapsed,
+        var cloud,
             mineCombatPos = {x: 24, y: 8},
             enemyCombatPos = {x: 8, y: 24},
-            moveDuration = leftToEnd < 200 && leftToEnd > 0 ?
-                    leftToEnd : 200,
-            units = [],
-            movePerMs = [],
-            destinations = [],
-            closeToSnap = function(pos1, pos2) {
-                return Math.abs(pos1.x - pos2.x) <= 3 &&
-                    Math.abs(pos1.y - pos2.y) <= 3;
-            };
+            units = [];
 
         units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
         units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
-        units[0].inCombat = true;
-        units[1].inCombat = true;
-        _.each(units, function(u, index) {
+        _.each(units, function(u) {
             var floorPos, combatPos;
             floorPos = v.mul(action.tile, TILE_SIZE);
             if (u.isMine()) {
                 combatPos = v.add(floorPos, mineCombatPos);
-                u.faceLeft(true);
             } else {
                 combatPos = v.add(floorPos, enemyCombatPos);
-                u.faceLeft(false);
             }
-            destinations[index] = combatPos;
-            movePerMs[index] = v.div(v.sub(combatPos, u.pos), moveDuration);
+            u.tweenTo(combatPos, 700, me.Tween.Easing.Quadratic.EaseOut);
         });
 
         cloud = new me.ObjectEntity(
@@ -124,35 +108,10 @@ var ScriptPlayer = function(battleScreen) {
         me.game.sort();
         return {
             update: function(elapsedInTurn) {
-                var elapsed, delta;
-                elapsed = elapsedInTurn - start;
-                delta = elapsed - (last || elapsed);
-                if (elapsed <= moveDuration) {
-                    _.each(units, function(u, index) {
-                        var move;
-                        if (closeToSnap(destinations[index], u.pos)) {
-                            u.pos.x = destinations[index].x;
-                            u.pos.y = destinations[index].y;
-                            return;
-                        }
-                        move = v.mul(movePerMs[index], delta);
-                        u.pos.x += move.x;
-                        u.pos.y += move.y;
-
-                    });
-                }
                 cloud.angle += 0.1;
-                if (units[0].isDead || units[1].isDead) {
-                    me.game.remove(cloud, false);
-                    units[0].inCombat = false;
-                    units[1].inCombat = false;
-                    actionPlayers.splice(actionPlayers.indexOf(this), 1);
-                }
-                last = elapsed;
             },
             onNextTurn: function() {
-                units[0].inCombat = false;
-                units[1].inCombat = false;
+
                 me.game.remove(cloud, false);
             }
         };
