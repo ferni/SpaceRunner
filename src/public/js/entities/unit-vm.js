@@ -43,7 +43,8 @@ var Unit = TileEntityVM.extend({
         this.prevModelState = {
             x: this.m.x,
             y: this.m.y,
-            hp: this.m.hp
+            hp: this.m.hp,
+            moving: this.m.moving
         };
     },
     getChanged: function() {
@@ -73,6 +74,17 @@ var Unit = TileEntityVM.extend({
                 console.log('Changed to dead animation for unit ' + this.m.id);
             }
             this.updateHealthBar();
+        }
+        if (changed.moving) {
+            if (!this.m.moving && this.lastPos &&
+                    sh.v.equal(this.m, this.lastPos)) {
+                //unit stopped moving
+                //smoothly adjust position
+                this.tweenTo({
+                    x: (this.m.x * TILE_SIZE) + HALF_TILE,
+                    y: (this.m.y * TILE_SIZE) + HALF_TILE
+                }, 700, me.Tween.Easing.Quadratic.EaseOut);
+            }
         }
         return true;
     },
@@ -126,13 +138,16 @@ var Unit = TileEntityVM.extend({
         }
         this.flipX(!faceLeft);
     },
-    tweenTo: function(pixelPos, duration) {
+    tweenTo: function(pixelPos, duration, easing) {
         'use strict';
         if (this.posTween) {
             this.posTween.stop();
         }
         this.posTween = new me.Tween(this.pos)
                 .to({x: pixelPos.x, y: pixelPos.y}, duration);
+        if (easing) {
+            this.posTween.easing(easing);
+        }
         this.posTween.start();
     }
 });
