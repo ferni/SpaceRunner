@@ -49,14 +49,14 @@ var utils = {
             me.game.currentLevel.height, callback);
     },
     //returns the tile position of the mouse
-    getMouse: function(exact) {
+    getMouse: function(inPixels) {
         'use strict';
         if (!me.game.currentLevel.initialized) {
             throw "There's no level to get the mouse";
         }
         var relPosition = this.vectorSub(me.input.mouse.pos,
             me.game.currentLevel.pos);
-        return exact ? relPosition : utils.toTileVector(relPosition);
+        return inPixels ? relPosition : utils.toTileVector(relPosition);
     },
     setCursor: function(cursor) {
         'use strict';
@@ -65,15 +65,6 @@ var utils = {
     vectorSub: function(v1, v2) {
         'use strict';
         return { x: v1.x - v2.x, y: v1.y - v2.y };
-    },
-    pathToPixels: function(path) {
-        'use strict';
-        var newPath = [], i;
-        for (i = 0; i < path.length; i++) {
-            newPath.push([(path[i][0] * TILE_SIZE) + HALF_TILE,
-                (path[i][1] * TILE_SIZE) + HALF_TILE]);
-        }
-        return newPath;
     },
     /**
      * Executes a callback when a certain number of
