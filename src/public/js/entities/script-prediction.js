@@ -60,5 +60,14 @@ var ScriptPrediction = Object.extend({
             }), ctx, 'orange');
             ctx.restore();
         });
+    },
+    predict: function() {
+        'use strict';
+        this.m = sh.createScript(this.screen.verifiedOrders, gs.ship.clone(),
+            this.screen.turnDuration);
+    },
+    clear: function() {
+        'use strict';
+        this.m = [];
     }
 });
