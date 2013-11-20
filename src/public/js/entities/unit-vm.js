@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me*/
 
 var Unit = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -102,7 +102,8 @@ var Unit = TileEntityVM.extend({
 
         this.pos.sub(this.center);
         this.parent(ctx);
-        this.pos = originalPos;
+        this.pos.x = originalPos.x;
+        this.pos.y = originalPos.y;
         if (this.selected) {
             //draw rectangle around each selected unit
             color = this.isMine() ? 'limegreen' : 'red';
@@ -124,5 +125,14 @@ var Unit = TileEntityVM.extend({
             faceLeft = !faceLeft;
         }
         this.flipX(!faceLeft);
+    },
+    tweenTo: function(pixelPos, duration) {
+        'use strict';
+        if (this.posTween) {
+            this.posTween.stop();
+        }
+        this.posTween = new me.Tween(this.pos)
+                .to({x: pixelPos.x, y: pixelPos.y}, duration);
+        this.posTween.start();
     }
 });
