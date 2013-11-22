@@ -76,7 +76,8 @@ var Unit = TileEntityVM.extend({
             this.updateHealthBar();
         }
         if (changed.moving) {
-            if (!this.m.moving && this.m.orderState === 'allComplete') {
+            if (!this.m.moving && this.lastPos &&
+                    sh.v.equal(this.m, this.lastPos)) {
                 //unit stopped moving
                 //smoothly adjust position
                 this.tweenTo({
