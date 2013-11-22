@@ -93,15 +93,17 @@ exports.Battle = Class.extend({
         return (this.playerLeft && this.playerLeft.id === playerID) ||
             (this.playerRight && this.playerRight.id === playerID);
     },
-    generateScript: function() {
+    generateScript: function(resetShip) {
         'use strict';
         var turn = this.currentTurn,
             orders = _.extend(turn.playersOrders[this.playerLeft.id],
                 turn.playersOrders[this.playerRight.id]);
-
+        if (resetShip === undefined) {
+            resetShip = true;
+        }
         console.log('all orders' + JSON.stringify(orders));
         turn.script = sh.createScript(orders, this.ship, this.turnDuration,
-            true);
+            resetShip);
     },
     toJson: function() {
         'use strict';
@@ -179,7 +181,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             ship = this.ship,
             newActions = [],
             damageShipActions;
-        this.parent();
+        this.parent(false);
         script = this.currentTurn.script;
         //every 3 turns...
         if ((this.turnCount - 1) % 3 === 0) {
@@ -231,6 +233,8 @@ exports.ChallengeBatte = exports.Battle.extend({
                 script.indexChange(mc);
             });
         });
+
+        ship.endOfTurnReset();
     }
 });
 

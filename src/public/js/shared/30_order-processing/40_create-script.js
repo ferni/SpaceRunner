@@ -55,7 +55,7 @@ if (typeof exports !== 'undefined') {
      * @param {int} turnDuration
      * @return {sh.Script}
      */
-    function createScript(orders, ship, turnDuration) {
+    function createScript(orders, ship, turnDuration, resetShip) {
         var script, queue, grid, changes, time, unit, i;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
@@ -114,7 +114,9 @@ if (typeof exports !== 'undefined') {
         _.each(queue, script.indexChange, script);
 
         //clean up
-        ship.endOfTurnReset();
+        if (resetShip) {
+            ship.endOfTurnReset();
+        }
 
         script.updateActionsByUnit();
         return script;
