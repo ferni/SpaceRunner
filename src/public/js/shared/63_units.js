@@ -80,7 +80,7 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         if (_.any(ship.at(from.x, from.y), function(u) {
                 //an enemy blocks
-                return u.ownerID !== self.ownerID && u.blocking;
+                return u.isAlive() && u.ownerID !== self.ownerID && u.blocking;
             })) {
             //takes 4 times longer
             time *= 4;
