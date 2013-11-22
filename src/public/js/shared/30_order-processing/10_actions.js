@@ -190,15 +190,24 @@ if (typeof exports !== 'undefined') {
     sh.actions.DamageShip = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set('DamageShip', ['tile', 'damage'], json);
+            this.set('DamageShip', ['unitID', 'tile', 'damage', 'cooldown'],
+                json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(this.time,
-                function(ship) {
-                    ship.hp -= self.damage;
-                }, this)];
+            this.modelChanges = [
+                new ModelChange(this.time,
+                    function(ship) {
+                        var unit = ship.getUnitByID(self.unitID);
+                        unit.onCooldown = true;
+                        ship.hp -= self.damage;
+                    }, this),
+                new ModelChange(this.time + this.cooldown,
+                    function(ship) {
+                        var unit = ship.getUnitByID(self.unitID);
+                        unit.onCooldown = false;
+                    })];
         }
     });
 

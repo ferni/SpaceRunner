@@ -128,6 +128,8 @@ sh.Unit = sh.TileEntity.extendShared({
                     return [action];
                 }
             }
+        } else {
+            this.orderState = 'allComplete';
         }
         return [];
     },
@@ -161,6 +163,23 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return [];
     },
+    getDamageShipActions: function(turnTime, ship) {
+        'use strict';
+        if (this.ownerID === -1 && //AI unit (in the future, use ship ownership)
+                !this.onCooldown && //attack ready
+                this.orderState === 'allComplete' && !this.inCombat &&
+                ship.itemsMap.at(this.x, this.y) instanceof
+                    sh.items.WeakSpot) {
+            return [new sh.actions.DamageShip({
+                time: turnTime,
+                unitID: this.id,
+                tile: {x: this.x, y: this.y},
+                damage: this.meleeDamage,
+                cooldown: this.attackCooldown
+            })];
+        }
+        return [];
+    },
     /**
      * This method will be called by the script creator every time something
      * changed.
@@ -182,6 +201,7 @@ sh.Unit = sh.TileEntity.extendShared({
         actions = actions.concat(this.getAttackActions(turnTime, ship));
         actions = actions.concat(this.getOrdersActions(turnTime));
         actions = actions.concat(this.getCombatActions(turnTime, ship));
+        actions = actions.concat(this.getDamageShipActions(turnTime, ship));
 
         return actions;
     },
