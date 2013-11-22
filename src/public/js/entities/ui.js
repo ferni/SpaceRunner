@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, me, sh*/
+/*global TileEntityVM, me, sh, TILE_SIZE*/
 
 var ui = (function() {
     'use strict';
@@ -133,6 +133,27 @@ var ui = (function() {
         }
     });
 
+
+    ui.Cloud = me.ObjectEntity.extend({
+        init: function(tile) {
+            this.parent(tile.x * TILE_SIZE,
+                tile.y * TILE_SIZE,
+                {
+                    image: 'cloud',
+                    spritewidth: 32,
+                    spriteheight: 32
+                });
+            this.alpha = 0.3;
+            this.z = 1800;
+        },
+        update: function() {
+            if (me.state.current().name === 'battle' &&
+                    !me.state.current().paused) {
+                this.angle += 0.1;
+            }
+        }
+    });
+
     /**
      * A button with text.
      * @type {*}
@@ -165,6 +186,7 @@ var ui = (function() {
         onClick: function() {
         }
     });
+
     return ui;
 }());
 

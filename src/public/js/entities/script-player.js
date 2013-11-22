@@ -18,6 +18,7 @@ var ScriptPlayer = function(battleScreen) {
     var script, next, actionPlayers = [],
         nextChange,
         modelChanges = [],
+        clouds = [],
         v = sh.v, //vector math
         movementLanes = {
             right: {
@@ -74,11 +75,11 @@ var ScriptPlayer = function(battleScreen) {
         unitVM.tweenTo(toPx, action.duration);
     }
 
-    function LockInCombatActionPlayer(action, elapsed) {
-        var cloud,
-            mineCombatPos = {x: 24, y: 8},
+    function playLockInCombatAction(action) {
+        var mineCombatPos = {x: 24, y: 8},
             enemyCombatPos = {x: 8, y: 24},
-            units = [];
+            units = [],
+            cloud;
 
         units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
         units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
@@ -93,35 +94,27 @@ var ScriptPlayer = function(battleScreen) {
             u.tweenTo(combatPos, 700, me.Tween.Easing.Quadratic.EaseOut);
         });
 
-        cloud = new me.ObjectEntity(
-            action.tile.x * TILE_SIZE,
-            action.tile.y * TILE_SIZE,
-            {
-                image: 'cloud',
-                spritewidth: 32,
-                spriteheight: 32
-            }
-        );
-        cloud.alpha = 0.3;
-        //noinspection JSValidateTypes
-        me.game.add(cloud, 1800);
-        me.game.sort();
-        return {
-            update: function(elapsedInTurn) {
-                cloud.angle += 0.1;
-                if (_.any(units, function(u) {
-                        return !u.m.isAlive();
-                    })) {
-                    //combat finished
-                    me.game.remove(cloud, false);
-                    actionPlayers.splice(actionPlayers.indexOf(this), 1);
-                }
-            },
-            onNextTurn: function() {
+        //add a cloud over the tile
+        if (!_.any(clouds, function(c) {
+                return sh.v.equal(c.tile, action.tile);
+            })) {
+            cloud = new ui.Cloud(action.tile);
+            clouds.push({
+                tile: action.tile,
+                cloud: cloud
+            });
+            me.game.add(cloud, cloud.z);
+        }
+    }
 
-                me.game.remove(cloud, false);
-            }
-        };
+    function playEndCombatAction(action) {
+        var cloudRegistry = _.find(clouds, function(c) {
+            return sh.v.equal(c.tile, action.tile);
+        });
+        if (cloudRegistry) {//there's actually a cloud there
+            clouds.splice(_.indexOf(clouds, cloudRegistry), 1);
+            me.game.remove(cloudRegistry.cloud, true);
+        }
     }
 
     function playAttackAction(action) {
@@ -161,8 +154,10 @@ var ScriptPlayer = function(battleScreen) {
             playAttackAction(action);
             break;
         case 'LockInCombat':
-            actionPlayers.push(new LockInCombatActionPlayer(action,
-                elapsed));
+            playLockInCombatAction(action);
+            break;
+        case 'EndCombat':
+            playEndCombatAction(action);
             break;
         case 'DamageShip':
             playDamageShipAction(action);
