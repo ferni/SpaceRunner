@@ -86,6 +86,14 @@ var Unit = TileEntityVM.extend({
                 }, 700, me.Tween.Easing.Quadratic.EaseOut);
             }
         }
+        if (this.pos.x !== this.prevX) {
+            if (this.pos.x - this.prevX > 0) {
+                this.faceLeft(false);
+            } else {
+                this.faceLeft(true);
+            }
+        }
+        this.prevX = this.pos.x;
         return true;
     },
     onShip: function() {
