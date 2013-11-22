@@ -142,7 +142,8 @@ sh.Unit = sh.TileEntity.extendShared({
                 enemiesNotInCombat = _.filter(unitsInTile, function(u) {
                     return self.isEnemy(u) &&
                         !u.moving &&
-                        !u.inCombat;
+                        !u.inCombat &&
+                        u.orderState === 'allComplete';
                 });
                 if (enemiesNotInCombat.length > 0) {
                     //engage with one enemy

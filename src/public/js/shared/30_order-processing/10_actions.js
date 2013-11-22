@@ -102,7 +102,11 @@ if (typeof exports !== 'undefined') {
                             unit.y = self.to.y;
                             unit.x = self.to.x;
                             unit.moving = null;
-                            unit.orderState = 'pending';
+                            if (unit.orders.length > 0) {
+                                unit.orderState = 'pending';
+                            } else {
+                                unit.orderState = 'allComplete';
+                            }
                             if (!sh.v.equal(prev, self.to)) {
                                 ship.unitsMap.update();
                             }

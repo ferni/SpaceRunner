@@ -326,6 +326,7 @@ sh.Ship = sh.SharedClass.extendShared({
                 self.removeUnit(u);
             }
             u.inCombat = false;
+            u.orderState = 'pending';
         });
         this.unitsMap.update();
     }
