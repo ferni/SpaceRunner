@@ -83,7 +83,7 @@ var Unit = TileEntityVM.extend({
                 this.tweenTo({
                     x: (this.m.x * TILE_SIZE) + HALF_TILE,
                     y: (this.m.y * TILE_SIZE) + HALF_TILE
-                }, 700, me.Tween.Easing.Quadratic.EaseOut);
+                }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
             }
         }
         if (this.pos.x !== this.prevX) {
