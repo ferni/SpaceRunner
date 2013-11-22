@@ -127,8 +127,28 @@ if (typeof exports !== 'undefined') {
                 function(ship) {
                     var unit1 = ship.getUnitByID(self.unit1ID),
                         unit2 = ship.getUnitByID(self.unit2ID);
-                    unit1.inCombat = true;
-                    unit2.inCombat = true;
+                    unit1.inCombat = {enemyID: unit2.id};
+                    unit2.inCombat = {enemyID: unit1.id};
+                }, this)];
+        }
+    });
+
+    sh.actions.EndCombat = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('EndCombat', ['tile'], json);
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [new ModelChange(this.time,
+                function(ship) {
+                    var units = ship.unitsMap.at(self.tile.x, self.tile.y);
+                    _.each(units, function(u) {
+                        if (u.inCombat) {
+                            u.inCombat = false;
+                        }
+                    });
                 }, this)];
         }
     });

@@ -145,7 +145,8 @@ sh.Unit = sh.TileEntity.extendShared({
                     return self.isEnemy(u) &&
                         !u.moving &&
                         !u.inCombat &&
-                        u.orderState === 'allComplete';
+                        u.orderState === 'allComplete' &&
+                        u.isAlive();
                 });
                 if (enemiesNotInCombat.length > 0) {
                     //engage with one enemy
@@ -160,6 +161,11 @@ sh.Unit = sh.TileEntity.extendShared({
                     })];
                 }
             }
+        } else if (!ship.getUnitByID(this.inCombat.enemyID).isAlive()) {
+            return [new sh.actions.EndCombat({
+                time: turnTime,
+                tile: {x: this.x, y: this.y}
+            })];
         }
         return [];
     },

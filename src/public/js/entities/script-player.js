@@ -109,6 +109,13 @@ var ScriptPlayer = function(battleScreen) {
         return {
             update: function(elapsedInTurn) {
                 cloud.angle += 0.1;
+                if (_.any(units, function(u) {
+                        return !u.m.isAlive();
+                    })) {
+                    //combat finished
+                    me.game.remove(cloud, false);
+                    actionPlayers.splice(actionPlayers.indexOf(this), 1);
+                }
             },
             onNextTurn: function() {
 

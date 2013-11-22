@@ -44,7 +44,8 @@ var Unit = TileEntityVM.extend({
             x: this.m.x,
             y: this.m.y,
             hp: this.m.hp,
-            moving: this.m.moving
+            moving: this.m.moving,
+            inCombat: this.m.inCombat
         };
     },
     getChanged: function() {
@@ -80,11 +81,11 @@ var Unit = TileEntityVM.extend({
                     sh.v.equal(this.m, this.lastPos)) {
                 //unit stopped moving
                 //smoothly adjust position
-                this.tweenTo({
-                    x: (this.m.x * TILE_SIZE) + HALF_TILE,
-                    y: (this.m.y * TILE_SIZE) + HALF_TILE
-                }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
+                this.centerInTile();
             }
+        }
+        if (changed.inCombat && !this.m.inCombat) {
+            this.centerInTile();
         }
         if (this.pos.x !== this.prevX) {
             if (this.pos.x - this.prevX > 0) {
@@ -129,7 +130,9 @@ var Unit = TileEntityVM.extend({
             color = this.isMine() ? 'limegreen' : 'red';
             draw.tileHighlight(ctx, this.m, color, 2);
         }
-        this.drawHealthBar(ctx);
+        if (this.m.isAlive()) {
+            this.drawHealthBar(ctx);
+        }
     },
     isMine: function() {
         'use strict';
@@ -157,5 +160,12 @@ var Unit = TileEntityVM.extend({
             this.posTween.easing(easing);
         }
         this.posTween.start();
+    },
+    centerInTile: function() {
+        'use strict';
+        this.tweenTo({
+            x: (this.m.x * TILE_SIZE) + HALF_TILE,
+            y: (this.m.y * TILE_SIZE) + HALF_TILE
+        }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
     }
 });
