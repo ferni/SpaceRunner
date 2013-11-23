@@ -282,26 +282,26 @@ asyncTest('Wall building', function() {
 
     var x = th.shipPositions.free.x,
         y = th.shipPositions.free.y;
-    th.loadScreen(function() {
-        me.state.change('ship-building', {tmxName: 'test'});
-    },
-        function(screen) {
-            screen.buildItem(x, y, 'Wall');
-            ok(screen.mouseLockedOn, 'Mouse locked on something');
-            equal(screen.mouseLockedOn.type, 'Wall', 'Mouse locked on Wall');
+    th.restartGame(function() {
+        th.loadScreen(function() {
+            me.state.change('ship-building', {tmxName: 'test'});
+        },
+            function(screen) {
+                screen.buildItem(x, y, 'Wall');
+                ok(screen.mouseLockedOn, 'Mouse locked on something');
+                equal(screen.mouseLockedOn.type, 'Wall',
+                    'Mouse locked on Wall');
 
-            th.mouseBegin(screen);
-            th.leftClick(x + 2, y + 2);
-            ok(!screen.mouseLockedOn, 'Mouse unlocked after click');
-            equal(screen.ship.at(x, y).type, 'Wall');
-            equal(screen.ship.at(x + 1, y).type, 'Wall');
-            equal(screen.ship.at(x + 2, y).type, 'Wall');
-            equal(screen.ship.at(x + 2, y + 1).type, 'Wall');
-            equal(screen.ship.at(x + 2, y + 2).type, 'Wall');
+                th.mouseBegin(screen);
+                th.leftClick(x, y);
+                ok(!screen.mouseLockedOn, 'Mouse unlocked after click');
+                screen.ship.itemsMap.update();
+                equal(screen.ship.at(x, y).type, 'Wall');
 
-            th.mouseEnd();
-            start();
-        });
+                th.mouseEnd();
+                start();
+            });
+    });
 });
 
 asyncTest('Wall building canceled by escape key', function() {
