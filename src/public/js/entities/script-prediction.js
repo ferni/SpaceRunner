@@ -12,29 +12,29 @@
  * @type {*}
  */
 var ScriptPrediction = Object.extend({
-    m: null, //the script model
+    script: null, //the script model
     init: function(battleScreen) {
         'use strict';
         this.screen = battleScreen;
     },
-    drawPath: function(moveActions, ctx, color) {
+    drawPath: function(lines, ctx, color) {
         'use strict';
-        if (moveActions.length === 0) {
+        if (lines.length === 0) {
             return;
         }
         ctx.beginPath();
         ctx.save();
         ctx.lineWidth = 3;
         ctx.strokeStyle = color;
-        _.each(moveActions, function(action) {
-            ctx.moveTo((action.from.x * TILE_SIZE) + HALF_TILE,
-                (action.from.y * TILE_SIZE) + HALF_TILE);
-            ctx.lineTo((action.to.x * TILE_SIZE) + HALF_TILE,
-                (action.to.y * TILE_SIZE) + HALF_TILE);
+        _.each(lines, function(line) {
+            ctx.moveTo((line.from.x * TILE_SIZE) + HALF_TILE,
+                (line.from.y * TILE_SIZE) + HALF_TILE);
+            ctx.lineTo((line.to.x * TILE_SIZE) + HALF_TILE,
+                (line.to.y * TILE_SIZE) + HALF_TILE);
         });
         ctx.stroke();
         ctx.restore();
-        draw.circle(ctx, _.last(moveActions).to, 5, color);
+        draw.circle(ctx, _.last(lines).to, 5, color);
     },
     isSelected: function(unitID) {
         'use strict';
@@ -44,7 +44,7 @@ var ScriptPrediction = Object.extend({
     draw: function(ctx) {
         'use strict';
         var self = this,
-            script = this.m;
+            script = this.script;
         _.each(script.byUnit, function(actions, unitID) {
             ctx.save();
             if (!self.isSelected(unitID)) {
@@ -54,20 +54,30 @@ var ScriptPrediction = Object.extend({
                 return script.isWithinTurn(a) &&
                     a instanceof sh.actions.Move;
             }), ctx, 'green');
-            self.drawPath(_.filter(actions, function(a) {
-                return !script.isWithinTurn(a) &&
-                    a instanceof sh.actions.Move;
-            }), ctx, 'orange');
+            ctx.restore();
+        });
+        //unfulfilled orders
+        if (!this.resultingShip) {
+            return;
+        }
+        _.each(this.resultingShip.units, function(u) {
+            ctx.save();
+            if (!self.isSelected(u.id)) {
+                ctx.globalAlpha = 0.5;
+            }
+            self.drawPath(u.orders, ctx, 'orange');
             ctx.restore();
         });
     },
     predict: function() {
         'use strict';
-        this.m = sh.createScript(this.screen.verifiedOrders, gs.ship.clone(),
-            this.screen.turnDuration);
+        this.resultingShip = gs.ship.clone();
+        this.script = sh.createScript(this.screen.verifiedOrders,
+            this.resultingShip, this.screen.turnDuration);
     },
     clear: function() {
         'use strict';
-        this.m = [];
+        this.script = [];
+        this.resultingShip = null;
     }
 });
