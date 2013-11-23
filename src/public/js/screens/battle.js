@@ -252,6 +252,10 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
+        //re-check for valid orders
+        this.verifiedOrders = _.filter(this.verifiedOrders, function(o) {
+            return sh.verifyOrder(o, gs.ship, gs.player.id);
+        });
         this.scriptPrediction.clear();
         this.scriptPrediction.predict();
         me.game.sort();

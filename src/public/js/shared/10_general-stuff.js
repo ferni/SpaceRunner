@@ -48,8 +48,9 @@ if (typeof exports !== 'undefined') {
                 // the server.
                 //TODO: remove when socket.io is implemented (if it doesn't
                 // have this problem)
-                if (json._numbers && _.contains(json._numbers, p)) {
-                    this[p] = parseInt(json[p], 10);
+                if (json._numbers && _.isString(json[p]) &&
+                        _.contains(json._numbers, p)) {
+                    this[p] = parseFloat(json[p]);
                 } else {
                     this[p] = json[p];
                 }
