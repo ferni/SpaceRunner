@@ -72,7 +72,6 @@ var Unit = TileEntityVM.extend({
             if (!this.m.isAlive()) {
                 this.setCurrentAnimation('dead');
                 this.alpha = 0.4;
-                console.log('Changed to dead animation for unit ' + this.m.id);
             }
             this.updateHealthBar();
         }

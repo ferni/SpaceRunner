@@ -125,13 +125,9 @@ var ScriptPlayer = function(battleScreen) {
         me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
             2000);
         me.game.sort();
-
-        console.log('Unit ' + action.attackerID + ' hit ' +
-            action.receiverID + ' with ' + action.damage + ' damage!');
     }
 
     function playDamageShipAction(action) {
-        console.log('The ship received ' + action.damage + ' damage!');
         var red = new ui.RedColorEntity(action.tile.x, action.tile.y),
             tween;
         me.game.add(red, 1000);
