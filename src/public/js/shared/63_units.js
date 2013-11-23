@@ -135,7 +135,8 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var self = this,
             unitsInTile,
-            enemiesNotInCombat;
+            enemiesNotInCombat,
+            enemy;
         if (!this.inCombat && this.orderState === 'allComplete') {
             unitsInTile = ship.at(this.x, this.y);
             if (unitsInTile) {
@@ -159,12 +160,15 @@ sh.Unit = sh.TileEntity.extendShared({
                     })];
                 }
             }
-        } else if (this.inCombat &&
-                !ship.getUnitByID(this.inCombat.enemyID).isAlive()) {
-            return [new sh.actions.EndCombat({
-                time: turnTime,
-                tile: {x: this.x, y: this.y}
-            })];
+        } else if (this.inCombat) {
+            enemy = ship.getUnitByID(this.inCombat.enemyID);
+            if (!enemy.isAlive() || !sh.v.equal(this, enemy)) {
+                //enemy died or left, end combat
+                return [new sh.actions.EndCombat({
+                    time: turnTime,
+                    tile: {x: this.x, y: this.y}
+                })];
+            }
         }
         return [];
     },
