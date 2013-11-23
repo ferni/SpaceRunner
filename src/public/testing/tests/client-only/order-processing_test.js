@@ -12,14 +12,16 @@ test('script creation', function() {
     'use strict';
     var order, script,
         ship = new sh.Ship({tmxName: 'test'}),
-        unit = ship.putUnit({speed: 1});
+        unit = ship.putUnit({speed: 1}),
+        moveActions;
     unit.ownerID = 1;
     order = sh.make.moveOrder(unit, {x: unit.x + 2, y: unit.y});
     ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
-    script = sh.createScript([order], ship);
-    equal(script.actions.length, 2, 'Script has two actions');
-    equal(script.actions[0].time, 0, 'First action starts at 0');
-    equal(script.actions[1].time, 1000, 'Second action starts at 1000');
+    script = sh.createScript([order], ship, 3000, true);
+    moveActions = script.byType('Move');
+    equal(moveActions.length, 2, 'Script has two Move actions');
+    equal(moveActions[0].time, 0, 'First action starts at 0');
+    equal(moveActions[1].time, 1000, 'Second action starts at 1000');
 });
 
 test('script creation\'s ship modifications', function() {
