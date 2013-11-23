@@ -137,14 +137,14 @@ sh.Unit = sh.TileEntity.extendShared({
             unitsInTile,
             enemiesNotInCombat,
             enemy;
-        if (!this.inCombat && this.orderState === 'allComplete') {
+        if (!this.inCombat && !this.moving && !this.dizzy) {
             unitsInTile = ship.at(this.x, this.y);
             if (unitsInTile) {
                 enemiesNotInCombat = _.filter(unitsInTile, function(u) {
                     return self.isEnemy(u) &&
                         !u.moving &&
+                        !u.dizzy &&
                         !u.inCombat &&
-                        u.orderState === 'allComplete' &&
                         u.isAlive();
                 });
                 if (enemiesNotInCombat.length > 0) {
