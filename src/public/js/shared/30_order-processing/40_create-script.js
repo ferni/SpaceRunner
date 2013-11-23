@@ -53,6 +53,7 @@ if (typeof exports !== 'undefined') {
      * @param {Array} orders
      * @param {sh.Ship} ship
      * @param {int} turnDuration
+     * @param {Boolean} resetShip Should the ship be cleaned up at the end.
      * @return {sh.Script}
      */
     function createScript(orders, ship, turnDuration, resetShip) {
