@@ -104,7 +104,7 @@ var th = {
             throw 'Call th.mouseBegin before calling th.mouseMove';
         }
         this.setMouse(x, y);
-        me.state.current().mouseMove({});
+        this._screen.mouseMove({});
     },
     clickMouse: function(which, x, y) {
         'use strict';
@@ -114,10 +114,10 @@ var th = {
         if (x !== undefined && y !== undefined) {
             this.moveMouse(x, y);
         }
-        me.state.current().mouseDown({
+        this._screen.mouseDown({
             which: which + 1 //taking into account the adjustment made inside
         });
-        me.state.current().mouseUp({
+        this._screen.mouseUp({
             which: which + 1 //taking into account the adjustment made inside
         });
     },
