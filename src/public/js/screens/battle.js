@@ -221,19 +221,6 @@ screens.register('battle', ConnectedScreen.extend({
                 });
         }
     },
-    giveOrdersFromLeftOverPath: function() {
-        'use strict';
-        var self = this;
-        _.each(this.scriptServer.byUnit, function(actions, unitID) {
-            var unit = gs.ship.getUnitByID(unitID),
-                lastAction = _.last(actions);
-            if (unit && //is alive
-                    utils.isMine(unit) &&
-                    !self.scriptServer.isWithinTurn(lastAction)) {
-                self.giveMoveOrder([self.shipVM.getVM(unit)], lastAction.to);
-            }
-        });
-    },
     getModelDifferenceUrl: function() {
         'use strict';
         var screen = this,
@@ -266,7 +253,7 @@ screens.register('battle', ConnectedScreen.extend({
             this.compareModelWithServer();
         }
         this.scriptPrediction.clear();
-        this.giveOrdersFromLeftOverPath();
+        this.scriptPrediction.predict();
         me.game.sort();
         me.game.repaint();
         //empty the script
@@ -294,7 +281,6 @@ screens.register('battle', ConnectedScreen.extend({
                     console.warn('According to the server, the player ' +
                         'was already ready.');
                 }
-                screen.verifiedOrders = {};
                 screen.startFetching();
             }, 'json')
             .fail(function() {
