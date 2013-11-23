@@ -178,12 +178,6 @@ var ScriptPlayer = function(battleScreen) {
         });
         actionPlayers = [];
         modelChanges = script.getSortedModelChanges();
-
-        _.each(battleScreen.shipVM.unitVMs, function(u) {
-            if (script.byUnit[u.m.id]) {
-                u.lastPos = _.last(script.byUnit[u.m.id]).to;
-            }
-        });
     };
 
 

@@ -45,7 +45,8 @@ var Unit = TileEntityVM.extend({
             y: this.m.y,
             hp: this.m.hp,
             moving: this.m.moving,
-            inCombat: this.m.inCombat
+            inCombat: this.m.inCombat,
+            dizzy: this.m.dizzy
         };
     },
     getChanged: function() {
@@ -79,9 +80,8 @@ var Unit = TileEntityVM.extend({
                 return true;
             }
         }
-        if (changed.moving) {
-            if (!this.m.moving && this.lastPos &&
-                    sh.v.equal(this.m, this.lastPos)) {
+        if (changed.moving || changed.dizzy) {
+            if (!this.m.moving && !this.m.dizzy) {
                 //unit stopped moving
                 //smoothly adjust position
                 this.centerInTile();
