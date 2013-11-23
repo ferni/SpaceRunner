@@ -69,14 +69,15 @@ var Unit = TileEntityVM.extend({
         var changed = this.getChanged();
         this.parent();
         if (changed.hp) {
+            this.updateHealthBar();
             if (!this.m.isAlive()) {
                 this.setCurrentAnimation('dead');
                 this.alpha = 0.4;
+                if (this.posTween) {
+                    this.posTween.stop();
+                }
+                return true;
             }
-            this.updateHealthBar();
-        }
-        if (!this.m.isAlive) {
-            return true;
         }
         if (changed.moving) {
             if (!this.m.moving && this.lastPos &&
