@@ -128,8 +128,6 @@ sh.Unit = sh.TileEntity.extendShared({
                     return [action];
                 }
             }
-        } else {
-            this.orderState = 'allComplete';
         }
         return [];
     },
@@ -138,7 +136,7 @@ sh.Unit = sh.TileEntity.extendShared({
         var self = this,
             unitsInTile,
             enemiesNotInCombat;
-        if (!this.inCombat) {
+        if (!this.inCombat && this.orderState === 'allComplete') {
             unitsInTile = ship.at(this.x, this.y);
             if (unitsInTile) {
                 enemiesNotInCombat = _.filter(unitsInTile, function(u) {
@@ -161,7 +159,8 @@ sh.Unit = sh.TileEntity.extendShared({
                     })];
                 }
             }
-        } else if (!ship.getUnitByID(this.inCombat.enemyID).isAlive()) {
+        } else if (this.inCombat &&
+                !ship.getUnitByID(this.inCombat.enemyID).isAlive()) {
             return [new sh.actions.EndCombat({
                 time: turnTime,
                 tile: {x: this.x, y: this.y}
