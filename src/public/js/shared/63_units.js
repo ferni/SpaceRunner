@@ -175,8 +175,10 @@ sh.Unit = sh.TileEntity.extendShared({
     getDamageShipActions: function(turnTime, ship) {
         'use strict';
         if (this.ownerID === -1 && //AI unit (in the future, use ship ownership)
+                !this.moving &&
                 !this.onCooldown && //attack ready
-                this.orderState === 'allComplete' && !this.inCombat &&
+                !this.dizzy &&
+                !this.inCombat &&
                 ship.itemsMap.at(this.x, this.y) instanceof
                     sh.items.WeakSpot) {
             return [new sh.actions.DamageShip({
