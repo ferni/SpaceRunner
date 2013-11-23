@@ -92,7 +92,7 @@ sh.Unit = sh.TileEntity.extendShared({
         var actions = [],
             self = this,
             enemies;
-        if (!this.onCooldown && !this.moving) {//attack ready
+        if (!this.onCooldown && !this.moving && !this.dizzy) {//attack ready
             enemies = _.filter(ship.unitsMap.at(this.x, this.y),
                 function(u) {
                     return u.isAlive() &&

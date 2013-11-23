@@ -102,6 +102,7 @@ if (typeof exports !== 'undefined') {
                             unit.y = self.to.y;
                             unit.x = self.to.x;
                             unit.moving = null;
+                            unit.dizzy = true;//can't attack if just got there
                             if (unit.orders.length > 0) {
                                 unit.orderState = 'pending';
                             } else {
@@ -110,6 +111,13 @@ if (typeof exports !== 'undefined') {
                             if (!sh.v.equal(prev, self.to)) {
                                 ship.unitsMap.update();
                             }
+                        }
+                    }, this),
+                new ModelChange(this.time + this.duration + 100,
+                    function(ship) {
+                        var unit = ship.getUnitByID(self.unitID);
+                        if (unit.isAlive()) {
+                            unit.dizzy = false;//now it can attack
                         }
                     }, this)];
         }
