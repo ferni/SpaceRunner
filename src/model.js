@@ -292,15 +292,17 @@ exports.BattleSetUp = function(params) {
         try {
             ship = new sh.Ship({json: this.shipJson});
             battle = new exports.Battle({id: battles.length, ship: ship});
-            ship.putUnit({type: 6, speed: 2, ownerID: this.creator.id});
-            ship.putUnit({type: 6, speed: 2, ownerID: this.creator.id});
-            ship.putUnit({type: 0, speed: 1.5, ownerID: this.creator.id});
-            ship.putUnit({type: 0, speed: 1.5, ownerID: this.creator.id});
+            ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
+            ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
+            ship.putUnit({imgIndex: 0, speed: 1.5, ownerID: this.creator.id});
+            ship.putUnit({imgIndex: 0, speed: 1.5, ownerID: this.creator.id});
 
-            ship.putUnit({type: 7, speed: 1.5, ownerID: this.challenger.id});
-            ship.putUnit({type: 7, speed: 1.5, ownerID: this.challenger.id});
-            ship.putUnit({type: 12, speed: 2, ownerID: this.challenger.id});
-            ship.putUnit({type: 12, speed: 2, ownerID: this.challenger.id});
+            ship.putUnit({imgIndex: 7, speed: 1.5,
+                ownerID: this.challenger.id});
+            ship.putUnit({imgIndex: 7, speed: 1.5,
+                ownerID: this.challenger.id});
+            ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
+            ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
             battles.push(battle);
