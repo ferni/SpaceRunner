@@ -210,9 +210,11 @@ sh.Unit = sh.TileEntity.extendShared({
             this.blocking = true;
         }
         actions = actions.concat(this.getAttackActions(turnTime, ship));
+        if (actions.length === 0) {//damage ship only if it didn't attack
+            actions = actions.concat(this.getDamageShipActions(turnTime, ship));
+        }
         actions = actions.concat(this.getOrdersActions(turnTime));
         actions = actions.concat(this.getCombatActions(turnTime, ship));
-        actions = actions.concat(this.getDamageShipActions(turnTime, ship));
 
         return actions;
     },
