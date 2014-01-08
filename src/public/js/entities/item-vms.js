@@ -6,7 +6,7 @@
 */
 
 /*global me, _, pr, ItemVM, PF, hullMap, utils, width, height,
-TileEntityVM*/
+TileEntityVM, sh*/
 
 /**
  * A melonJS object used to represent an sh.Item on screen.
@@ -169,7 +169,7 @@ itemVMs.WeaponVM = ItemVM.extend({
         'use strict';
         this.type = 'Weapon';
         this.size = weaponModel.size;
-        this.totalSize = [3, 2];
+        this.totalSize = [3 * sh.GRID_SUB, 2 * sh.GRID_SUB];
         this.m = weaponModel;
         this.parent(weaponModel.x, weaponModel.y, {});
         this.onShip(weaponModel.onShip());
@@ -186,8 +186,8 @@ itemVMs.EngineVM = ItemVM.extend({
         'use strict';
         this.type = 'Engine';
         this.size = EngineModel.size;
-        this.totalSize = [3, 2];
-        this.cannonTile = [1, 0];
+        this.totalSize = [3 * sh.GRID_SUB, 2 * sh.GRID_SUB];
+        this.cannonTile = [sh.GRID_SUB, 0];
         this.m = EngineModel;
         this.parent(EngineModel.x, EngineModel.y, {});
         this.onShip(EngineModel.onShip());
