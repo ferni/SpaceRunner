@@ -43,7 +43,8 @@ sh.Ship = sh.SharedClass.extendShared({
         this.unitsMap = new sh.EntityMap3d(this.width, this.height,
             this.units);
         this.map = new sh.CompoundMap([
-            new sh.Map(this.hullMap), this.itemsMap, this.unitsMap
+            new sh.Map(this.hullMap).scale(sh.GRID_SUB), this.itemsMap,
+            this.unitsMap
         ]);
         if (settings.json) {
             this.fromJson(settings.json);
@@ -60,8 +61,8 @@ sh.Ship = sh.SharedClass.extendShared({
             throw 'hullMap "' + this.tmxName.toLowerCase() + '" not found';
         }
         this.hullMap = hull.map;
-        this.width = hull.width;
-        this.height = hull.height;
+        this.width = hull.width * sh.GRID_SUB;
+        this.height = hull.height * sh.GRID_SUB;
     },
     //this should be called when the user builds something
     buildAt: function(x, y, buildingType) {
