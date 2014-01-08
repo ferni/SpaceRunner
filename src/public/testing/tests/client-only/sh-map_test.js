@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global module, test, sh, equal*/
+/*global module, test, sh, equal, deepEqual*/
 
 module('sh-map');
 test('Basic map', function() {
@@ -111,3 +111,24 @@ test('CompoundMap', function() {
 
 });
 
+test('Scaling', function() {
+    'use strict';
+    var map = new sh.Map([
+        [1, 2, 3],
+        [4, 5, 6]]).scale(2);
+    equal(map.at(0, 0), 1);
+    equal(map.at(1, 0), 1);
+    equal(map.at(0, 1), 1);
+    equal(map.at(1, 1), 1);
+    equal(map.at(6, 0), undefined);
+
+    deepEqual(map.raw, [
+        [1, 1, 2, 2, 3, 3],
+        [1, 1, 2, 2, 3, 3],
+        [4, 4, 5, 5, 6, 6],
+        [4, 4, 5, 5, 6, 6]
+    ], 'Raw map is as expected');
+
+    equal(map.width, 6, 'correct width');
+    equal(map.height, 4, 'correct height');
+});

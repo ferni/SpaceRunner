@@ -69,6 +69,35 @@ sh.Map = sh.SharedClass.extendShared({
                 callback(x, y);
             }
         }
+    },
+    /**
+     * Makes the map twice as large, three times at large, etc, according to
+     * the multiplier.
+     * @param {int} multiplier
+     */
+    scale: function(multiplier) {
+        'use strict';
+        var newMap = [],
+            i,
+            j;
+        _.each(this.raw, function(row, y) {
+            y *= multiplier;
+            for (i = 0; i < multiplier; i++) {
+                newMap.push([]);//add <multiplier> rows for each row
+            }
+            _.each(row, function(tile, x) {
+                x *= multiplier;
+                for (i = 0; i < multiplier; i++) {
+                    for (j = 0; j < multiplier; j++) {
+                        newMap[y + i][x + j] = tile;
+                    }
+                }
+            });
+        });
+        this.raw = newMap;
+        this.width = newMap[0].length;
+        this.height = newMap.length;
+        return this;
     }
 });
 
