@@ -31,11 +31,13 @@ sh.Item = sh.TileEntity.extendShared({
             this.rotated(json.r);
             this.ship = json.ship;
         }
+        this.placementRule = sh.pr.make.spaceRule(sh.tiles.clear,
+            this.size[0], this.size[1]);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
         //default placement rule
-        return sh.pr.space(this.size[0], this.size[1])
+        return this.placementRule
             .compliesAt(x, y, ship.map);
     },
     canBuildRotated: function(x, y, ship) {
