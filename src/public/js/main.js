@@ -10,7 +10,7 @@ html, ShipSelectScreen, ShipBuildingScreen, BattleScreen,
 sh, hullMaps, hullMapGenerator, GameState, gs, chatClient, server, screens*/
 
 //sugar
-var TILE_SIZE = 32, HALF_TILE = 16;
+var TILE_SIZE = 32 / sh.GRID_SUB, HALF_TILE = 16 / sh.GRID_SUB;
 function width() {
     'use strict';
     if (!me.game.currentLevel.initialized) {
