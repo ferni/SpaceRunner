@@ -80,6 +80,9 @@ sh.Map = sh.SharedClass.extendShared({
         var newMap = [],
             i,
             j;
+        if (multiplier === 1) {
+            return this;
+        }
         _.each(this.raw, function(row, y) {
             y *= multiplier;
             for (i = 0; i < multiplier; i++) {
