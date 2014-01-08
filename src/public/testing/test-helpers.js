@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, utils, th, jsApp, FIRST_SCREEN */
+/*global me, utils, th, jsApp, FIRST_SCREEN, sh*/
 
 var th = {
     shipPositions: {
@@ -134,6 +134,15 @@ var th = {
             throw 'Call th.mouseBegin before calling th.rightClick';
         }
         this.clickMouse(me.input.mouse.RIGHT, x, y);
+    },
+    /**
+     * multiplies the value by sh.GRID_SUB
+     * @param {int} value
+     * @return {int}
+     */
+    s: function(value) {
+        'use strict';
+        return value * sh.GRID_SUB;
     }
 };
 
