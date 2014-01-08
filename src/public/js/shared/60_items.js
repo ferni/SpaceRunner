@@ -81,6 +81,10 @@ sh.Item = sh.TileEntity.extendShared({
         var json = this.parent();
         json.r = this.rotated();
         return json;
+    },
+    setSize: function(width, height) {
+        'use strict';
+        this.size = [width * sh.GRID_SUB, height * sh.GRID_SUB];
     }
 });
 
@@ -99,7 +103,7 @@ sh.items.Weapon = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Weapon', [], json);
-        this.size = [2, 2];
+        this.setSize(2, 2);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
@@ -116,7 +120,7 @@ sh.items.Engine = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Engine', [], json);
-        this.size = [2, 2];
+        this.setSize(2, 2);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
@@ -133,7 +137,7 @@ sh.items.Power = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Power', [], json);
-        this.size = [2, 2];
+        this.setSize(2, 2);
     }
 });
 
@@ -147,7 +151,7 @@ sh.items.Console = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Console', [], json);
-        this.size = [1, 1];
+        this.setSize(1, 1);
         this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
@@ -165,7 +169,7 @@ sh.items.Component = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Component', [], json);
-        this.size = [2, 2];
+        this.setSize(2, 2);
     }
 });
 
@@ -178,7 +182,7 @@ sh.items.Door = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Door', [], json);
-        this.size = [2, 1];
+        this.setSize(2, 1);
         this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
@@ -200,7 +204,7 @@ sh.items.Wall = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('Wall', [], json);
-        this.size = [1, 1];
+        this.setSize(1, 1);
         this.connected = {
             top: false,
             left: true,
@@ -284,7 +288,7 @@ sh.items.WeakSpot = sh.Item.extendShared({
         'use strict';
         this.parent(json);
         this.set('WeakSpot', [], json);
-        this.size = [2, 2];
+        this.setSize(2, 2);
         this.walkable = true;
     }
 });

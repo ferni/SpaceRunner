@@ -20,6 +20,14 @@ if (typeof exports !== 'undefined') {
 (function(sh) {
     'use strict';
     //SHARED ENTITIES
+
+    /**
+     * The grid gets subdivided in its width and its height according to this
+     * constant.
+     * @type {number}
+     */
+    sh.GRID_SUB = 1;
+
     sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
     sh.Jsonable = sh.SharedClass.extendShared({
