@@ -14,8 +14,6 @@ items, ui, hullMap, _*/
 screens.register('ship-building', GameScreen.extend({
     ship: null,
     prevMouse: {},
-    width: 0,
-    height: 0,
     init: function(name) {
         'use strict';
         this.parent(name);
@@ -34,8 +32,6 @@ screens.register('ship-building', GameScreen.extend({
         this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();
         };
-        this.width = width();
-        this.height = width();
 
         me.game.sort();
 
@@ -51,7 +47,8 @@ screens.register('ship-building', GameScreen.extend({
 
         this.mouseLockedOn = null;
         this.prepareGhostItems();
-        this.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 1);
+        this.greenSpots = sh.utils.getEmptyMatrix(this.ship.width,
+            this.ship.height, 1);
 
     },
 
