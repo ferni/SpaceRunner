@@ -376,7 +376,7 @@ itemVMs.WallVM = ItemVM.extend({
             ui.chosen.hide();
         }
         t = this.temp;
-        t.grid = new PF.Grid(width(), height(), pfMatrix);
+        t.grid = new PF.Grid(this.m.ship.width, this.m.ship.height, pfMatrix);
         t.preMouseX = this.x;
         t.preMouseY = this.y;
         t.pivotX = this.x;
