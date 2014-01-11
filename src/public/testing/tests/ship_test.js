@@ -142,10 +142,11 @@ asyncTest('at out of bounds', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        screen.ship.removeAll();
-        ok(!screen.ship.map.at(-1, 0), 'map.at(-1,0) is nothing');
-        ok(!screen.ship.map.at(width(), 0), 'map.at(WIDTH,0) is nothing');
-        ok(!screen.ship.map.at(0, height()), 'map.at(0,HEIGHT) is nothing');
+        var ship = screen.ship;
+        ship.removeAll();
+        ok(!ship.map.at(-1, 0), 'map.at(-1,0) is nothing');
+        ok(!ship.map.at(ship.width, 0), 'map.at(WIDTH,0) is nothing');
+        ok(!ship.map.at(0, ship.height), 'map.at(0,HEIGHT) is nothing');
         start();
     });
 

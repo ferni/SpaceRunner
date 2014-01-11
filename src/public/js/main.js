@@ -11,22 +11,6 @@ sh, hullMaps, hullMapGenerator, GameState, gs, chatClient, server, screens*/
 
 //sugar
 var TILE_SIZE = 32 / sh.GRID_SUB, HALF_TILE = 16 / sh.GRID_SUB;
-function width() {
-    'use strict';
-    if (!me.game.currentLevel.initialized) {
-        throw 'Cannot get width from the current level.' +
-            ' The level has not been loaded, or there is no level.';
-    }
-    return me.game.currentLevel.width;
-}
-function height() {
-    'use strict';
-    if (!me.game.currentLevel.initialized) {
-        throw 'Cannot get height from the current level.' +
-            ' The level has not been loaded, or there is no level.';
-    }
-    return me.game.currentLevel.height;
-}
 
 // game resources
 // in the case of the items, set their image name equal to their type.
