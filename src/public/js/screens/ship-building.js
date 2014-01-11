@@ -34,8 +34,8 @@ screens.register('ship-building', GameScreen.extend({
         this.ship.onBuildingsChanged = function() {
             self.updateGreenSpots();
         };
-        this.width = me.game.currentLevel.width;
-        this.height = me.game.currentLevel.height;
+        this.width = width();
+        this.height = width();
 
         me.game.sort();
 
@@ -363,23 +363,24 @@ screens.register('ship-building', GameScreen.extend({
     greenSpots: null,
     updateGreenSpots: function() {
         'use strict';
-        var self = this;
+        var self = this,
+            ship = this.ship;
         if (!this.chosen) {
             return;
         }
-        self.greenSpots = sh.utils.getEmptyMatrix(width(), height(), 1);
-        utils.levelTiles(function(x, y) {
+        self.greenSpots = sh.utils.getEmptyMatrix(ship.width, ship.height, 1);
+        ship.map.tiles(function(x, y) {
             var i, j, cWidth, cHeight;
-            if (self.chosen.m.canBuildAt(x, y, self.ship)) {
+            if (self.chosen.m.canBuildAt(x, y, ship)) {
                 cWidth = self.chosen.size[0];
                 cHeight = self.chosen.size[1];
             }
-            if (self.chosen.m.canBuildRotated(x, y, self.ship)) {
+            if (self.chosen.m.canBuildRotated(x, y, ship)) {
                 cWidth = self.chosen.size[1];
                 cHeight = self.chosen.size[0];
             }
-            for (i = x; i < cWidth + x && i < width(); i++) {
-                for (j = y; j < cHeight + y && j < height(); j++) {
+            for (i = x; i < cWidth + x && i < ship.width; i++) {
+                for (j = y; j < cHeight + y && j < ship.height; j++) {
                     self.greenSpots[j][i] = 0;
                 }
             }
