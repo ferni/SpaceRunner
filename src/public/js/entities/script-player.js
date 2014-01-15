@@ -20,40 +20,43 @@ var ScriptPlayer = function(battleScreen) {
         modelChanges = [],
         clouds = [],
         v = sh.v, //vector math
-        movementLanes = {
-            right: {
-                direction: {x: 1, y: 0},
-                entryPoint: {x: 0, y: 24}//in pixels
-            },
-            left: {
-                direction: {x: -1, y: 0},
-                entryPoint: {x: 32, y: 8}//in pixels
-            },
-            down: {
-                direction: {x: 0, y: 1},
-                entryPoint: {x: 8, y: 0}//in pixels
-            },
-            up: {
-                direction: {x: 0, y: -1},
-                entryPoint: {x: 24, y: 32}//in pixels
-            },
-            right_down: {
-                direction: {x: 1, y: 1},
-                entryPoint: {x: 0, y: 8}
-            },
-            left_down: {
-                direction: {x: -1, y: 1},
-                entryPoint: {x: 24, y: 0}
-            },
-            left_up: {
-                direction: {x: -1, y: -1},
-                entryPoint: {x: 32, y: 24}
-            },
-            right_up: {
-                direction: {x: 1, y: -1},
-                entryPoint: {x: 8, y: 32}
-            }
-        };
+        movementLanes = (function() {
+            var tile = TILE_SIZE, quarter = TILE_SIZE / 4;
+            return {
+                right: {
+                    direction: {x: 1, y: 0},
+                    entryPoint: {x: 0, y: tile - quarter}
+                },
+                left: {
+                    direction: {x: -1, y: 0},
+                    entryPoint: {x: tile, y: quarter}
+                },
+                down: {
+                    direction: {x: 0, y: 1},
+                    entryPoint: {x: quarter, y: 0}
+                },
+                up: {
+                    direction: {x: 0, y: -1},
+                    entryPoint: {x: tile - quarter, y: tile}
+                },
+                right_down: {
+                    direction: {x: 1, y: 1},
+                    entryPoint: {x: 0, y: quarter}
+                },
+                left_down: {
+                    direction: {x: -1, y: 1},
+                    entryPoint: {x: tile - quarter, y: 0}
+                },
+                left_up: {
+                    direction: {x: -1, y: -1},
+                    entryPoint: {x: tile, y: tile - quarter}
+                },
+                right_up: {
+                    direction: {x: 1, y: -1},
+                    entryPoint: {x: quarter, y: tile}
+                }
+            };
+        }());
 
     function sign(x) { return x ? x < 0 ? -1 : 1 : 0; }
     function getLane(from, to) {
