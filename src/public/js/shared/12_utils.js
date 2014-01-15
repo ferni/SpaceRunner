@@ -42,6 +42,11 @@ sh.utils = {
                 callback(x, y);
             }
         }
+    },
+    convertPosition: function(pos, fromGridSub, toGridSub) {
+        'use strict';
+        pos.x = pos.x * (toGridSub / fromGridSub);
+        pos.y = pos.y * (toGridSub / fromGridSub);
     }
 };
 

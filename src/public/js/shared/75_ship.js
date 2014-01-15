@@ -274,14 +274,28 @@ sh.Ship = sh.SharedClass.extendShared({
             }),
             'units': _.map(this.units, function(u) {
                 return u.toJson();
-            })
+            }),
+            'GRID_SUB': sh.GRID_SUB
         };
     },
     fromJson: function(json) {
         'use strict';
-        var ship = this;
+        var ship = this,
+            jsonGridSub;
+        if (json.GRID_SUB !== undefined) {
+            jsonGridSub = parseInt(json.GRID_SUB, 10);
+        } else {
+            jsonGridSub = 1;
+        }
         ship.removeAll();
+        if (sh.GRID_SUB !== jsonGridSub) {
+            console.warn('GRID_SUB from json differs from current GRID_SUB,' +
+                ' the values will be converted.');
+        }
         _.each(json.buildings, function(b) {
+            if (sh.GRID_SUB !== jsonGridSub) {
+                sh.utils.convertPosition(b, jsonGridSub, sh.GRID_SUB);
+            }
             ship.addItem(new sh.items[b.type](b));
         });
         _.each(json.units, function(u) {
