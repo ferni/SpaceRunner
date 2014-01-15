@@ -31,8 +31,6 @@ sh.Item = sh.TileEntity.extendShared({
             this.rotated(json.r);
             this.ship = json.ship;
         }
-        this.placementRule = sh.pr.make.spaceRule(sh.tiles.clear,
-            this.size[0], this.size[1]);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
@@ -87,6 +85,12 @@ sh.Item = sh.TileEntity.extendShared({
     setSize: function(width, height) {
         'use strict';
         this.size = [width * sh.GRID_SUB, height * sh.GRID_SUB];
+        this.onSizeChanged();
+    },
+    onSizeChanged: function() {
+        'use strict';
+        this.placementRule = sh.pr.make.spaceRule(sh.tiles.clear,
+            this.size[0], this.size[1]);
     }
 });
 
