@@ -353,7 +353,7 @@ screens.register('ship-building', GameScreen.extend({
                 if (self.greenSpots[iY][iX] === 1) {
                     self.printRed(iX, iY);
                 }
-            }, me.game.currentLevel);
+            }, self.ship);
         }
     },
     //A matrix of 1 and 0. In 1 should be red overlay when trying to build
