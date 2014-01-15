@@ -349,10 +349,10 @@ itemVMs.WallVM = ItemVM.extend({
         'use strict';
         //TODO: update only when necessary, right now it's running all the time
         var screen = me.state.current(),
-            top = screen.at(this.x, this.y - 1),
-            left = screen.at(this.x - 1, this.y),
-            bot = screen.at(this.x, this.y + 1),
-            right = screen.at(this.x + 1, this.y);
+            top = screen.at(this.x, this.y - sh.GRID_SUB),
+            left = screen.at(this.x - sh.GRID_SUB, this.y),
+            bot = screen.at(this.x, this.y + sh.GRID_SUB),
+            right = screen.at(this.x + sh.GRID_SUB, this.y);
         top = utils.getModel(top);
         left = utils.getModel(left);
         bot = utils.getModel(bot);

@@ -226,10 +226,10 @@ sh.items.Wall = sh.Item.extendShared({
     onBuilt: function() {
         'use strict';
 
-        var top = this.ship.at(this.x, this.y - 1),
-            left = this.ship.at(this.x - 1, this.y),
-            bot = this.ship.at(this.x, this.y + 1),
-            right = this.ship.at(this.x + 1, this.y);
+        var top = this.ship.at(this.x, this.y - sh.GRID_SUB),
+            left = this.ship.at(this.x - sh.GRID_SUB, this.y),
+            bot = this.ship.at(this.x, this.y + sh.GRID_SUB),
+            right = this.ship.at(this.x + sh.GRID_SUB, this.y);
         this.updateConnections(top, left, bot, right);
     },
     updateConnections: function(top, left, bot, right) {
