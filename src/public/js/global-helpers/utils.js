@@ -34,11 +34,11 @@ var utils = {
             .exec(window.location.search);
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
     },
-    toTileVector: function(vector2D) {
+    toTileVector: function(vector2D, tileSize) {
         'use strict';
         var v = new me.Vector2d();
-        v.x = Math.floor(vector2D.x / TILE_SIZE);
-        v.y = Math.floor(vector2D.y / TILE_SIZE);
+        v.x = Math.floor(vector2D.x / tileSize);
+        v.y = Math.floor(vector2D.y / tileSize);
         return v;
     },
     //returns the tile position of the mouse
@@ -49,7 +49,8 @@ var utils = {
         }
         var relPosition = this.vectorSub(me.input.mouse.pos,
             me.game.currentLevel.pos);
-        return inPixels ? relPosition : utils.toTileVector(relPosition);
+        return inPixels ? relPosition :
+                utils.toTileVector(relPosition, TILE_SIZE);
     },
     setCursor: function(cursor) {
         'use strict';
