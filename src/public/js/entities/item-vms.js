@@ -362,21 +362,33 @@ itemVMs.WallVM = ItemVM.extend({
     },
     onBuilt: function() {
         'use strict';
-        var pfMatrix, t, ui;
+        var pfMatrix, t, ui, ship, size;
         this.parent();
         ui = me.state.current();
+        ship = this.m.ship;
+        size = {
+            width: ship.width / sh.GRID_SUB,
+            height: ship.height / sh.GRID_SUB
+        };
         if (ui.mouseLockedOn === this) {
             return;
         }
-        pfMatrix = ui.greenSpots;
+        pfMatrix = sh.utils.getEmptyMatrix(size.width, size.height, 1);
         //self tile will be walkable for pathfinding purposes
-        pfMatrix[this.y][this.x] = 0;
+        pfMatrix[this.y / sh.GRID_SUB][this.x / sh.GRID_SUB] = 0;
+        _.each(pfMatrix, function(row, y) {
+            _.each(pfMatrix, function(tile, x) {
+                if (ship.hullMap[y][x] === sh.tiles.clear) {
+                    pfMatrix[y][x] = 0;
+                }
+            });
+        });
         this.alpha = 0.8;
         if (ui.chosen) {
             ui.chosen.hide();
         }
         t = this.temp;
-        t.grid = new PF.Grid(this.m.ship.width, this.m.ship.height, pfMatrix);
+        t.grid = new PF.Grid(size.width, size.height, pfMatrix);
         t.preMouseX = this.x;
         t.preMouseY = this.y;
         t.pivotX = this.x;
@@ -387,7 +399,7 @@ itemVMs.WallVM = ItemVM.extend({
     },
     lockedMouseMove: function(mouseTile) {
         'use strict';
-        var t, cloneGrid, ui;
+        var t, clonedGrid, ui;
         ui = me.state.current();
         t = this.temp;
 
@@ -401,12 +413,13 @@ itemVMs.WallVM = ItemVM.extend({
             t.path = null;
             return;
         }
-        cloneGrid = t.grid.clone();
-        t.path = t.finder.findPath(t.pivotX, t.pivotY,
-            mouseTile.x, mouseTile.y, cloneGrid);
+        clonedGrid = t.grid.clone();
+        t.path = t.finder.findPath(t.pivotX / sh.GRID_SUB, t.pivotY /
+            sh.GRID_SUB, mouseTile.x / sh.GRID_SUB, mouseTile.y / sh.GRID_SUB,
+            clonedGrid);
         _.each(t.path, function(p, index) {
             if (index > 0) {
-                ui.drawItem(p[0], p[1], 'Wall');
+                ui.drawItem(p[0] * sh.GRID_SUB, p[1] * sh.GRID_SUB, 'Wall');
             }
         });
     },
