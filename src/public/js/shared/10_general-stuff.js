@@ -26,7 +26,7 @@ if (typeof exports !== 'undefined') {
      * constant.
      * @type {number}
      */
-    sh.GRID_SUB = 1;
+    sh.GRID_SUB = 2;
 
     sh.TestSharedEntity = sh.SharedClass.extendShared({});
 
