@@ -10,20 +10,20 @@
 var th = {
     shipPositions: {
         free: {
-            x: 4,
-            y: 4
+            x: 4 * sh.GRID_SUB,
+            y: 4 * sh.GRID_SUB
         },
         engine: {
-            x: 3,
-            y: 1
+            x: 3 * sh.GRID_SUB,
+            y: sh.GRID_SUB
         },
         weapon: {
-            x: 5,
-            y: 2
+            x: 5 * sh.GRID_SUB,
+            y: 2 * sh.GRID_SUB
         },
         solid: {
-            x: 13,
-            y: 1
+            x: 13 * sh.GRID_SUB,
+            y: sh.GRID_SUB
         }
     },
     //Calls the callback when the state is "PLAY"
