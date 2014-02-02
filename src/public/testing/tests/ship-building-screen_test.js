@@ -48,11 +48,12 @@ asyncTest('right click removes item', function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
         var x = th.shipPositions.free.x,
-            y = th.shipPositions.free.y;
+            y = th.shipPositions.free.y,
+            s = th.s;
         screen.ship.buildAt(x, y, 'Component');
         equal(screen.ship.at(x, y).type, 'Component', 'Component built');
         th.mouseBegin(screen);
-        th.rightClick(x + 1, y + 1); //botton right of Component
+        th.rightClick(x + s(1), y + s(1)); //botton right of Component
         th.mouseEnd();
         notEqual(screen.ship.at(x, y).type, 'Component',
             'Component removed');

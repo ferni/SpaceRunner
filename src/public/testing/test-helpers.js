@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, utils, th, jsApp, FIRST_SCREEN, sh*/
+/*global me, utils, th, jsApp, FIRST_SCREEN, sh, TILE_SIZE*/
 
 var th = {
     shipPositions: {
@@ -77,11 +77,12 @@ var th = {
         }
         this._screen = screen;
         //replace utils.getMouse function
-        utils.getMouse = function() {
-            return {
+        utils.getMouse = function(inPixels) {
+            var tile = {
                 x: th._mousePosition.x,
                 y: th._mousePosition.y
             };
+            return inPixels ? sh.v.mul(tile, TILE_SIZE) : tile;
         };
     },
     mouseEnd: function() {

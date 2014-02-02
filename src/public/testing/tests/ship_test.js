@@ -39,7 +39,8 @@ asyncTest('add/at/removeAt', function() {
     }, function(screen) {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y,
-            engine = make.item('Engine', [x, y]);
+            engine = make.item('Engine', [x, y]),
+            s = th.s;
         screen.ship.removeAll();
         //(ignores placement rules)
         screen.ship.addItem(engine);
@@ -48,28 +49,28 @@ asyncTest('add/at/removeAt', function() {
 
         //at
         equal(screen.ship.at(x, y).type, 'Engine', 'at(x, y) is engine');
-        equal(screen.ship.at(x + 1, y).type, 'Engine',
+        equal(screen.ship.at(x + s(1), y).type, 'Engine',
             'at(x + 1, y) is engine');
-        equal(screen.ship.at(x, y + 1).type, 'Engine',
+        equal(screen.ship.at(x, y + s(1)).type, 'Engine',
             'at(x, y + 1) is engine');
-        equal(screen.ship.at(x + 1, y + 1).type, 'Engine',
+        equal(screen.ship.at(x + s(1), y + s(1)).type, 'Engine',
             'at(x + 1, y + 1) is engine');
-        notEqual(screen.ship.at(x + 2, y + 1).type, 'Engine',
+        notEqual(screen.ship.at(x + s(2), y + s(1)).type, 'Engine',
             'at(x + 2, y + 1) is not engine');
-        notEqual(screen.ship.at(x, y - 1).type, 'Engine',
+        notEqual(screen.ship.at(x, y - s(1)).type, 'Engine',
             'at(x, y - 1) is not engine');
 
         //removeAt
-        screen.ship.removeAt(x + 1, y); //random engine tile
+        screen.ship.removeAt(x + s(1), y); //random engine tile
         equal(screen.ship.built.length, 0,
             'Ship has 0 buildings after removing');
         notEqual(screen.ship.at(x, y), 'Engine',
             'at(x, y) no longer Engine');
-        notEqual(screen.ship.at(x, y + 1), 'Engine',
+        notEqual(screen.ship.at(x, y + s(1)), 'Engine',
             'at(x, y + 1) no longer Engine');
-        notEqual(screen.ship.at(x + 1, y), 'Engine',
+        notEqual(screen.ship.at(x + s(1), y), 'Engine',
             'at(x+1, y) no longer Engine');
-        notEqual(screen.ship.at(x + 1, y + 1), 'Engine',
+        notEqual(screen.ship.at(x + s(1), y + s(1)), 'Engine',
             'at(x+1, y + 1) no longer Engine');
         start();
     });
@@ -104,9 +105,10 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        var x, y, door;
+        var x, y, door, s;
         x = th.shipPositions.free.x;
         y = th.shipPositions.free.y;
+        s = th.s;
         door = make.itemModel('Door');
         ok(!door.canBuildAt(x, y, screen.ship),
             "Cannot build at x,y (there's no wall)");
@@ -114,25 +116,25 @@ asyncTest('buildAt rotates item when can only be built rotated', function() {
             'It cannot be built rotated either');
 
         screen.ship.buildAt(x, y, 'Wall');
-        screen.ship.buildAt(x, y + 1, 'Wall');
+        screen.ship.buildAt(x, y + s(1), 'Wall');
 
         ok(screen.ship.at(x, y) instanceof sh.items.Wall,
             'Wall built at x, y');
-        ok(screen.ship.at(x, y + 1) instanceof sh.items.Wall,
+        ok(screen.ship.at(x, y + s(1)) instanceof sh.items.Wall,
             'Wall built at x, y + 1');
         ok(screen.ship.at(x, y).isVertical());
-        ok(screen.ship.at(x, y + 1).isVertical());
+        ok(screen.ship.at(x, y + s(1)).isVertical());
         ok(!door.canBuildAt(x, y, screen.ship),
             'After building vertical Wall,' +
             'door still cannot be built at x,y...');
         ok(door.canBuildRotated(x, y, screen.ship), '... but it can rotated.');
 
         screen.ship.buildAt(x, y, 'Door');
-        equal(screen.ship.at(x, y + 1).type, 'Door',
+        equal(screen.ship.at(x, y + s(1)).type, 'Door',
             'at(x, y+1) is Door (it should be rotated, that is, vertical)');
-        notEqual(screen.ship.at(x + 1, y).type, 'Door',
+        notEqual(screen.ship.at(x + s(1), y).type, 'Door',
             'at(x+1,y) is not Door');
-        ok(screen.ship.at(x, y + 1).rotated(), "Door has 'rotated' status");
+        ok(screen.ship.at(x, y + s(1)).rotated(), "Door has 'rotated' status");
         start();
     });
 });
@@ -157,7 +159,8 @@ asyncTest('fromJson', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        var power, door;
+        var power, door, s;
+        s = th.s;
         screen.ship.removeAll();
         screen.ship.fromJson({'tmxName': 'test',
             'buildings': [{'type': 'Power', 'x': 0, 'y': 0},
@@ -169,10 +172,10 @@ asyncTest('fromJson', function() {
         equal(power.y, 0, 'it has correct y position');
         ok(!power.rotated(), 'Power is not rotated');
 
-        door = screen.ship.at(2, 3);
+        door = screen.ship.at(s(2), s(3));
         equal(door.type, 'Door', 'door successfully added to the ship');
-        equal(door.x, 2, 'it has correct x position');
-        equal(door.y, 3, 'it has correct y position');
+        equal(door.x, s(2), 'it has correct x position');
+        equal(door.y, s(3), 'it has correct y position');
         ok(door.rotated(), 'door is rotated');
 
         equal(screen.ship.built.length, 2, 'ship has 2 buildings added');
