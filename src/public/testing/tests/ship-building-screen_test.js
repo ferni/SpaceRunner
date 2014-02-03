@@ -82,24 +82,25 @@ asyncTest('drag and drop', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        var power;
-        ok(screen.ship.buildAt(3, 4, 'Power'), 'Power succesfully built');
+        var power, s;
+        s = th.s;
+        ok(screen.ship.buildAt(s(3), s(4), 'Power'), 'Power succesfully built');
         th.mouseBegin(screen);
-        th.moveMouse(3, 4);
+        th.moveMouse(s(3), s(4));
         screen.mouseDown({
             which: me.input.mouse.LEFT
         });
         equal(screen.dragging.type, 'Power', 'Power being dragged');
 
-        th.moveMouse(5, 4);
+        th.moveMouse(s(5), s(4));
         screen.mouseUp({
             which: me.input.mouse.LEFT
         });
         ok(!screen.dragging, 'not dragging after mouse up');
-        notEqual(screen.ship.at(3, 4).type, 'Power',
+        notEqual(screen.ship.at(s(3), s(4)).type, 'Power',
             'Power is not on original position');
-        power = screen.ship.at(5, 4);
-        equal(power.x, 5, 'Power is at new position');
+        power = screen.ship.at(s(5), s(4));
+        equal(power.x, s(5), 'Power is at new position');
         th.mouseEnd();
         start();
     });
@@ -152,15 +153,11 @@ asyncTest('beginDrag/endDrag', function() {
         screen.beginDrag(power);
         equal(screen.chosen.type, 'Power');
         equal(screen.dragging, power);
-        th.mouseBegin(screen);
-        th.setMouse(x + 1, y);
-        screen.mouseMove({});
-        screen.endDrag();
+        screen.endDrag({x: x + th.s(1), y: y});
         strictEqual(screen.dragging, null);
         strictEqual(screen.chosen, null);
-        equal(power.x, x + 1, 'x after dragging');
+        equal(power.x, x + th.s(1), 'x after dragging');
         equal(power.y, y, 'y after dragging');
-        th.mouseEnd();
         start();
     });
 });
@@ -192,11 +189,12 @@ asyncTest('rotate ghost when it could be built rotated', function() {
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
-        var hX, hY, door, vX, vY;
+        var hX, hY, door, vX, vY, s;
         hX = th.shipPositions.engine.x;
         hY = th.shipPositions.engine.y;
+        s = th.s;
         screen.ship.buildAt(hX, hY, 'Wall');
-        screen.ship.buildAt(hX + 1, hY, 'Wall');
+        screen.ship.buildAt(hX + s(1), hY, 'Wall');
         screen.mouseLockedOn = null;
         door = make.itemModel('Door');
         ok(door.canBuildAt(hX, hY, screen.ship),
@@ -205,7 +203,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         vX = th.shipPositions.free.x;
         vY = th.shipPositions.free.y;
         screen.ship.buildAt(vX, vY, 'Wall');
-        screen.ship.buildAt(vX, vY + 1, 'Wall');
+        screen.ship.buildAt(vX, vY + s(1), 'Wall');
         screen.mouseLockedOn = null;
         ok(door.canBuildRotated(vX, vY, screen.ship),
             'door can be built rotated at vertical Wall');
@@ -308,7 +306,8 @@ asyncTest('Wall building', function() {
 asyncTest('Wall building canceled by escape key', function() {
     'use strict';
     var x = th.shipPositions.free.x,
-        y = th.shipPositions.free.y;
+        y = th.shipPositions.free.y,
+        s = th.s;
     th.loadScreen(function() {
         me.state.change('ship-building', {tmxName: 'test'});
     }, function(screen) {
@@ -317,20 +316,20 @@ asyncTest('Wall building canceled by escape key', function() {
         th.leftClick(x, y);
         equal(screen.mouseLockedOn.type, 'Wall', 'Mouse locked on Wall');
 
-        th.moveMouse(x + 2, y + 2);
+        th.moveMouse(x + s(2), y + s(2));
         th.mouseEnd();
         //entire Wall is seen on the screen...
         equal(screen.at(x, y).type, 'Wall', 'Wall appears at x,y');
-        equal(screen.at(x + 1, y).type, 'Wall');
-        equal(screen.at(x + 2, y).type, 'Wall');
-        equal(screen.at(x + 2, y + 1).type, 'Wall');
-        equal(screen.at(x + 2, y + 2).type, 'Wall');
+        equal(screen.at(x + s(1), y).type, 'Wall');
+        equal(screen.at(x + s(2), y).type, 'Wall');
+        equal(screen.at(x + s(2), y + s(1)).type, 'Wall');
+        equal(screen.at(x + s(2), y + s(2)).type, 'Wall');
         //...but only the first one is built
         equal(screen.ship.at(x, y).type, 'Wall');
-        notEqual(screen.ship.at(x + 1, y).type, 'Wall');
-        notEqual(screen.ship.at(x + 2, y).type, 'Wall');
-        notEqual(screen.ship.at(x + 2, y + 1).type, 'Wall');
-        notEqual(screen.ship.at(x + 2, y + 2).type, 'Wall');
+        notEqual(screen.ship.at(x + s(1), y).type, 'Wall');
+        notEqual(screen.ship.at(x + s(2), y).type, 'Wall');
+        notEqual(screen.ship.at(x + s(2), y + s(1)).type, 'Wall');
+        notEqual(screen.ship.at(x + s(2), y + s(2)).type, 'Wall');
 
         me.input.triggerKeyEvent(me.input.KEY.ESC, true);
         screen.update();
@@ -341,11 +340,11 @@ asyncTest('Wall building canceled by escape key', function() {
         //Wall does no longer appear on the screen (except the cursor)
         equal(screen.at(x, y).type, 'Wall',
             'Cursor still appears on the screen');
-        notEqual(screen.at(x + 1, y).type, 'Wall',
+        notEqual(screen.at(x + s(1), y).type, 'Wall',
             'The rest of the wall is gone');
-        notEqual(screen.at(x + 2, y).type, 'Wall');
-        notEqual(screen.at(x + 2, y + 1).type, 'Wall');
-        notEqual(screen.at(x + 2, y + 2).type, 'Wall');
+        notEqual(screen.at(x + s(2), y).type, 'Wall');
+        notEqual(screen.at(x + s(2), y + s(1)).type, 'Wall');
+        notEqual(screen.at(x + s(2), y + s(2)).type, 'Wall');
         //the first wall has been removed
         notEqual(screen.ship.at(x, y).type, 'Wall');
         start();
