@@ -51,7 +51,7 @@ test('Console placement', function() {
     ok(!ship.buildAt(x, y, 'Console'),
         'Console building fails in the middle of nowhere');
     ok(ship.buildAt(x, y, 'Power'), 'Power built');
-    ok(ship.buildAt(x - 1, y, 'Console'),
+    ok(ship.buildAt(x - th.s(1), y, 'Console'),
         'Console building succeeds next to Power');
 });
 

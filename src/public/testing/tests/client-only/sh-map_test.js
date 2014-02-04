@@ -29,6 +29,9 @@ test('Entity map', function() {
     var entities, map,
         power = new sh.items.Power({x: 1, y: 1}),
         console = new sh.items.Console({x: 0, y: 1});
+    //manually set size to override sh.GRID_SUB adjustment
+    power.setSize(2, 2);
+    console.setSize(1, 1);
     entities = [
         console,
         power
@@ -70,6 +73,9 @@ test('CompoundMap', function() {
     var entities, entityMap, power, console, numberMap, map;
     power = new sh.items.Power({x: 1, y: 1});
     console = new sh.items.Console({x: 0, y: 1});
+    //manually set size to override sh.GRID_SUB adjustment
+    power.setSize(2, 2);
+    console.setSize(1, 1);
     entities = [
         console,
         power

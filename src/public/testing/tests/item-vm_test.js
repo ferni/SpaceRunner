@@ -11,14 +11,15 @@ me, utils, ui, make, sh, me*/
 module('entities/tile-entity-vm.js');
 test('Item.trueSize()', function() {
     'use strict';
-    var door = make.item('Door');
-    deepEqual(door.size, [2, 1]);
-    deepEqual(door.trueSize(), [2, 1]);
+    var door = make.item('Door'),
+        s = th.s;
+    deepEqual(door.size, [s(2), s(1)]);
+    deepEqual(door.trueSize(), [s(2), s(1)]);
 
     door.rotated(true);
-    deepEqual(door.trueSize(), [1, 2]);
-    equal(door.trueSize(0), 1);
-    equal(door.trueSize(1), 2);
+    deepEqual(door.trueSize(), [s(1), s(2)]);
+    equal(door.trueSize(0), s(1));
+    equal(door.trueSize(1), s(2));
 });
 
 test('Item onShip/offShip animations', function() {
