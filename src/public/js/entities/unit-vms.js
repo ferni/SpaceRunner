@@ -172,3 +172,17 @@ var UnitVM = TileEntityVM.extend({
         }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
     }
 });
+
+var unitVMs = {};
+
+/**
+ * ViewModel for sh.units.Zealot unit
+ * @type {void|*|Class|extend|extend|extend}
+ */
+unitVMs.ZealotVM = UnitVM.extend({
+    faceLeft: function(faceLeft) {
+        'use strict';
+        this.parent(faceLeft);
+        console.log('Zealot has changed orientation!');
+    }
+});
