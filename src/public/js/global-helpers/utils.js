@@ -103,14 +103,10 @@ var utils = {
             return object.m;
         }
     },
-    posStr: function(pos) {
-        'use strict';
-        return '(' + pos.x + ',' + pos.y + ')';
-    },
     actionStr: function(action) {
         'use strict';
         return action.start + ' -> ' + action.end + ': ' +
-            utils.posStr(action.from) + ' -> ' + utils.posStr(action.to);
+            sh.v.str(action.from) + ' -> ' + sh.v.str(action.to);
     },
     isMine: function(unit) {
         'use strict';

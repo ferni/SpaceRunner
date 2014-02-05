@@ -302,7 +302,7 @@ screens.register('battle', ConnectedScreen.extend({
             _.each(units, function(unit) {
                 self.shipVM.getVM(unit).selected = true;
                 console.log('Selected unit ' + unit.id + ' ' +
-                    utils.posStr(unit));
+                    sh.v.str(unit));
             });
             return true;
         }
