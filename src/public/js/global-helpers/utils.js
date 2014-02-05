@@ -47,7 +47,7 @@ var utils = {
         if (!me.game.currentLevel.initialized) {
             throw "There's no level to get the mouse";
         }
-        var relPosition = this.vectorSub(me.input.mouse.pos,
+        var relPosition = sh.v.sub(me.input.mouse.pos,
             me.game.currentLevel.pos);
         return inPixels ? relPosition :
                 utils.toTileVector(relPosition, TILE_SIZE);
@@ -55,10 +55,6 @@ var utils = {
     setCursor: function(cursor) {
         'use strict';
         document.getElementById('jsapp').style.cursor = cursor;
-    },
-    vectorSub: function(v1, v2) {
-        'use strict';
-        return { x: v1.x - v2.x, y: v1.y - v2.y };
     },
     /**
      * Executes a callback when a certain number of
