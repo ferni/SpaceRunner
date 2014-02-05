@@ -29,6 +29,7 @@ sh.Unit = sh.TileEntity.extendShared({
     attackCooldown: 500,//time (ms) between each attack
     lastAttack: null,  //when was the last time the unit attacked
                     // (relative to turn's start)
+    attackRange: 0,
     imageFacesRight: true,
     orders: [],
     orderToExecute: null,
@@ -39,7 +40,8 @@ sh.Unit = sh.TileEntity.extendShared({
         this.parent(json);
         this.size = [1, 1];
         this.set('Unit', ['id', 'imgIndex', 'speed', 'maxHP', 'meleeDamage',
-            'attackCooldown', 'imageFacesRight', 'ownerID'], json);
+            'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID'],
+            json);
         this.hp = this.maxHP;
         this.inCombat = false;
     },
@@ -91,18 +93,19 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var actions = [],
             self = this,
-            enemies;
+            enemyInRange;
         if (!this.onCooldown && !this.moving && !this.dizzy) {//attack ready
-            enemies = _.filter(ship.unitsMap.at(this.x, this.y),
+            enemyInRange = _.find(ship.units,
                 function(u) {
                     return u.isAlive() &&
-                        u.ownerID !== self.ownerID;
+                        self.isEnemy(u) &&
+                        self.isInRange(u);
                 });
-            if (enemies.length > 0) {
+            if (enemyInRange) {
                 actions.push(new sh.actions.Attack({
                     time: turnTime,
                     attackerID: self.id,
-                    receiverID: enemies[0].id,
+                    receiverID: enemyInRange.id,
                     damage: self.meleeDamage,
                     duration: self.attackCooldown
                 }));
@@ -222,9 +225,9 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         return unit.ownerID !== this.ownerID;
     },
-    isAlly: function(unit) {
+    isInRange: function(unit) {
         'use strict';
-        return unit.ownerID === this.ownerID;
+        return sh.v.distance(unit, this) <= this.attackRange;
     }
 
 });
@@ -242,6 +245,7 @@ sh.units = (function() {
             this.maxHP = 100;
             this.attackCooldown = 800;
             this.meleeDamage = 30;
+            this.attackRange = 3;
             this.parent(json);
             this.set('Zealot', [], json);
         }
