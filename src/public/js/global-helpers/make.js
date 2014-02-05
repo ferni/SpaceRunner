@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global itemVMs, sh, Unit*/
+/*global itemVMs, sh, UnitVM*/
 
 /**
  * Factories for entities
@@ -46,7 +46,7 @@ var make = (function() {
         if (model instanceof sh.Item) {
             VMConstructor = itemVMs[model.type + 'VM'];
         } else if (model instanceof sh.Unit) {
-            VMConstructor = Unit;
+            VMConstructor = UnitVM;
         } else {
             throw 'Model not valid.';
         }

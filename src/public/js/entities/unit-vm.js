@@ -7,7 +7,7 @@
 
 /*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me*/
 
-var Unit = TileEntityVM.extend({
+var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
     selected: false,
     size: [1, 1],
