@@ -170,6 +170,10 @@ var UnitVM = TileEntityVM.extend({
             x: (this.m.x * TILE_SIZE) + HALF_TILE,
             y: (this.m.y * TILE_SIZE) + HALF_TILE
         }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
+    },
+    playAttack: function(targetPos) {
+        'use strict';
+        console.log('melee unit attacked!');
     }
 });
 
@@ -180,9 +184,22 @@ var unitVMs = {};
  * @type {void|*|Class|extend|extend|extend}
  */
 unitVMs.ZealotVM = UnitVM.extend({
-    faceLeft: function(faceLeft) {
+    /**
+     * Shoot a projectile at target
+     * @param {{x:{int}, y:{int}}} targetPos
+     */
+    playAttack: function(targetPos) {
         'use strict';
-        this.parent(faceLeft);
-        console.log('Zealot has changed orientation!');
+        var bullet, tween;
+        console.log('zealot attacking');
+        bullet = new me.ObjectEntity(this.pos.x, this.pos.y, {
+            image: 'projectile'
+        });
+        me.game.add(bullet, 3000);
+        tween = new me.Tween(bullet.pos).to(targetPos, 300)
+            .onComplete(function() {
+                me.game.remove(bullet, true);
+            });
+        tween.start();
     }
 });

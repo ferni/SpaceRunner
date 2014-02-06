@@ -230,6 +230,10 @@ var g_resources = [{
     name: 'cloud',
     type: 'image',
     src: 'data/img/render/cloud.png'
+}, {
+    name: 'projectile',
+    type: 'image',
+    src: 'data/img/render/projectile.png'
 }];
 
 var prebuilt = {

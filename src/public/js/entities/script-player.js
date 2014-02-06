@@ -122,7 +122,11 @@ var ScriptPlayer = function(battleScreen) {
 
     function playAttackAction(action) {
         var receiver = gs.ship.getUnitByID(action.receiverID),
-            receiverVM = battleScreen.shipVM.getVM(receiver);
+            receiverVM = battleScreen.shipVM.getVM(receiver),
+            attacker = gs.ship.getUnitByID(action.attackerID),
+            attackerVM = battleScreen.shipVM.getVM(attacker);
+
+        attackerVM.playAttack(receiverVM.pos);
 
         me.game.add(new ui.StarHit(receiverVM), 2000);
         me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
