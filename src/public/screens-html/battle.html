@@ -3,5 +3,12 @@
     <img src="/data/img/render/pause-icon.png" id="paused-indicator" title="Paused" />
     <span id="elapsed"></span>
     <span id="hp"></span>
+    <div id="left-hud">
+        <!-- ko if:selectedUnit() -->
+        <div id="unit-portrait" data-bind="with:selectedUnit">
+            HP: <span data-bind="text:hp"></span>
+        </div>
+        <!-- /ko -->
+    </div>
     <button id="ready-button" class="button">Ready</button>
 </div>

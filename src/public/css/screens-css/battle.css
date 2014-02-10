@@ -1,5 +1,5 @@
 #battle-screen body{
-    font-family: Verdana;
+    font-family: Verdana,serif;
 }
 
 #battle-screen #ready-button{
@@ -46,4 +46,16 @@
     left: 180px;
     font-size: 18pt;
     color: limegreen;
+}
+
+#battle-screen #left-hud {
+    position: fixed;
+    top: 50px;
+    left: 0;
+}
+
+#battle-screen #unit-portrait {
+    border: 1px solid gray;
+    background-color: #222;
+    color: green;
 }

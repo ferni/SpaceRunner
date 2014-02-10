@@ -6,7 +6,7 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE*/
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, ko*/
 
 screens.register('battle', ConnectedScreen.extend({
     verifiedOrders: {},
@@ -73,6 +73,13 @@ screens.register('battle', ConnectedScreen.extend({
             };
             return btn;
         }());
+
+        //Knockout bindings
+        function ViewModel() {
+            this.selectedUnit = ko.observable(null);
+        }
+        this.htmlVM = new ViewModel();
+        ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
     },
     onData: function(data) {
         'use strict';
@@ -303,9 +310,11 @@ screens.register('battle', ConnectedScreen.extend({
                 self.shipVM.getVM(unit).selected = true;
                 console.log('Selected unit ' + unit.id + ' ' +
                     sh.v.str(unit));
+                self.htmlVM.selectedUnit(unit);
             });
             return true;
         }
+        self.htmlVM.selectedUnit(null);
         return false;
     },
     unselectAll: function() {
