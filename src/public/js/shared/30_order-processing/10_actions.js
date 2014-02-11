@@ -245,4 +245,21 @@ if (typeof exports !== 'undefined') {
             this.set('DeclareWinner', ['playerID'], json);
         }
     });
+
+    sh.actions.SetUnitProperty = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('SetUnitProperty', ['unitID', 'property', 'value'], json);
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [
+                new ModelChange(this.time,
+                    function(ship) {
+                        var unit = ship.getUnitByID(self.unitID);
+                        unit[self.property] = self.value;
+                    }, this)];
+        }
+    });
 }());
