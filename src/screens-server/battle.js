@@ -76,14 +76,15 @@ routes.add('sendorders', function(req, res, next) {
         if (!orders) {
             orders = {};
         }
-        _.each(orders, function(order) {
-            //for now each unit just has one order
-            if (!sh.verifyOrder(order, battle.ship, playerID)) {
-                chat.log('ERROR: An order was invalid.');
-                next(new Error('An order submitted is invalid'));
-                return;
-            }
-            verifiedOrdersCount++;
+        _.each(orders, function(unitOrders) {
+            _.each(unitOrders, function(order) {
+                if (!sh.verifyOrder(order, battle.ship, playerID)) {
+                    chat.log('ERROR: An order was invalid.');
+                    next(new Error('An order submitted is invalid'));
+                    return;
+                }
+                verifiedOrdersCount++;
+            });
         });
 
         turn = battle.currentTurn;

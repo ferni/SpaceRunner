@@ -28,8 +28,11 @@ function BattleTurn(params) {
         if (!this.battle.isPlayerInIt(playerID)) {
             throw 'Player ' + playerID + ' is not in the battle.';
         }
-        _.each(orders, function(order) {
-            self.playersOrders[playerID][order.unitID] = order;
+        _.each(orders, function(unitOrders) {
+            if (unitOrders.length === 0) {
+                return;
+            }
+            self.playersOrders[playerID][unitOrders[0].unitID] = unitOrders;
         });
     };
     this.isPlayerReady = function(playerID) {
@@ -373,8 +376,8 @@ exports.BattleSetUp = function(params) {
     function setOrderForShortestPath(grid, unit, destinations, orders) {
         var paths = getPaths(grid.clone(), unit, destinations);
         if (paths.length > 0) {
-            orders[unit.id] = sh.make.moveOrder(unit,
-                pathDestination(getShortest(paths)));
+            orders[unit.id] = [sh.make.moveOrder(unit,
+                pathDestination(getShortest(paths)))];
             return true;
         }
         return false;

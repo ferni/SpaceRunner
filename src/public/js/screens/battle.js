@@ -211,8 +211,8 @@ screens.register('battle', ConnectedScreen.extend({
         _.each(unitVMs, function(u) {
             var order = make.moveOrder(u.m, destination);
             if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
-                self.verifiedOrders[u.m.id] = order;
-                newOrders[u.m.id] = order;
+                self.verifiedOrders[u.m.id] = [order];
+                newOrders[u.m.id] = [order];
             }
         });
         if (_.size(newOrders) > 0) {

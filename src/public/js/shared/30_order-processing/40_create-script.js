@@ -78,17 +78,23 @@ if (typeof exports !== 'undefined') {
         }
 
         //set the orders to the units
-        _.each(orders, function(order) {
-            var unit = ship.getUnitByID(order.unitID),
-                dest = order.destination,
-                path;
-            switch (order.variant) {
-            case 'move':
-                path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
-                    grid.clone());
-                setOrdersFromPath(unit, ship, path);
-                break;
+        _.each(orders, function(unitOrders) {
+            var unit;
+            if (unitOrders.length === 0) {
+                return;
             }
+            unit = ship.getUnitByID(unitOrders[0].unitID);
+            _.each(unitOrders, function(order) {
+                var dest = order.destination,
+                    path;
+                switch (order.variant) {
+                case 'move':
+                    path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
+                        grid.clone());
+                    setOrdersFromPath(unit, ship, path);
+                    break;
+                }
+            });
         });
 
         //null change to kick-start the process
