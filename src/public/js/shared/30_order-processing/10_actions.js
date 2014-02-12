@@ -89,7 +89,6 @@ if (typeof exports !== 'undefined') {
                                 dest: self.to,
                                 arrivalTime: self.time + self.duration
                             };
-                            unit.orderState = 'executing';
                             unit.blocking = false;
                         }
                     }, this),
@@ -103,11 +102,7 @@ if (typeof exports !== 'undefined') {
                             unit.x = self.to.x;
                             unit.moving = null;
                             unit.dizzy = true;//can't attack if just got there
-                            if (unit.orders.length > 0) {
-                                unit.orderState = 'pending';
-                            } else {
-                                unit.orderState = 'allComplete';
-                            }
+                            unit.moveLock = null;
                             if (!sh.v.equal(prev, self.to)) {
                                 ship.unitsMap.update();
                             }

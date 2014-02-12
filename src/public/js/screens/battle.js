@@ -209,7 +209,10 @@ screens.register('battle', ConnectedScreen.extend({
         var self = this,
             newOrders = {};
         _.each(unitVMs, function(u) {
-            var order = make.moveOrder(u.m, destination);
+            var order = new sh.orders.Move({
+                    unitID: u.m.id,
+                    destination: destination
+                });
             if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 self.verifiedOrders[u.m.id] = [order];
                 newOrders[u.m.id] = [order];
@@ -220,7 +223,8 @@ screens.register('battle', ConnectedScreen.extend({
             self.scriptPrediction.predict();
             //send order to server
             $.post('/battle/sendorders',
-                {id: this.id, orders: newOrders}, function() {
+                {id: this.id, orders: new sh.OrderPackage(newOrders).toJson()},
+                function() {
                     console.log('Orders successfully submitted');
                 }, 'json')
                 .fail(function() {

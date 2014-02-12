@@ -18,34 +18,10 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    var pfFinder = new sh.PF.AStarFinder({
-            allowDiagonal: true,
-            dontCrossCorners: true
-        });
 
     function insertByTime(array, item) {
         var insertionIndex = _.sortedIndex(array, item, 'time');
         array.splice(insertionIndex, 0, item);
-    }
-
-
-    function setOrdersFromPath(unit, ship, path) {
-        var prevPos;
-        unit.orders = [];
-        if (path.length > 1) {
-            _.each(path, function(pos) {
-                if (prevPos) {
-                    unit.orders.push(new sh.orders.Move({
-                        unit: unit,
-                        ship: ship,
-                        from: {x: prevPos[0], y: prevPos[1]},
-                        to: {x: pos[0], y: pos[1]}
-                    }));
-                }
-                prevPos = pos;
-            });
-
-        }
     }
 
     /**
@@ -57,11 +33,9 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, ship, turnDuration, resetShip) {
-        var script, queue, grid, changes, time, unit, i;
+        var script, queue, changes, time, unit, i;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
-        grid = new sh.PF.Grid(ship.width, ship.height, ship.getPfMatrix());
-
         function insertInQueue(item) {
             insertByTime(queue, item);
         }
@@ -84,17 +58,7 @@ if (typeof exports !== 'undefined') {
                 return;
             }
             unit = ship.getUnitByID(unitOrders[0].unitID);
-            _.each(unitOrders, function(order) {
-                var dest = order.destination,
-                    path;
-                switch (order.variant) {
-                case 'move':
-                    path = pfFinder.findPath(unit.x, unit.y, dest.x, dest.y,
-                        grid.clone());
-                    setOrdersFromPath(unit, ship, path);
-                    break;
-                }
-            });
+            unit.orders = unitOrders;
         });
 
         //null change to kick-start the process

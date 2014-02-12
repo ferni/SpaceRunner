@@ -72,20 +72,27 @@ routes.add('sendorders', function(req, res, next) {
     var orders = req.body.orders,
         verifiedOrdersCount = 0;
     return authenticate(req, next, function(battle, playerID) {
-        var turn;
-        if (!orders) {
+        var turn, ordersValid = true;
+        if (orders) {
+            orders = new sh.OrderPackage().fromJson(orders).orders;
+        } else {
             orders = {};
         }
         _.each(orders, function(unitOrders) {
             _.each(unitOrders, function(order) {
                 if (!sh.verifyOrder(order, battle.ship, playerID)) {
-                    chat.log('ERROR: An order was invalid.');
-                    next(new Error('An order submitted is invalid'));
+                    ordersValid = false;
                     return;
                 }
                 verifiedOrdersCount++;
             });
         });
+
+        if (!ordersValid) {
+            chat.log('ERROR: An order was invalid.');
+            next(new Error('An order submitted is invalid'));
+            return;
+        }
 
         turn = battle.currentTurn;
         turn.addOrders(orders, playerID);

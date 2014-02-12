@@ -25,12 +25,11 @@ if (typeof exports !== 'undefined') {
  */
 sh.verifyOrder = function(order, ship, playerID) {
     'use strict';
-    if (!order || !order.type || order.type !== 'Order-JSON-V1' ||
-            !order.variant) {
+    if (!order instanceof sh.Order) {
         return false;
     }
-    switch (order.variant) {
-    case 'move':
+    switch (order.type) {
+    case 'Move':
         var dest = order.destination,
             unit = ship.getUnitByID(order.unitID);
         return unit &&

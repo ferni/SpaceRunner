@@ -46,17 +46,5 @@ sh.make = (function() {
         return new Constructor(json);
     };
 
-    make.moveOrder = function(unit, destination) {
-        return {
-            type: 'Order-JSON-V1',
-            variant: 'move',
-            unitID: unit.id,
-            destination: {
-                x: destination.x,
-                y: destination.y
-            }
-        };
-    };
-
     return make;
 }());

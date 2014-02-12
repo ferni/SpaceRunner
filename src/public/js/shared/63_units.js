@@ -32,8 +32,6 @@ sh.Unit = sh.TileEntity.extendShared({
     attackRange: 0,
     imageFacesRight: true,
     orders: [],
-    orderToExecute: null,
-    orderState: 'pending',
     blocking: true,//if it slows enemy units passing by
     init: function(json) {
         'use strict';
@@ -113,24 +111,15 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return actions;
     },
-    getOrdersActions: function(turnTime) {
+    getOrdersActions: function(turnTime, ship) {
         'use strict';
-        var action;
+        var orderState;
         if (this.orders.length > 0) {
-            if (this.orderState === 'pending') {
-                if (this.orders[0].conditionsOK(turnTime)) {
-                    return [new sh.actions.PrepareOrder({
-                        time: turnTime,
-                        unitID: this.id
-                    })];
-                }
-            } else if (this.orderState === 'prepared') {
-                action = this.orders[0].execute(turnTime);
-                if (action) {
-                    this.orders.shift();
-                    return [action];
-                }
+            orderState = this.orders[0].getState(turnTime, ship);
+            if (orderState.finished) {
+                this.orders.shift();
             }
+            return orderState.actions;
         }
         return [];
     },
@@ -216,7 +205,7 @@ sh.Unit = sh.TileEntity.extendShared({
         if (actions.length === 0) {//damage ship only if it didn't attack
             actions = actions.concat(this.getDamageShipActions(turnTime, ship));
         }
-        actions = actions.concat(this.getOrdersActions(turnTime));
+        actions = actions.concat(this.getOrdersActions(turnTime, ship));
         actions = actions.concat(this.getCombatActions(turnTime, ship));
 
         return actions;

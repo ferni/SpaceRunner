@@ -15,7 +15,10 @@ test('script creation', function() {
         unit = ship.putUnit({speed: 1}),
         moveActions;
     unit.ownerID = 1;
-    order = sh.make.moveOrder(unit, {x: unit.x + 2, y: unit.y});
+    order = new sh.orders.Move({
+        unitID: unit.id,
+        destination: {x: unit.x + 2, y: unit.y}
+    });
     ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
     script = sh.createScript([[order]], ship, 3000, true);
     moveActions = script.byType('Move');
@@ -31,7 +34,10 @@ test('script creation\'s ship modifications', function() {
         unit = ship.putUnit({speed: 1}),
         prevX = unit.x;
     unit.ownerID = 1;
-    order = sh.make.moveOrder(unit, {x: unit.x + 2, y: unit.y});
+    order = new sh.orders.Move({
+        unitID: unit.id,
+        destination: {x: unit.x + 2, y: unit.y}
+    });
     ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
     sh.createScript([[order]], ship, 5000, true);
     equal(unit.x, prevX + 2, 'The unit position has been modified');
@@ -72,4 +78,41 @@ test('Script.insertAction', function() {
     script.insertAction(actionForInsertion);
     equal(script.actions[0].unitID, 2);
     equal(script.actions[1], actionForInsertion);
+});
+
+test('OrderPackage serialization', function() {
+    'use strict';
+    var orders = {
+            '1': [new sh.orders.Move({
+                unitID: 1,
+                destination: {x: 1, y: 2}
+            }),
+                new sh.orders.Move({
+                    unitID: 1,
+                    destination: {x: 2, y: 2}
+                })
+                ],
+            '2': [new sh.orders.Move({
+                unitID: 2,
+                destination: {x: 7, y: 7}
+            })]
+        },
+        orderPackage = new sh.OrderPackage(orders),
+        json = orderPackage.toJson(),
+        reconstructed = new sh.OrderPackage().fromJson(json);
+    ok(JSON.stringify(json), 'JSON stringify does not throw error.');
+    equal(reconstructed.orders['1'].length, 2, '2 orders for Unit 1');
+    equal(reconstructed.orders['2'].length, 1, '1 order for Unit 2');
+    ok(reconstructed.orders['1'][0] instanceof sh.Order,
+        '1st order instance of sh.Order');
+    deepEqual(reconstructed.orders['1'][0].destination, {x: 1, y: 2},
+        '1st order correct destination');
+    ok(reconstructed.orders['1'][1] instanceof sh.Order,
+        '2nd order instance of sh.Order');
+    deepEqual(reconstructed.orders['1'][1].destination, {x: 2, y: 2},
+        '2nd order correct destination');
+    ok(reconstructed.orders['2'][0] instanceof sh.Order,
+        '3rd order instance of sh.Order');
+    deepEqual(reconstructed.orders['2'][0].destination, {x: 7, y: 7},
+        '3rd order correct destination');
 });

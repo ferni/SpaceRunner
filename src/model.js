@@ -376,8 +376,10 @@ exports.BattleSetUp = function(params) {
     function setOrderForShortestPath(grid, unit, destinations, orders) {
         var paths = getPaths(grid.clone(), unit, destinations);
         if (paths.length > 0) {
-            orders[unit.id] = [sh.make.moveOrder(unit,
-                pathDestination(getShortest(paths)))];
+            orders[unit.id] = [new sh.orders.Move({
+                unitID: unit.id,
+                destination: pathDestination(getShortest(paths))
+            })];
             return true;
         }
         return false;
