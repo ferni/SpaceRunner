@@ -57,6 +57,8 @@ var ScriptPrediction = Object.extend({
             ctx.restore();
         });
         //unfulfilled orders
+        //(disabled, incompatible with new order scheme)
+        /*
         if (!this.resultingShip) {
             return;
         }
@@ -67,7 +69,7 @@ var ScriptPrediction = Object.extend({
             }
             self.drawPath(u.orders, ctx, 'orange');
             ctx.restore();
-        });
+        });    */
     },
     predict: function() {
         'use strict';
