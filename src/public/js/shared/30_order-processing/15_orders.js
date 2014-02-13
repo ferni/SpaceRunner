@@ -132,6 +132,9 @@ if (typeof exports !== 'undefined') {
             } else {
                 this.pathIndex++;
             }
+            if (this.pathIndex >= this.path.length) {
+                return state(this, true, []);
+            }
             nextTile = {x: this.path[this.pathIndex][0],
                 y: this.path[this.pathIndex][1]};
             if (this.tileIsClear(time, ship, unit, nextTile)) {
