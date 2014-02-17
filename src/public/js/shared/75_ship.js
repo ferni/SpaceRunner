@@ -307,7 +307,7 @@ sh.Ship = sh.SharedClass.extendShared({
         });
         this.buildingsChanged();
     },
-    compareJson: function(json) {
+    hasSameJson: function(json) {
         'use strict';
         return _.isEqual(this.toJson(), json);
     },

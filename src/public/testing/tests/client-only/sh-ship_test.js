@@ -8,7 +8,7 @@
 /*global test, sh, deepEqual, ok*/
 
 
-test('sh.Ship.compareJson', function() {
+test('sh.Ship.hasSameJson', function() {
     'use strict';
     var ship = new sh.Ship({tmxName: 'test'}),
         shipClone;
@@ -20,5 +20,5 @@ test('sh.Ship.compareJson', function() {
     shipClone = ship.clone();
     deepEqual(ship.toJson(), shipClone.toJson(),
         'ship.toJson equal to ship\'s clone toJson');
-    ok(ship.compareJson(shipClone.toJson()), 'compareJson says they\'re equal');
+    ok(ship.hasSameJson(shipClone.toJson()), 'hasSameJson says they\'re equal');
 });

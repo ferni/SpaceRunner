@@ -246,7 +246,7 @@ screens.register('battle', ConnectedScreen.extend({
     },
     compareModelWithServer: function() {
         'use strict';
-        if (gs.ship.compareJson(this.resultingShip)) {
+        if (gs.ship.hasSameJson(this.resultingShip)) {
             console.log('The resulting ship correctly matches the server');
         } else {
             console.warn('The resulting ship is different than the one' +
