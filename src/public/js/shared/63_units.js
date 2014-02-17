@@ -27,8 +27,6 @@ sh.Unit = sh.TileEntity.extendShared({
     maxHP: 100,
     meleeDamage: 20,
     attackCooldown: 500,//time (ms) between each attack
-    lastAttack: null,  //when was the last time the unit attacked
-                    // (relative to turn's start)
     attackRange: 0,
     imageFacesRight: true,
     orders: [],
