@@ -247,10 +247,11 @@ screens.register('battle', ConnectedScreen.extend({
     compareModelWithServer: function() {
         'use strict';
         if (gs.ship.hasSameJson(this.resultingShip)) {
-            console.log('The resulting ship correctly matches the server');
+            console.log('Client ship correctly matches the server ship.');
         } else {
-            console.warn('The resulting ship is different than the one' +
-                ' in the server: ' + this.getModelDifferenceUrl());
+            console.warn('Client ship is different than the server ship' +
+                ' (left: client, right: server): ' +
+                this.getModelDifferenceUrl());
         }
     },
     pause: function() {
