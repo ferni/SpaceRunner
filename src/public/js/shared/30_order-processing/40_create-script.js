@@ -52,14 +52,7 @@ if (typeof exports !== 'undefined') {
         }
 
         //set the orders to the units
-        _.each(orders, function(unitOrders) {
-            var unit;
-            if (unitOrders.length === 0) {
-                return;
-            }
-            unit = ship.getUnitByID(unitOrders[0].unitID);
-            unit.orders = unitOrders;
-        });
+        ship.insertOrders(orders);
 
         //null change to kick-start the process
         queue.push(new sh.ModelChange(0, function() {}));
@@ -88,7 +81,6 @@ if (typeof exports !== 'undefined') {
         if (resetShip) {
             ship.endOfTurnReset();
         }
-
         script.updateActionsByUnit();
         return script;
     }

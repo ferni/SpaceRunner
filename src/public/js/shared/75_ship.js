@@ -340,9 +340,32 @@ sh.Ship = sh.SharedClass.extendShared({
             if (!u.isAlive()) {
                 self.removeUnit(u);
             }
-            u.orderState = 'pending';
         });
         this.unitsMap.update();
+    },
+    extractOrders: function() {
+        'use strict';
+        var orders = {};
+        _.each(this.units, function(u) {
+            orders[u.id] = _.map(u.orders, function(o) {
+                return o.toJson();
+            });
+        });
+        return orders;
+    },
+    insertOrders: function(orders) {
+        'use strict';
+        var self = this;
+        _.each(orders, function(unitOrders) {
+            var unit;
+            if (unitOrders.length <= 0) {
+                return;
+            }
+            unit = self.getUnitByID(unitOrders[0].unitID);
+            unit.orders = _.map(unitOrders, function(o) {
+                return new sh.orders[o.type](o);
+            });
+        });
     }
 });
 

@@ -74,7 +74,7 @@ var ScriptPrediction = Object.extend({
     predict: function() {
         'use strict';
         this.resultingShip = gs.ship.clone();
-        this.script = sh.createScript(this.screen.verifiedOrders,
+        this.script = sh.createScript(gs.ship.extractOrders(),
             this.resultingShip, this.screen.turnDuration);
     },
     clear: function() {

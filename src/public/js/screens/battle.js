@@ -9,7 +9,6 @@
 ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, ko*/
 
 screens.register('battle', ConnectedScreen.extend({
-    verifiedOrders: {},
     currentTurnID: null,
     scriptPrediction: null,
     scriptPlayer: null,
@@ -37,7 +36,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.pause();
 
         if (battleModel.orders) {
-            this.verifiedOrders = battleModel.orders;
+            gs.ship.insertOrders(battleModel.orders);
             //update script prediction with new script model
             this.scriptPrediction.predict();
         }
@@ -214,7 +213,7 @@ screens.register('battle', ConnectedScreen.extend({
                     destination: destination
                 });
             if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
-                self.verifiedOrders[u.m.id] = [order];
+                u.m.orders.push(order);
                 newOrders[u.m.id] = [order];
             }
         });
@@ -264,10 +263,6 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
-        //re-check for valid orders
-        this.verifiedOrders = _.filter(this.verifiedOrders, function(o) {
-            return sh.verifyOrder(o, gs.ship, gs.player.id);
-        });
         this.scriptPrediction.clear();
         this.scriptPrediction.predict();
         me.game.sort();

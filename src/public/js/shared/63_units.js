@@ -38,21 +38,8 @@ sh.Unit = sh.TileEntity.extendShared({
         this.set('Unit', ['id', 'imgIndex', 'speed', 'maxHP', 'meleeDamage',
             'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID'],
             json);
-        if (json.orders) {
-            this.orders = _.map(json.orders, function(o) {
-                return new sh.orders[o.type](o);
-            });
-        }
         this.hp = this.maxHP;
         this.inCombat = false;
-    },
-    toJson: function() {
-        'use strict';
-        var json = this.parent();
-        json.orders = _.map(this.orders, function(o) {
-            return o.toJson();
-        });
-        return json;
     },
     isAlive: function() {
         'use strict';
@@ -126,6 +113,9 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var orderState;
         if (this.orders.length > 0) {
+            if (this.orders[0].finished) {
+                return [];
+            }
             orderState = this.orders[0].getState(turnTime, ship);
             if (orderState.finished) {
                 this.orders.shift();

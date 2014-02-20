@@ -83,8 +83,10 @@ if (typeof exports !== 'undefined') {
         init: function(json) {
             this.parent(json);
             //in case its a me.Vector2D
-            json.destination = {x: json.destination.x,
-                y: json.destination.y};
+            json.destination = {
+                x: parseInt(json.destination.x, 10),
+                y: parseInt(json.destination.y, 10)
+            };
             this.set('Move', ['destination'], json);
         },
         /**
@@ -100,7 +102,7 @@ if (typeof exports !== 'undefined') {
                 throw 'Order was already finished';
             }
             unit = ship.getUnitByID(this.unitID);
-            if (sh.v.equal(unit, this.destination)) {
+            if (sh.v.equal(unit, dest)) {
                 //unit is already at destination
                 return state(this, true, []);
             }
@@ -171,10 +173,6 @@ if (typeof exports !== 'undefined') {
                             (u.id > unit.id &&
                                 _.isEqual(u.moveLock, tile));
                     });
-        },
-        toJson: function() {
-            console.log('converting order to json');
-            return this.parent();
         }
     });
 }());
