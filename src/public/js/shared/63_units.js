@@ -111,16 +111,16 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     getOrdersActions: function(turnTime, ship) {
         'use strict';
-        var orderState;
+        var actions;
         if (this.orders.length > 0) {
             if (this.orders[0].finished) {
                 return [];
             }
-            orderState = this.orders[0].getState(turnTime, ship);
-            if (orderState.finished) {
+            actions = this.orders[0].getActions(turnTime, ship);
+            if (this.orders[0].finished) {
                 this.orders.shift();
             }
-            return orderState.actions;
+            return actions;
         }
         return [];
     },

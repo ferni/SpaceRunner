@@ -21,20 +21,6 @@ if (typeof exports !== 'undefined') {
             allowDiagonal: true,
             dontCrossCorners: true
         });
-    function state(order, finished, actions) {
-        order.finished = finished;
-        return {
-            actions: actions,
-            finished: finished
-        };
-    }
-
-    sh.Order = sh.Jsonable.extendShared({
-        init: function(json) {
-            this.set('Order', ['unitID'], json);
-            this.finished = false;
-        }
-    });
 
     sh.OrderPackage = sh.SharedClass.extendShared({
         orders: {},
@@ -78,6 +64,13 @@ if (typeof exports !== 'undefined') {
         }
     });
 
+    sh.Order = sh.Jsonable.extendShared({
+        init: function(json) {
+            this.set('Order', ['unitID'], json);
+            this.finished = false;
+        }
+    });
+
     sh.orders = {};
     sh.orders.Move = sh.Order.extendShared({
         init: function(json) {
@@ -90,13 +83,13 @@ if (typeof exports !== 'undefined') {
             this.set('Move', ['destination'], json);
         },
         /**
-         * Returns the actions and if the order is
-         * finished or not.
+         * Returns the actions for the unit to do while the order is the
+         * active one.
          * @param {int} time
          * @param {sh.Ship} ship
          * @return {{actions:{Array}, finished:{Boolean}}
          */
-        getState: function(time, ship) {
+        getActions: function(time, ship) {
             var unit, dest = this.destination, nextTile, from;
             if (this.finished) {
                 throw 'Order was already finished';
@@ -104,23 +97,24 @@ if (typeof exports !== 'undefined') {
             unit = ship.getUnitByID(this.unitID);
             if (sh.v.equal(unit, dest)) {
                 //unit is already at destination
-                return state(this, true, []);
+                this.finished = true;
+                return [];
             }
             if (unit.moving) {
-                return state(this, false, []);
+                return [];
             }
             if (unit.moveLock) {
                 from = {x: unit.x,
                     y: unit.y};
-                return state(this, this.pathIndex >= this.path.length - 1,
-                    [new sh.actions.Move({
-                        time: time,
-                        unitID: unit.id,
-                        from: from,
-                        to: unit.moveLock,
-                        duration: unit.getTimeForMoving(from, unit.moveLock,
-                            ship)
-                    })]);
+                this.finished = this.pathIndex >= this.path.length - 1;
+                return [new sh.actions.Move({
+                    time: time,
+                    unitID: unit.id,
+                    from: from,
+                    to: unit.moveLock,
+                    duration: unit.getTimeForMoving(from, unit.moveLock,
+                        ship)
+                })];
             }
             if (!this.path) {
                 //find a path towards the destination
@@ -135,20 +129,20 @@ if (typeof exports !== 'undefined') {
                 this.pathIndex++;
             }
             if (this.pathIndex >= this.path.length) {
-                return state(this, true, []);
+                this.finished = true;
+                return [];
             }
             nextTile = {x: this.path[this.pathIndex][0],
                 y: this.path[this.pathIndex][1]};
             if (this.tileIsClear(time, ship, unit, nextTile)) {
-                return state(this, false,
-                    [new sh.actions.SetUnitProperty({
-                        time: time,
-                        unitID: unit.id,
-                        property: 'moveLock',
-                        value: nextTile
-                    })]);
+                return [new sh.actions.SetUnitProperty({
+                    time: time,
+                    unitID: unit.id,
+                    property: 'moveLock',
+                    value: nextTile
+                })];
             }
-            return state(this, false, []);
+            return [];
         },
         tileIsClear: function(time, ship, unit, tile) {
             var units = ship.unitsMap.at(tile.x, tile.y),
