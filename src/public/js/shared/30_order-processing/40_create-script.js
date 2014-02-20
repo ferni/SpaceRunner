@@ -55,7 +55,7 @@ if (typeof exports !== 'undefined') {
         ship.insertOrders(orders);
 
         //null change to kick-start the process
-        queue.push(new sh.ModelChange(0, function() {}));
+        queue.push(new sh.ModelChange(0, function() {}, {time: 0}));
 
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)

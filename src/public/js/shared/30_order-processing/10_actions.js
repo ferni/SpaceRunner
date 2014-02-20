@@ -24,16 +24,23 @@ if (typeof exports !== 'undefined') {
      * A point in time in the Script in which a change in the model happens.
      * Each action has a modelChanges Array,
      * with the model changes made by that action.
-     * @param {int} time The time in ms in which this change occurs.
+     * @param {int} timeOffset The time in ms in which this change occurs.
      * @param {Function} apply The function that would change stuff around.
      * @constructor
      * @param {Action} action The action that originated the model change.
      */
-    ModelChange = function(time, apply, action) {
+    ModelChange = function(timeOffset, apply, action) {
         this.type = 'change';
-        this.time = time;
+        if (timeOffset < 0) {
+            throw 'ModelChange timeOffset can\'t be negative';
+        }
+        this.timeOffset = timeOffset;
         this.apply = apply;
         this.action = action;
+        this.updateTime();
+    };
+    ModelChange.prototype.updateTime = function() {
+        this.time = this.action.time + this.timeOffset;
     };
     sh.ModelChange = ModelChange;
 
@@ -51,6 +58,19 @@ if (typeof exports !== 'undefined') {
         modelChanges: [],
         init: function(json) {
             this.set('Action', ['time'], json);
+        },
+        /**
+         * Sets the time updating the model changes;
+         * @param {int} time
+         */
+        setTime: function(time) {
+            this.time = time;
+            _.each(this.modelChanges, function(mc) {
+                mc.updateTime();
+            });
+        },
+        addChange: function(timeOffset, callback) {
+            this.modelChanges.push(new ModelChange(timeOffset, callback, this));
         }
     });
 
@@ -61,7 +81,7 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.parent(json);
             this.set('PrepareOrder', ['unitID'], json);
-            this.modelChanges = [new ModelChange(this.time, function(ship) {
+            this.modelChanges = [new ModelChange(0, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
                 unit.orderState = 'prepared';
             }, this)];
@@ -80,41 +100,38 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [
-                new ModelChange(this.time,
-                    function(ship) {
-                        var unit = ship.getUnitByID(self.unitID);
-                        if (unit.isAlive()) {
-                            unit.moving = {
-                                dest: self.to,
-                                arrivalTime: self.time + self.duration
-                            };
-                            unit.blocking = false;
-                        }
-                    }, this),
-                new ModelChange(this.time + this.duration,
-                    function(ship) {
-                        var unit = ship.getUnitByID(self.unitID),
-                            prev;
-                        if (unit.isAlive()) {
-                            prev = {x: unit.x, y: unit.y};
-                            unit.y = self.to.y;
-                            unit.x = self.to.x;
-                            unit.moving = null;
-                            unit.dizzy = true;//can't attack if just got there
-                            unit.moveLock = null;
-                            if (!sh.v.equal(prev, self.to)) {
-                                ship.unitsMap.update();
-                            }
-                        }
-                    }, this),
-                new ModelChange(this.time + this.duration + 100,
-                    function(ship) {
-                        var unit = ship.getUnitByID(self.unitID);
-                        if (unit.isAlive()) {
-                            unit.dizzy = false;//now it can attack
-                        }
-                    }, this)];
+            this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                if (unit.isAlive()) {
+                    unit.moving = {
+                        dest: self.to,
+                        arrivalTime: self.time + self.duration
+                    };
+                    unit.blocking = false;
+                }
+            });
+            this.addChange(this.duration, function(ship) {
+                var unit = ship.getUnitByID(self.unitID),
+                    prev;
+                if (unit.isAlive()) {
+                    prev = {x: unit.x, y: unit.y};
+                    unit.y = self.to.y;
+                    unit.x = self.to.x;
+                    unit.moving = null;
+                    unit.dizzy = true;//can't attack if just got there
+                    unit.moveLock = null;
+                    if (!sh.v.equal(prev, self.to)) {
+                        ship.unitsMap.update();
+                    }
+                }
+            });
+            this.addChange(this.duration + 100, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                if (unit.isAlive()) {
+                    unit.dizzy = false;//now it can attack
+                }
+            });
         }
     });
 
@@ -126,7 +143,7 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(this.time,
+            this.modelChanges = [new ModelChange(0,
                 function(ship) {
                     var unit1 = ship.getUnitByID(self.unit1ID),
                         unit2 = ship.getUnitByID(self.unit2ID);
@@ -144,7 +161,7 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(this.time,
+            this.modelChanges = [new ModelChange(0,
                 function(ship) {
                     var units = ship.unitsMap.at(self.tile.x, self.tile.y);
                     _.each(units, function(u) {
@@ -165,19 +182,19 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(this.time,
-                function(ship) {
-                    var attacker = ship.getUnitByID(self.attackerID),
-                        receiver = ship.getUnitByID(self.receiverID);
-                    attacker.onCooldown = true;
-                    if (attacker.isAlive() && receiver.isAlive()) {
-                        receiver.hp -= self.damage;
-                    }
-                }, this),
-                new ModelChange(this.time + this.duration, function(ship) {
-                    var attacker = ship.getUnitByID(self.attackerID);
-                    attacker.onCooldown = false;
-                }, this)];
+            this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var attacker = ship.getUnitByID(self.attackerID),
+                    receiver = ship.getUnitByID(self.receiverID);
+                attacker.onCooldown = true;
+                if (attacker.isAlive() && receiver.isAlive()) {
+                    receiver.hp -= self.damage;
+                }
+            });
+            this.addChange(this.duration, function(ship) {
+                var attacker = ship.getUnitByID(self.attackerID);
+                attacker.onCooldown = false;
+            });
         }
     });
 
@@ -193,7 +210,7 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(this.time,
+            this.modelChanges = [new ModelChange(0,
                 function(ship) {
                     var unit = new sh.units[self.unitType](
                             {ownerID: self.playerID}
@@ -219,18 +236,16 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [
-                new ModelChange(this.time,
-                    function(ship) {
-                        var unit = ship.getUnitByID(self.unitID);
-                        unit.onCooldown = true;
-                        ship.hp -= self.damage;
-                    }, this),
-                new ModelChange(this.time + this.cooldown,
-                    function(ship) {
-                        var unit = ship.getUnitByID(self.unitID);
-                        unit.onCooldown = false;
-                    })];
+            this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                unit.onCooldown = true;
+                ship.hp -= self.damage;
+            });
+            this.addChange(this.cooldown, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                unit.onCooldown = false;
+            });
         }
     });
 
@@ -250,7 +265,7 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [
-                new ModelChange(this.time,
+                new ModelChange(0,
                     function(ship) {
                         var unit = ship.getUnitByID(self.unitID);
                         unit[self.property] = self.value;
