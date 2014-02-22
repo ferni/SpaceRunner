@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me, ko*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -48,6 +48,10 @@ var UnitVM = TileEntityVM.extend({
             inCombat: this.m.inCombat,
             dizzy: this.m.dizzy
         };
+        this.orders = ko.observableArray(unitModel.orders);
+        this.orders.subscribe(function(newValue) {
+            this.m.orders = newValue;
+        }, this);
     },
     getChanged: function() {
         'use strict';

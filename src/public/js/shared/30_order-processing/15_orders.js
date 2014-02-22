@@ -167,6 +167,9 @@ if (typeof exports !== 'undefined') {
                             (u.id > unit.id &&
                                 _.isEqual(u.moveLock, tile));
                     });
+        },
+        toString: function() {
+            return 'Move to ' + sh.v.str(this.destination);
         }
     });
 }());

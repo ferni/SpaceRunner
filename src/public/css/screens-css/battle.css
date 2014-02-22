@@ -59,3 +59,13 @@
     background-color: #222;
     color: green;
 }
+
+#battle-screen #unit-orders ul{
+    list-style: none;
+}
+
+#battle-screen #unit-orders li {
+    border: 1px solid white;
+    background-color: green;
+    color: white;
+}

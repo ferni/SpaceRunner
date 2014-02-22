@@ -213,7 +213,7 @@ screens.register('battle', ConnectedScreen.extend({
                     destination: destination
                 });
             if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
-                u.m.orders.push(order);
+                u.orders([order]);
                 newOrders[u.m.id] = [order];
             }
         });
@@ -307,10 +307,11 @@ screens.register('battle', ConnectedScreen.extend({
         if (units) {
             this.shipVM.updateUnits();
             _.each(units, function(unit) {
-                self.shipVM.getVM(unit).selected = true;
+                var selectedVM = self.shipVM.getVM(unit);
+                selectedVM.selected = true;
                 console.log('Selected unit ' + unit.id + ' ' +
                     sh.v.str(unit));
-                self.htmlVM.selectedUnit(unit);
+                self.htmlVM.selectedUnit(selectedVM);
             });
             return true;
         }

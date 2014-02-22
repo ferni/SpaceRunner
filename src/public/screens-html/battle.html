@@ -5,11 +5,13 @@
     <span id="hp"></span>
     <div id="left-hud">
         <!-- ko if:selectedUnit() -->
-        <div id="unit-portrait" data-bind="with:selectedUnit">
-            HP: <span data-bind="text:hp"></span>
-        </div>
-        <div id="unit-orders">
-
+        <div data-bind="with:selectedUnit">
+            <div id="unit-portrait">
+                HP: <span data-bind="text:m.hp"></span>
+            </div>
+            <ul id="unit-orders" data-bind="foreach: orders">
+                <li data-bind="text:toString()"></li>
+            </ul>
         </div>
         <!-- /ko -->
     </div>
