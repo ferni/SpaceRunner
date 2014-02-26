@@ -234,6 +234,14 @@ var g_resources = [{
     name: 'projectile',
     type: 'image',
     src: 'data/img/render/projectile.png'
+}, {
+    name: 'marker-green',
+    type: 'image',
+    src: 'data/img/render/marker-green.png'
+}, {
+    name: 'marker-red',
+    type: 'image',
+    src: 'data/img/render/marker-red.png'
 }];
 
 var prebuilt = {

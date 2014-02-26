@@ -10,7 +10,7 @@ ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, ko*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
-    scriptPrediction: null,
+    //scriptPrediction: null,
     scriptPlayer: null,
     scriptServer: [],
     onReset: function(battleModel) {
@@ -24,7 +24,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM.showInScreen();
         this.shipVM.update();
         $('#hp').html('[' + this.shipVM.hp + ']');
-        this.scriptPrediction = new ScriptPrediction(this);
+        //this.scriptPrediction = new ScriptPrediction(this);
         this.scriptPlayer = new ScriptPlayer(this);
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
@@ -38,7 +38,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (battleModel.orders) {
             gs.ship.insertOrders(battleModel.orders);
             //update script prediction with new script model
-            this.scriptPrediction.predict();
+            //this.scriptPrediction.predict();
         }
     },
     onDestroy: function() {
@@ -134,7 +134,7 @@ screens.register('battle', ConnectedScreen.extend({
         var mouse = utils.getMouse();
         this.parent(ctx);
         if (this.paused) {
-            this.scriptPrediction.draw(ctx);
+            //this.scriptPrediction.draw(ctx);
             if (gs.ship.hasUnits(mouse)) {
                 utils.setCursor('pointer');
                 if (_.any(gs.ship.unitsMap.at(mouse.x, mouse.y),
@@ -219,7 +219,7 @@ screens.register('battle', ConnectedScreen.extend({
         });
         if (_.size(newOrders) > 0) {
             //update script prediction after new orders given
-            self.scriptPrediction.predict();
+            //self.scriptPrediction.predict();
             //send order to server
             $.post('/battle/sendorders',
                 {id: this.id, orders: new sh.OrderPackage(newOrders).toJson()},
@@ -263,8 +263,8 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
-        this.scriptPrediction.clear();
-        this.scriptPrediction.predict();
+        //this.scriptPrediction.clear();
+        //this.scriptPrediction.predict();
         me.game.sort();
         me.game.repaint();
         //empty the script

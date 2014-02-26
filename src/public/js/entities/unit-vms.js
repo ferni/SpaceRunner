@@ -136,10 +136,23 @@ var UnitVM = TileEntityVM.extend({
             //draw rectangle around each selected unit
             color = this.isMine() ? 'limegreen' : 'red';
             draw.tileHighlight(ctx, this.m, color, 2);
+            this.drawOrders(ctx);
         }
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
+    },
+    drawOrders: function(ctx) {
+        'use strict';
+        var from = this.pos; //starting position
+        _.each(this.orders(), function(o) {
+            var to = sh.v.mul(o.destination, TILE_SIZE),
+                img = me.loader.getImage('marker-green');
+            draw.line(ctx, from, {x: to.x + HALF_TILE, y: to.y + HALF_TILE},
+                'green', 2);
+            ctx.drawImage(img, to.x, to.y);
+            from = to;
+        });
     },
     isMine: function() {
         'use strict';
