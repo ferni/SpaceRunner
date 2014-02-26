@@ -29,7 +29,6 @@ sh.Unit = sh.TileEntity.extendShared({
     attackCooldown: 500,//time (ms) between each attack
     attackRange: 0,
     imageFacesRight: true,
-    orders: [],
     blocking: true,//if it slows enemy units passing by
     init: function(json) {
         'use strict';
@@ -40,6 +39,7 @@ sh.Unit = sh.TileEntity.extendShared({
             json);
         this.hp = this.maxHP;
         this.inCombat = false;
+        this.orders = [];
     },
     isAlive: function() {
         'use strict';
