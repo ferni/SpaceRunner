@@ -344,6 +344,7 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var self = this;
         if (this.dragBox) {
+            this.unselectAll();
             _.each(this.shipVM.unitVMs, function(u) {
                 var pos, unitRect;
                 if (u.isMine()) {
