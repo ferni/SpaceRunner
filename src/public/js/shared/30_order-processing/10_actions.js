@@ -272,4 +272,20 @@ if (typeof exports !== 'undefined') {
                     }, this)];
         }
     });
+
+    sh.actions.FinishOrder = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('FinishOrder', ['unitID'], json);
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                unit.orders.shift();
+            });
+        }
+    });
 }());

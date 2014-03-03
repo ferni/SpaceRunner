@@ -118,7 +118,10 @@ sh.Unit = sh.TileEntity.extendShared({
             }
             actions = this.orders[0].getActions(turnTime, ship);
             if (this.orders[0].finished) {
-                this.orders.shift();
+                actions.push(new sh.actions.FinishOrder({
+                    time: turnTime,
+                    unitID: this.id
+                }));
             }
             return actions;
         }
