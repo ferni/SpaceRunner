@@ -148,9 +148,10 @@ var UnitVM = TileEntityVM.extend({
         _.each(this.orders(), function(o) {
             var to = sh.v.mul(o.destination, TILE_SIZE),
                 img = me.loader.getImage('marker-green');
-            draw.line(ctx, from, {x: to.x + HALF_TILE, y: to.y + HALF_TILE},
-                'green', 2);
-            ctx.drawImage(img, to.x, to.y);
+            to.x += HALF_TILE;
+            to.y += HALF_TILE;
+            draw.line(ctx, from, to, 'green', 2);
+            ctx.drawImage(img, to.x - HALF_TILE, to.y - HALF_TILE);
             from = to;
         });
     },
@@ -188,7 +189,7 @@ var UnitVM = TileEntityVM.extend({
             y: (this.m.y * TILE_SIZE) + HALF_TILE
         }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
     },
-    playAttack: function(targetPos) {
+    playAttack: function() {
         'use strict';
         console.log('melee unit attacked!');
     }

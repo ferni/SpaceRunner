@@ -104,15 +104,6 @@ screens.register('battle', ConnectedScreen.extend({
             });
         }
     },
-    logActions: function(script) {
-        'use strict';
-        _.each(script.byUnit, function(actions, unitID) {
-            console.log('Unit ' + unitID + '\'s actions:');
-            _.each(actions, function(a) {
-                console.log(utils.actionStr(a));
-            });
-        });
-    },
     update: function() {
         'use strict';
         this.parent();
@@ -205,16 +196,15 @@ screens.register('battle', ConnectedScreen.extend({
     },
     giveMoveOrder: function(unitVMs, destination) {
         'use strict';
-        var self = this,
-            newOrders = {};
+        var newOrders = {};
         _.each(unitVMs, function(u) {
             var order = new sh.orders.Move({
                     unitID: u.m.id,
                     destination: destination
                 });
             if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
-                u.orders([order]);
-                newOrders[u.m.id] = [order];
+                u.orders.push(order);
+                newOrders[u.m.id] = u.orders();
             }
         });
         if (_.size(newOrders) > 0) {
