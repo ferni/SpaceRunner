@@ -139,16 +139,6 @@ screens.register('battle', ConnectedScreen.extend({
                 utils.setCursor('default');
             }
 
-            //highlight where the mouse is pointing if it's a unit
-
-            if (_.any(this.shipVM.selected(), function(u) {
-                    return u.isMine();
-                })) {
-                ctx.save();
-                ctx.globalAlpha = 0.5;
-                draw.circle(ctx, mouse, 5, 'green');
-                ctx.restore();
-            }
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
                 utils.setCursor('crosshair');
