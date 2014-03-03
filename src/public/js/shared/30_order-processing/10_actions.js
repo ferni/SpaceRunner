@@ -76,18 +76,6 @@ if (typeof exports !== 'undefined') {
 
     sh.actions = {};
 
-    sh.actions.PrepareOrder = Action.extendShared({
-        init: function(json) {
-            var self = this;
-            this.parent(json);
-            this.set('PrepareOrder', ['unitID'], json);
-            this.modelChanges = [new ModelChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
-                unit.orderState = 'prepared';
-            }, this)];
-        }
-    });
-
     /**
      * The unit changes tiles.
      * @type {*}
