@@ -175,7 +175,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (which === me.input.mouse.LEFT) {
             if (this.dragBox) {
                 this.releaseDragBox();
-            } else if (!gs.ship.unitsMap.at(mouse.x, mouse.y)) {
+            } else if (!gs.ship.hasUnits(mouse)) {
                 unitsToGiveOrders = _.filter(this.shipVM.selected(),
                     function(u) {
                         return u.orders().length === 0;
