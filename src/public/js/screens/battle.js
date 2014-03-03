@@ -13,6 +13,7 @@ screens.register('battle', ConnectedScreen.extend({
     //scriptPrediction: null,
     scriptPlayer: null,
     scriptServer: [],
+    mouseDownPos: null,
     onReset: function(battleModel) {
         'use strict';
         this.parent({id: battleModel.id});
@@ -162,36 +163,55 @@ screens.register('battle', ConnectedScreen.extend({
         });*/
 
     },
+    mouseDown: function(e) {
+        'use strict';
+        var which = e.which - 1; //workaround for melonJS mismatch
+        if (!this.paused) {
+            return;
+        }
+        if (which === me.input.mouse.LEFT && !this.dragBox) {
+            this.mouseDownPos = utils.getMouse(true);
+        }
+
+    },
     mouseUp: function(e) {
         'use strict';
         var mouse = utils.getMouse(),
-            which = e.which - 1; //workaround for melonJS mismatch
+            which = e.which - 1, //workaround for melonJS mismatch
+            unitsToGiveOrders;
         if (!this.paused) {
             return;
         }
         if (which === me.input.mouse.LEFT) {
-            this.selectUnit(mouse.x, mouse.y);
-            this.releaseDragBox();
+            if (this.dragBox) {
+                this.releaseDragBox();
+            } else {
+                unitsToGiveOrders = _.filter(this.shipVM.selected(),
+                    function(u) {
+                        return u.orders().length === 0;
+                    });
+                if (unitsToGiveOrders.length > 0) {
+                    this.giveMoveOrder(unitsToGiveOrders, mouse);
+                } else {
+                    this.selectUnit(mouse.x, mouse.y);
+                }
+            }
+            this.mouseDownPos = null;
         }
-    },
-    mouseDown: function(e) {
-        'use strict';
-        var mouse = utils.getMouse(),
-            which = e.which - 1; //workaround for melonJS mismatch
-        if (!this.paused) {
-            return;
-        }
-        if (which === me.input.mouse.RIGHT) {
-            this.giveMoveOrder(this.shipVM.selected(), mouse);
-        } else if (which === me.input.mouse.LEFT) {
-            this.startDragBox(utils.getMouse(true));
-        }
-
     },
     mouseMove: function() {
         'use strict';
+        var mouse = utils.getMouse(true);
         if (this.dragBox) {
-            this.dragBox.updateFromMouse(utils.getMouse(true));
+            this.dragBox.updateFromMouse(mouse);
+        } else if (this.mouseDownPos &&
+                (this.mouseDownPos.x - mouse.x > 5 ||
+                mouse.x - this.mouseDownPos.x > 5 ||
+                this.mouseDownPos.y - mouse.y > 5 ||
+                mouse.y - this.mouseDownPos.y > 5)) {
+            //mouse exceeded 5 pixel threshold, start drag box.
+            this.startDragBox(this.mouseDownPos);
+            this.dragBox.updateFromMouse(mouse);
         }
     },
     giveMoveOrder: function(unitVMs, destination) {
