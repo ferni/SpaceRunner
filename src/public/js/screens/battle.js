@@ -311,8 +311,8 @@ screens.register('battle', ConnectedScreen.extend({
             _.each(units, function(unit) {
                 var selectedVM = self.shipVM.getVM(unit);
                 selectedVM.selected = true;
-                console.log('Selected unit ' + unit.id + ' ' +
-                    sh.v.str(unit));
+                console.log('Selected unit ' + unit.id + ' - pos: ' +
+                    sh.v.str(unit) + ', GUID: ' + selectedVM.GUID);
                 self.htmlVM.selectedUnit(selectedVM);
             });
             return true;
