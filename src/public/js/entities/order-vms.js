@@ -13,8 +13,9 @@ var orderVMs = (function() {
         OrderVM;
     OrderVM = TileEntityVM.extend({
         init: function(order, image) {
-            var pos = this.getMarkerTile();
+            var pos;
             this.m = order;
+            pos = this.getMarkerTile();
             this.parent(pos.x, pos.y, {image: image,
                 spritewidth: TILE_SIZE, spriteheight: TILE_SIZE});
         },
