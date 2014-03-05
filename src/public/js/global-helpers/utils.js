@@ -59,7 +59,10 @@ var utils = {
     },
     setCursor: function(cursor) {
         'use strict';
-        document.getElementById('jsapp').style.cursor = cursor;
+        if (cursor !== this.currentCursor) {
+            document.getElementById('jsapp').style.cursor = cursor;
+            this.currentCursor = cursor;
+        }
     },
     /**
      * Executes a callback when a certain number of
@@ -107,6 +110,7 @@ var utils = {
         if (object instanceof ItemVM) {
             return object.m;
         }
+        return null;
     },
     actionStr: function(action) {
         'use strict';
