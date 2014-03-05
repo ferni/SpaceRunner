@@ -36,6 +36,23 @@ var TileEntityVM = me.ObjectEntity.extend({
         this.type = type;
         this.setX(x);
         this.setY(y);
+
+        me.input.registerMouseEvent('mousedown', this,
+            this.onMouseDown.bind(this));
+        me.input.registerMouseEvent('mouseup', this,
+            this.onMouseUp.bind(this));
+    },
+    update: function() {
+        'use strict';
+        return this.parent();
+    },
+    onMouseDown: function() {
+        'use strict';
+        //console.log('mouse down on ' + this.type);
+    },
+    onMouseUp: function() {
+        'use strict';
+        //console.log('mouse up on ' + this.type);
     },
     setX: function(x) { //sets the column at which it is located
         'use strict';
@@ -78,6 +95,16 @@ var TileEntityVM = me.ObjectEntity.extend({
         'use strict';
         this.hidden(true);
         return this;
+    },
+    /**
+     * OnDestroy notification function<br>
+     * Called by engine before deleting the object<br>
+     * be sure to call the parent function if overwritten
+     */
+    onDestroyEvent: function() {
+        'use strict';
+        me.input.releaseMouseEvent('mousedown', this);
+        me.input.releaseMouseEvent('mouseup', this);
     },
     zIndex: 100
 });
