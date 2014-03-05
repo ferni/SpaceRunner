@@ -6,7 +6,7 @@
 */
 
 /*global me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE, sh,
-ItemVM, gs*/
+ItemVM, gs, make*/
 
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
@@ -111,6 +111,47 @@ var utils = {
     isMine: function(unit) {
         'use strict';
         return gs.player.id === unit.ownerID;
+    },
+    /**
+     * Adds or removes VMs from MelonJS engine
+     * and from the vms array, so it matches the models array.
+     * @param {Array} models
+     * @param {Array} vms
+     * @param {int} zIndex
+     * @return {boolean}
+     */
+    updateVMs: function(models, vms, zIndex) {
+        'use strict';
+        var i, v, hasVM, aux, somethingChanged = false;
+        for (i = 0; i < models.length; i++) {
+            hasVM = false;
+            for (v = i; v < vms.length; v++) {
+                if (models[i] === vms[v].m) {
+                    hasVM = true;
+                    break;
+                }
+            }
+            if (hasVM) {
+                //put vm at item's index position
+                if (v !== i) {
+                    aux = vms[v];
+                    vms[v] = vms[i];
+                    vms[i] = aux;
+                }
+            } else {
+                //new vm
+                vms.splice(i, 0, make.vm(models[i]));
+                me.game.add(vms[i], zIndex);
+                somethingChanged = true;
+            }
+        }
+        //remove extra vms
+        for (v = models.length; v < vms.length; v++) {
+            me.game.remove(vms[v], true);
+            somethingChanged = true;
+        }
+        vms.splice(models.length, vms.length - models.length);
+        return somethingChanged;
     }
 };
 
