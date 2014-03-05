@@ -44,15 +44,18 @@ var utils = {
     //returns the tile position of the mouse
     getMouse: function() {
         'use strict';
-        var pxPos = utils.getMousePx();
-        return utils.toTileVector(pxPos, TILE_SIZE);
+        var tile = utils.toTileVector(utils.getMousePx(), TILE_SIZE);
+        this.lastMouse = tile;
+        return tile;
     },
     getMousePx: function() {
         'use strict';
         if (!me.game.currentLevel.initialized) {
             throw "There's no level to get the mouse";
         }
-        return sh.v.sub(me.input.mouse.pos, me.game.currentLevel.pos);
+        var pxPos = sh.v.sub(me.input.mouse.pos, me.game.currentLevel.pos);
+        this.lastMousePx = pxPos;
+        return pxPos;
     },
     setCursor: function(cursor) {
         'use strict';

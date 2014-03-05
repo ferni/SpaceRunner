@@ -193,7 +193,8 @@ screens.register('battle', ConnectedScreen.extend({
     },
     mouseMove: function() {
         'use strict';
-        var mouse = utils.getMousePx();
+        utils.getMouse();//so it stores last mouse position
+        var mouse = utils.lastMousePx;
         if (this.dragBox) {
             this.dragBox.updateFromMouse(mouse);
         } else if (this.mouseDownPos &&
