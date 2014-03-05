@@ -65,6 +65,7 @@ var th = {
         changeState();
     },
     _originalGetMouseFunction: utils.getMouse,
+    _originalGetMousePxFunction: utils.getMousePx,
     _mousePosition: {
         x: 1,
         y: 1
@@ -90,6 +91,7 @@ var th = {
     mouseEnd: function() {
         'use strict';
         utils.getMouse = this._originalGetMouseFunction;
+        utils.getMousePx = this._originalGetMousePxFunction;
         this._screen = null;
     },
     //fakes the mouse position (x: tile column, y: tile row)
