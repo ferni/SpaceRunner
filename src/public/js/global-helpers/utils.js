@@ -42,15 +42,17 @@ var utils = {
         return v;
     },
     //returns the tile position of the mouse
-    getMouse: function(inPixels) {
+    getMouse: function() {
+        'use strict';
+        var pxPos = utils.getMousePx();
+        return utils.toTileVector(pxPos, TILE_SIZE);
+    },
+    getMousePx: function() {
         'use strict';
         if (!me.game.currentLevel.initialized) {
             throw "There's no level to get the mouse";
         }
-        var relPosition = sh.v.sub(me.input.mouse.pos,
-            me.game.currentLevel.pos);
-        return inPixels ? relPosition :
-                utils.toTileVector(relPosition, TILE_SIZE);
+        return sh.v.sub(me.input.mouse.pos, me.game.currentLevel.pos);
     },
     setCursor: function(cursor) {
         'use strict';

@@ -142,7 +142,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         //note: the "this" context is a canvas, not the screen
         var mouseTile, screen = me.state.current();
-        mouseTile = utils.toTileVector(utils.getMouse(true), 32);
+        mouseTile = utils.toTileVector(utils.getMousePx(), 32);
         mouseTile = sh.v.mul(mouseTile, sh.GRID_SUB);
         if (screen.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
@@ -158,7 +158,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var mouseTile, item, which;
         which = e.which - 1; //workaround for melonJS mismatch
-        mouseTile = utils.toTileVector(utils.getMouse(true), 32);
+        mouseTile = utils.toTileVector(utils.getMousePx(), 32);
         mouseTile = sh.v.mul(mouseTile, sh.GRID_SUB);
         if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
@@ -182,7 +182,7 @@ screens.register('ship-building', GameScreen.extend({
     },
     mouseMove: function() {
         'use strict';
-        var mouseTile = utils.toTileVector(utils.getMouse(true), 32);
+        var mouseTile = utils.toTileVector(utils.getMousePx(), 32);
         if ((this.prevMouse.x === mouseTile.x &&
                 this.prevMouse.y === mouseTile.y)) {
             return;
@@ -206,7 +206,7 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var mouseTile, which;
         which = e.which - 1; //workaround for melonJS mismatch
-        mouseTile = utils.toTileVector(utils.getMouse(true), 32);
+        mouseTile = utils.toTileVector(utils.getMousePx(), 32);
         mouseTile = sh.v.mul(mouseTile, sh.GRID_SUB);
         if (this.mouseLockedOn) { //the mouse is involved in a specific object
             //delegate handling to the object

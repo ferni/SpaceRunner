@@ -160,7 +160,7 @@ screens.register('battle', ConnectedScreen.extend({
             return;
         }
         if (which === me.input.mouse.LEFT && !this.dragBox) {
-            this.mouseDownPos = utils.getMouse(true);
+            this.mouseDownPos = utils.getMousePx();
         }
 
     },
@@ -193,7 +193,7 @@ screens.register('battle', ConnectedScreen.extend({
     },
     mouseMove: function() {
         'use strict';
-        var mouse = utils.getMouse(true);
+        var mouse = utils.getMousePx();
         if (this.dragBox) {
             this.dragBox.updateFromMouse(mouse);
         } else if (this.mouseDownPos &&

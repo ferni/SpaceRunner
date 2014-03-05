@@ -77,12 +77,14 @@ var th = {
         }
         this._screen = screen;
         //replace utils.getMouse function
-        utils.getMouse = function(inPixels) {
-            var tile = {
+        utils.getMouse = function() {
+            return {
                 x: th._mousePosition.x,
                 y: th._mousePosition.y
             };
-            return inPixels ? sh.v.mul(tile, TILE_SIZE) : tile;
+        };
+        utils.getMousePx = function() {
+            return sh.v.mul(utils.getMouse(), TILE_SIZE);
         };
     },
     mouseEnd: function() {
