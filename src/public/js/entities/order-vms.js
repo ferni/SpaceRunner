@@ -20,7 +20,7 @@ var orderVMs = (function() {
                 spritewidth: TILE_SIZE, spriteheight: TILE_SIZE});
         },
         getMarkerTile: function() {
-            throw 'getMarkerTile not implemented in ' + this.type + ' order.';
+            throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
         }
     });
 
