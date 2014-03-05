@@ -94,17 +94,6 @@ var ItemVM = TileEntityVM.extend({
             }
         }
     },
-    //returns true is some part of the item is occupying the tile
-    occupies: function(x, y) {
-        'use strict';
-        var occupies = false;
-        this.tiles(function(tX, tY) {
-            if (x === tX && y === tY) {
-                occupies = true;
-            }
-        });
-        return occupies;
-    },
     //onBuilt is called only when the user himself builds it
     onBuilt: function() {
         'use strict';
@@ -347,6 +336,7 @@ itemVMs.WallVM = ItemVM.extend({
     },
     update: function() {
         'use strict';
+        this.parent();
         //TODO: update only when necessary, right now it's running all the time
         var screen = me.state.current(),
             top = screen.at(this.x, this.y - sh.GRID_SUB),

@@ -47,8 +47,9 @@ sh.TileEntity = sh.Jsonable.extendShared({
         }
     },
     //returns true is some part of the entity is occupying the tile
-    occupies: function(x, y) {
+    occupies: function(tile) {
         'use strict';
+        var x = tile.x, y = tile.y;
         return x >= this.x && x < this.x + this.trueSize(0) &&
             y >= this.y && y < this.y + this.trueSize(1);
     }

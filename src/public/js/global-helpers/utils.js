@@ -160,3 +160,14 @@ var utils = {
     }
 };
 
+/**
+ * Last mouse tile got by utils.getMouse
+ * @type {{x: number, y: number}}
+ */
+utils.lastMouse = {x: 0, y: 0};
+/**
+ * Last mouse pixel pos got by utils.getMousePx
+ * @type {{x: number, y: number}}
+ */
+utils.lastMousePx = {x: 0, y: 0};
+

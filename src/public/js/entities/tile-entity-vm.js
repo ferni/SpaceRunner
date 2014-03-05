@@ -44,7 +44,19 @@ var TileEntityVM = me.ObjectEntity.extend({
     },
     update: function() {
         'use strict';
-        return this.parent();
+        this.parent();
+        if (this.occupies(utils.lastMouse)) {
+            if (!this.isMouseOver) {
+                this.onMouseEnter();
+                this.isMouseOver = true;
+            }
+        } else {
+            if (this.isMouseOver) {
+                this.onMouseLeave();
+                this.isMouseOver = false;
+            }
+        }
+        return true;
     },
     onMouseDown: function() {
         'use strict';
@@ -53,6 +65,14 @@ var TileEntityVM = me.ObjectEntity.extend({
     onMouseUp: function() {
         'use strict';
         //console.log('mouse up on ' + this.type);
+    },
+    onMouseEnter: function() {
+        'use strict';
+        //console.log('mouse entered ' + this.type);
+    },
+    onMouseLeave: function() {
+        'use strict';
+        //console.log('mouse left ' + this.type);
     },
     setX: function(x) { //sets the column at which it is located
         'use strict';
@@ -95,6 +115,17 @@ var TileEntityVM = me.ObjectEntity.extend({
         'use strict';
         this.hidden(true);
         return this;
+    },
+    trueSize: function(index) {
+        'use strict';
+        //(only items can rotate, not units)
+        return this.size[index];
+    },
+    occupies: function(tile) {
+        'use strict';
+        var x = tile.x, y = tile.y;
+        return x >= this.x && x < this.x + this.trueSize(0) &&
+            y >= this.y && y < this.y + this.trueSize(1);
     },
     /**
      * OnDestroy notification function<br>

@@ -408,13 +408,13 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var i, shipTile;
         for (i = 0; i < this.drawingScreen.length; i++) {
-            if (this.drawingScreen[i].occupies(x, y)) {
+            if (this.drawingScreen[i].occupies({x: x, y: y})) {
                 return this.drawingScreen[i];
             }
         }
         shipTile = this.ship.map.at(x, y);
         if (shipTile === sh.tiles.clear && this.chosen &&
-                this.chosen.occupies(x, y)) {
+                this.chosen.occupies({x: x, y: y})) {
             return this.chosen;
         }
         return shipTile;
