@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global itemVMs, sh, UnitVM, unitVMs*/
+/*global itemVMs, sh, UnitVM, unitVMs, orderVMs*/
 
 /**
  * Factories for entities
@@ -47,6 +47,8 @@ var make = (function() {
             VMConstructor = itemVMs[model.type + 'VM'];
         } else if (model instanceof sh.Unit) {
             VMConstructor = unitVMs[model.type + 'VM'] || UnitVM;
+        } else if (model instanceof sh.Order) {
+            VMConstructor = orderVMs[model.type];
         } else {
             throw 'Model not valid.';
         }
