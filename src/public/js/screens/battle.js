@@ -123,28 +123,12 @@ screens.register('battle', ConnectedScreen.extend({
     },
     draw: function(ctx) {
         'use strict';
-        var mouse = utils.getMouse();
         this.parent(ctx);
         if (this.paused) {
             //this.scriptPrediction.draw(ctx);
-            if (gs.ship.hasUnits(mouse)) {
-                utils.setCursor('pointer');
-                if (_.any(gs.ship.unitsMap.at(mouse.x, mouse.y),
-                        utils.isMine)) {
-                    draw.tileHighlight(ctx, mouse, 'teal', 1);
-                } else {
-                    draw.tileHighlight(ctx, mouse, 'red', 1);
-                }
-            } else if (!this.dragBox) {
-                utils.setCursor('default');
-            }
-
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
-                utils.setCursor('crosshair');
             }
-        } else {
-            utils.setCursor('default');
         }
 
         //highlight highlighted tiles
@@ -330,6 +314,7 @@ screens.register('battle', ConnectedScreen.extend({
     startDragBox: function(pos) {
         'use strict';
         this.dragBox = new ui.DragBox(pos);
+        utils.setCursor('crooshair');
     },
     releaseDragBox: function() {
         'use strict';
@@ -354,7 +339,7 @@ screens.register('battle', ConnectedScreen.extend({
             console.warn('Tried to release dragBox but it was already' +
                 ' released.');
         }
-
+        utils.setCursor('default');
     },
     at: function(x, y) {
         'use strict';

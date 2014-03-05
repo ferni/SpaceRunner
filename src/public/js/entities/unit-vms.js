@@ -9,7 +9,6 @@
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
-    selected: false,
     size: [1, 1],
     cannonTile: [-0.25, -0.25],//image offset
     init: function(unitModel) {
@@ -53,6 +52,7 @@ var UnitVM = TileEntityVM.extend({
         this.orders.subscribe(function(newValue) {
             this.m.orders = newValue;
         }, this);
+        this.isSelectable = true;
     },
     getChanged: function() {
         'use strict';
@@ -149,6 +149,12 @@ var UnitVM = TileEntityVM.extend({
             color = this.isMine() ? 'limegreen' : 'red';
             draw.tileHighlight(ctx, this.m, color, 2);
             this.drawOrders(ctx);
+        } else if (this.isMouseOver) {
+            if (utils.isMine(this.m)) {
+                draw.tileHighlight(ctx, this, 'teal', 1);
+            } else {
+                draw.tileHighlight(ctx, this, 'red', 1);
+            }
         }
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);

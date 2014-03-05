@@ -15,6 +15,8 @@ var TileEntityVM = me.ObjectEntity.extend({
     y: 0, //row
     size: [1, 1],
     cannonTile: [0, 0], //image offset
+    isSelectable: false,
+    selected: false,
     init: function(x, y, settings) {
         'use strict';
         var type;
@@ -65,14 +67,23 @@ var TileEntityVM = me.ObjectEntity.extend({
     onMouseUp: function() {
         'use strict';
         //console.log('mouse up on ' + this.type);
+        if (this.isSelectable) {
+            this.selected = true;
+        }
     },
     onMouseEnter: function() {
         'use strict';
         //console.log('mouse entered ' + this.type);
+        if (this.isSelectable) {
+            utils.setCursor('pointer');
+        }
     },
     onMouseLeave: function() {
         'use strict';
         //console.log('mouse left ' + this.type);
+        if (this.isSelectable) {
+            utils.setCursor('default');
+        }
     },
     setX: function(x) { //sets the column at which it is located
         'use strict';
