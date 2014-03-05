@@ -48,6 +48,7 @@ var UnitVM = TileEntityVM.extend({
             inCombat: this.m.inCombat,
             dizzy: this.m.dizzy
         };
+        this.orderVMs = [];
         this.orders = ko.observableArray(unitModel.orders);
         this.orders.subscribe(function(newValue) {
             this.m.orders = newValue;
@@ -101,7 +102,18 @@ var UnitVM = TileEntityVM.extend({
                 this.faceLeft(true);
             }
         }
+        if (utils.updateVMs(this.m.orders, this.orderVMs, 300)) {
+            me.game.sort();
+        }
+        if (this.selected !== this.prevSelected) {
+            if (this.selected) {
+                _.invoke(this.orderVMs, 'show');
+            } else {
+                _.invoke(this.orderVMs, 'hide');
+            }
+        }
         this.prevX = this.pos.x;
+        this.prevSelected = this.selected;
         return true;
     },
     onShip: function() {
@@ -146,12 +158,10 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         var from = this.pos; //starting position
         _.each(this.orders(), function(o) {
-            var to = sh.v.mul(o.destination, TILE_SIZE),
-                img = me.loader.getImage('marker-green');
+            var to = sh.v.mul(o.destination, TILE_SIZE);
             to.x += HALF_TILE;
             to.y += HALF_TILE;
             draw.line(ctx, from, to, 'green', 2);
-            ctx.drawImage(img, to.x - HALF_TILE, to.y - HALF_TILE);
             from = to;
         });
     },
