@@ -47,6 +47,9 @@ var TileEntityVM = me.ObjectEntity.extend({
     update: function() {
         'use strict';
         this.parent();
+        if (this.isSelectable && this.isMouseOver) {
+            utils.setCursor('pointer');
+        }
         if (this.occupies(utils.lastMouse)) {
             if (!this.isMouseOver) {
                 this.onMouseEnter();
@@ -74,9 +77,6 @@ var TileEntityVM = me.ObjectEntity.extend({
     onMouseEnter: function() {
         'use strict';
         //console.log('mouse entered ' + this.type);
-        if (this.isSelectable) {
-            utils.setCursor('pointer');
-        }
     },
     onMouseLeave: function() {
         'use strict';
