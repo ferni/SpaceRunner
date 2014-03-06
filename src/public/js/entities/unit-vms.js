@@ -149,15 +149,18 @@ var UnitVM = TileEntityVM.extend({
             color = this.isMine() ? 'limegreen' : 'red';
             draw.tileHighlight(ctx, this.m, color, 2);
             this.drawOrders(ctx);
-        } else if (this.isMouseOver) {
-            if (utils.isMine(this.m)) {
-                draw.tileHighlight(ctx, this, 'teal', 1);
-            } else {
-                draw.tileHighlight(ctx, this, 'red', 1);
-            }
         }
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
+        }
+    },
+    drawHoverHighlight: function(ctx) {
+        'use strict';
+        //override default behavior
+        if (utils.isMine(this.m)) {
+            draw.tileHighlight(ctx, this, 'teal', 1);
+        } else {
+            draw.tileHighlight(ctx, this, 'red', 1);
         }
     },
     drawOrders: function(ctx) {

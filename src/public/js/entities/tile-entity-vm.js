@@ -63,6 +63,21 @@ var TileEntityVM = me.ObjectEntity.extend({
         }
         return true;
     },
+    draw: function(ctx) {
+        'use strict';
+        this.parent(ctx);
+        if (this.isSelectable && this.isMouseOver) {
+            this.drawHoverHighlight(ctx);
+        }
+    },
+    drawHoverHighlight: function(ctx) {
+        'use strict';
+        ctx.strokeStyle = 'teal';
+        ctx.lineWidth = 1;
+        ctx.moveTo(this.pos.x, this.pos.y);
+        ctx.strokeRect(this.pos.x, this.pos.y, this.width,
+            this.height);
+    },
     onMouseDown: function() {
         'use strict';
         //console.log('mouse down on ' + this.type);
