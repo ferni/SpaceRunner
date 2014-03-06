@@ -161,6 +161,12 @@ var utils = {
         }
         vms.splice(models.length, vms.length - models.length);
         return somethingChanged;
+    },
+    getSelected: function(name) {
+        'use strict';
+        return _.filter(me.game.getEntityByName(name), function(e) {
+            return e.isSelectable && e.selected;
+        });
     }
 };
 
