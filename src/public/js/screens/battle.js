@@ -286,7 +286,7 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var self = this,
             units = gs.ship.unitsMap.at(x, y);
-        this.unselectAll();
+        this.deselectAll();
         if (units) {
             this.shipVM.updateUnits();
             _.each(units, function(unit) {
@@ -301,7 +301,7 @@ screens.register('battle', ConnectedScreen.extend({
         self.htmlVM.selectedUnit(null);
         return false;
     },
-    unselectAll: function() {
+    deselectAll: function() {
         'use strict';
         _.each(this.shipVM.unitVMs, function(u) {
             u.deselect();
@@ -316,7 +316,7 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var self = this;
         if (this.dragBox) {
-            this.unselectAll();
+            this.deselectAll();
             _.each(this.shipVM.unitVMs, function(u) {
                 var pos, unitRect;
                 if (u.isMine()) {
