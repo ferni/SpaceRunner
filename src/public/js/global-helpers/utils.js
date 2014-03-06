@@ -167,6 +167,13 @@ var utils = {
         return _.filter(me.game.getEntityByName(name), function(e) {
             return e.isSelectable && e.selected();
         });
+    },
+    removeFromArray: function(item, array) {
+        'use strict';
+        var index = array.indexOf(item);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
     }
 };
 

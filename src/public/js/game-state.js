@@ -16,4 +16,6 @@ var GameState = function() {
         auto: false,
         useprebuilt: false
     };
+    //selected TileEntityVMs at a given moment.
+    this.selected = [];
 };

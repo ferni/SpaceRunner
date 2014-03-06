@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, hullMap, pr, TILE_SIZE*/
+/*global me, _, utils, hullMap, pr, TILE_SIZE, gs*/
 
 /* An object that has tile position (x and y),
  and row length and col length through "size"
@@ -51,10 +51,12 @@ var TileEntityVM = me.ObjectEntity.extend({
         };
         this.select = function() {
             selected = true;
+            gs.selected.push(this);
             this.onSelected();
         };
         this.deselect = function() {
             selected = false;
+            utils.removeFromArray(this, gs.selected);
             this.onDeselected();
         };
     },
