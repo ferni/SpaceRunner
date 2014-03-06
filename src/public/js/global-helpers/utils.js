@@ -165,7 +165,7 @@ var utils = {
     getSelected: function(name) {
         'use strict';
         return _.filter(me.game.getEntityByName(name), function(e) {
-            return e.isSelectable && e.selected;
+            return e.isSelectable && e.selected();
         });
     }
 };

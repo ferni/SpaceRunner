@@ -52,7 +52,7 @@ var ShipVM = function(shipModel) {
     };
     this.selected = function() {
         return _.filter(this.unitVMs, function(u) {
-            return u.selected;
+            return u.selected();
         });
     };
 

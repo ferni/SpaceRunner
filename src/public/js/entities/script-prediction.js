@@ -39,7 +39,7 @@ var ScriptPrediction = Object.extend({
     isSelected: function(unitID) {
         'use strict';
         var unitVM = this.screen.shipVM.getVM(gs.ship.getUnitByID(unitID));
-        return unitVM.selected;
+        return unitVM.selected();
     },
     draw: function(ctx) {
         'use strict';

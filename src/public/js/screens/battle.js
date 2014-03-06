@@ -291,7 +291,7 @@ screens.register('battle', ConnectedScreen.extend({
             this.shipVM.updateUnits();
             _.each(units, function(unit) {
                 var selectedVM = self.shipVM.getVM(unit);
-                selectedVM.selected = true;
+                selectedVM.select();
                 console.log('Selected unit ' + unit.id + ' - pos: ' +
                     sh.v.str(unit) + ', GUID: ' + selectedVM.GUID);
                 self.htmlVM.selectedUnit(selectedVM);
@@ -304,7 +304,7 @@ screens.register('battle', ConnectedScreen.extend({
     unselectAll: function() {
         'use strict';
         _.each(this.shipVM.unitVMs, function(u) {
-            u.selected = false;
+            u.deselect();
         });
     },
     startDragBox: function(pos) {
@@ -326,7 +326,7 @@ screens.register('battle', ConnectedScreen.extend({
                     );
                     unitRect = new me.Rect(pos, TILE_SIZE, TILE_SIZE);
                     if (self.dragBox.overlaps(unitRect)) {
-                        u.selected = true;
+                        u.select();
                     }
                 }
             });

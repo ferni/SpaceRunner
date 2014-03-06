@@ -16,10 +16,9 @@ var TileEntityVM = me.ObjectEntity.extend({
     size: [1, 1],
     cannonTile: [0, 0], //image offset
     isSelectable: false,
-    selected: false,
     init: function(x, y, settings) {
         'use strict';
-        var type;
+        var type, selected = false;
         if (this.type !== 0) {
             type = this.type;
             settings.image = this.type.toLowerCase();
@@ -47,6 +46,17 @@ var TileEntityVM = me.ObjectEntity.extend({
         if (!this.selectionColor) {
             this.selectionColor = 'teal';
         }
+        this.selected = function() {
+            return selected;
+        };
+        this.select = function() {
+            selected = true;
+            this.onSelected();
+        };
+        this.deselect = function() {
+            selected = false;
+            this.onDeselected();
+        };
     },
     update: function() {
         'use strict';
@@ -71,7 +81,7 @@ var TileEntityVM = me.ObjectEntity.extend({
         'use strict';
         this.parent(ctx);
         if (this.isSelectable) {
-            if (this.selected) {
+            if (this.selected()) {
                 this.drawSelectedHightlight(ctx);
             } else if (this.isMouseOver) {
                 this.drawHoverHighlight(ctx);
@@ -102,7 +112,7 @@ var TileEntityVM = me.ObjectEntity.extend({
         'use strict';
         //console.log('mouse up on ' + this.type);
         if (this.isSelectable) {
-            this.selected = true;
+            this.select();
         }
     },
     onMouseEnter: function() {
@@ -115,6 +125,12 @@ var TileEntityVM = me.ObjectEntity.extend({
         if (this.isSelectable) {
             utils.setCursor('default');
         }
+    },
+    onSelected: function() {
+        'use strict';
+    },
+    onDeselected: function() {
+        'use strict';
     },
     setX: function(x) { //sets the column at which it is located
         'use strict';
