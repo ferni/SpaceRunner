@@ -16,6 +16,7 @@ var UnitVM = TileEntityVM.extend({
         this.m = unitModel;
         this.size = unitModel.size;
         this.speed = unitModel.speed;
+        this.selectionColor = utils.isMine(this.m) ? 'teal' : 'red';
         this.parent(unitModel.x, unitModel.y, {
             name: 'unit',
             image: 'creatures_16x16',
@@ -137,30 +138,17 @@ var UnitVM = TileEntityVM.extend({
     },
     draw: function(ctx) {
         'use strict';
-        var color,
-            originalPos = this.pos.clone();
+        var originalPos = this.pos.clone();
 
         this.pos.sub(this.center);
         this.parent(ctx);
         this.pos.x = originalPos.x;
         this.pos.y = originalPos.y;
         if (this.selected) {
-            //draw rectangle around each selected unit
-            color = this.isMine() ? 'limegreen' : 'red';
-            draw.tileHighlight(ctx, this.m, color, 2);
             this.drawOrders(ctx);
         }
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
-        }
-    },
-    drawHoverHighlight: function(ctx) {
-        'use strict';
-        //override default behavior
-        if (utils.isMine(this.m)) {
-            draw.tileHighlight(ctx, this.m, 'teal', 1);
-        } else {
-            draw.tileHighlight(ctx, this.m, 'red', 1);
         }
     },
     drawOrders: function(ctx) {

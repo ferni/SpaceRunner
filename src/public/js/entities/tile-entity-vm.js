@@ -43,6 +43,10 @@ var TileEntityVM = me.ObjectEntity.extend({
             this.onMouseDown.bind(this));
         me.input.registerMouseEvent('mouseup', this,
             this.onMouseUp.bind(this));
+
+        if (!this.selectionColor) {
+            this.selectionColor = 'teal';
+        }
     },
     update: function() {
         'use strict';
@@ -66,14 +70,26 @@ var TileEntityVM = me.ObjectEntity.extend({
     draw: function(ctx) {
         'use strict';
         this.parent(ctx);
-        if (this.isSelectable && this.isMouseOver) {
-            this.drawHoverHighlight(ctx);
+        if (this.isSelectable) {
+            if (this.selected) {
+                this.drawSelectedHightlight(ctx);
+            } else if (this.isMouseOver) {
+                this.drawHoverHighlight(ctx);
+            }
         }
     },
     drawHoverHighlight: function(ctx) {
         'use strict';
-        ctx.strokeStyle = 'teal';
+        ctx.strokeStyle = this.selectionColor;
         ctx.lineWidth = 1;
+        ctx.moveTo(this.pos.x, this.pos.y);
+        ctx.strokeRect(this.pos.x, this.pos.y, this.width,
+            this.height);
+    },
+    drawSelectedHightlight: function(ctx) {
+        'use strict';
+        ctx.strokeStyle = this.selectionColor;
+        ctx.lineWidth = 2;
         ctx.moveTo(this.pos.x, this.pos.y);
         ctx.strokeRect(this.pos.x, this.pos.y, this.width,
             this.height);
