@@ -166,11 +166,7 @@ screens.register('battle', ConnectedScreen.extend({
                     });
                 if (unitsToGiveOrders.length > 0) {
                     this.giveMoveOrder(unitsToGiveOrders, mouse);
-                } else {
-                    this.selectUnit(mouse.x, mouse.y);
                 }
-            } else {
-                this.selectUnit(mouse.x, mouse.y);
             }
             this.mouseDownPos = null;
         }
