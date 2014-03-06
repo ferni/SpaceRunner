@@ -158,9 +158,9 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         //override default behavior
         if (utils.isMine(this.m)) {
-            draw.tileHighlight(ctx, this, 'teal', 1);
+            draw.tileHighlight(ctx, this.m, 'teal', 1);
         } else {
-            draw.tileHighlight(ctx, this, 'red', 1);
+            draw.tileHighlight(ctx, this.m, 'red', 1);
         }
     },
     drawOrders: function(ctx) {
