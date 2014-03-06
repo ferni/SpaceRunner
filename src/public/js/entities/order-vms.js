@@ -18,7 +18,8 @@ var orderVMs = (function() {
             pos = this.getMarkerTile();
             this.isSelectable = true;
             this.parent(pos.x, pos.y, {image: image,
-                spritewidth: TILE_SIZE, spriteheight: TILE_SIZE});
+                spritewidth: TILE_SIZE, spriteheight: TILE_SIZE,
+                name: 'order'});
         },
         getMarkerTile: function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
