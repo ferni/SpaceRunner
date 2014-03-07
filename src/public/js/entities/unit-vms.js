@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me, ko, gs*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me, ko, gs, $*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -13,6 +13,7 @@ var UnitVM = TileEntityVM.extend({
     cannonTile: [-0.25, -0.25],//image offset
     init: function(unitModel) {
         'use strict';
+        var screen = me.state.current();
         this.m = unitModel;
         this.size = unitModel.size;
         this.speed = unitModel.speed;
@@ -51,7 +52,18 @@ var UnitVM = TileEntityVM.extend({
         this.orderVMs = [];
         this.orders = ko.observableArray(unitModel.orders);
         this.orders.subscribe(function(newValue) {
+            var ordersObject = {};
             this.m.orders = newValue;
+            ordersObject[this.id] = newValue;
+            $.post('/battle/sendorders',
+                {id: screen.id,//battle id
+                    orders: new sh.OrderPackage(ordersObject).toJson()},
+                function() {
+                    console.log('Orders successfully submitted');
+                }, 'json')
+                .fail(function() {
+                    console.error('Server error when submitting orders.');
+                });
         }, this);
         this.isSelectable = true;
     },

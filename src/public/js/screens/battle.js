@@ -194,7 +194,6 @@ screens.register('battle', ConnectedScreen.extend({
     },
     giveMoveOrder: function(unitVMs, destination) {
         'use strict';
-        var newOrders = {};
         _.each(unitVMs, function(u) {
             var order = new sh.orders.Move({
                     unitID: u.m.id,
@@ -202,22 +201,8 @@ screens.register('battle', ConnectedScreen.extend({
                 });
             if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
                 u.orders.push(order);
-                newOrders[u.m.id] = u.orders();
             }
         });
-        if (_.size(newOrders) > 0) {
-            //update script prediction after new orders given
-            //self.scriptPrediction.predict();
-            //send order to server
-            $.post('/battle/sendorders',
-                {id: this.id, orders: new sh.OrderPackage(newOrders).toJson()},
-                function() {
-                    console.log('Orders successfully submitted');
-                }, 'json')
-                .fail(function() {
-                    console.error('Server error when submitting orders.');
-                });
-        }
     },
     getModelDifferenceUrl: function() {
         'use strict';
