@@ -162,7 +162,12 @@ screens.register('battle', ConnectedScreen.extend({
             } else if (!gs.ship.hasUnits(mouse)) {
                 unitsToGiveOrders = _.filter(this.shipVM.selected(),
                     function(u) {
-                        return u.orders().length === 0;
+                        return u.orders().length === 0 ||
+                            (_.last(u.orderVMs).selected() &&
+                            //can't place order in same spot as another order
+                                !_.any(u.orderVMs, function(o) {
+                                    return sh.v.equal(o.getMarkerTile(), mouse);
+                                }));
                     });
                 if (unitsToGiveOrders.length > 0) {
                     this.giveMoveOrder(unitsToGiveOrders, mouse);
