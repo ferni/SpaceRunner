@@ -61,11 +61,23 @@
 }
 
 #battle-screen #unit-orders ul{
-    list-style: none;
 }
 
 #battle-screen #unit-orders li {
+    list-style: none;
     border: 1px solid white;
     background-color: green;
     color: white;
+    margin: 3px;
+    padding: 3px;
+}
+
+#battle-screen #unit-orders li.sortable-placeholder {
+    height: 23px;
+    background-color: rgba(0,80,0,0.5);
+    border-style: dotted;
+}
+
+#battle-screen #unit-orders li.sortable-dragging {
+
 }
