@@ -213,6 +213,12 @@ var UnitVM = TileEntityVM.extend({
         _.invoke(this.orderVMs, 'deselect');
         me.state.current().updateUnitHud();
         _.invoke(this.orderVMs, 'hide');
+    },
+    occupies: function(tile) {
+        'use strict';
+        var x = tile.x, y = tile.y;
+        return x >= this.m.x && x < this.m.x + this.trueSize(0) &&
+            y >= this.m.y && y < this.m.y + this.trueSize(1);
     }
 });
 
