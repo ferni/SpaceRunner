@@ -282,25 +282,6 @@ screens.register('battle', ConnectedScreen.extend({
                 screen.readyButton.enable();
             });
     },
-    selectUnit: function(x, y) {
-        'use strict';
-        var self = this,
-            units = gs.ship.unitsMap.at(x, y);
-        this.deselectAll();
-        if (units) {
-            this.shipVM.updateUnits();
-            _.each(units, function(unit) {
-                var selectedVM = self.shipVM.getVM(unit);
-                selectedVM.select();
-                console.log('Selected unit ' + unit.id + ' - pos: ' +
-                    sh.v.str(unit) + ', GUID: ' + selectedVM.GUID);
-                self.htmlVM.selectedUnit(selectedVM);
-            });
-            return true;
-        }
-        self.htmlVM.selectedUnit(null);
-        return false;
-    },
     deselectUnits: function() {
         'use strict';
         _.chain(gs.selected)
@@ -312,6 +293,17 @@ screens.register('battle', ConnectedScreen.extend({
         _.chain(gs.selected)
             .where({name: 'order'})
             .invoke('deselect');
+    },
+    updateUnitHud: function() {
+        'use strict';
+        var selected = _.where(gs.selected, {name: 'unit'});
+        if (selected.length === 1) {
+            if (this.htmlVM.selectedUnit() !== selected[0]) {
+                this.htmlVM.selectedUnit(selected[0]);
+            }
+        } else {
+            this.htmlVM.selectedUnit(null);
+        }
     },
     startDragBox: function(pos) {
         'use strict';

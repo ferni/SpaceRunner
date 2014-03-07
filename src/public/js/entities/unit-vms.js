@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me, ko*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me, ko, gs*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -199,6 +199,24 @@ var UnitVM = TileEntityVM.extend({
     playAttack: function() {
         'use strict';
         console.log('melee unit attacked!');
+    },
+    onMouseUp: function() {
+        'use strict';
+        //deselect all the units first
+        _.chain(gs.selected)
+            .where({name: 'unit'})
+            .invoke('deselect');
+        this.parent();
+    },
+    onSelected: function() {
+        'use strict';
+        console.log('Selected unit ' + this.m.id + ' - pos: ' +
+            sh.v.str(this.m) + ', GUID: ' + this.GUID);
+        me.state.current().updateUnitHud();
+    },
+    onDeselected: function() {
+        'use strict';
+        me.state.current().updateUnitHud();
     }
 });
 
