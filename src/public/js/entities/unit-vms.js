@@ -106,15 +106,8 @@ var UnitVM = TileEntityVM.extend({
         if (utils.updateVMs(this.m.orders, this.orderVMs, 300)) {
             me.game.sort();
         }
-        if (this.selected !== this.prevSelected) {
-            if (this.selected) {
-                _.invoke(this.orderVMs, 'show');
-            } else {
-                _.invoke(this.orderVMs, 'hide');
-            }
-        }
+
         this.prevX = this.pos.x;
-        this.prevSelected = this.selected;
         return true;
     },
     onShip: function() {
@@ -144,7 +137,7 @@ var UnitVM = TileEntityVM.extend({
         this.parent(ctx);
         this.pos.x = originalPos.x;
         this.pos.y = originalPos.y;
-        if (this.selected) {
+        if (this.selected()) {
             this.drawOrders(ctx);
         }
         if (this.m.isAlive()) {
@@ -213,11 +206,13 @@ var UnitVM = TileEntityVM.extend({
         console.log('Selected unit ' + this.m.id + ' - pos: ' +
             sh.v.str(this.m) + ', GUID: ' + this.GUID);
         me.state.current().updateUnitHud();
+        _.invoke(this.orderVMs, 'show');
     },
     onDeselected: function() {
         'use strict';
         _.invoke(this.orderVMs, 'deselect');
         me.state.current().updateUnitHud();
+        _.invoke(this.orderVMs, 'hide');
     }
 });
 
