@@ -63,6 +63,10 @@ var TileEntityVM = me.ObjectEntity.extend({
     update: function() {
         'use strict';
         this.parent();
+        if (this.m) {
+            this.x = this.m.x;
+            this.y = this.m.y;
+        }
         if (this.isSelectable && this.isMouseOver) {
             utils.setCursor('pointer');
         }
