@@ -301,11 +301,17 @@ screens.register('battle', ConnectedScreen.extend({
         self.htmlVM.selectedUnit(null);
         return false;
     },
-    deselectAll: function() {
+    deselectUnits: function() {
         'use strict';
-        _.each(this.shipVM.unitVMs, function(u) {
-            u.deselect();
-        });
+        _.chain(gs.selected)
+            .where({name: 'unit'})
+            .invoke('deselect');
+    },
+    deselectOrders: function() {
+        'use strict';
+        _.chain(gs.selected)
+            .where({name: 'order'})
+            .invoke('deselect');
     },
     startDragBox: function(pos) {
         'use strict';
@@ -316,7 +322,7 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var self = this;
         if (this.dragBox) {
-            this.deselectAll();
+            this.deselectUnits();
             _.each(this.shipVM.unitVMs, function(u) {
                 var pos, unitRect;
                 if (u.isMine()) {
