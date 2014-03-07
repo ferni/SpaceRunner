@@ -12,7 +12,6 @@ ko.bindingHandlers.sortableList = {
         'use strict';
         var list = valueAccessor();
         $(element).sortable().bind('sortupdate', function() {
-            console.log('list got sorted');
             //reconstruct the list
             list(_.map($(this).children(), function(item) {
                 return ko.dataFor(item);
