@@ -65,9 +65,6 @@ var UnitVM = TileEntityVM.extend({
                 .fail(function() {
                     console.error('Server error when submitting orders.');
                 });
-            if (utils.updateVMs(this.m.orders, this.orderVMs, 300)) {
-                me.game.sort();
-            }
         }, this);
         this.isSelectable = true;
     },
@@ -118,6 +115,9 @@ var UnitVM = TileEntityVM.extend({
             } else {
                 this.faceLeft(true);
             }
+        }
+        if (utils.updateVMs(this.m.orders, this.orderVMs, 300)) {
+            me.game.sort();
         }
 
         this.prevX = this.pos.x;
