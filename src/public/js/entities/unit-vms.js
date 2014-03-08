@@ -223,7 +223,6 @@ var UnitVM = TileEntityVM.extend({
     },
     onDeselected: function() {
         'use strict';
-        _.invoke(this.orderVMs, 'deselect');
         me.state.current().updateUnitHud();
         _.invoke(this.orderVMs, 'hide');
     },

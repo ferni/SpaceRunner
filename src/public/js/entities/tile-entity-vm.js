@@ -169,11 +169,21 @@ var TileEntityVM = me.ObjectEntity.extend({
     show: function() {
         'use strict';
         this.hidden(false);
+        if (this.wasSelectable) {
+            this.isSelectable = true;
+        }
         return this;
     },
     hide: function() {
         'use strict';
         this.hidden(true);
+        if (this.isSelectable) {
+            if (this.selected()) {
+                this.deselect();
+            }
+            this.wasSelectable = true;
+            this.isSelectable = false;
+        }
         return this;
     },
     trueSize: function(index) {
