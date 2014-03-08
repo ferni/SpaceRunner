@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, TILE_SIZE*/
+/*global TileEntityVM, TILE_SIZE, _, gs*/
 
 var orderVMs = (function() {
     'use strict';
@@ -23,6 +23,17 @@ var orderVMs = (function() {
         },
         getMarkerTile: function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
+        },
+        onSelected: function() {
+            var self = this;
+            this.parent();
+            //deselect the rest of the orders
+            _.chain(gs.selected)
+                .filter(function(tileEntity) {
+                    return tileEntity.name === 'order' &&
+                        tileEntity !== self;
+                })
+                .invoke('deselect');
         }
     });
 
