@@ -38,6 +38,7 @@ var UnitVM = TileEntityVM.extend({
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
         this.center = {x: 8, y: 8};
+        this.adjustSize(-8, TILE_SIZE, -8, TILE_SIZE);
         this.pos.x = (this.m.x * TILE_SIZE) + HALF_TILE;
         this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
         this.updateHealthBar();
