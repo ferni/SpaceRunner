@@ -28,11 +28,8 @@ function BattleTurn(params) {
         if (!this.battle.isPlayerInIt(playerID)) {
             throw 'Player ' + playerID + ' is not in the battle.';
         }
-        _.each(orders, function(unitOrders) {
-            if (unitOrders.length === 0) {
-                return;
-            }
-            self.playersOrders[playerID][unitOrders[0].unitID] = unitOrders;
+        _.each(orders, function(unitOrders, unitID) {
+            self.playersOrders[playerID][unitID] = unitOrders;
         });
     };
     this.isPlayerReady = function(playerID) {

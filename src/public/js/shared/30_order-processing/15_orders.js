@@ -29,15 +29,13 @@ if (typeof exports !== 'undefined') {
         },
         toJson: function() {
             var ordersJson = {};
-            _.each(this.orders, function(unitsOrders) {
-                var unitID;
-                if (unitsOrders.length === 0) {
-                    return;
-                }
-                unitID = unitsOrders[0].unitID;
+            _.each(this.orders, function(unitsOrders, unitID) {
                 ordersJson[unitID] = _.map(unitsOrders, function(order) {
                     return order.toJson();
                 });
+                if (ordersJson[unitID].length === 0) {
+                    ordersJson[unitID] = 'empty';
+                }
             });
             return {
                 type: 'OrderPackage',
@@ -50,12 +48,11 @@ if (typeof exports !== 'undefined') {
                 throw 'OrderPackage json is of invalid type';
             }
             this.orders = {};
-            _.each(json.orders, function(unitsOrders) {
-                var unitID;
-                if (unitsOrders.length === 0) {
+            _.each(json.orders, function(unitsOrders, unitID) {
+                if (unitsOrders === 'empty') {
+                    self.orders[unitID] = [];
                     return;
                 }
-                unitID = unitsOrders[0].unitID;
                 self.orders[unitID] = _.map(unitsOrders, function(orderJson) {
                     return new sh.orders[orderJson.type](orderJson);
                 });

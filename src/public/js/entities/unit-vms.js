@@ -55,7 +55,7 @@ var UnitVM = TileEntityVM.extend({
         this.orders.subscribe(function(newValue) {
             var ordersObject = {};
             this.m.orders = newValue;
-            ordersObject[this.id] = newValue;
+            ordersObject[this.m.id] = newValue;
             $.post('/battle/sendorders',
                 {id: screen.id,//battle id
                     orders: new sh.OrderPackage(ordersObject).toJson()},

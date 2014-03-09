@@ -78,9 +78,11 @@ routes.add('sendorders', function(req, res, next) {
         } else {
             orders = {};
         }
-        _.each(orders, function(unitOrders) {
+        _.each(orders, function(unitOrders, unitID) {
+            unitID = parseInt(unitID, 10);
             _.each(unitOrders, function(order) {
-                if (!sh.verifyOrder(order, battle.ship, playerID)) {
+                if (order.unitID !== unitID ||
+                        !sh.verifyOrder(order, battle.ship, playerID)) {
                     ordersValid = false;
                     return;
                 }

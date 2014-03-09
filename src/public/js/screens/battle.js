@@ -27,6 +27,8 @@ screens.register('battle', ConnectedScreen.extend({
         $('#hp').html('[' + this.shipVM.hp + ']');
         //this.scriptPrediction = new ScriptPrediction(this);
         this.scriptPlayer = new ScriptPlayer(this);
+        me.input.bindKey(me.input.KEY.ESC, 'escape');
+        me.input.bindKey(me.input.KEY.D, 'delete');
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -44,6 +46,8 @@ screens.register('battle', ConnectedScreen.extend({
     },
     onDestroy: function() {
         'use strict';
+        me.input.unbindKey(me.input.KEY.ESC);
+        me.input.unbindKey(me.input.KEY.D);
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
@@ -117,6 +121,22 @@ screens.register('battle', ConnectedScreen.extend({
             $('#elapsed').html(elapsed);
             if (elapsed >= this.turnDuration) {
                 this.pause();
+            }
+        } else {
+            if (me.input.isKeyPressed('delete')) {
+                console.log('removing order');
+                _.chain(gs.selected)
+                    .where({name: 'order'})
+                    .each(function(orderVM) {
+                        var unit = gs.ship.getUnitByID(orderVM.m.unitID),
+                            unitVM = this.shipVM.getVM(unit);
+                        orderVM.deselect();
+                        unitVM.orders.remove(orderVM.m);
+                    }, this);
+
+            }
+            if (me.input.isKeyPressed('escape')) {
+                console.log('escape pressed');
             }
         }
         //return true;
