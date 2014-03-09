@@ -330,12 +330,6 @@ screens.register('battle', ConnectedScreen.extend({
             .where({name: 'unit'})
             .invoke('deselect');
     },
-    deselectOrders: function() {
-        'use strict';
-        _.chain(gs.selected)
-            .where({name: 'order'})
-            .invoke('deselect');
-    },
     updateUnitHud: function() {
         'use strict';
         var selected = _.where(gs.selected, {name: 'unit'});
