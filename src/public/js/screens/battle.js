@@ -180,9 +180,11 @@ screens.register('battle', ConnectedScreen.extend({
             if (this.dragBox) {
                 this.releaseDragBox();
             } else if (this.dragging) {//an order
-                this.dragging.m.destination = {x: mouse.x, y: mouse.y};
-                this.dragging.updatePos();
-                this.dragging.unitVM.orders.valueHasMutated();
+                if (!sh.v.equal(this.dragging.m.destination, mouse)) {
+                    this.dragging.m.destination = {x: mouse.x, y: mouse.y};
+                    this.dragging.updatePos();
+                    this.dragging.unitVM.orders.valueHasMutated();
+                }
                 this.dragging = null;
             } else if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
                     function(u) {
