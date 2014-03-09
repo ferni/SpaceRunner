@@ -188,8 +188,6 @@ screens.register('battle', ConnectedScreen.extend({
                         this.dragging.unitVM.orders.valueHasMutated();
                     } else {
                         this.dragging.m.destination = draggedOriginalPos;
-                        this.dragging.pos.x = draggedOriginalPos.x * TILE_SIZE;
-                        this.dragging.pos.y = draggedOriginalPos.y * TILE_SIZE;
                     }
                     this.dragging.updatePos();
                 }
@@ -224,8 +222,7 @@ screens.register('battle', ConnectedScreen.extend({
         var mouse = utils.getMouse(),
             mousePx = utils.lastMousePx;
         if (this.dragging) {
-            this.dragging.pos.x = mouse.x * TILE_SIZE;
-            this.dragging.pos.y = mouse.y * TILE_SIZE;
+            this.dragging.setX(mouse.x).setY(mouse.y);
             return;
         }
         if (this.dragBox) {
