@@ -172,7 +172,8 @@ screens.register('battle', ConnectedScreen.extend({
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
             unitsToGiveOrders,
-            enemies;
+            enemies,
+            draggedOriginalPos;
         if (!this.paused) {
             return;
         }
@@ -181,9 +182,16 @@ screens.register('battle', ConnectedScreen.extend({
                 this.releaseDragBox();
             } else if (this.dragging) {//an order
                 if (!sh.v.equal(this.dragging.m.destination, mouse)) {
+                    draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
+                    if (this.dragging.m.isValid(gs.ship, gs.player.id)) {
+                        this.dragging.unitVM.orders.valueHasMutated();
+                    } else {
+                        this.dragging.m.destination = draggedOriginalPos;
+                        this.dragging.pos.x = draggedOriginalPos.x * TILE_SIZE;
+                        this.dragging.pos.y = draggedOriginalPos.y * TILE_SIZE;
+                    }
                     this.dragging.updatePos();
-                    this.dragging.unitVM.orders.valueHasMutated();
                 }
                 this.dragging = null;
             } else if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
