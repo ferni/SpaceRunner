@@ -208,18 +208,18 @@ screens.register('battle', ConnectedScreen.extend({
     },
     mouseMove: function() {
         'use strict';
-        utils.getMouse();//so it stores last mouse position
-        var mouse = utils.lastMousePx;
+        var mouse = utils.getMouse(),
+            mousePx = utils.lastMousePx;
         if (this.dragBox) {
-            this.dragBox.updateFromMouse(mouse);
+            this.dragBox.updateFromMouse(mousePx);
         } else if (this.mouseDownPos &&
-                (this.mouseDownPos.x - mouse.x > 5 ||
-                mouse.x - this.mouseDownPos.x > 5 ||
-                this.mouseDownPos.y - mouse.y > 5 ||
-                mouse.y - this.mouseDownPos.y > 5)) {
+                (this.mouseDownPos.x - mousePx.x > 5 ||
+                mousePx.x - this.mouseDownPos.x > 5 ||
+                this.mouseDownPos.y - mousePx.y > 5 ||
+                mousePx.y - this.mouseDownPos.y > 5)) {
             //mouse exceeded 5 pixel threshold, start drag box.
             this.startDragBox(this.mouseDownPos);
-            this.dragBox.updateFromMouse(mouse);
+            this.dragBox.updateFromMouse(mousePx);
         }
     },
     giveMoveOrder: function(unitVMs, destination) {

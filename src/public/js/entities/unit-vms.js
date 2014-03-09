@@ -150,9 +150,7 @@ var UnitVM = TileEntityVM.extend({
         this.parent(ctx);
         this.pos.x = originalPos.x;
         this.pos.y = originalPos.y;
-        if (this.selected()) {
-            this.drawOrders(ctx);
-        }
+        this.drawOrders(ctx);
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
@@ -164,7 +162,9 @@ var UnitVM = TileEntityVM.extend({
             var to = sh.v.mul(o.getMarkerTile(), TILE_SIZE);
             to.x += HALF_TILE;
             to.y += HALF_TILE;
+            ctx.globalAlpha = o.alpha;
             draw.line(ctx, from, to, 'green', 2);
+            ctx.globalAlpha = 1;
             from = to;
         });
     },

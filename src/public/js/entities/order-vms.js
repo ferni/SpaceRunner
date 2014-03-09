@@ -39,6 +39,10 @@ var orderVMs = (function() {
             var tile = this.getMarkerTile();
             this.setX(tile.x);
             this.setY(tile.y);
+        },
+        hide: function() {
+            this.parent();
+            this.alpha = 0.5;
         }
     });
 
