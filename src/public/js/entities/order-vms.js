@@ -58,6 +58,13 @@ var orderVMs = (function() {
         onMouseDown: function() {
             this.parent();
             me.state.current().dragging = this;
+        },
+        update: function() {
+            this.parent();
+            if (me.state.current().dragging === this) {
+                utils.setCursor('move');
+            }
+            return true;
         }
     });
 
