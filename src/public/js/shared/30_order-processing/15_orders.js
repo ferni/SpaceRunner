@@ -65,8 +65,36 @@ if (typeof exports !== 'undefined') {
         init: function(json) {
             this.set('Order', ['unitID'], json);
             this.finished = false;
+        },
+        isValid: function(ship, playerID) {
+            var unit = ship.getUnitByID(this.unitID);
+            return unit && unit.ownerID === playerID;
         }
     });
+
+    function tileIsClear(time, ship, unit, tile) {
+        var units = ship.unitsMap.at(tile.x, tile.y),
+            arrivalTime = time + unit.getTimeForMoving(unit, tile, ship);
+        return (!units ||//there's no unit ahead
+            _.all(units, function(u) {
+                //or they're going away
+                return (u.moving &&
+                    sh.v.equal(u.moving.dest, tile) &&
+                    u.moving.arrivalTime <= arrivalTime
+                    );
+            })) &&
+
+            !_.any(ship.units,
+                function(u) {
+                    //no unit is moving there
+                    return (u.moving &&
+                        sh.v.equal(u.moving.dest, tile)) ||
+                        //no unit with higher rank prepared to move there
+                        (u.id > unit.id &&
+                            u.moveLock &&
+                            sh.v.equal(u.moveLock, tile));
+                });
+    }
 
     sh.orders = {};
     sh.orders.Move = sh.Order.extendShared({
@@ -130,7 +158,7 @@ if (typeof exports !== 'undefined') {
             }
             nextTile = {x: this.path[this.pathIndex][0],
                 y: this.path[this.pathIndex][1]};
-            if (this.tileIsClear(time, ship, unit, nextTile)) {
+            if (tileIsClear(time, ship, unit, nextTile)) {
                 return [new sh.actions.SetUnitProperty({
                     time: time,
                     unitID: unit.id,
@@ -140,31 +168,88 @@ if (typeof exports !== 'undefined') {
             }
             return [];
         },
-        tileIsClear: function(time, ship, unit, tile) {
-            var units = ship.unitsMap.at(tile.x, tile.y),
-                arrivalTime = time + unit.getTimeForMoving(unit, tile, ship);
-            return (!units ||//there's no unit ahead
-                _.all(units, function(u) {
-                    //or they're going away
-                    return (u.moving &&
-                            sh.v.equal(u.moving.dest, tile) &&
-                            u.moving.arrivalTime <= arrivalTime
-                            );
-                })) &&
-
-                !_.any(ship.units,
-                    function(u) {
-                        //no unit is moving there
-                        return (u.moving &&
-                            sh.v.equal(u.moving.dest, tile)) ||
-                            //no unit with higher rank prepared to move there
-                            (u.id > unit.id &&
-                                u.moveLock &&
-                                sh.v.equal(u.moveLock, tile));
-                    });
-        },
         toString: function() {
             return 'Move to ' + sh.v.str(this.destination);
+        },
+        isValid: function(ship, playerID) {
+            return this.parent(ship, playerID) &&
+                ship.isWalkable(this.destination.x, this.destination.y);
+        }
+    });
+
+    sh.orders.SeekAndDestroy = sh.Order.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('SeekAndDestroy', ['targetID'], json);
+        },
+        getActions: function(time, ship) {
+            var unit, target, nextTile, from;
+            if (this.finished) {
+                throw 'Order was already finished';
+            }
+            unit = ship.getUnitByID(this.unitID);
+            target = ship.getUnitByID(this.targetID);
+            if (!target || !target.isAlive()) {
+                //unit is already dead
+                this.finished = true;
+                return [];
+            }
+            if (unit.moving) {
+                return [];
+            }
+            if (unit.isInRange(target)) {
+                return [];
+            }
+            if (unit.moveLock) {
+                from = {x: unit.x,
+                    y: unit.y};
+                this.pathIndex++;
+                this.finished = this.pathIndex >= this.path.length;
+                return [new sh.actions.Move({
+                    time: time,
+                    unitID: unit.id,
+                    from: from,
+                    to: unit.moveLock,
+                    duration: unit.getTimeForMoving(from, unit.moveLock,
+                        ship)
+                })];
+            }
+            if (!this.path || this.pathOutOfTarget(this.path, target)) {
+                //find a path towards the target
+                this.path = pathfinder.findPath(unit.x, unit.y, target.x,
+                    target.y, new sh.PF.Grid(ship.width, ship.height,
+                        ship.getPfMatrix()));
+                this.pathIndex = 1;
+            }
+            if (this.path.length <= 1) {
+                return [];
+            }
+            nextTile = {x: this.path[this.pathIndex][0],
+                y: this.path[this.pathIndex][1]};
+            if (tileIsClear(time, ship, unit, nextTile)) {
+                return [new sh.actions.SetUnitProperty({
+                    time: time,
+                    unitID: unit.id,
+                    property: 'moveLock',
+                    value: nextTile
+                })];
+            }
+            return [];
+        },
+        pathOutOfTarget: function(path, target) {
+            var pathLast = _.last(path);
+            pathLast = {x: pathLast[0], y: pathLast[1]};
+            return !sh.v.equal(pathLast, target);
+        },
+        toString: function() {
+            return 'Seek & Destroy';
+        },
+        isValid: function(ship, playerID) {
+            var unit = ship.getUnitByID(this.unitID),
+                target = ship.getUnitByID(this.targetID);
+            return this.parent(ship, playerID) &&
+                target &&
+                unit.isEnemy(target);
         }
     });
 }());

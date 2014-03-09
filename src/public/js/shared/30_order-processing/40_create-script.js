@@ -7,7 +7,7 @@
 
 /*global require, module, exports*/
 
-var sh = require('../30_order-processing/30_verify-order'), _ = sh._;
+var sh = require('../30_order-processing/20_script'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports

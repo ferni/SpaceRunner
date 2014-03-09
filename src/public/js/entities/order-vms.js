@@ -45,5 +45,15 @@ var orderVMs = (function() {
             return this.m.destination;
         }
     });
+
+    orderVMs.SeekAndDestroy = OrderVM.extend({
+        init: function(order) {
+            this.parent(order, 'marker-red');
+        },
+        getMarkerTile: function() {
+            return gs.ship.getUnitByID(this.m.targetID);
+        }
+    });
+
     return orderVMs;
 }());

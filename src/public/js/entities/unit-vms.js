@@ -66,7 +66,7 @@ var UnitVM = TileEntityVM.extend({
                     console.error('Server error when submitting orders.');
                 });
         }, this);
-        this.isSelectable = true;
+        this.isSelectable = this.isMine();
     },
     getChanged: function() {
         'use strict';
@@ -160,8 +160,8 @@ var UnitVM = TileEntityVM.extend({
     drawOrders: function(ctx) {
         'use strict';
         var from = this.pos; //starting position
-        _.each(this.orders(), function(o) {
-            var to = sh.v.mul(o.destination, TILE_SIZE);
+        _.each(this.orderVMs, function(o) {
+            var to = sh.v.mul(o.getMarkerTile(), TILE_SIZE);
             to.x += HALF_TILE;
             to.y += HALF_TILE;
             draw.line(ctx, from, to, 'green', 2);
@@ -208,10 +208,12 @@ var UnitVM = TileEntityVM.extend({
     },
     onMouseUp: function() {
         'use strict';
-        //deselect all the units first
-        _.chain(gs.selected)
-            .where({name: 'unit'})
-            .invoke('deselect');
+        if (this.isSelectable) {
+            //deselect all the units first
+            _.chain(gs.selected)
+                .where({name: 'unit'})
+                .invoke('deselect');
+        }
         this.parent();
     },
     onSelected: function() {

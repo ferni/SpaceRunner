@@ -82,7 +82,7 @@ routes.add('sendorders', function(req, res, next) {
             unitID = parseInt(unitID, 10);
             _.each(unitOrders, function(order) {
                 if (order.unitID !== unitID ||
-                        !sh.verifyOrder(order, battle.ship, playerID)) {
+                        !order.isValid(battle.ship, playerID)) {
                     ordersValid = false;
                     return;
                 }

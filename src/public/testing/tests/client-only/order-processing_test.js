@@ -19,7 +19,7 @@ test('script creation', function() {
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
-    ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
+    ok(order.isValid(ship, 1), 'Order is valid');
     script = sh.createScript([[order]], ship, 3000, true);
     moveActions = script.byType('Move');
     equal(moveActions.length, 2, 'Script has two Move actions');
@@ -38,7 +38,7 @@ test('script creation\'s ship modifications', function() {
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
-    ok(sh.verifyOrder(order, ship, 1), 'Order is valid');
+    ok(order.isValid(ship, 1), 'Order is valid');
     sh.createScript([[order]], ship, 5000, true);
     equal(unit.x, prevX + 2, 'The unit position has been modified');
 });

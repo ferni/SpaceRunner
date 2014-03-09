@@ -171,14 +171,18 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
-            unitsToGiveOrders;
+            unitsToGiveOrders,
+            enemies;
         if (!this.paused) {
             return;
         }
         if (which === me.input.mouse.LEFT) {
             if (this.dragBox) {
                 this.releaseDragBox();
-            } else if (!gs.ship.hasUnits(mouse)) {
+            } else if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
+                    function(u) {
+                        return sh.v.equal(u, mouse);//no ally at mouse pos
+                    })) {
                 unitsToGiveOrders = _.filter(this.shipVM.selected(),
                     function(u) {
                         return u.orders().length === 0 ||
@@ -189,7 +193,14 @@ screens.register('battle', ConnectedScreen.extend({
                                 }));
                     });
                 if (unitsToGiveOrders.length > 0) {
-                    this.giveMoveOrder(unitsToGiveOrders, mouse);
+                    enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
+                        utils.isEnemy);
+                    if (enemies.length > 0) {
+                        this.giveSeekAndDestroyOrder(unitsToGiveOrders,
+                            enemies[0]);
+                    } else {
+                        this.giveMoveOrder(unitsToGiveOrders, mouse);
+                    }
                 }
             }
             this.mouseDownPos = null;
@@ -218,7 +229,19 @@ screens.register('battle', ConnectedScreen.extend({
                     unitID: u.m.id,
                     destination: destination
                 });
-            if (sh.verifyOrder(order, gs.ship, gs.player.id)) {
+            if (order.isValid(gs.ship, gs.player.id)) {
+                u.orders.push(order);
+            }
+        });
+    },
+    giveSeekAndDestroyOrder: function(unitVMs, target) {
+        'use strict';
+        _.each(unitVMs, function(u) {
+            var order = new sh.orders.SeekAndDestroy({
+                unitID: u.m.id,
+                targetID: target.id
+            });
+            if (order.isValid(gs.ship, gs.player.id)) {
                 u.orders.push(order);
             }
         });

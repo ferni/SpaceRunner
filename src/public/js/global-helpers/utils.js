@@ -121,6 +121,10 @@ var utils = {
         'use strict';
         return gs.player.id === unit.ownerID;
     },
+    isEnemy: function(unit) {
+        'use strict';
+        return gs.player.id !== unit.ownerID;
+    },
     /**
      * Adds or removes VMs from MelonJS engine
      * and from the vms array, so it matches the models array.
