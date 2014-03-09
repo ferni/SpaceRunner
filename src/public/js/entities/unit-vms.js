@@ -206,7 +206,7 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         console.log('melee unit attacked!');
     },
-    onMouseUp: function() {
+    onMouseDown: function() {
         'use strict';
         if (this.isSelectable) {
             //deselect all the units first

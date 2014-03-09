@@ -109,13 +109,13 @@ var TileEntityVM = me.ObjectEntity.extend({
     onMouseDown: function() {
         'use strict';
         //console.log('mouse down on ' + this.type);
+        if (this.isSelectable) {
+            this.select();
+        }
     },
     onMouseUp: function() {
         'use strict';
         //console.log('mouse up on ' + this.type);
-        if (this.isSelectable) {
-            this.select();
-        }
     },
     onMouseEnter: function() {
         'use strict';
