@@ -233,6 +233,25 @@ var UnitVM = TileEntityVM.extend({
         var x = tile.x, y = tile.y;
         return x >= this.m.x && x < this.m.x + this.trueSize(0) &&
             y >= this.m.y && y < this.m.y + this.trueSize(1);
+    },
+    /**
+     * Inserts an order after the last selected
+     * order. All orders following it are discarded.
+     * @param {Object} order
+     */
+    insertOrder: function(order) {
+        'use strict';
+        var lastSelected, removeFromIndex;
+        lastSelected = _.last(_.filter(this.orderVMs,
+            function(o) {return o.selected(); }));
+        if (lastSelected) {
+            removeFromIndex = this.orderVMs.indexOf(lastSelected) + 1;
+        } else {
+            removeFromIndex = 0;
+        }
+        this.m.orders.splice(removeFromIndex);
+        this.m.orders.push(order);
+        this.orders(this.m.orders);//so it updates the server and vms
     }
 });
 

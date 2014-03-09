@@ -185,12 +185,10 @@ screens.register('battle', ConnectedScreen.extend({
                     })) {
                 unitsToGiveOrders = _.filter(this.shipVM.selected(),
                     function(u) {
-                        return u.orders().length === 0 ||
-                            (_.last(u.orderVMs).selected() &&
-                            //can't place order in same spot as another order
-                                !_.any(u.orderVMs, function(o) {
-                                    return sh.v.equal(o.getMarkerTile(), mouse);
-                                }));
+                        //can't place order in same spot as another order
+                        return !_.any(u.orderVMs, function(o) {
+                            return sh.v.equal(o.getMarkerTile(), mouse);
+                        });
                     });
                 if (unitsToGiveOrders.length > 0) {
                     enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
@@ -230,7 +228,7 @@ screens.register('battle', ConnectedScreen.extend({
                     destination: destination
                 });
             if (order.isValid(gs.ship, gs.player.id)) {
-                u.orders.push(order);
+                u.insertOrder(order);
             }
         });
     },
@@ -242,7 +240,7 @@ screens.register('battle', ConnectedScreen.extend({
                 targetID: target.id
             });
             if (order.isValid(gs.ship, gs.player.id)) {
-                u.orders.push(order);
+                u.insertOrder(order);
             }
         });
     },
