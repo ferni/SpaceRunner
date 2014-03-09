@@ -27,7 +27,7 @@ sh.Unit = sh.TileEntity.extendShared({
     maxHP: 100,
     meleeDamage: 20,
     attackCooldown: 500,//time (ms) between each attack
-    attackRange: 0,
+    attackRange: 1,
     imageFacesRight: true,
     blocking: true,//if it slows enemy units passing by
     init: function(json) {
