@@ -51,7 +51,9 @@ var TileEntityVM = me.ObjectEntity.extend({
         };
         this.select = function() {
             selected = true;
-            gs.selected.push(this);
+            if (!_.contains(gs.selected, this)) {
+                gs.selected.push(this);
+            }
             this.onSelected();
         };
         this.deselect = function() {
