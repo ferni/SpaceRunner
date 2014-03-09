@@ -159,7 +159,7 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         var from = this.pos; //starting position
         _.each(this.orderVMs, function(o) {
-            var to = sh.v.mul(o.getMarkerTile(), TILE_SIZE);
+            var to = {x: o.pos.x, y: o.pos.y};
             to.x += HALF_TILE;
             to.y += HALF_TILE;
             ctx.globalAlpha = o.alpha;
