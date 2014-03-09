@@ -382,6 +382,20 @@ exports.BattleSetUp = function(params) {
         return false;
     }
 
+    function setSeekAndDestroyOrderForShortestPath(grid, unit, targets,
+                                                   orders) {
+        var paths = getPaths(grid.clone(), unit, targets);
+        if (paths.length > 0) {
+            orders[unit.id] = [new sh.orders.SeekAndDestroy({
+                unitID: unit.id,
+                targetID: _.find(targets, function(t) {
+                    return sh.v.equal(pathDestination(getShortest(paths)), t);
+                }).id
+            })];
+            return true;
+        }
+        return false;
+    }
     /**
      * An AI controlled player.
      * @type {*}
@@ -400,7 +414,10 @@ exports.BattleSetUp = function(params) {
                 grid = new sh.PF.Grid(ship.width, ship.height,
                     ship.getPfMatrix()),
                 gridWithUnits = makeUnitsUnwalkable(ship, grid.clone()),
-                myUnits = ship.getPlayerUnits(this.id),
+                myUnits = _.groupBy(ship.getPlayerUnits(this.id), 'type'),
+                enemyUnits = _.filter(ship.units, function(u) {
+                    return u.ownerID !== this.id;
+                }, this),
                 orders = {},
                 tiles = getWeakSpotsTiles(ship),
                 free = [],
@@ -414,7 +431,7 @@ exports.BattleSetUp = function(params) {
                     free.push(t);
                 }
             });
-            _.each(myUnits, function(unit) {
+            _.each(myUnits.Critter, function(unit) {
                 if (ship.itemsMap.at(unit.x, unit.y) instanceof
                         sh.items.WeakSpot) {
                     //already at the spot, don't move
@@ -438,6 +455,10 @@ exports.BattleSetUp = function(params) {
                 //4th optimal: to occupied tile through units
                 setOrderForShortestPath(grid.clone(), unit,
                         occupied, orders);
+            });
+            _.each(myUnits.MetalSpider, function(unit) {
+                setSeekAndDestroyOrderForShortestPath(grid.clone(), unit,
+                    enemyUnits, orders);
             });
             return orders;
         }
