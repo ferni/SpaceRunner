@@ -106,7 +106,8 @@ if (typeof exports !== 'undefined') {
             if (unit.moveLock) {
                 from = {x: unit.x,
                     y: unit.y};
-                this.finished = this.pathIndex >= this.path.length - 1;
+                this.pathIndex++;
+                this.finished = this.pathIndex >= this.path.length;
                 return [new sh.actions.Move({
                     time: time,
                     unitID: unit.id,
@@ -125,8 +126,6 @@ if (typeof exports !== 'undefined') {
                 this.path = pathfinder.findPath(unit.x, unit.y, dest.x, dest.y,
                     this.grid.clone());
                 this.pathIndex = 1;
-            } else {
-                this.pathIndex++;
             }
             if (this.pathIndex >= this.path.length) {
                 this.finished = true;
@@ -147,25 +146,24 @@ if (typeof exports !== 'undefined') {
         tileIsClear: function(time, ship, unit, tile) {
             var units = ship.unitsMap.at(tile.x, tile.y),
                 arrivalTime = time + unit.getTimeForMoving(unit, tile, ship);
-            return (!units || //there's no unit ahead
-                _.all(units, function(u) { //or...
-                    //it's from a different team
-                    return u.ownerID !== unit.ownerID ||
-                        //or it's going away
-                        (u.moving &&
-                            !_.isEqual(u.moving.dest, tile) &&
+            return (!units ||//there's no unit ahead
+                _.all(units, function(u) {
+                    //or they're going away
+                    return (u.moving &&
+                            sh.v.equal(u.moving.dest, tile) &&
                             u.moving.arrivalTime <= arrivalTime
                             );
                 })) &&
 
-                !_.any(ship.getPlayerUnits(unit.ownerID),
+                !_.any(ship.units,
                     function(u) {
                         //no unit is moving there
                         return (u.moving &&
-                            _.isEqual(u.moving.dest, tile)) ||
+                            sh.v.equal(u.moving.dest, tile)) ||
                             //no unit with higher rank prepared to move there
                             (u.id > unit.id &&
-                                _.isEqual(u.moveLock, tile));
+                                u.moveLock &&
+                                sh.v.equal(u.moveLock, tile));
                     });
         },
         toString: function() {
