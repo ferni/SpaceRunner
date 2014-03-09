@@ -26,15 +26,15 @@ var orderVMs = (function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
         },
         onSelected: function() {
-            var self = this;
             this.parent();
-            //deselect the rest of the orders
+            //deselect the rest of the orders and units
             _.chain(gs.selected)
                 .filter(function(tileEntity) {
-                    return tileEntity.name === 'order' &&
-                        tileEntity !== self;
-                })
+                    return tileEntity !== this &&
+                        tileEntity !== this.unitVM;
+                }, this)
                 .invoke('deselect');
+            this.unitVM.select();
         },
         updatePos: function() {
             var tile = this.getMarkerTile();
@@ -44,6 +44,7 @@ var orderVMs = (function() {
         hide: function() {
             this.parent();
             this.alpha = 0.5;
+            this.isSelectable = true;
         }
     });
 
