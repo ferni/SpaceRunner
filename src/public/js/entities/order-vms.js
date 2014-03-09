@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, TILE_SIZE, _, gs*/
+/*global TileEntityVM, TILE_SIZE, _, gs, me, utils*/
 
 var orderVMs = (function() {
     'use strict';
@@ -15,6 +15,7 @@ var orderVMs = (function() {
         init: function(order, image) {
             var pos;
             this.m = order;
+            this.unitVM = me.state.current().shipVM.getUnitVMByID(order.unitID);
             pos = this.getMarkerTile();
             this.isSelectable = true;
             this.parent(pos.x, pos.y, {image: image,
@@ -52,6 +53,10 @@ var orderVMs = (function() {
         },
         getMarkerTile: function() {
             return this.m.destination;
+        },
+        onMouseDown: function() {
+            this.parent();
+            me.state.current().dragging = this;
         }
     });
 

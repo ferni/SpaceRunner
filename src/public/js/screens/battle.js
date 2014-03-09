@@ -179,6 +179,11 @@ screens.register('battle', ConnectedScreen.extend({
         if (which === me.input.mouse.LEFT) {
             if (this.dragBox) {
                 this.releaseDragBox();
+            } else if (this.dragging) {//an order
+                this.dragging.m.destination = {x: mouse.x, y: mouse.y};
+                this.dragging.updatePos();
+                this.dragging.unitVM.orders.valueHasMutated();
+                this.dragging = null;
             } else if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
                     function(u) {
                         return sh.v.equal(u, mouse);//no ally at mouse pos
@@ -208,6 +213,9 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var mouse = utils.getMouse(),
             mousePx = utils.lastMousePx;
+        if (this.dragging) {
+            return;
+        }
         if (this.dragBox) {
             this.dragBox.updateFromMouse(mousePx);
         } else if (this.mouseDownPos &&
