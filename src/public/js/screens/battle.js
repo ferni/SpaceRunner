@@ -124,7 +124,6 @@ screens.register('battle', ConnectedScreen.extend({
             }
         } else {
             if (me.input.isKeyPressed('delete')) {
-                console.log('removing order');
                 _.chain(gs.selected)
                     .where({name: 'order'})
                     .each(function(orderVM) {
@@ -136,7 +135,7 @@ screens.register('battle', ConnectedScreen.extend({
 
             }
             if (me.input.isKeyPressed('escape')) {
-                console.log('escape pressed');
+                _.invoke(gs.selected, 'deselect');
             }
         }
         //return true;
