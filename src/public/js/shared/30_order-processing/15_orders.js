@@ -132,7 +132,8 @@ if (typeof exports !== 'undefined') {
                 from = {x: unit.x,
                     y: unit.y};
                 this.pathIndex++;
-                this.finished = this.pathIndex >= this.path.length;
+                this.finished = !this.path ||
+                    this.pathIndex >= this.path.length;
                 return [new sh.actions.Move({
                     time: time,
                     unitID: unit.id,
