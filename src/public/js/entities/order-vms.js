@@ -34,6 +34,11 @@ var orderVMs = (function() {
                         tileEntity !== self;
                 })
                 .invoke('deselect');
+        },
+        updatePos: function() {
+            var tile = this.getMarkerTile();
+            this.setX(tile.x);
+            this.setY(tile.y);
         }
     });
 

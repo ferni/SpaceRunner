@@ -285,6 +285,8 @@ screens.register('battle', ConnectedScreen.extend({
         //empty the script
         this.scriptServer = [];
 
+        _.invoke(me.game.getEntityByName('order'), 'updatePos');
+
         this.paused = true;
     },
     resume: function() {
