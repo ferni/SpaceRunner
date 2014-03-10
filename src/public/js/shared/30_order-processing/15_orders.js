@@ -77,8 +77,8 @@ if (typeof exports !== 'undefined') {
             arrivalTime = time + unit.getTimeForMoving(unit, tile, ship);
         return (!units ||//there's no unit ahead
             _.all(units, function(u) {
-                //or they're going away
-                return (u.moving &&
+                return !u.isAlive() ||//or they're either dead...
+                    (u.moving && //...or they're going away
                     sh.v.equal(u.moving.dest, tile) &&
                     u.moving.arrivalTime <= arrivalTime
                     );
