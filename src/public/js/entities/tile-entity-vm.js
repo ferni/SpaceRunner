@@ -206,6 +206,7 @@ var TileEntityVM = me.ObjectEntity.extend({
      */
     onDestroyEvent: function() {
         'use strict';
+        this.parent();
         me.input.releaseMouseEvent('mousedown', this);
         me.input.releaseMouseEvent('mouseup', this);
     },

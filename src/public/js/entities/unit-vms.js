@@ -252,6 +252,13 @@ var UnitVM = TileEntityVM.extend({
         this.m.orders.splice(removeFromIndex);
         this.m.orders.push(order);
         this.orders(this.m.orders);//so it updates the server and vms
+    },
+    onDestroyEvent: function() {
+        'use strict';
+        this.parent();
+        _.each(this.orderVMs, function(o) {
+            me.game.remove(o, true);
+        });
     }
 });
 
