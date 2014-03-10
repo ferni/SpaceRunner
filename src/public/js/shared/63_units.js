@@ -237,7 +237,7 @@ sh.units = (function() {
             this.speed = 2;
             this.maxHP = 100;
             this.attackCooldown = 800;
-            this.meleeDamage = 30;
+            this.meleeDamage = 20;
             this.attackRange = 3;
             this.parent(json);
             this.set('Zealot', [], json);
@@ -259,9 +259,9 @@ sh.units = (function() {
         init: function(json) {
             this.imgIndex = 28;
             this.speed = 3;
-            this.maxHP = 200;
-            this.attackCooldown = 1500;
-            this.meleeDamage = 15;
+            this.maxHP = 160;
+            this.attackCooldown = 1200;
+            this.meleeDamage = 25;
             this.imageFacesRight = false;
             this.parent(json);
             this.set('MetalSpider', [], json);
