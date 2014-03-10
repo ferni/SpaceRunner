@@ -49,6 +49,8 @@ var orderVMs = (function() {
     });
 
     orderVMs.Move = OrderVM.extend({
+        lightColor: '#00AA00',//for the lines
+        darkColor: '#006000',
         init: function(order) {
             this.parent(order, 'marker-green');
         },
@@ -69,6 +71,8 @@ var orderVMs = (function() {
     });
 
     orderVMs.SeekAndDestroy = OrderVM.extend({
+        lightColor: '#CC0000',//for the lines
+        darkColor: '#500000',
         init: function(order) {
             this.parent(order, 'marker-red');
         },

@@ -162,11 +162,18 @@ var UnitVM = TileEntityVM.extend({
             var to = {x: o.pos.x, y: o.pos.y};
             to.x += HALF_TILE;
             to.y += HALF_TILE;
+            ctx.save();
             ctx.globalAlpha = o.alpha;
-            draw.line(ctx, from, to, 'green', 2);
-            ctx.globalAlpha = 1;
+            if (ctx.setLineDash && this.selected()) {
+                ctx.setLineDash([5, 5]);
+                ctx.lineDashOffset = draw.getLineDashOffset();
+                draw.line(ctx, from, to, o.darkColor, 2);
+                ctx.lineDashOffset += 5;
+            }
+            draw.line(ctx, from, to, o.lightColor, 2);
+            ctx.restore();
             from = to;
-        });
+        }, this);
     },
     isMine: function() {
         'use strict';
