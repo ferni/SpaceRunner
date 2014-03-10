@@ -81,3 +81,23 @@
 #battle-screen #unit-orders li.sortable-dragging {
 
 }
+
+#battle-screen .delete-button {
+    font-size: 13px;
+    width: 20px;
+    height: 20px;
+    margin: 3px;
+    border: lightgray solid 1px;
+    color: lightgray;
+    background-color: #520405;
+
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+}
+
+#battle-screen .delete-button:hover {
+    background-color: #a91d1f;
+    border-color: white;
+    color: white;
+}
+

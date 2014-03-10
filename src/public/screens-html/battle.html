@@ -10,7 +10,10 @@
                 HP: <span data-bind="text:m.hp"></span>
             </div>
             <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
-                <li data-bind="text:toString()"></li>
+                <li>
+                    <span data-bind="text:toString()"></span>
+                    <button class="delete-button" data-bind="click:$parent.removeOrder.bind($data, $root.selectedUnit())">x</button>
+                </li>
             </ul>
         </div>
         <!-- /ko -->

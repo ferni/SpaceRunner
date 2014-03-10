@@ -260,6 +260,10 @@ var UnitVM = TileEntityVM.extend({
         this.m.orders.push(order);
         this.orders(this.m.orders);//so it updates the server and vms
     },
+    removeOrder: function(self, order) {
+        'use strict';
+        self.orders.remove(order);
+    },
     onDestroyEvent: function() {
         'use strict';
         this.parent();
