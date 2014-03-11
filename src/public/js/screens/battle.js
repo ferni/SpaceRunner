@@ -264,7 +264,9 @@ screens.register('battle', ConnectedScreen.extend({
                     //can't place order in same spot as another order
                     return !_.any(u.orderVMs, function(o) {
                         return sh.v.equal(o.getMarkerTile(), mouse);
-                    });
+                    }) &&
+                        (u.orders().length === 0 ||
+                            _.last(u.orderVMs).selected());
                 });
             if (unitsToGiveOrders.length > 0) {
                 enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
