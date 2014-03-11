@@ -260,7 +260,7 @@ sh.units = (function() {
             this.imgIndex = 28;
             this.speed = 3;
             this.maxHP = 160;
-            this.attackCooldown = 1200;
+            this.attackCooldown = 1500;
             this.meleeDamage = 25;
             this.imageFacesRight = false;
             this.parent(json);
