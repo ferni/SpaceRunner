@@ -77,6 +77,7 @@ var ShipVM = function(shipModel) {
     };
 
     this.getUnitVMByID = function(id) {
+        id = parseInt(id, 10);
         return _.find(this.unitVMs, function(uVM) {
             return uVM.m.id === id;
         });
