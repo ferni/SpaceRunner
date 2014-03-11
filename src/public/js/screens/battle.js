@@ -6,7 +6,7 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, ko*/
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
@@ -151,8 +151,25 @@ screens.register('battle', ConnectedScreen.extend({
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
             }
+            ctx.save();
+            ctx.globalAlpha = 0.7;
+            _.each(this.previewOrders, function(o) {
+                var unitVM = this.shipVM.getUnitVMByID(o.m.unitID),
+                    index = unitVM.getInsertOrderIndex() - 1,
+                    from,
+                    to = {x: o.pos.x + HALF_TILE, y: o.pos.y + HALF_TILE};
+                if (index >= 0) {
+                    from = {x: unitVM.orderVMs[index].pos.x + HALF_TILE,
+                        y: unitVM.orderVMs[index].pos.y + HALF_TILE};
+                } else {
+                    from = unitVM.pos;
+                }
+                draw.line(ctx, from, to, o.lightColor, 2);
+                o.draw(ctx);
+            }, this);
+            ctx.restore();
         }
-        _.invoke(this.previewOrders, 'draw', ctx);
+
         //highlight highlighted tiles
         /*_.each(this.highlightedTiles, function(t){
             screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);

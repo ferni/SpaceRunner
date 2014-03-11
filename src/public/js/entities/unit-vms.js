@@ -248,17 +248,15 @@ var UnitVM = TileEntityVM.extend({
      */
     insertOrder: function(order) {
         'use strict';
-        var lastSelected, removeFromIndex;
-        lastSelected = _.last(_.filter(this.orderVMs,
-            function(o) {return o.selected(); }));
-        if (lastSelected) {
-            removeFromIndex = this.orderVMs.indexOf(lastSelected) + 1;
-        } else {
-            removeFromIndex = 0;
-        }
-        this.m.orders.splice(removeFromIndex);
+        this.m.orders.splice(this.getInsertOrderIndex());
         this.m.orders.push(order);
         this.orders(this.m.orders);//so it updates the server and vms
+    },
+    getInsertOrderIndex: function() {
+        'use strict';
+        var lastSelected = _.last(_.filter(this.orderVMs,
+            function(o) {return o.selected(); }));
+        return lastSelected ? this.orderVMs.indexOf(lastSelected) + 1 : 0;
     },
     removeOrder: function(self, order) {
         'use strict';
