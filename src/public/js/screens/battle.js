@@ -155,10 +155,13 @@ screens.register('battle', ConnectedScreen.extend({
             ctx.save();
             ctx.globalAlpha = 0.7;
             _.each(this.previewOrders, function(o) {
-                var unitVM = this.shipVM.getUnitVMByID(o.m.unitID),
-                    index = unitVM.getInsertOrderIndex() - 1,
-                    from,
-                    to = {x: o.pos.x + HALF_TILE, y: o.pos.y + HALF_TILE};
+                var unitVM, index, from, to;
+                unitVM = this.shipVM.getUnitVMByID(o.m.unitID);
+                if (!unitVM) {
+                    return;//is probably dead
+                }
+                index = unitVM.getInsertOrderIndex() - 1;
+                to = {x: o.pos.x + HALF_TILE, y: o.pos.y + HALF_TILE};
                 if (index >= 0) {
                     from = {x: unitVM.orderVMs[index].pos.x + HALF_TILE,
                         y: unitVM.orderVMs[index].pos.y + HALF_TILE};
