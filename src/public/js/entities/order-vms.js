@@ -12,6 +12,7 @@ var orderVMs = (function() {
     var orderVMs = {},
         OrderVM;
     OrderVM = TileEntityVM.extend({
+        isPreview: false,
         init: function(order, image) {
             var pos;
             this.m = order;
@@ -44,7 +45,6 @@ var orderVMs = (function() {
         hide: function() {
             this.parent();
             this.alpha = 0.5;
-            this.isSelectable = true;
         }
     });
 
@@ -59,7 +59,9 @@ var orderVMs = (function() {
         },
         onMouseDown: function() {
             this.parent();
-            me.state.current().dragging = this;
+            if (!this.isPreview && !this.hidden()) {
+                me.state.current().dragging = this;
+            }
         },
         update: function() {
             this.parent();

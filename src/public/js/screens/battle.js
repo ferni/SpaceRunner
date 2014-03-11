@@ -43,6 +43,9 @@ screens.register('battle', ConnectedScreen.extend({
             //update script prediction with new script model
             //this.scriptPrediction.predict();
         }
+        //orders shown for each unit when moving the mouse around
+        this.previewOrders = {};
+        this.prevMouse = {x: 0, y: 0};
     },
     onDestroy: function() {
         'use strict';
@@ -149,7 +152,7 @@ screens.register('battle', ConnectedScreen.extend({
                 this.dragBox.draw(ctx);
             }
         }
-
+        _.invoke(this.previewOrders, 'draw', ctx);
         //highlight highlighted tiles
         /*_.each(this.highlightedTiles, function(t){
             screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
@@ -171,9 +174,8 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
-            unitsToGiveOrders,
-            enemies,
-            draggedOriginalPos;
+            draggedOriginalPos,
+            self = this;
         if (!this.paused) {
             return;
         }
@@ -181,6 +183,7 @@ screens.register('battle', ConnectedScreen.extend({
             if (this.dragBox) {
                 this.releaseDragBox();
             } else if (this.dragging) {//an order
+                console.log('mouse up while dragging activated');
                 if (!sh.v.equal(this.dragging.m.destination, mouse)) {
                     draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
@@ -192,35 +195,23 @@ screens.register('battle', ConnectedScreen.extend({
                     this.dragging.updatePos();
                 }
                 this.dragging = null;
-            } else if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
-                    function(u) {
-                        return sh.v.equal(u, mouse);//no ally at mouse pos
-                    })) {
-                unitsToGiveOrders = _.filter(this.shipVM.selected(),
-                    function(u) {
-                        //can't place order in same spot as another order
-                        return !_.any(u.orderVMs, function(o) {
-                            return sh.v.equal(o.getMarkerTile(), mouse);
-                        });
-                    });
-                if (unitsToGiveOrders.length > 0) {
-                    enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
-                        utils.isEnemy);
-                    if (enemies.length > 0) {
-                        this.giveSeekAndDestroyOrder(unitsToGiveOrders,
-                            enemies[0]);
-                    } else {
-                        this.giveMoveOrder(unitsToGiveOrders, mouse);
-                    }
-                }
+            } else {
+                _.each(this.previewOrders, function(orderVM, unitID) {
+                    var unit = self.shipVM.getUnitVMByID(unitID);
+                    unit.insertOrder(orderVM.m);
+                });
             }
+            this.previewOrders = {};
             this.mouseDownPos = null;
         }
     },
     mouseMove: function() {
         'use strict';
         var mouse = utils.getMouse(),
-            mousePx = utils.lastMousePx;
+            mousePx = utils.lastMousePx,
+            unitsToGiveOrders,
+            enemies,
+            self = this;
         if (this.dragging) {
             this.dragging.setX(mouse.x).setY(mouse.y);
             return;
@@ -235,31 +226,55 @@ screens.register('battle', ConnectedScreen.extend({
             //mouse exceeded 5 pixel threshold, start drag box.
             this.startDragBox(this.mouseDownPos);
             this.dragBox.updateFromMouse(mousePx);
+        } else {
+            if (sh.v.equal(mouse, this.prevMouse)) {
+                return;
+            }
+            //-- ORDER PREVIEW --
+            this.previewOrders = {};
+            if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
+                    function(u) {
+                        return sh.v.equal(u, mouse);//no ally at mouse pos
+                    })) {
+                unitsToGiveOrders = _.filter(this.shipVM.selected(),
+                    function(u) {
+                        //can't place order in same spot as another order
+                        return !_.any(u.orderVMs, function(o) {
+                            return sh.v.equal(o.getMarkerTile(), mouse);
+                        });
+                    });
+                if (unitsToGiveOrders.length > 0) {
+                    enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
+                        utils.isEnemy);
+                    if (enemies.length > 0) {
+                        _.each(unitsToGiveOrders, function(u) {
+                            var order = new sh.orders.SeekAndDestroy({
+                                unitID: u.m.id,
+                                targetID: enemies[0].id
+                            });
+                            if (order.isValid(gs.ship, gs.player.id)) {
+                                self.previewOrders[u.m.id] = make.vm(order);
+                                self.previewOrders[u.m.id].isPreview = true;
+                                self.previewOrders[u.m.id].isSelectable = false;
+                            }
+                        });
+                    } else {
+                        _.each(unitsToGiveOrders, function(u) {
+                            var order = new sh.orders.Move({
+                                unitID: u.m.id,
+                                destination: mouse
+                            });
+                            if (order.isValid(gs.ship, gs.player.id)) {
+                                self.previewOrders[u.m.id] = make.vm(order);
+                                self.previewOrders[u.m.id].isPreview = true;
+                                self.previewOrders[u.m.id].isSelectable = false;
+                            }
+                        });
+                    }
+                }
+            }
         }
-    },
-    giveMoveOrder: function(unitVMs, destination) {
-        'use strict';
-        _.each(unitVMs, function(u) {
-            var order = new sh.orders.Move({
-                    unitID: u.m.id,
-                    destination: destination
-                });
-            if (order.isValid(gs.ship, gs.player.id)) {
-                u.insertOrder(order);
-            }
-        });
-    },
-    giveSeekAndDestroyOrder: function(unitVMs, target) {
-        'use strict';
-        _.each(unitVMs, function(u) {
-            var order = new sh.orders.SeekAndDestroy({
-                unitID: u.m.id,
-                targetID: target.id
-            });
-            if (order.isValid(gs.ship, gs.player.id)) {
-                u.insertOrder(order);
-            }
-        });
+        this.prevMouse = mouse;
     },
     getModelDifferenceUrl: function() {
         'use strict';
