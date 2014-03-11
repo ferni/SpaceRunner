@@ -39,7 +39,7 @@ var make = (function() {
     };
     /**
      *
-     * @param {sh.Item} model the item.
+     * @param {Object} model The model. Can be an Item, Unit or Order.
      */
     make.vm = function(model) {
         var VMConstructor;
