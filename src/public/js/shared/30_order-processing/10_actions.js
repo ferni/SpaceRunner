@@ -24,7 +24,8 @@ if (typeof exports !== 'undefined') {
      * A point in time in the Script in which a change in the model happens.
      * Each action has a modelChanges Array,
      * with the model changes made by that action.
-     * @param {int} timeOffset The time in ms in which this change occurs.
+     * @param {int} timeOffset The time in ms in which this change occurs,
+     * relative to the action's time.
      * @param {Function} apply The function that would change stuff around.
      * @constructor
      * @param {Action} action The action that originated the model change.
