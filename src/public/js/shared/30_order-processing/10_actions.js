@@ -165,14 +165,22 @@ if (typeof exports !== 'undefined') {
     sh.actions.Attack = Action.extendShared({
         init: function(json) {
             this.parent(json);
+            if (!json.damageDelay) {
+                json.damageDelay = 0;
+            }
             this.set('Attack',
-                ['attackerID', 'receiverID', 'damage', 'duration'], json);
+                ['attackerID', 'receiverID', 'damage', 'duration',
+                    'damageDelay'], json);
+            if (this.damageDelay > this.duration) {
+                throw 'Attack action\'s damage delay can\'t be more than the ' +
+                    'duration';
+            }
             this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
+            this.addChange(self.damageDelay, function(ship) {
                 var attacker = ship.getUnitByID(self.attackerID),
                     receiver = ship.getUnitByID(self.receiverID);
                 attacker.onCooldown = true;

@@ -121,17 +121,10 @@ var ScriptPlayer = function(battleScreen) {
     }
 
     function playAttackAction(action) {
-        var receiver = gs.ship.getUnitByID(action.receiverID),
-            receiverVM = battleScreen.shipVM.getVM(receiver),
-            attacker = gs.ship.getUnitByID(action.attackerID),
-            attackerVM = battleScreen.shipVM.getVM(attacker);
-
-        attackerVM.playAttack(receiverVM.pos);
-
-        me.game.add(new ui.StarHit(receiverVM), 2000);
-        me.game.add(new ui.FloatingNumber(receiverVM.pos, -(action.damage)),
-            2000);
-        me.game.sort();
+        var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+        battleScreen.shipVM
+            .getUnitVMByID(action.attackerID)
+            .playAttack(receiverVM.pos);
     }
 
     function playDamageShipAction(action) {
@@ -148,7 +141,7 @@ var ScriptPlayer = function(battleScreen) {
     }
 
 
-    function playAction(action, elapsed) {
+    function playAction(action) {
         switch (action.type) {
         case 'Move':
             playMoveAction(action);

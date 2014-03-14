@@ -5,7 +5,8 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE, sh, _, me, ko, gs, $*/
+/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE,
+sh, _, me, ko, gs, $, ui*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -74,7 +75,7 @@ var UnitVM = TileEntityVM.extend({
             changes = {};
         _.each(this.prevModelState, function(value, propName) {
             if (self.m[propName] !== value) {
-                changes[propName] = true;
+                changes[propName] = {previous: self.prevModelState[propName]};
                 self.prevModelState[propName] = self.m[propName];
             }
         });
@@ -90,6 +91,7 @@ var UnitVM = TileEntityVM.extend({
         this.parent();
         if (changed.hp) {
             this.updateHealthBar();
+            this.playDamage(changed.hp.previous);
             if (!this.m.isAlive()) {
                 this.setCurrentAnimation('dead');
                 this.alpha = 0.4;
@@ -212,6 +214,18 @@ var UnitVM = TileEntityVM.extend({
     playAttack: function() {
         'use strict';
         console.log('melee unit attacked!');
+    },
+    /**
+     * Shows a hit on the unit and the amount dealt as a floating number
+     * above the unit.
+     * @param {int} previousHP
+     */
+    playDamage: function(previousHP) {
+        'use strict';
+        me.game.add(new ui.StarHit(this), 2000);
+        me.game.add(new ui.FloatingNumber(this.pos, this.m.hp - previousHP),
+            2000);
+        me.game.sort();
     },
     onMouseDown: function() {
         'use strict';

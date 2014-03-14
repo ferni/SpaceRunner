@@ -241,6 +241,12 @@ sh.units = (function() {
             this.attackRange = 3;
             this.parent(json);
             this.set('Zealot', [], json);
+        },
+        getAttackActions: function(turnTime, ship) {
+            return _.map(this.parent(turnTime, ship), function(action) {
+                action.damageDelay = 300;
+                return action;
+            });
         }
     });
     u.Critter = sh.Unit.extendShared({
