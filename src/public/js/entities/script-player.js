@@ -195,6 +195,7 @@ var ScriptPlayer = function(battleScreen) {
         if (nextChange < modelChanges.length &&
                 elapsed >= modelChanges[nextChange].time) {
             modelChanges[nextChange].apply(gs.ship);
+            _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
             nextChange++;
         }
 
@@ -208,6 +209,7 @@ var ScriptPlayer = function(battleScreen) {
         for (nextChange; nextChange < modelChanges.length; nextChange++) {
             modelChanges[nextChange].apply(gs.ship);
         }
+        _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up
         gs.ship.endOfTurnReset();
     };

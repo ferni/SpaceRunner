@@ -43,14 +43,6 @@ var UnitVM = TileEntityVM.extend({
         this.pos.x = (this.m.x * TILE_SIZE) + HALF_TILE;
         this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
         this.updateHealthBar();
-        this.prevModelState = {
-            x: this.m.x,
-            y: this.m.y,
-            hp: this.m.hp,
-            moving: this.m.moving,
-            inCombat: this.m.inCombat,
-            dizzy: this.m.dizzy
-        };
         this.orderVMs = [];
         this.orders = ko.observableArray(unitModel.orders);
         this.orders.subscribe(function(newValue) {
@@ -68,18 +60,7 @@ var UnitVM = TileEntityVM.extend({
                 });
         }, this);
         this.isSelectable = this.isMine();
-    },
-    getChanged: function() {
-        'use strict';
-        var self = this,
-            changes = {};
-        _.each(this.prevModelState, function(value, propName) {
-            if (self.m[propName] !== value) {
-                changes[propName] = {previous: self.prevModelState[propName]};
-                self.prevModelState[propName] = self.m[propName];
-            }
-        });
-        return changes;
+        this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy']);
     },
     updateHealthBar: function() {
         'use strict';
@@ -87,30 +68,7 @@ var UnitVM = TileEntityVM.extend({
     },
     update: function() {
         'use strict';
-        var changed = this.getChanged();
         this.parent();
-        if (changed.hp) {
-            this.updateHealthBar();
-            this.playDamage(changed.hp.previous);
-            if (!this.m.isAlive()) {
-                this.setCurrentAnimation('dead');
-                this.alpha = 0.4;
-                if (this.posTween) {
-                    this.posTween.stop();
-                }
-                return true;
-            }
-        }
-        if (changed.moving || changed.dizzy) {
-            if (!this.m.moving && !this.m.dizzy) {
-                //unit stopped moving
-                //smoothly adjust position
-                this.centerInTile();
-            }
-        }
-        if (changed.inCombat && !this.m.inCombat) {
-            this.centerInTile();
-        }
         if (this.pos.x !== this.prevX) {
             if (this.pos.x - this.prevX > 0) {
                 this.faceLeft(false);
@@ -124,6 +82,31 @@ var UnitVM = TileEntityVM.extend({
 
         this.prevX = this.pos.x;
         return true;
+    },
+    onModelChanged: function(changed) {
+        'use strict';
+        if (changed.hp) {
+            this.updateHealthBar();
+            this.playDamage(changed.hp.previous);
+            if (!this.m.isAlive()) {
+                this.setCurrentAnimation('dead');
+                this.alpha = 0.4;
+                if (this.posTween) {
+                    this.posTween.stop();
+                }
+                return;
+            }
+        }
+        if (changed.moving || changed.dizzy) {
+            if (!this.m.moving && !this.m.dizzy) {
+                //unit stopped moving
+                //smoothly adjust position
+                this.centerInTile();
+            }
+        }
+        if (changed.inCombat && !this.m.inCombat) {
+            this.centerInTile();
+        }
     },
     onShip: function() {
         'use strict';

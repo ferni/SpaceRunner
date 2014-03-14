@@ -200,6 +200,38 @@ var TileEntityVM = me.ObjectEntity.extend({
             y >= this.y && y < this.y + this.trueSize(1);
     },
     /**
+     * Choose which properties would be tracked to
+     * be stored in 'changed'.
+     * @param {Array} properties
+     */
+    setTracked: function(properties) {
+        'use strict';
+        this.prevModelState = {};
+        _.each(properties, function(p) {
+            this.prevModelState[p] = this.m[p];
+        }, this);
+    },
+    notifyModelChange: function() {
+        'use strict';
+        var self = this,
+            changed = {};
+        _.each(this.prevModelState, function(value, propName) {
+            if (self.m[propName] !== value) {
+                changed[propName] = {previous: self.prevModelState[propName]};
+                //update previous model state
+                self.prevModelState[propName] = self.m[propName];
+            }
+        });
+        if (_.size(changed) > 0) {
+            this.onModelChanged(changed);
+        }
+    },
+    onModelChanged: function(changed) {
+        'use strict';
+        //(override this function)
+        return changed;
+    },
+    /**
      * OnDestroy notification function<br>
      * Called by engine before deleting the object<br>
      * be sure to call the parent function if overwritten
