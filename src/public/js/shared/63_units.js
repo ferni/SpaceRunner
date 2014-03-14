@@ -89,19 +89,28 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var actions = [],
             self = this,
-            enemyInRange;
+            enemiesInRange,
+            enemyToAttack;
         if (!this.onCooldown && !this.moving && !this.dizzy) {//attack ready
-            enemyInRange = _.find(ship.units,
+            enemiesInRange = _.filter(ship.units,
                 function(u) {
                     return u.isAlive() &&
                         self.isEnemy(u) &&
                         self.isInRange(u);
                 });
-            if (enemyInRange) {
+            if (this.targetID !== null && this.targetID !== undefined) {
+                //if targetID is set, it has attack priority
+                enemyToAttack = _.where(enemiesInRange,
+                    {id: this.targetID})[0] ||
+                    enemiesInRange[0];
+            } else {
+                enemyToAttack = enemiesInRange[0];
+            }
+            if (enemyToAttack) {
                 actions.push(new sh.actions.Attack({
                     time: turnTime,
                     attackerID: self.id,
-                    receiverID: enemyInRange.id,
+                    receiverID: enemyToAttack.id,
                     damage: self.meleeDamage,
                     duration: self.attackCooldown
                 }));

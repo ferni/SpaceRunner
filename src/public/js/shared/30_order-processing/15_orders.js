@@ -193,7 +193,20 @@ if (typeof exports !== 'undefined') {
             if (!target || !target.isAlive()) {
                 //unit is already dead
                 this.finished = true;
-                return [];
+                return [new sh.actions.SetUnitProperty({
+                    time: time,
+                    unitID: unit.id,
+                    property: 'targetID',
+                    value: null
+                })];
+            }
+            if (unit.targetID === null || unit.targetID === undefined) {
+                return [new sh.actions.SetUnitProperty({
+                    time: time,
+                    unitID: unit.id,
+                    property: 'targetID',
+                    value: target.id
+                })];
             }
             if (unit.moving) {
                 return [];
@@ -205,7 +218,6 @@ if (typeof exports !== 'undefined') {
                 from = {x: unit.x,
                     y: unit.y};
                 this.pathIndex++;
-                this.finished = this.pathIndex >= this.path.length;
                 return [new sh.actions.Move({
                     time: time,
                     unitID: unit.id,
