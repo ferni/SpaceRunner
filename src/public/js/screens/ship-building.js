@@ -193,12 +193,21 @@ screens.register('ship-building', GameScreen.extend({
         if (this.mouseLockedOn) { //the mouse is involved in a specific obj
             //delegate handling to the object
             this.mouseLockedOn.lockedMouseMove(mouseTile);
+            if (this.mouseLockedOn.type === 'Wall' ||
+                    this.mouseLockedOn.type === 'Door') {
+                this.updateWalls();
+            }
             return;
         }
         if (!this.chosen) {
             return;
         }
         this.moveGhost(mouseTile.x, mouseTile.y);
+
+        if (this.chosen.type === 'Wall' ||
+                this.chosen.type === 'Door') {
+            this.updateWalls();
+        }
         me.game.sort();
         me.game.repaint();
     },
@@ -219,6 +228,10 @@ screens.register('ship-building', GameScreen.extend({
         if (this.chosen && !this.dragging) {
             if (which === me.input.mouse.LEFT) {
                 this.buildItem(mouseTile.x, mouseTile.y, this.chosen.type);
+                if (this.chosen.type === 'Door' ||
+                        this.chosen.type === 'Wall') {
+                    this.updateWalls();
+                }
             }
         } else if (this.dragging) {
             this.endDrag(mouseTile);
@@ -227,6 +240,12 @@ screens.register('ship-building', GameScreen.extend({
         me.game.sort();
         me.game.repaint();
 
+    },
+    updateWalls: function() {
+        'use strict';
+        var items = _.union(me.game.getEntityByName('item'),
+            this.drawingScreen);
+        _.invoke(_.where(items, {type: 'Wall'}), 'updateAnimation');
     },
     buildItem: function(x, y, type) {
         'use strict';

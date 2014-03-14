@@ -310,7 +310,18 @@ itemVMs.WallVM = ItemVM.extend({
     },
     updateAnimation: function() {
         'use strict';
-        var wallsAround = [], animationName;
+        var screen = me.state.current(),
+            top = screen.at(this.x, this.y - sh.GRID_SUB),
+            left = screen.at(this.x - sh.GRID_SUB, this.y),
+            bot = screen.at(this.x, this.y + sh.GRID_SUB),
+            right = screen.at(this.x + sh.GRID_SUB, this.y),
+            wallsAround = [],
+            animationName;
+        top = utils.getModel(top);
+        left = utils.getModel(left);
+        bot = utils.getModel(bot);
+        right = utils.getModel(right);
+        this.m.updateConnections(top, left, bot, right);
         if (this.m.isHorizontal()) {
             this.setCurrentAnimation('lr');
             return;
@@ -333,22 +344,6 @@ itemVMs.WallVM = ItemVM.extend({
         }
         animationName = wallsAround.join('');
         this.setCurrentAnimation(animationName);
-    },
-    update: function() {
-        'use strict';
-        this.parent();
-        //TODO: update only when necessary, right now it's running all the time
-        var screen = me.state.current(),
-            top = screen.at(this.x, this.y - sh.GRID_SUB),
-            left = screen.at(this.x - sh.GRID_SUB, this.y),
-            bot = screen.at(this.x, this.y + sh.GRID_SUB),
-            right = screen.at(this.x + sh.GRID_SUB, this.y);
-        top = utils.getModel(top);
-        left = utils.getModel(left);
-        bot = utils.getModel(bot);
-        right = utils.getModel(right);
-        this.m.updateConnections(top, left, bot, right);
-        this.updateAnimation();
     },
     onBuilt: function() {
         'use strict';
