@@ -154,6 +154,7 @@ screens.register('battle', ConnectedScreen.extend({
             }
             ctx.save();
             ctx.globalAlpha = 0.7;
+            ctx.setLineDash([10, 5]);
             _.each(this.previewOrders, function(o) {
                 var unitVM, index, from, to;
                 unitVM = this.shipVM.getUnitVMByID(o.m.unitID);
@@ -284,6 +285,7 @@ screens.register('battle', ConnectedScreen.extend({
                             self.previewOrders[u.m.id] = make.vm(order);
                             self.previewOrders[u.m.id].isPreview = true;
                             self.previewOrders[u.m.id].isSelectable = false;
+                            self.previewOrders[u.m.id].alpha = 0.7;
                         }
                     });
                 } else {
@@ -296,6 +298,7 @@ screens.register('battle', ConnectedScreen.extend({
                             self.previewOrders[u.m.id] = make.vm(order);
                             self.previewOrders[u.m.id].isPreview = true;
                             self.previewOrders[u.m.id].isSelectable = false;
+                            self.previewOrders[u.m.id].alpha = 0.7;
                         }
                     });
                 }
