@@ -135,7 +135,9 @@ var UnitVM = TileEntityVM.extend({
         this.parent(ctx);
         this.pos.x = originalPos.x;
         this.pos.y = originalPos.y;
-        this.drawOrders(ctx);
+        if (this.selected()) {
+            this.drawOrders(ctx);
+        }
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
@@ -149,7 +151,7 @@ var UnitVM = TileEntityVM.extend({
             to.y += HALF_TILE;
             ctx.save();
             ctx.globalAlpha = o.alpha;
-            if (ctx.setLineDash && this.selected()) {
+            if (ctx.setLineDash) {
                 ctx.setLineDash([5, 5]);
                 ctx.lineDashOffset = draw.getLineDashOffset();
                 draw.line(ctx, from, to, o.darkColor, 2);
