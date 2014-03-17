@@ -75,7 +75,7 @@ var orderVMs = (function() {
             this.parent(order, 'marker-red');
         },
         getMarkerTile: function() {
-            return gs.ship.getUnitByID(this.m.targetID);
+            return gs.ship.getUnitByID(this.m.targetID) || {x: -100, y: -100};
         }
     });
 
