@@ -128,7 +128,7 @@ if (typeof exports !== 'undefined') {
             if (unit.moving) {
                 return [];
             }
-            if (unit.moveLock) {
+            if (unit.moveLock && tileIsClear(time, ship, unit, unit.moveLock)) {
                 from = {x: unit.x,
                     y: unit.y};
                 this.pathIndex++;
@@ -214,7 +214,7 @@ if (typeof exports !== 'undefined') {
             if (unit.isInRange(target)) {
                 return [];
             }
-            if (unit.moveLock) {
+            if (unit.moveLock && tileIsClear(time, ship, unit, unit.moveLock)) {
                 from = {x: unit.x,
                     y: unit.y};
                 this.pathIndex++;
