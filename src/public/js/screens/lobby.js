@@ -34,7 +34,12 @@ screens.register('lobby', GameScreen.extend({
                     });
                 };
                 this.hostBattle = screen.hostBattle;
-                this.startChallenge = screen.startChallenge;
+                this.startChallenge0 = function() {
+                    screen.startChallenge(0);
+                };
+                this.startChallenge1 = function() {
+                    screen.startChallenge(1);
+                };
             };
         $.post('/lobby/get', function(data) {
             screen.vm = new HtmlViewModel(data);
@@ -49,11 +54,12 @@ screens.register('lobby', GameScreen.extend({
             }
         }, 'json');
     },
-    startChallenge: function() {
+    startChallenge: function(challengeIndex) {
         'use strict';
-        $.post('/lobby/newchallenge', function(battle) {
-            me.state.change('battle', battle);
-        }, 'json');
+        $.post('/lobby/newchallenge', {challengeIndex: challengeIndex},
+            function(battle) {
+                me.state.change('battle', battle);
+            }, 'json');
     },
     hostBattle: function() {
         'use strict';

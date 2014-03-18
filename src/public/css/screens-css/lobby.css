@@ -9,3 +9,7 @@
 #lobby-screen h3{
     text-decoration: underline;
 }
+
+#lobby-screen .button {
+    margin: 3px;
+}
