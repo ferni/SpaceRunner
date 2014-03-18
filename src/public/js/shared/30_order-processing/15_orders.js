@@ -262,6 +262,7 @@ if (typeof exports !== 'undefined') {
                 target = ship.getUnitByID(this.targetID);
             return this.parent(ship, playerID) &&
                 target &&
+                target.isAlive() &&
                 unit.isEnemy(target);
         }
     });
