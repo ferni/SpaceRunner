@@ -344,7 +344,13 @@ screens.register('battle', ConnectedScreen.extend({
         //empty the script
         this.scriptServer = [];
 
-        _.invoke(me.game.getEntityByName('order'), 'updatePos');
+        _.each(me.game.getEntityByName('order'), function(oVM) {
+            if (oVM.m.isValid(gs.ship, gs.player.id)) {
+                oVM.updatePos();
+            } else {
+                oVM.unitVM.removeOrder(oVM.unitVM, oVM.m);
+            }
+        });
 
         this.paused = true;
     },
