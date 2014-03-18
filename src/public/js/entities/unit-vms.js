@@ -123,9 +123,11 @@ var UnitVM = TileEntityVM.extend({
         if (this.healthBarSize <= 6) {
             color = 'red';
         }
+        ctx.save();
         draw.line(ctx, absPosition,
             {x: absPosition.x + this.healthBarSize, y: absPosition.y},
             color, 3);
+        ctx.restore();
     },
     draw: function(ctx) {
         'use strict';
