@@ -248,28 +248,28 @@ sh.items.Wall = sh.Item.extendShared({
             top.connected.bottom = true;
             this.connected.top = true;
         } else if (top instanceof it.Door && top.rotated() &&
-                top.y === y - 2) {
+                top.y === y - 2 * sh.GRID_SUB) {
             this.connected.top = true;
         }
         if (left instanceof it.Wall) {
             left.connected.right = true;
             this.connected.left = true;
         } else if (left instanceof it.Door && !left.rotated() &&
-                left.x === x - 2) {
+                left.x === x - 2 * sh.GRID_SUB) {
             this.connected.left = true;
         }
         if (bot instanceof it.Wall) {
             bot.connected.top = true;
             this.connected.bottom = true;
         } else if (bot instanceof it.Door && bot.rotated() &&
-                bot.y === y + 1) {
+                bot.y === y + sh.GRID_SUB) {
             this.connected.bottom = true;
         }
         if (right instanceof it.Wall) {
             right.connected.left = true;
             this.connected.right = true;
         } else if (right instanceof it.Door && !right.rotated() &&
-                right.x === x + 1) {
+                right.x === x + sh.GRID_SUB) {
             this.connected.right = true;
         }
     },
