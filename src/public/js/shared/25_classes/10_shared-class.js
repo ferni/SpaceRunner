@@ -7,7 +7,7 @@
 
 /*global require, exports, module, xyz*/
 
-var sh = require('./00_init'), _ = sh._;
+var sh = require('../20_placement-rules'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS
@@ -80,4 +80,6 @@ if (typeof exports !== 'undefined') {
         };
         return Class;
     };
+
+    sh.TestSharedEntity = sh.SharedClass.extendShared({});
 }());

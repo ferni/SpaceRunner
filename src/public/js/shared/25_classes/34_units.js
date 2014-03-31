@@ -7,7 +7,7 @@
 
 /*global me, require, exports, module*/
 
-var sh = require('./60_items'), _ = sh._;
+var sh = require('../25_classes/32_items'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * exports from NodeJS

@@ -7,7 +7,7 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('../20_placement-rules'), _ = sh._;
+var sh = require('../25_classes/50_ship'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports

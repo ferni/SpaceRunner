@@ -7,7 +7,7 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('../30_order-processing/15_orders'), _ = sh._;
+var sh = require('../25_classes/70_orders'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports

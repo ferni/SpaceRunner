@@ -7,7 +7,7 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('./30_order-processing/40_create-script'), _ = sh._;
+var sh = require('../25_classes/25_player'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports

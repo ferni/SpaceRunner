@@ -7,7 +7,7 @@
 
 /*global me, require, exports, module*/
 
-var sh = require('./55_tile-entity'), _ = sh._;
+var sh = require('../25_classes/30_tile-entity'), _ = sh._;
 if (typeof exports !== 'undefined') {
     /**
      * NodeJS exports
