@@ -198,7 +198,8 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         previousEntities = this.units.concat(this.built);
         if (previousEntities.length === 0) {
-            return 1;
+            entity.id = 1;
+            return;
         }
         entity.id = _.max(previousEntities, function(e) {
             return e.id;
