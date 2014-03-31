@@ -163,6 +163,26 @@ sh.items.Console = sh.Item.extendShared({
     canBuildAt: function(x, y, ship) {
         'use strict';
         return sh.pr.console.compliesAt(x, y, ship.map);
+    },
+    getControlled: function() {
+        'use strict';
+        var x, y, atTile;
+        if (this.controlled) {
+            return this.controlled;
+        }
+        //assign contolled (the item being controlled by this console)
+        for (y = this.y + sh.GRID_SUB; y >= this.y - sh.GRID_SUB;
+                y -= sh.GRID_SUB) {
+            for (x = this.x - sh.GRID_SUB; x <= this.x + sh.GRID_SUB;
+                    x += sh.GRID_SUB) {
+                atTile = this.ship.itemsMap.at(x, y);
+                if (atTile.type === 'Weapon' || atTile.type === 'Engine' ||
+                        atTile.type === 'Power') {
+                    this.controlled = atTile;
+                    return this.controlled;
+                }
+            }
+        }
     }
 });
 
