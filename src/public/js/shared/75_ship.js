@@ -178,25 +178,42 @@ sh.Ship = sh.SharedClass.extendShared({
     //Adds an item to the ship ignoring its placement rules
     addItem: function(item) {
         'use strict';
+        if (item.id === undefined || item.id === null) {
+            this.assignID(item);
+        }
         this.built.push(item);
         item.onShip(this);
         this.buildingsChanged();
     },
     addUnit: function(unit) {
         'use strict';
+        if (unit.id === undefined || unit.id === null) {
+            this.assignID(unit);
+        }
         this.units.push(unit);
         unit.ship = this;
-        if (unit.id === undefined || unit.id === null) {
-            unit.id = _.max(this.units, function(u) {
-                return u.id;
-            }).id + 1;
-        }
         this.unitsMap.update();
+    },
+    assignID: function(entity, previousEntities) {
+        'use strict';
+        previousEntities = this.units.concat(this.built);
+        if (previousEntities.length === 0) {
+            return 1;
+        }
+        entity.id = _.max(previousEntities, function(e) {
+            return e.id;
+        }).id + 1;
     },
     getUnitByID: function(id) {
         'use strict';
         return _.find(this.units, function(u) {
             return u.id === parseInt(id, 10);
+        });
+    },
+    getItemByID: function(id) {
+        'use strict';
+        return _.find(this.built, function(b) {
+            return b.id === parseInt(id, 10);
         });
     },
     getPlayerUnits: function(playerID) {

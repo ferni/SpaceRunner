@@ -21,7 +21,6 @@ if (typeof exports !== 'undefined') {
  * @type {*}
  */
 sh.Unit = sh.TileEntity.extendShared({
-    id: null, //the ship is in charge of setting the id
     imgIndex: 0,
     speed: 1, //tiles per second
     maxHP: 100,
@@ -34,7 +33,7 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         this.parent(json);
         this.size = [1, 1];
-        this.set('Unit', ['id', 'imgIndex', 'speed', 'maxHP', 'meleeDamage',
+        this.set('Unit', ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
             'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID'],
             json);
         this.hp = this.maxHP;
