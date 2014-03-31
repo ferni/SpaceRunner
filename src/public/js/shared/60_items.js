@@ -170,7 +170,7 @@ sh.items.Console = sh.Item.extendShared({
         if (this.controlled) {
             return this.controlled;
         }
-        //assign contolled (the item being controlled by this console)
+        //assign controlled (the item being controlled by this console)
         for (y = this.y + sh.GRID_SUB; y >= this.y - sh.GRID_SUB;
                 y -= sh.GRID_SUB) {
             for (x = this.x - sh.GRID_SUB; x <= this.x + sh.GRID_SUB;
