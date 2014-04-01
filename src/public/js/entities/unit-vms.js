@@ -200,7 +200,6 @@ var UnitVM = TileEntityVM.extend({
     },
     playAttack: function() {
         'use strict';
-        console.log('melee unit attacked!');
     },
     /**
      * Shows a hit on the unit and the amount dealt as a floating number
@@ -286,7 +285,6 @@ unitVMs.ZealotVM = UnitVM.extend({
     playAttack: function(targetPos) {
         'use strict';
         var bullet, tween;
-        console.log('zealot attacking');
         bullet = new me.ObjectEntity(this.pos.x, this.pos.y, {
             image: 'projectile'
         });
