@@ -196,8 +196,29 @@ sh.Unit = sh.TileEntity.extendShared({
         return [];
     },
     /**
+     * If it's in a console controlling some ship structure.
+     * @param turnTime
+     * @param ship
+     */
+    getShipControlActions: function(turnTime, ship) {
+        'use strict';
+        var standingOn = ship.itemsMap.at(this.x, this.y),
+            controlled;
+        if (standingOn instanceof sh.items.Console) {
+            controlled = standingOn.getControlled();
+        }
+        if (controlled instanceof sh.items.Weapon) {
+            return [new sh.actions.BeginShipWeaponCharge({
+                time: turnTime,
+                unitID: this.id,
+                weaponID: controlled.id
+            })];
+        }
+        return [];
+    },
+    /**
      * This method will be called by the script creator every time something
-     * changed.
+     * changed. The unit's properties should not be changed in this method.
      * @param {int} turnTime The current time.
      * @param {sh.Ship} ship The ship, representing the entire model (should be
      * Battle in the future.
@@ -205,7 +226,8 @@ sh.Unit = sh.TileEntity.extendShared({
      */
     getActions: function(turnTime, ship) {
         'use strict';
-        var actions = [];
+        var actions = [],
+            chargeInfo;
         if (!this.isAlive()) {
             return [];
         }
@@ -213,9 +235,24 @@ sh.Unit = sh.TileEntity.extendShared({
         if (turnTime === 0 && !this.moving) {
             this.blocking = true;
         }
-        actions = actions.concat(this.getAttackActions(turnTime, ship));
-        if (actions.length === 0) {//damage ship only if it didn't attack
-            actions = actions.concat(this.getDamageShipActions(turnTime, ship));
+        if (!this.chargingShipWeapon) {
+            actions = actions.concat(this.getAttackActions(turnTime, ship));
+            if (actions.length === 0) {//damage ship only if it didn't attack
+                actions = actions.concat(this.getDamageShipActions(turnTime,
+                    ship));
+            }
+            actions = actions.concat(
+                this.getShipControlActions(turnTime, ship)
+            );
+        } else {
+            chargeInfo = this.chargingShipWeapon;
+            if (turnTime >= chargeInfo.startingTime +
+                    chargeInfo.weapon.chargeTime) {
+                actions.push(new sh.actions.FireShipWeapon({
+                    time: turnTime,
+                    unitID: this.id
+                }));
+            }
         }
         actions = actions.concat(this.getOrdersActions(turnTime, ship));
         actions = actions.concat(this.getCombatActions(turnTime, ship));

@@ -98,6 +98,8 @@ if (typeof exports !== 'undefined') {
                         arrivalTime: self.time + self.duration
                     };
                     unit.blocking = false;
+                    //cancel weapon charging
+                    unit.chargingShipWeapon = null;
                 }
             });
             this.addChange(this.duration, function(ship) {
@@ -186,6 +188,8 @@ if (typeof exports !== 'undefined') {
                 attacker.onCooldown = true;
                 if (attacker.isAlive() && receiver.isAlive()) {
                     receiver.hp -= self.damage;
+                    //cancel weapon charging
+                    receiver.chargingShipWeapon = null;
                 }
             });
             this.addChange(this.duration, function(ship) {
@@ -282,6 +286,42 @@ if (typeof exports !== 'undefined') {
             this.addChange(0, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
                 unit.orders.shift();
+            });
+        }
+    });
+
+    sh.actions.BeginShipWeaponCharge = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('BeginShipWeaponCharge', ['unitID', 'weaponID'], json);
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                unit.chargingShipWeapon = {
+                    weapon: ship.getItemByID(self.weaponID),
+                    startingTime: self.time
+                };
+            });
+        }
+    });
+
+    sh.actions.FireShipWeapon = Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('FireShipWeapon', ['unitID'], json);
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var unit = ship.getUnitByID(self.unitID);
+                ship.enemyHP -= unit.chargingShipWeapon.weapon.damage;
+                unit.chargingShipWeapon = null;
             });
         }
     });

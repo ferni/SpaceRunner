@@ -105,6 +105,8 @@ sh.items = {};
  * @type {*}
  */
 sh.items.Weapon = sh.Item.extendShared({
+    chargeTime: 2000,
+    damage: 100,
     init: function(json) {
         'use strict';
         this.parent(json);

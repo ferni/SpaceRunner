@@ -24,6 +24,8 @@ sh.Ship = sh.SharedClass.extendShared({
     hullMap: {},
     itemsMap: {},
     hp: 600,
+    //temporary until the root model is the battle instead of the ship:
+    enemyHP: 600,
     init: function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.json) {
@@ -351,12 +353,14 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         return new sh.Ship({json: this.toJson()});
     },
-    endOfTurnReset: function() {
+    endOfTurnReset: function(turnDuration) {
         'use strict';
         var self = this;
         _.each(this.units, function(u) {
             if (!u.isAlive()) {
                 self.removeUnit(u);
+            } else if (u.chargingShipWeapon) {
+                u.chargingShipWeapon.startingTime -= turnDuration;
             }
         });
         this.unitsMap.update();

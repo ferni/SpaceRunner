@@ -203,7 +203,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             });
         });
 
-        ship.endOfTurnReset();
+        ship.endOfTurnReset(this.turnDuration);
     }
 });
 

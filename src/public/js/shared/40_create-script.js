@@ -79,7 +79,7 @@ if (typeof exports !== 'undefined') {
 
         //clean up
         if (resetShip) {
-            ship.endOfTurnReset();
+            ship.endOfTurnReset(turnDuration);
         }
         script.updateActionsByUnit();
         return script;

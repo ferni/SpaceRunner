@@ -166,6 +166,9 @@ var ScriptPlayer = function(battleScreen) {
             }
             location.reload();
             break;
+        case 'FireShipWeapon':
+            console.log('Enemy ship now at ' + gs.ship.enemyHP + '!');
+            break;
         }
     }
 
@@ -211,7 +214,7 @@ var ScriptPlayer = function(battleScreen) {
         }
         _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up
-        gs.ship.endOfTurnReset();
+        gs.ship.endOfTurnReset(battleScreen.turnDuration);
     };
 
 };
