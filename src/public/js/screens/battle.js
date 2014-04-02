@@ -117,6 +117,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.parent();
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
+            this.elapsed = elapsed;
             this.shipVM.update();
             this.scriptPlayer.update(elapsed);
 
@@ -351,7 +352,7 @@ screens.register('battle', ConnectedScreen.extend({
                 oVM.unitVM.removeOrder(oVM.unitVM, oVM.m);
             }
         });
-
+        this.elapsed = 0;
         this.paused = true;
     },
     resume: function() {

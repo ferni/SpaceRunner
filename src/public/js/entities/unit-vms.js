@@ -15,6 +15,7 @@ var UnitVM = TileEntityVM.extend({
     init: function(unitModel) {
         'use strict';
         var screen = me.state.current();
+        this.screen = screen;
         this.m = unitModel;
         this.size = unitModel.size;
         this.speed = unitModel.speed;
@@ -155,6 +156,9 @@ var UnitVM = TileEntityVM.extend({
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
+        if (this.m.chargingShipWeapon) {
+            this.drawWeaponChargeProgressBar(ctx);
+        }
     },
     drawOrders: function(ctx) {
         'use strict';
@@ -175,6 +179,19 @@ var UnitVM = TileEntityVM.extend({
             ctx.restore();
             from = to;
         }, this);
+    },
+    drawWeaponChargeProgressBar: function(ctx) {
+        'use strict';
+        var weapon = this.m.chargingShipWeapon.weapon,
+            pos = sh.v.mul(weapon, TILE_SIZE),
+            elapsed = this.screen.elapsed -
+                this.m.chargingShipWeapon.startingTime,
+            width = (40 * elapsed) / weapon.chargeTime;
+        pos.x += 12;
+        pos.y += 13;
+        ctx.save();
+        draw.line(ctx, pos, {x: pos.x + width, y: pos.y}, '#2326D9', 10);
+        ctx.restore();
     },
     isMine: function() {
         'use strict';
