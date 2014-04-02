@@ -194,6 +194,7 @@ var ui = (function() {
                 spritewidth: 16,
                 spriteheight: 16
             });
+            this.alpha = 0.6;
         }
     });
     return ui;
