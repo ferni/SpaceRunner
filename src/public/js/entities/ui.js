@@ -187,6 +187,15 @@ var ui = (function() {
         }
     });
 
+    ui.ChargingWeaponIcon = me.ObjectEntity.extend({
+        init: function(unitVM) {
+            this.parent(unitVM.pos.x - 8, unitVM.pos.y - 8, {
+                image: 'charging-weapon-icon',
+                spritewidth: 16,
+                spriteheight: 16
+            });
+        }
+    });
     return ui;
 }());
 

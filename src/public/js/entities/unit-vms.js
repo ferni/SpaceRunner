@@ -60,7 +60,8 @@ var UnitVM = TileEntityVM.extend({
                 });
         }, this);
         this.isSelectable = this.isMine();
-        this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy']);
+        this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy',
+            'chargingShipWeapon']);
     },
     updateHealthBar: function() {
         'use strict';
@@ -106,6 +107,17 @@ var UnitVM = TileEntityVM.extend({
         }
         if (changed.inCombat && !this.m.inCombat) {
             this.centerInTile();
+        }
+        if (changed.chargingShipWeapon) {
+            if (this.m.chargingShipWeapon) {
+                this.chargingWeaponIcon = new ui.ChargingWeaponIcon(this);
+                me.game.add(this.chargingWeaponIcon, 4000);
+                me.game.sort();
+            } else {
+                if (this.chargingWeaponIcon) {
+                    me.game.remove(this.chargingWeaponIcon, true);
+                }
+            }
         }
     },
     onShip: function() {

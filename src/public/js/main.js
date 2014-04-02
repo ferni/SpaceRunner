@@ -242,6 +242,10 @@ var g_resources = [{
     name: 'marker-red',
     type: 'image',
     src: 'data/img/render/marker-red.png'
+}, {
+    name: 'charging-weapon-icon',
+    type: 'image',
+    src: 'data/img/render/charging-weapon-icon.png'
 }];
 
 var prebuilt = {
