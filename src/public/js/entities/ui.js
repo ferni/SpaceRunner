@@ -21,7 +21,6 @@ var ui = (function() {
                 image: 'selector',
                 name: 'red'
             });
-            this.zIndex = 200;
         }
     });
 
@@ -144,7 +143,6 @@ var ui = (function() {
                     spriteheight: 32
                 });
             this.alpha = 0.3;
-            this.z = 1800;
         },
         update: function() {
             if (me.state.current().name === 'battle' &&
@@ -194,9 +192,18 @@ var ui = (function() {
                 spritewidth: 16,
                 spriteheight: 16
             });
-            this.alpha = 0.6;
+            this.alpha = 0.8;
         }
     });
+
+    //for the z index
+    ui.layers = {
+        items: 10,
+        colorOverlay: 20,
+        units: 30,
+        effects: 40,
+        indicators: 50
+    };
     return ui;
 }());
 

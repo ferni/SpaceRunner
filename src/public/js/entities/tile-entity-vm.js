@@ -241,6 +241,5 @@ var TileEntityVM = me.ObjectEntity.extend({
         this.parent();
         me.input.releaseMouseEvent('mousedown', this);
         me.input.releaseMouseEvent('mouseup', this);
-    },
-    zIndex: 100
+    }
 });

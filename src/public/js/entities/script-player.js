@@ -106,7 +106,7 @@ var ScriptPlayer = function(battleScreen) {
                 tile: action.tile,
                 cloud: cloud
             });
-            me.game.add(cloud, cloud.z);
+            me.game.add(cloud, ui.layers.effects);
         }
     }
 
@@ -130,7 +130,7 @@ var ScriptPlayer = function(battleScreen) {
     function playDamageShipAction(action) {
         var red = new ui.RedColorEntity(action.tile.x, action.tile.y),
             tween;
-        me.game.add(red, 1000);
+        me.game.add(red, ui.layers.colorOverlay);
         me.game.sort();
         tween = new me.Tween(red).to({alpha: 0}, 200).onComplete(function() {
             me.game.remove(red);

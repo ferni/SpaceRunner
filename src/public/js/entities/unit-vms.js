@@ -78,7 +78,8 @@ var UnitVM = TileEntityVM.extend({
                 this.faceLeft(true);
             }
         }
-        if (utils.updateVMs(this.m.orders, this.orderVMs, 300)) {
+        if (utils.updateVMs(this.m.orders, this.orderVMs,
+                ui.layers.indicators)) {
             me.game.sort();
         }
 
@@ -112,7 +113,7 @@ var UnitVM = TileEntityVM.extend({
         if (changed.chargingShipWeapon) {
             if (this.m.chargingShipWeapon) {
                 this.chargingWeaponIcon = new ui.ChargingWeaponIcon(this);
-                me.game.add(this.chargingWeaponIcon, 4000);
+                me.game.add(this.chargingWeaponIcon, ui.layers.indicators);
                 me.game.sort();
             } else {
                 if (this.chargingWeaponIcon) {
@@ -237,9 +238,9 @@ var UnitVM = TileEntityVM.extend({
      */
     playDamage: function(previousHP) {
         'use strict';
-        me.game.add(new ui.StarHit(this), 2000);
+        me.game.add(new ui.StarHit(this), ui.layers.effects);
         me.game.add(new ui.FloatingNumber(this.pos, this.m.hp - previousHP),
-            2000);
+            ui.layers.effects);
         me.game.sort();
     },
     onMouseDown: function() {
@@ -317,7 +318,7 @@ unitVMs.ZealotVM = UnitVM.extend({
         bullet = new me.ObjectEntity(this.pos.x, this.pos.y, {
             image: 'projectile'
         });
-        me.game.add(bullet, 3000);
+        me.game.add(bullet, ui.layers.effects);
         tween = new me.Tween(bullet.pos).to(targetPos, 300)
             .onComplete(function() {
                 me.game.remove(bullet, true);

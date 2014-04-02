@@ -273,7 +273,7 @@ screens.register('ship-building', GameScreen.extend({
                 newItem = make.item(type);
                 this.ghostItems[type] = newItem;
                 newItem.hide();
-                me.game.add(newItem, newItem.zIndex + 1000);
+                me.game.add(newItem, ui.layers.indicators);
                 newItem.onShip(false);
             }
         }
@@ -354,8 +354,7 @@ screens.register('ship-building', GameScreen.extend({
     printRed: function(x, y) {
         'use strict';
         this.redScreen[this.redIndex] = new ui.RedColorEntity(x, y, {});
-        me.game.add(this.redScreen[this.redIndex],
-            this.redScreen[this.redIndex].zIndex + 1000);
+        me.game.add(this.redScreen[this.redIndex], ui.layers.colorOverlay);
         this.redIndex++;
     },
     clearRed: function() {
