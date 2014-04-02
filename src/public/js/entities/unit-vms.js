@@ -97,6 +97,9 @@ var UnitVM = TileEntityVM.extend({
                 if (this.posTween) {
                     this.posTween.stop();
                 }
+                if (this.chargingWeaponIcon) {
+                    me.game.remove(this.chargingWeaponIcon, true);
+                }
                 return;
             }
         }
