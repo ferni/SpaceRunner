@@ -97,6 +97,11 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         //find empty spot
         var empty = null, ship = this, unit;
+        empty = this.closestTile(Math.floor(ship.width / 2),
+            Math.floor(ship.height / 2),
+            function(tile) {
+                return tile === sh.tiles.clear;
+            });
         sh.utils.matrixTiles(ship.width, ship.height,
             function(x, y) {
                 if (empty) {
