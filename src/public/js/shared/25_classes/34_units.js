@@ -241,9 +241,11 @@ sh.Unit = sh.TileEntity.extendShared({
                 actions = actions.concat(this.getDamageShipActions(turnTime,
                     ship));
             }
-            actions = actions.concat(
-                this.getShipControlActions(turnTime, ship)
-            );
+            if (!this.distracted) {
+                actions = actions.concat(
+                    this.getShipControlActions(turnTime, ship)
+                );
+            }
         } else {
             chargeInfo = this.chargingShipWeapon;
             if (turnTime >= chargeInfo.startingTime +

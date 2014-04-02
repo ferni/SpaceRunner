@@ -115,6 +115,8 @@ if (typeof exports !== 'undefined') {
                     if (!sh.v.equal(prev, self.to)) {
                         ship.unitsMap.update();
                     }
+                    //cancel weapon charging
+                    unit.chargingShipWeapon = null;
                 }
             });
             this.addChange(this.duration + 100, function(ship) {
@@ -190,6 +192,7 @@ if (typeof exports !== 'undefined') {
                     receiver.hp -= self.damage;
                     //cancel weapon charging
                     receiver.chargingShipWeapon = null;
+                    receiver.distracted = true;
                 }
             });
             this.addChange(this.duration, function(ship) {
