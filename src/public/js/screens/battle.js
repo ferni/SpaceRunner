@@ -24,7 +24,6 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
-        $('#hp').html('[' + this.shipVM.hp + ']');
         //this.scriptPrediction = new ScriptPrediction(this);
         this.scriptPlayer = new ScriptPlayer(this);
         me.input.bindKey(me.input.KEY.ESC, 'escape');
@@ -46,6 +45,9 @@ screens.register('battle', ConnectedScreen.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
+        if (this.htmlVM) {
+            ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+        }
     },
     onDestroy: function() {
         'use strict';
@@ -83,10 +85,15 @@ screens.register('battle', ConnectedScreen.extend({
 
         //Knockout bindings
         function ViewModel() {
+            this.shipVM = function() {
+                return screen.shipVM;
+            };
             this.selectedUnit = ko.observable(null);
         }
         this.htmlVM = new ViewModel();
-        ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+        if (this.isReset) {
+            ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+        }
     },
     onData: function(data) {
         'use strict';

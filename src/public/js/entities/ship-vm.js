@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, make, _, sh, utils, ui*/
+/*global me, make, _, sh, utils, ui, ko*/
 
 /**
  * An object in charge of representing a sh.Ship on the screen.
@@ -18,7 +18,8 @@ var ShipVM = function(shipModel) {
     this.unitVMs = [];
 
     this.m = shipModel;
-    this.hp = shipModel.hp;
+    this.hp = ko.observable(shipModel.hp);
+    this.enemyHP = ko.observable(shipModel.enemyHP);
     this.showInScreen = function() {
         me.levelDirector.loadLevel(this.m.tmxName);
     };
@@ -39,6 +40,14 @@ var ShipVM = function(shipModel) {
         if (somethingChanged) {
             me.game.sort();
         }
+        if (this.prevHP !== this.m.hp) {
+            this.hp(this.m.hp);
+        }
+        if (this.prevEnemyHP !== this.m.enemyHP) {
+            this.enemyHP(this.m.enemyHP);
+        }
+        this.prevHP = this.m.hp;
+        this.prevEnemyHP = this.m.enemyHP;
         return somethingChanged;
     };
     this.updateItems = function() {

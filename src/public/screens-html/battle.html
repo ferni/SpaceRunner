@@ -1,8 +1,11 @@
 <div id="battle-screen">
-    <span id="turn-info">Turn #<span id="turn-number">0</span></span>
     <img src="/data/img/render/pause-icon.png" id="paused-indicator" title="Paused" />
     <span id="elapsed"></span>
-    <span id="hp"></span>
+    <div id="top-hud">
+        <span id="turn-info">Turn #<span id="turn-number">0</span></span>
+        <span id="hp">[Own: <span data-bind="text:shipVM().hp"></span>]</span>
+        <span id="enemyHP">[Enemy: <span data-bind="text:shipVM().enemyHP"></span>]</span>
+    </div>
     <div id="left-hud">
         <!-- ko if:selectedUnit() -->
         <div data-bind="with:selectedUnit">

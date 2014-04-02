@@ -24,28 +24,26 @@
     opacity: 1;
 }
 
-#battle-screen #elapsed{
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    font-size: 18pt;
-    color:white;
-}
-
-#battle-screen #turn-info{
+#battle-screen #top-hud{
     position: fixed;
     top: 10px;
     left: 70px;
     font-size: 18pt;
+}
+#battle-screen #elapsed{
+    color:white;
+}
+
+#battle-screen #turn-info{
     color: white;
 }
 
 #battle-screen #hp {
-    position: fixed;
-    top: 10px;
-    left: 180px;
-    font-size: 18pt;
     color: limegreen;
+}
+
+#battle-screen #enemyHP {
+    color: orangered;
 }
 
 #battle-screen #left-hud {

@@ -136,10 +136,11 @@ var ScriptPlayer = function(battleScreen) {
             me.game.remove(red);
         });
         tween.start();
-        battleScreen.shipVM.hp -= action.damage;
-        $('#hp').html('[' + battleScreen.shipVM.hp + ']');
     }
 
+    function playFireShipWeaponAction() {
+        console.log('Enemy damaged!');
+    }
 
     function playAction(action) {
         switch (action.type) {
@@ -167,7 +168,7 @@ var ScriptPlayer = function(battleScreen) {
             location.reload();
             break;
         case 'FireShipWeapon':
-            console.log('Enemy ship now at ' + gs.ship.enemyHP + '!');
+            playFireShipWeaponAction(action);
             break;
         }
     }
