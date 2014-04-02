@@ -197,11 +197,16 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     /**
      * If it's in a console controlling some ship structure.
-     * @param turnTime
-     * @param ship
+     * @param {int} turnTime
+     * @param {int} ship
      */
     getShipControlActions: function(turnTime, ship) {
         'use strict';
+        if (this.ownerID === -1) {
+            //AI units don't control consoles
+            //(to be handled by ship ownership in the future)
+            return [];
+        }
         var standingOn = ship.itemsMap.at(this.x, this.y),
             controlled;
         if (standingOn instanceof sh.items.Console) {
