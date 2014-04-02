@@ -149,7 +149,8 @@ exports.ChallengeBatte = exports.Battle.extend({
         var i, clearTiles = [], summonPosition, script,
             ship = this.ship,
             newActions = [],
-            damageShipActions;
+            damageShipActions,
+            damageEnemyActions;
         this.parent(false);
         script = this.currentTurn.script;
         //every 3 turns...
@@ -175,6 +176,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             }
         }
         damageShipActions = script.byType('DamageShip');
+        damageEnemyActions = script.byType('FireShipWeapon');
         if (_.reduce(damageShipActions, function(memo, value) {
                 return memo - value.damage;
             }, ship.hp) <= 0) {
@@ -183,8 +185,10 @@ exports.ChallengeBatte = exports.Battle.extend({
                 time: script.turnDuration - 100,
                 playerID: this.playerRight.id
             }));
-        } else if (this.turnCount >= 15) {
-            //survived 15 turns!
+        } else if (_.reduce(damageEnemyActions, function(memo, value) {
+                return memo - value.damage;
+            }, ship.enemyHP) <= 0) {
+            //enemy is destroyed!
             newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 100,
                 playerID: this.playerLeft.id
