@@ -40,6 +40,9 @@ screens.register('lobby', GameScreen.extend({
                 this.startChallenge1 = function() {
                     screen.startChallenge(1);
                 };
+                this.startChallenge2 = function() {
+                    screen.startChallenge(2);
+                };
             };
         $.post('/lobby/get', function(data) {
             screen.vm = new HtmlViewModel(data);

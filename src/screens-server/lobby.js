@@ -35,7 +35,22 @@ routes.add('newchallenge', function(req, res, next) {
             challengeShips,
             challengeIndex = req.body.challengeIndex;
         if (player) {
-            challengeShips = [{'tmxName': 'Mechanoid_Cruiser',
+            challengeShips = [{
+                tmxName: 'Cyborg_Frigate',
+                buildings: [
+                    {type: 'Weapon', id: 3, x: 26, y: 6, r: false},
+                    {type: 'Weapon', id: 5, x: 26, y: 26, r: false},
+                    {type: 'Engine', id: 7, x: 10, y: 14, r: false},
+                    {type: 'Engine', id: 8, x: 10, y: 18, r: false},
+                    {type: 'Console', id: 9, x: 14, y: 14, r: false},
+                    {type: 'Console', id: 10, x: 14, y: 20, r: false},
+                    {type: 'Console', id: 12, x: 24, y: 26, r: false},
+                    {type: 'Console', id: 13, x: 24, y: 8, r: false},
+                    {type: 'WeakSpot', id: 14, x: 18, y: 16, r: false}
+                ],
+                units: [],
+                GRID_SUB: 2
+            }, {'tmxName': 'Mechanoid_Cruiser',
                 'buildings': [{'type': 'Door', 'x': 14, 'y': 11, 'r': true},
                     {'type': 'Wall', 'x': 14, 'y': 8, 'r': false},
                     {'type': 'Wall', 'x': 17, 'y': 8, 'r': false},
