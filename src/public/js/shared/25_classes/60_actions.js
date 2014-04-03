@@ -269,7 +269,9 @@ if (typeof exports !== 'undefined') {
             });
             this.addChange(this.cooldown, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
-                unit.onCooldown = false;
+                if (unit) {
+                    unit.onCooldown = false;
+                }
             });
         },
         toString: function() {
