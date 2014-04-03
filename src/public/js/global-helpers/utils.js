@@ -112,11 +112,6 @@ var utils = {
         }
         return null;
     },
-    actionStr: function(action) {
-        'use strict';
-        return action.start + ' -> ' + action.end + ': ' +
-            sh.v.str(action.from) + ' -> ' + sh.v.str(action.to);
-    },
     isMine: function(unit) {
         'use strict';
         return gs.player.id === unit.ownerID;
