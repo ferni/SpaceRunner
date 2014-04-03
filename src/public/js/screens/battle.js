@@ -330,7 +330,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (gs.ship.hasSameJson(this.resultingShip)) {
             console.log('Client ship correctly matches the server ship.');
         } else {
-            console.warn('Client ship is different than the server ship' +
+            console.error('Client ship is different than the server ship' +
                 ' (left: client, right: server): ' +
                 this.getModelDifferenceUrl());
         }
@@ -350,7 +350,7 @@ screens.register('battle', ConnectedScreen.extend({
         me.game.sort();
         me.game.repaint();
         //empty the script
-        this.scriptServer = [];
+        //this.scriptServer = [];
 
         _.each(me.game.getEntityByName('order'), function(oVM) {
             if (oVM.m.isValid(gs.ship, gs.player.id)) {
@@ -360,6 +360,7 @@ screens.register('battle', ConnectedScreen.extend({
             }
         });
         this.elapsed = 0;
+        console.log('--- TURN ' + this.currentTurnID + ' ---');
         this.paused = true;
     },
     resume: function() {
