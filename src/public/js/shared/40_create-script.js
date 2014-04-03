@@ -59,8 +59,7 @@ if (typeof exports !== 'undefined') {
         //null change to kick-start the process
         queue.push(new sh.ModelChange(0, function() {}, {time: 0}));
 
-        _.each(ship.pendingActions, function(actionJson) {
-            var action = new sh.actions[actionJson.type](actionJson);
+        _.each(ship.pendingActions, function(action) {
             action.setTime(action.time - turnDuration);
             registerAction(action);
         });
@@ -84,9 +83,7 @@ if (typeof exports !== 'undefined') {
         ship.pendingActions = _.chain(queue)
             .pluck('action')
             .uniq()
-            .map(function(a) {
-                return a.toJson();
-            }).value();
+            .value();
 
         //clean up
         if (resetShip) {
