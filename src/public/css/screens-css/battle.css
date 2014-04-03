@@ -32,6 +32,10 @@
 }
 #battle-screen #elapsed{
     color:white;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 18pt;
 }
 
 #battle-screen #turn-info{
