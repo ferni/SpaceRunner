@@ -43,6 +43,65 @@ test('script creation\'s ship modifications', function() {
     equal(unit.x, prevX + 2, 'The unit position has been modified');
 });
 
+test('script creation, carry over actions to next turn', function() {
+    'use strict';
+    var ship = new sh.Ship({tmxName: 'test'}),
+        unit = ship.putUnit({speed: 1}),
+        TestAction = sh.Action.extendShared({
+            init: function(json) {
+                this.parent(json);
+                this.set('TestAction', [], json);
+                this.updateModelChanges();
+            },
+            updateModelChanges: function() {
+                this.modelChanges = [];
+                this.addChange(0, function(ship) {
+                    if (ship.changedAt0) {
+                        ship.changedAt0++;
+                    } else {
+                        ship.changedAt0 = 1;
+                    }
+                });
+                this.addChange(150, function(ship) {
+                    if (ship.changedAt150) {
+                        ship.changedAt150++;
+                    } else {
+                        ship.changedAt150 = 1;
+                    }
+                });
+                this.addChange(200, function(ship) {
+                    if (ship.changedAt200) {
+                        ship.changedAt200++;
+                    } else {
+                        ship.changedAt200 = 1;
+                    }
+                });
+            }
+        });
+    unit.ownerID = 1;
+    unit.test_firstTime = true;
+    unit.getActions = function(turnTime) {
+        if (this.test_firstTime) {
+            this.test_firstTime = false;
+            return [new TestAction({
+                time: turnTime
+            })];
+        }
+        return [];
+    };
+    sh.createScript([[]], ship, 100, true);
+    equal(ship.changedAt0, 1, 'First change went through.');
+    ok(!ship.changedAt150, 'Not the second one.');
+    sh.createScript([[]], ship, 100, true);
+    equal(ship.changedAt0, 1, 'Don\'t run first change again.');
+    equal(ship.changedAt150, 1, 'Second change went through.');
+    ok(!ship.changedAt200, 'Not the third one.');
+    sh.createScript([[]], ship, 100, true);
+    equal(ship.changedAt0, 1, 'Don\'t run first change again.');
+    equal(ship.changedAt150, 1, 'Don\'t run second change again.');
+    equal(ship.changedAt200, 1, 'Third change went through.');
+});
+
 test('Script.insertAction', function() {
     'use strict';
     var script = new sh.Script({actions: [

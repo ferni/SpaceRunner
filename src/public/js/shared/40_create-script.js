@@ -43,11 +43,13 @@ if (typeof exports !== 'undefined') {
         function registerAction(action) {
             script.actions.push(action);
             _.each(action.modelChanges, function(mc, index) {
-                insertInQueue(mc);
-                //Add actionIndex and index for adding sorted modelChanges
-                //to the script in the order in which they are applied.
-                mc.actionIndex = script.actions.length - 1;
-                mc.index = index;
+                if (mc.time >= 0) {
+                    insertInQueue(mc);
+                    //Add actionIndex and index for adding sorted modelChanges
+                    //to the script in the order in which they are applied.
+                    mc.actionIndex = script.actions.length - 1;
+                    mc.index = index;
+                }
             });
         }
 
@@ -56,6 +58,12 @@ if (typeof exports !== 'undefined') {
 
         //null change to kick-start the process
         queue.push(new sh.ModelChange(0, function() {}, {time: 0}));
+
+        _.each(ship.pendingActions, function(actionJson) {
+            var action = new sh.actions[actionJson.type](actionJson);
+            action.setTime(action.time - turnDuration);
+            registerAction(action);
+        });
 
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)
@@ -73,9 +81,12 @@ if (typeof exports !== 'undefined') {
             }
         }
 
-        //make remaining changes
-        _.invoke(queue, 'apply', ship);
-        _.each(queue, script.indexChange, script);
+        ship.pendingActions = _.chain(queue)
+            .pluck('action')
+            .uniq()
+            .map(function(a) {
+                return a.toJson();
+            }).value();
 
         //clean up
         if (resetShip) {

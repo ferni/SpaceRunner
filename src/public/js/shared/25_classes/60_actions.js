@@ -36,7 +36,10 @@ if (typeof exports !== 'undefined') {
             throw 'ModelChange timeOffset can\'t be negative';
         }
         this.timeOffset = timeOffset;
-        this.apply = apply;
+        this.apply = function(ship) {
+            console.log('Applying change: ' + action.toString());
+            apply(ship);
+        };
         this.action = action;
         this.updateTime();
     };
@@ -54,7 +57,7 @@ if (typeof exports !== 'undefined') {
      * is that some unit loses health.
      * @type {*|extendShared}
      */
-    Action = sh.Jsonable.extendShared({
+    sh.Action = sh.Jsonable.extendShared({
         time: 0,//ms
         modelChanges: [],
         init: function(json) {
@@ -66,12 +69,13 @@ if (typeof exports !== 'undefined') {
          */
         setTime: function(time) {
             this.time = time;
-            _.each(this.modelChanges, function(mc) {
-                mc.updateTime();
-            });
+            _.invoke(this.modelChanges, 'updateTime');
         },
         addChange: function(timeOffset, callback) {
             this.modelChanges.push(new ModelChange(timeOffset, callback, this));
+        },
+        toString: function() {
+            return this.time + 'ms: ' + this.type;
         }
     });
 
@@ -81,7 +85,7 @@ if (typeof exports !== 'undefined') {
      * The unit changes tiles.
      * @type {*}
      */
-    sh.actions.Move = Action.extendShared({
+    sh.actions.Move = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('Move', ['unitID', 'from', 'to', 'duration'], json);
@@ -92,7 +96,7 @@ if (typeof exports !== 'undefined') {
             this.modelChanges = [];
             this.addChange(0, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
-                if (unit.isAlive()) {
+                if (unit && unit.isAlive()) {
                     unit.moving = {
                         dest: self.to,
                         arrivalTime: self.time + self.duration
@@ -105,7 +109,7 @@ if (typeof exports !== 'undefined') {
             this.addChange(this.duration, function(ship) {
                 var unit = ship.getUnitByID(self.unitID),
                     prev;
-                if (unit.isAlive()) {
+                if (unit && unit.isAlive()) {
                     prev = {x: unit.x, y: unit.y};
                     unit.y = self.to.y;
                     unit.x = self.to.x;
@@ -121,14 +125,18 @@ if (typeof exports !== 'undefined') {
             });
             this.addChange(this.duration + 100, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
-                if (unit.isAlive()) {
+                if (unit && unit.isAlive()) {
                     unit.dizzy = false;//now it can attack
                 }
             });
+        },
+        toString: function() {
+            return this.time + 'ms: Move ' + this.unitID + ' to ' +
+                sh.v.str(this.to);
         }
     });
 
-    sh.actions.LockInCombat = Action.extendShared({
+    sh.actions.LockInCombat = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('LockInCombat', ['unit1ID', 'unit2ID', 'tile'], json);
@@ -146,7 +154,7 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    sh.actions.EndCombat = Action.extendShared({
+    sh.actions.EndCombat = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('EndCombat', ['tile'], json);
@@ -166,7 +174,7 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    sh.actions.Attack = Action.extendShared({
+    sh.actions.Attack = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             if (!json.damageDelay) {
@@ -184,11 +192,15 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
+            this.addChange(0, function(ship) {
+                var attacker = ship.getUnitByID(self.attackerID);
+                attacker.onCooldown = true;
+            });
             this.addChange(self.damageDelay, function(ship) {
                 var attacker = ship.getUnitByID(self.attackerID),
                     receiver = ship.getUnitByID(self.receiverID);
-                attacker.onCooldown = true;
-                if (attacker.isAlive() && receiver.isAlive()) {
+                if (attacker && attacker.isAlive() &&
+                        receiver && receiver.isAlive()) {
                     receiver.hp -= self.damage;
                     //cancel weapon charging
                     receiver.chargingShipWeapon = null;
@@ -197,8 +209,14 @@ if (typeof exports !== 'undefined') {
             });
             this.addChange(this.duration, function(ship) {
                 var attacker = ship.getUnitByID(self.attackerID);
-                attacker.onCooldown = false;
+                if (attacker) {
+                    attacker.onCooldown = false;
+                }
             });
+        },
+        toString: function() {
+            return this.time + 'ms: Attack ' + this.attackerID + ' -> ' +
+                this.receiverID;
         }
     });
 
@@ -206,7 +224,7 @@ if (typeof exports !== 'undefined') {
      * Makes a unit appear on board.
      * @type {*}
      */
-    sh.actions.Summon = Action.extendShared({
+    sh.actions.Summon = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('Summon', ['x', 'y', 'playerID', 'unitType'], json);
@@ -228,10 +246,13 @@ if (typeof exports !== 'undefined') {
                         ship.addUnit(unit);
                     }
                 }, this)];
+        },
+        toString: function() {
+            return this.time + 'ms: Summon ' + this.unitType;
         }
     });
 
-    sh.actions.DamageShip = Action.extendShared({
+    sh.actions.DamageShip = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('DamageShip', ['unitID', 'tile', 'damage', 'cooldown'],
@@ -250,17 +271,20 @@ if (typeof exports !== 'undefined') {
                 var unit = ship.getUnitByID(self.unitID);
                 unit.onCooldown = false;
             });
+        },
+        toString: function() {
+            return this.time + 'ms: DamageShip, damage: ' + this.damage;
         }
     });
 
-    sh.actions.DeclareWinner = Action.extendShared({
+    sh.actions.DeclareWinner = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('DeclareWinner', ['playerID'], json);
         }
     });
 
-    sh.actions.SetUnitProperty = Action.extendShared({
+    sh.actions.SetUnitProperty = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('SetUnitProperty', ['unitID', 'property', 'value'], json);
@@ -274,10 +298,14 @@ if (typeof exports !== 'undefined') {
                         var unit = ship.getUnitByID(self.unitID);
                         unit[self.property] = self.value;
                     }, this)];
+        },
+        toString: function() {
+            return this.time + 'ms: SetUnitProperty (' + this.unitID + '): ' +
+                this.property + ' = ' + this.value;
         }
     });
 
-    sh.actions.FinishOrder = Action.extendShared({
+    sh.actions.FinishOrder = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('FinishOrder', ['unitID'], json);
@@ -293,10 +321,11 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    sh.actions.BeginShipWeaponCharge = Action.extendShared({
+    sh.actions.BeginShipWeaponCharge = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set('BeginShipWeaponCharge', ['unitID', 'weaponID'], json);
+            this.set('BeginShipWeaponCharge', ['unitID', 'weaponID',
+                'chargeTime'], json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
@@ -309,10 +338,14 @@ if (typeof exports !== 'undefined') {
                     startingTime: self.time
                 };
             });
+            this.addChange(self.chargeTime, function(ship) {
+                //empty function to trigger getActions from
+                //unit responsible for firing
+            });
         }
     });
 
-    sh.actions.FireShipWeapon = Action.extendShared({
+    sh.actions.FireShipWeapon = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('FireShipWeapon', ['unitID', 'weaponID'], json);

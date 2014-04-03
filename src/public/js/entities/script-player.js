@@ -142,6 +142,9 @@ var ScriptPlayer = function(battleScreen) {
         battleScreen.shipVM.getVM(
             gs.ship.getItemByID(action.weaponID)
         ).playFire();
+        /*console.log('attacked with the ship. starting time: ' +
+            gs.ship.getUnitByID(action.unitID).chargingShipWeapon.startingTime +
+            ' turn elapsed: ' + battleScreen.elapsed);*/
     }
 
     function playAction(action) {
@@ -199,7 +202,10 @@ var ScriptPlayer = function(battleScreen) {
 
         //apply model changes to ship
         if (nextChange < modelChanges.length &&
-                elapsed >= modelChanges[nextChange].time) {
+                elapsed >= modelChanges[nextChange].time &&
+                //same condition as in 40_create-script.js
+                //(queue[0].time < turnDuration)
+                modelChanges[nextChange].time < script.turnDuration) {
             modelChanges[nextChange].apply(gs.ship);
             _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
             nextChange++;
@@ -213,7 +219,11 @@ var ScriptPlayer = function(battleScreen) {
     this.onPause = function() {
         //finish applying remaining model changes
         for (nextChange; nextChange < modelChanges.length; nextChange++) {
-            modelChanges[nextChange].apply(gs.ship);
+            //same condition as in 40_create-script.js
+            //(queue[0].time < turnDuration)
+            if (modelChanges[nextChange].time < script.turnDuration) {
+                modelChanges[nextChange].apply(gs.ship);
+            }
         }
         _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up

@@ -83,11 +83,13 @@ if (typeof exports !== 'undefined') {
         updateActionsByUnit: function() {
             var actionsByUnit = {};
             _.each(this.actions, function(action) {
-                if (action.unitID !== undefined) {
-                    if (!actionsByUnit[action.unitID]) {
-                        actionsByUnit[action.unitID] = [];
+                var unitID = action.type === 'Attack' ? action.attackerID :
+                        action.unitID;
+                if (unitID !== undefined) {
+                    if (!actionsByUnit[unitID]) {
+                        actionsByUnit[unitID] = [];
                     }
-                    actionsByUnit[action.unitID].push(action);
+                    actionsByUnit[unitID].push(action);
                 }
             });
             this.byUnit = actionsByUnit;
@@ -114,6 +116,7 @@ if (typeof exports !== 'undefined') {
                     result += a.time + 'ms: ' + a.type + '\n';
                 });
             });
+            return result;
         }
     });
 }());

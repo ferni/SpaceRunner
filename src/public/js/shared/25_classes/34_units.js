@@ -216,7 +216,8 @@ sh.Unit = sh.TileEntity.extendShared({
             return [new sh.actions.BeginShipWeaponCharge({
                 time: turnTime,
                 unitID: this.id,
-                weaponID: controlled.id
+                weaponID: controlled.id,
+                chargeTime: controlled.chargeTime
             })];
         }
         return [];
@@ -298,6 +299,7 @@ sh.units = (function() {
         getAttackActions: function(turnTime, ship) {
             return _.map(this.parent(turnTime, ship), function(action) {
                 action.damageDelay = 300;
+                action.updateModelChanges();
                 return action;
             });
         }
