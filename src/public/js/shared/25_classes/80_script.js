@@ -55,7 +55,7 @@ if (typeof exports !== 'undefined') {
             };
         },
         isWithinTurn: function(action) {
-            return action.time < this.turnDuration;
+            return action.time < this.turnDuration && action.time >= 0;
         },
         sort: function() {
             this.actions = _.sortBy(this.actions, 'time');
@@ -70,16 +70,6 @@ if (typeof exports !== 'undefined') {
             var insertionIndex = _.sortedIndex(this.actions, action, 'time');
             this.actions.splice(insertionIndex, 0, action);
             return insertionIndex;
-        },
-        getLastMoveAction: function(unit) {
-            var moveActions = _.filter(this.byUnit[unit.id], function(a) {
-                return a instanceof sh.actions.Move &&
-                    this.isWithinTurn(a);
-            }, this);
-            if (moveActions && moveActions.length > 0) {
-                return moveActions[moveActions.length - 1];
-            }
-            return null;
         },
         /**
          * Filter the actions by type (String).
@@ -115,6 +105,15 @@ if (typeof exports !== 'undefined') {
             return _.map(this.sortedModelChangesIndex, function(i) {
                 return this.actions[i.actionIndex].modelChanges[i.index];
             }, this);
+        },
+        toString: function() {
+            var result = '';
+            _.each(this.byUnit, function(actions, unitID) {
+                result += '* Unit ' + unitID + '\'s actions *\n';
+                _.each(actions, function(a) {
+                    result += a.time + 'ms: ' + a.type + '\n';
+                });
+            });
         }
     });
 }());
