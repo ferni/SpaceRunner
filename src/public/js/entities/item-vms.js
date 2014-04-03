@@ -185,8 +185,10 @@ itemVMs.WeaponVM = ItemVM.extend({
             laserLength = 100;
         }
         if (this.firing) {
+            ctx.save();
             draw.line(ctx, {x: this.shotX, y: fireFrom.y},
                 {x: this.shotX - laserLength, y: fireFrom.y}, '#2326D9', 20);
+            ctx.restore();
         }
     },
     playFire: function() {
