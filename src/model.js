@@ -186,7 +186,7 @@ exports.ChallengeBatte = exports.Battle.extend({
                 playerID: this.playerRight.id
             }));
         } else if (_.reduce(damageEnemyActions, function(memo, value) {
-                return memo - value.damage;
+                return memo - ship.getItemByID(value.weaponID).damage;
             }, ship.enemyHP) <= 0) {
             //enemy is destroyed!
             newActions.push(new sh.actions.DeclareWinner({

@@ -138,8 +138,10 @@ var ScriptPlayer = function(battleScreen) {
         tween.start();
     }
 
-    function playFireShipWeaponAction() {
-        console.log('Enemy damaged!');
+    function playFireShipWeaponAction(action) {
+        battleScreen.shipVM.getVM(
+            gs.ship.getItemByID(action.weaponID)
+        ).playFire();
     }
 
     function playAction(action) {

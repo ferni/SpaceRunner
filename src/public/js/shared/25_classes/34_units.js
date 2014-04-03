@@ -258,7 +258,7 @@ sh.Unit = sh.TileEntity.extendShared({
                 actions.push(new sh.actions.FireShipWeapon({
                     time: turnTime,
                     unitID: this.id,
-                    damage: chargeInfo.weapon.damage
+                    weaponID: chargeInfo.weapon.id
                 }));
             }
         }

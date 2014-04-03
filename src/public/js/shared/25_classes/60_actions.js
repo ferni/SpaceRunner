@@ -315,15 +315,16 @@ if (typeof exports !== 'undefined') {
     sh.actions.FireShipWeapon = Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set('FireShipWeapon', ['unitID', 'damage'], json);
+            this.set('FireShipWeapon', ['unitID', 'weaponID'], json);
             this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
             this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
-                ship.enemyHP -= self.damage;
+                var unit = ship.getUnitByID(self.unitID),
+                    weapon = ship.getItemByID(self.weaponID);
+                ship.enemyHP -= weapon.damage;
                 unit.chargingShipWeapon = null;
             });
         }

@@ -6,7 +6,7 @@
 */
 
 /*global me, _, pr, ItemVM, PF, hullMap, utils, width, height,
-TileEntityVM, sh*/
+TileEntityVM, sh, draw*/
 
 /**
  * A melonJS object used to represent an sh.Item on screen.
@@ -162,6 +162,37 @@ itemVMs.WeaponVM = ItemVM.extend({
         this.m = weaponModel;
         this.parent(weaponModel.x, weaponModel.y, {});
         this.onShip(weaponModel.onShip());
+        this.fireOffset = {x: 64, y: 32};
+    },
+    update: function() {
+        'use strict';
+        if (this.firing) {
+            this.shotX += 32;
+            return true;
+        }
+        if (this.shotX > 200) {
+            this.firing = false;
+            return true;
+        }
+        return this.parent();
+    },
+    draw: function(ctx) {
+        'use strict';
+        this.parent(ctx);
+        var fireFrom = sh.v.add(this.pos, this.fireOffset),
+            laserLength = this.shotX - fireFrom.x;
+        if (laserLength > 100) {
+            laserLength = 100;
+        }
+        if (this.firing) {
+            draw.line(ctx, {x: this.shotX, y: fireFrom.y},
+                {x: this.shotX - laserLength, y: fireFrom.y}, '#2326D9', 20);
+        }
+    },
+    playFire: function() {
+        'use strict';
+        this.firing = true;
+        this.shotX = this.pos.x + this.fireOffset.x;
     }
 });
 
