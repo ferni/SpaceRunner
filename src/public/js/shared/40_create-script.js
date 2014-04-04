@@ -33,7 +33,7 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, ship, turnDuration, resetShip) {
-        var script, queue, changes, time, unit, i;
+        var script, queue, changes, time, unit, i, pendingUnits;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
         function insertInQueue(item) {

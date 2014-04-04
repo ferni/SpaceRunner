@@ -212,7 +212,7 @@ sh.Unit = sh.TileEntity.extendShared({
         if (standingOn instanceof sh.items.Console) {
             controlled = standingOn.getControlled();
         }
-        if (controlled instanceof sh.items.Weapon) {
+        if (controlled instanceof sh.items.Weapon && !controlled.chargedBy) {
             return [new sh.actions.BeginShipWeaponCharge({
                 time: turnTime,
                 unitID: this.id,
@@ -275,6 +275,13 @@ sh.Unit = sh.TileEntity.extendShared({
     isInRange: function(unit) {
         'use strict';
         return sh.v.distance(unit, this) <= this.attackRange;
+    },
+    cancelShipWeaponFire: function() {
+        'use strict';
+        if (this.chargingShipWeapon) {
+            this.chargingShipWeapon.weapon.chargedBy = null;
+            this.chargingShipWeapon = null;
+        }
     }
 
 });

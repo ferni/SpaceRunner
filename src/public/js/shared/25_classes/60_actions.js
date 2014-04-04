@@ -103,7 +103,8 @@ if (typeof exports !== 'undefined') {
                     };
                     unit.blocking = false;
                     //cancel weapon charging
-                    unit.chargingShipWeapon = null;
+                    unit.cancelShipWeaponFire();
+
                 }
             });
             this.addChange(this.duration, function(ship) {
@@ -120,7 +121,7 @@ if (typeof exports !== 'undefined') {
                         ship.unitsMap.update();
                     }
                     //cancel weapon charging
-                    unit.chargingShipWeapon = null;
+                    unit.cancelShipWeaponFire();
                 }
             });
             this.addChange(this.duration + 100, function(ship) {
@@ -203,7 +204,7 @@ if (typeof exports !== 'undefined') {
                         receiver && receiver.isAlive()) {
                     receiver.hp -= self.damage;
                     //cancel weapon charging
-                    receiver.chargingShipWeapon = null;
+                    receiver.cancelShipWeaponFire();
                     receiver.distracted = true;
                 }
             });
@@ -334,11 +335,13 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.modelChanges = [];
             this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+                var unit = ship.getUnitByID(self.unitID),
+                    weapon = ship.getItemByID(self.weaponID);
                 unit.chargingShipWeapon = {
-                    weapon: ship.getItemByID(self.weaponID),
+                    weapon: weapon,
                     startingTime: self.time
                 };
+                weapon.chargedBy = unit;
             });
             this.addChange(self.chargeTime, function(ship) {
                 //empty function to trigger getActions from
@@ -357,10 +360,9 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.modelChanges = [];
             this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID),
-                    weapon = ship.getItemByID(self.weaponID);
-                ship.enemyHP -= weapon.damage;
-                unit.chargingShipWeapon = null;
+                var unit = ship.getUnitByID(self.unitID);
+                ship.enemyHP -= ship.getItemByID(self.weaponID).damage;
+                unit.cancelShipWeaponFire();
             });
         }
     });
