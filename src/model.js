@@ -182,7 +182,7 @@ exports.ChallengeBatte = exports.Battle.extend({
             }, ship.hp) <= 0) {
             //ship is destroyed
             newActions.push(new sh.actions.DeclareWinner({
-                time: script.turnDuration - 100,
+                time: script.turnDuration - 1,
                 playerID: this.playerRight.id
             }));
         } else if (_.reduce(damageEnemyActions, function(memo, value) {
@@ -190,15 +190,15 @@ exports.ChallengeBatte = exports.Battle.extend({
             }, ship.enemyHP) <= 0) {
             //enemy is destroyed!
             newActions.push(new sh.actions.DeclareWinner({
-                time: script.turnDuration - 100,
+                time: script.turnDuration - 1,
                 playerID: this.playerLeft.id
             }));
         }
 
         //workaround until summon gets converted to teleport
-        _.each(newActions, script.insertAction, script);
         _.each(newActions, function(a) {
-            var actionIndex = _.indexOf(script.actions, a);
+            script.actions.push(a);
+            var actionIndex = script.actions.length - 1;
             _.each(a.modelChanges, function(mc, index) {
                 mc.apply(ship);
                 mc.actionIndex = actionIndex;
