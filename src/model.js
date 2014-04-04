@@ -203,7 +203,7 @@ exports.ChallengeBatte = exports.Battle.extend({
                 mc.apply(ship);
                 mc.actionIndex = actionIndex;
                 mc.index = index;
-                script.indexChange(mc);
+                script.registerChange(mc);
             });
         });
 

@@ -94,7 +94,7 @@ if (typeof exports !== 'undefined') {
             });
             this.byUnit = actionsByUnit;
         },
-        indexChange: function(modelChange) {
+        registerChange: function(modelChange) {
             if (modelChange.actionIndex === undefined) {
                 return;
             }
@@ -103,6 +103,11 @@ if (typeof exports !== 'undefined') {
                 index: modelChange.index
             });
         },
+        /**
+         * Returns the model changes in the order in which they
+         * were registered by registerChange.
+         * @return {Array}
+         */
         getSortedModelChanges: function() {
             return _.map(this.sortedModelChangesIndex, function(i) {
                 return this.actions[i.actionIndex].modelChanges[i.index];

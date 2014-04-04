@@ -112,7 +112,7 @@ if (typeof exports !== 'undefined') {
          * active one.
          * @param {int} time
          * @param {sh.Ship} ship
-         * @return {{actions:{Array}, finished:{Boolean}}
+         * @return {{actions:[Array], finished:[Boolean]}
          */
         getActions: function(time, ship) {
             var unit, dest = this.destination, nextTile, from;

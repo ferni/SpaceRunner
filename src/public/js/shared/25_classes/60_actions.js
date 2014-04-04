@@ -37,7 +37,7 @@ if (typeof exports !== 'undefined') {
         }
         this.timeOffset = timeOffset;
         this.apply = function(ship) {
-            console.log('Applying change: ' + action.toString());
+            //console.log('Applying change: ' + action.toString());
             apply(ship);
         };
         this.action = action;
