@@ -20,6 +20,7 @@ var ScriptPlayer = function(battleScreen) {
         modelChanges = [],
         clouds = [],
         v = sh.v, //vector math
+        moveThroughRightLane = false,
         movementLanes = (function() {
             var tile = TILE_SIZE, quarter = TILE_SIZE / 4;
             return {
@@ -72,9 +73,14 @@ var ScriptPlayer = function(battleScreen) {
             action.unitID
         ),
             tilePx = v.mul(action.to, TILE_SIZE),
+            lane, toPx;
+        if (moveThroughRightLane) {
             lane = getLane(action.from, action.to),
             //adjust for entry point
             toPx = v.add(tilePx, lane.entryPoint);
+        } else {
+            toPx = v.add(tilePx, {x: 8, y: 8});//center
+        }
         unitVM.tweenTo(toPx, action.duration);
     }
 
