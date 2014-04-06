@@ -25,7 +25,7 @@ sh.Ship = sh.SharedClass.extendShared({
     itemsMap: {},
     hp: 600,
     //temporary until the root model is the battle instead of the ship:
-    enemyHP: 1400,
+    enemyHP: 2000,
     init: function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.json) {
