@@ -103,13 +103,6 @@ var UnitVM = TileEntityVM.extend({
                 return;
             }
         }
-        if (changed.moving || changed.dizzy) {
-            if (!this.m.moving && !this.m.dizzy) {
-                //unit stopped moving
-                //smoothly adjust position
-                this.centerInTile();
-            }
-        }
         if (changed.inCombat && !this.m.inCombat) {
             this.centerInTile();
         }
