@@ -69,11 +69,11 @@ test('script creation, carry over actions to next turn', function() {
                         ship.changedAt150 = 1;
                     }
                 });
-                this.addChange(200, function(ship) {
-                    if (ship.changedAt200) {
-                        ship.changedAt200++;
+                this.addChange(201, function(ship) {
+                    if (ship.changedAt201) {
+                        ship.changedAt201++;
                     } else {
-                        ship.changedAt200 = 1;
+                        ship.changedAt201 = 1;
                     }
                 });
             }
@@ -95,11 +95,11 @@ test('script creation, carry over actions to next turn', function() {
     sh.createScript([[]], ship, 100, true);
     equal(ship.changedAt0, 1, 'Don\'t run first change again.');
     equal(ship.changedAt150, 1, 'Second change went through.');
-    ok(!ship.changedAt200, 'Not the third one.');
+    ok(!ship.changedAt201, 'Not the third one.');
     sh.createScript([[]], ship, 100, true);
     equal(ship.changedAt0, 1, 'Don\'t run first change again.');
     equal(ship.changedAt150, 1, 'Don\'t run second change again.');
-    equal(ship.changedAt200, 1, 'Third change went through.');
+    equal(ship.changedAt201, 1, 'Third change went through.');
 });
 
 test('Script.insertAction', function() {
