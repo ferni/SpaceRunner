@@ -148,9 +148,7 @@ exports.ChallengeBatte = exports.Battle.extend({
         'use strict';
         var i, clearTiles = [], summonPosition, script,
             ship = this.ship,
-            newActions = [],
-            damageShipActions,
-            damageEnemyActions;
+            newActions = [];
         this.parent(false);
         script = this.currentTurn.script;
         //every 3 turns...
@@ -175,19 +173,13 @@ exports.ChallengeBatte = exports.Battle.extend({
                 }));
             }
         }
-        damageShipActions = script.byType('DamageShip');
-        damageEnemyActions = script.byType('FireShipWeapon');
-        if (_.reduce(damageShipActions, function(memo, value) {
-                return memo - value.damage;
-            }, ship.hp) <= 0) {
+        if (ship.hp <= 0) {
             //ship is destroyed
             newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 1,
                 playerID: this.playerRight.id
             }));
-        } else if (_.reduce(damageEnemyActions, function(memo, value) {
-                return memo - ship.getItemByID(value.weaponID).damage;
-            }, ship.enemyHP) <= 0) {
+        } else if (ship.enemyHP <= 0) {
             //enemy is destroyed!
             newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 1,
@@ -196,9 +188,9 @@ exports.ChallengeBatte = exports.Battle.extend({
         }
 
         //workaround until summon gets converted to teleport
+        _.each(newActions, script.insertAction, script);
         _.each(newActions, function(a) {
-            script.actions.push(a);
-            var actionIndex = script.actions.length - 1;
+            var actionIndex = _.indexOf(script.actions, a);
             _.each(a.modelChanges, function(mc, index) {
                 mc.apply(ship);
                 mc.actionIndex = actionIndex;
