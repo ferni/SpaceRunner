@@ -205,8 +205,8 @@ var ScriptPlayer = function(battleScreen) {
         if (nextChange < modelChanges.length &&
                 elapsed >= modelChanges[nextChange].time &&
                 //same condition as in 40_create-script.js
-                //(queue[0].time < turnDuration)
-                modelChanges[nextChange].time < script.turnDuration) {
+                //(queue[0].time <= turnDuration)
+                modelChanges[nextChange].time <= script.turnDuration) {
             modelChanges[nextChange].apply(gs.ship);
             _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
             nextChange++;
@@ -222,8 +222,8 @@ var ScriptPlayer = function(battleScreen) {
         //finish applying remaining model changes
         for (nextChange; nextChange < modelChanges.length; nextChange++) {
             //same condition as in 40_create-script.js
-            //(queue[0].time < turnDuration)
-            if (modelChanges[nextChange].time < script.turnDuration) {
+            //(queue[0].time <= turnDuration)
+            if (modelChanges[nextChange].time <= script.turnDuration) {
                 modelChanges[nextChange].apply(gs.ship);
             }
         }

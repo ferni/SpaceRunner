@@ -80,7 +80,7 @@ if (typeof exports !== 'undefined') {
 
         //simulation loop (the ship gets modified and actions get added
         // to the script over time)
-        while (queue.length > 0 && queue[0].time < turnDuration) {
+        while (queue.length > 0 && queue[0].time <= turnDuration) {
             time = queue[0].time;
             console.log('applying changes from time:' + time);
             changes = _.where(queue, {time: time});
@@ -88,15 +88,18 @@ if (typeof exports !== 'undefined') {
             _.each(changes, script.registerChange, script);
             queue = queue.slice(changes.length);
 
-            registerActionReturned.thereWereImmediateChanges = false;
-            //ship.units would be battle.objects in the future
-            for (i = 0; i < ship.units.length; i++) {
-                unit = ship.units[i];
-                _.each(unit.getActions(time, ship),
-                    registerAction(registerActionReturned));
-            }
-            if (registerActionReturned.thereWereImmediateChanges) {
-                insertInQueue(getVoidModelChange(time));
+            if (time < turnDuration) {
+                //actions can't start at end of turn
+                registerActionReturned.thereWereImmediateChanges = false;
+                //ship.units would be battle.objects in the future
+                for (i = 0; i < ship.units.length; i++) {
+                    unit = ship.units[i];
+                    _.each(unit.getActions(time, ship),
+                        registerAction(registerActionReturned));
+                }
+                if (registerActionReturned.thereWereImmediateChanges) {
+                    insertInQueue(getVoidModelChange(time));
+                }
             }
         }
 
