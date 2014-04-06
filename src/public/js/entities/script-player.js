@@ -75,7 +75,7 @@ var ScriptPlayer = function(battleScreen) {
             tilePx = v.mul(action.to, TILE_SIZE),
             lane, toPx;
         if (moveThroughRightLane) {
-            lane = getLane(action.from, action.to),
+            lane = getLane(action.from, action.to);
             //adjust for entry point
             toPx = v.add(tilePx, lane.entryPoint);
         } else {
@@ -171,12 +171,7 @@ var ScriptPlayer = function(battleScreen) {
             playDamageShipAction(action);
             break;
         case 'DeclareWinner':
-            if (action.playerID === gs.player.id) {
-                alert('Victory!');
-            } else {
-                alert('Defeat.');
-            }
-            location.reload();
+
             break;
         case 'FireShipWeapon':
             playFireShipWeaponAction(action);
@@ -223,6 +218,7 @@ var ScriptPlayer = function(battleScreen) {
     };
 
     this.onPause = function() {
+        var declareWinner;
         //finish applying remaining model changes
         for (nextChange; nextChange < modelChanges.length; nextChange++) {
             //same condition as in 40_create-script.js
@@ -234,6 +230,20 @@ var ScriptPlayer = function(battleScreen) {
         _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up
         gs.ship.endOfTurnReset(battleScreen.turnDuration);
+
+        if (script) {
+            declareWinner = _.find(script.actions, function(a) {
+                return a instanceof sh.actions.DeclareWinner;
+            });
+            if (declareWinner) {
+                if (declareWinner.playerID === gs.player.id) {
+                    alert('Victory!');
+                } else {
+                    alert('Defeat.');
+                }
+                location.reload();
+            }
+        }
     };
 
 };
