@@ -131,12 +131,14 @@ sh.Unit = sh.TileEntity.extendShared({
                     unitID: this.id
                 }));
             }
-            if (turnTime < 3999) {
+            //if it's not gonna make it,
+            //force arrival to the tile at end of turn
+            if (turnTime < 4000) {
                 _.chain(actions)
                     .where({type: 'Move'})
                     .each(function(a) {
-                        if (a.duration + turnTime >= 4000) {
-                            a.duration = 4000 - turnTime - 1;
+                        if (a.duration + turnTime > 4000) {
+                            a.duration = 4000 - turnTime;
                             a.updateModelChanges();
                         }
                     });
