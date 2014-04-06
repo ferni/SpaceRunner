@@ -1,9 +1,9 @@
-/**
- * Based on
- * http://www.knockmeout.net/2011/05/dragging-dropping-and-sorting-with.html
- * Adapted for use with HTML5 sortable
- * (http://farhadi.ir/projects/html5sortable/)
- */
+/*
+-*- coding: utf-8 -*-
+* vim: set ts=4 sw=4 et sts=4 ai:
+* Copyright 2013 MITHIS
+* All rights reserved.
+*/
 
 /*global ko, $, _*/
 
