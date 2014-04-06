@@ -68,6 +68,11 @@ if (typeof exports !== 'undefined') {
          */
         insertAction: function(action) {
             var insertionIndex = _.sortedIndex(this.actions, action, 'time');
+            //after actions of the same time
+            while (this.actions[insertionIndex] &&
+                    this.actions[insertionIndex].time === action.time) {
+                insertionIndex++;
+            }
             this.actions.splice(insertionIndex, 0, action);
             return insertionIndex;
         },
