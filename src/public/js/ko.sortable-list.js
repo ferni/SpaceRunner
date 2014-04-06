@@ -7,6 +7,10 @@
 
 /*global ko, $, _*/
 
+/**
+ * Makes a list sortable.
+ * @type {{init: init, update: update}}
+ */
 ko.bindingHandlers.sortableList = {
     init: function(element, valueAccessor) {
         'use strict';
