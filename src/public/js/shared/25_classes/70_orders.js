@@ -120,12 +120,11 @@ if (typeof exports !== 'undefined') {
         getMoveAction: function(time, ship) {
             var state = this.goToState,
                 unit,
-                dest = this.destination,
                 nextTile,
                 from;
             if (state && !state.arrived) {
                 unit = ship.getUnitByID(this.unitID);
-                if (sh.v.equal(unit, dest)) {
+                if (sh.v.equal(unit, state.to)) {
                     //unit is already at destination
                     state.arrived = true;
                     return null;
@@ -209,13 +208,13 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    sh.orders.SeekAndDestroy = sh.Order.extendShared({
+    sh.orders.SeekAndDestroy = sh.orders.GoTo.extendShared({
         init: function(json) {
             this.parent(json);
             this.set('SeekAndDestroy', ['targetID'], json);
         },
         getActions: function(time, ship) {
-            var unit, target, nextTile, from;
+            var unit, target, move;
             if (this.finished) {
                 throw 'Order was already finished';
             }
@@ -245,40 +244,12 @@ if (typeof exports !== 'undefined') {
             if (unit.isInRange(target)) {
                 return [];
             }
-            if (unit.moveLock && tileIsClear(time, ship, unit, unit.moveLock)) {
-                from = {x: unit.x,
-                    y: unit.y};
-                this.pathIndex++;
-                return [new sh.actions.Move({
-                    time: time,
-                    unitID: unit.id,
-                    from: from,
-                    to: unit.moveLock,
-                    duration: unit.getTimeForMoving(from, unit.moveLock,
-                        ship)
-                })];
+            if (!this.goToState ||
+                    this.pathOutOfTarget(this.goToState.path, target)) {
+                this.goTo(target, ship);
             }
-            if (!this.path || this.pathOutOfTarget(this.path, target)) {
-                //find a path towards the target
-                this.path = pathfinder.findPath(unit.x, unit.y, target.x,
-                    target.y, new sh.PF.Grid(ship.width, ship.height,
-                        ship.getPfMatrix()));
-                this.pathIndex = 1;
-            }
-            if (this.path.length <= 1) {
-                return [];
-            }
-            nextTile = {x: this.path[this.pathIndex][0],
-                y: this.path[this.pathIndex][1]};
-            if (tileIsClear(time, ship, unit, nextTile)) {
-                return [new sh.actions.SetUnitProperty({
-                    time: time,
-                    unitID: unit.id,
-                    property: 'moveLock',
-                    value: nextTile
-                })];
-            }
-            return [];
+            move = this.getMoveAction(time, ship);
+            return move ? [move] : [];
         },
         pathOutOfTarget: function(path, target) {
             var pathLast = _.last(path);
