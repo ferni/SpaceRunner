@@ -104,18 +104,22 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
         },
         goTo: function(pos, ship) {
-            var state = this.goToState = {
-                to: pos,
-                arrived: false
-            },
+            var self = this,
                 unit = ship.getUnitByID(this.unitID);
-            //find a path towards the destination
-            state.grid = new sh.PF.Grid(ship.width, ship.height,
-                ship.getPfMatrix());
-            state.path =
-                pathfinder.findPath(unit.x, unit.y, pos.x, pos.y,
-                    state.grid.clone());
-            state.pathIndex = 1;
+            this.goToState = {
+                to: pos,
+                arrived: false,
+                path: self.getPath(unit, pos, ship),
+                pathIndex: 1
+            };
+        },
+        getPath: function(from, to, ship) {
+            if (!this.gridForPath) {
+                this.gridForPath = new sh.PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix());
+            }
+            return pathfinder.findPath(from.x, from.y, to.x, to.y,
+                this.gridForPath.clone());
         },
         getMoveAction: function(time, ship) {
             var state = this.goToState,
