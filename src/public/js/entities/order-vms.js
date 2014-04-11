@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, TILE_SIZE, _, gs, me, utils*/
+/*global TileEntityVM, TILE_SIZE, _, gs, me, utils, HALF_TILE*/
 
 var orderVMs = (function() {
     'use strict';
@@ -41,6 +41,30 @@ var orderVMs = (function() {
             var tile = this.getMarkerTile();
             this.setX(tile.x);
             this.setY(tile.y);
+        },
+        updatePath: function(from, to, ship) {
+            this.path = this.m.getPath(from, to, ship);
+        },
+        draw: function(ctx) {
+            this.parent(ctx);
+
+            if (!this.path) {
+                return;
+            }
+            var from = this.path[0];
+            ctx.beginPath();
+            ctx.save();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'blue';
+            _.each(this.path, function(pos) {
+                ctx.moveTo((from[0] * TILE_SIZE) + HALF_TILE,
+                        (from[1] * TILE_SIZE) + HALF_TILE);
+                ctx.lineTo((pos[0] * TILE_SIZE) + HALF_TILE,
+                        (pos[1] * TILE_SIZE) + HALF_TILE);
+                from = pos;
+            });
+            ctx.stroke();
+            ctx.restore();
         }
     });
 
