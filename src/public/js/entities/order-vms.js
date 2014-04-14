@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, TILE_SIZE, _, gs, me, utils, HALF_TILE*/
+/*global TileEntityVM, TILE_SIZE, _, gs, me, utils, HALF_TILE, draw, sh*/
 
 var orderVMs = (function() {
     'use strict';
@@ -42,8 +42,36 @@ var orderVMs = (function() {
             this.setX(tile.x);
             this.setY(tile.y);
         },
-        updatePath: function(from, to, ship) {
-            this.path = this.m.getPath(from, to, ship);
+        setX: function(x) {
+            var shouldUpdatePath = x !== this.x,
+                returns = this.parent(x);
+            if (shouldUpdatePath) {
+                this.updatePath();
+            }
+            return returns;
+        },
+        setY: function(y) {
+            var shouldUpdatePath = y !== this.y,
+                returns = this.parent(y);
+            if (shouldUpdatePath) {
+                this.updatePath();
+            }
+            return returns;
+        },
+        updatePath: function() {
+            var from, index, orderVMs = this.unitVM.orderVMs;
+            if (orderVMs[0] === this) {
+                from = this.unitVM.m;
+            } else {
+                index = _.indexOf(orderVMs, this);
+                if (index !== -1) {
+                    from = orderVMs[index - 1];
+                } else {
+                    from = orderVMs.length === 0 ? this.unitVM.m :
+                            _.last(orderVMs);
+                }
+            }
+            this.path = this.m.getPath(from, this, gs.ship);
         },
         draw: function(ctx) {
             this.parent(ctx);
@@ -54,11 +82,17 @@ var orderVMs = (function() {
             var from = this.path[0];
             ctx.beginPath();
             ctx.save();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = this.lightColor;
+            if (ctx.setLineDash) {
+                ctx.setLineDash([4, 4]);
+            }
             _.each(this.path, function(pos) {
                 ctx.moveTo((from[0] * TILE_SIZE) + HALF_TILE,
                         (from[1] * TILE_SIZE) + HALF_TILE);
+                if (ctx.setLineDash) {
+                    ctx.lineDashOffset = draw.getLineDashOffset();
+                }
                 ctx.lineTo((pos[0] * TILE_SIZE) + HALF_TILE,
                         (pos[1] * TILE_SIZE) + HALF_TILE);
                 from = pos;
@@ -97,9 +131,18 @@ var orderVMs = (function() {
         darkColor: '#500000',
         init: function(order) {
             this.parent(order, 'marker-red');
+            this.targetVM = me.state.current().shipVM
+                .getUnitVMByID(this.m.targetID);
         },
         getMarkerTile: function() {
             return gs.ship.getUnitByID(this.m.targetID);
+        },
+        update: function() {
+            if (!sh.v.equal(this.prevTargetPos, this.targetVM.m)) {
+                this.updatePos();
+                this.prevTargetPos = {x: this.targetVM.m.x,
+                    y: this.targetVM.m.y};
+            }
         }
     });
 

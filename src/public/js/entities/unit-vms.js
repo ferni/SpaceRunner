@@ -117,6 +117,11 @@ var UnitVM = TileEntityVM.extend({
                 }
             }
         }
+        if (changed.x || changed.y) {
+            if (this.orderVMs.length > 0) {
+                this.orderVMs[0].updatePath();
+            }
+        }
     },
     onShip: function() {
         'use strict';
@@ -147,35 +152,12 @@ var UnitVM = TileEntityVM.extend({
         this.parent(ctx);
         this.pos.x = originalPos.x;
         this.pos.y = originalPos.y;
-        if (this.selected()) {
-            this.drawOrders(ctx);
-        }
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
         if (this.m.chargingShipWeapon) {
             this.drawWeaponChargeProgressBar(ctx);
         }
-    },
-    drawOrders: function(ctx) {
-        'use strict';
-        var from = this.pos; //starting position
-        _.each(this.orderVMs, function(o) {
-            var to = {x: o.pos.x, y: o.pos.y};
-            to.x += HALF_TILE;
-            to.y += HALF_TILE;
-            ctx.save();
-            ctx.globalAlpha = o.alpha;
-            if (ctx.setLineDash) {
-                ctx.setLineDash([5, 5]);
-                ctx.lineDashOffset = draw.getLineDashOffset();
-                draw.line(ctx, from, to, o.darkColor, 2);
-                ctx.lineDashOffset += 5;
-            }
-            draw.line(ctx, from, to, o.lightColor, 2);
-            ctx.restore();
-            from = to;
-        }, this);
     },
     drawWeaponChargeProgressBar: function(ctx) {
         'use strict';

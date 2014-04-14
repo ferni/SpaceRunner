@@ -45,6 +45,9 @@ if (typeof exports !== 'undefined') {
             return { x: v.x / scalar, y: v.y / scalar};
         },
         equal: function(v1, v2) {
+            if (!v1 || !v2) {
+                return false;
+            }
             return v1.x === v2.x && v1.y === v2.y;
         },
         map: function(v, fun) {
