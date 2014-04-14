@@ -160,27 +160,7 @@ screens.register('battle', ConnectedScreen.extend({
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
             }
-            ctx.save();
-            ctx.globalAlpha = 0.7;
-            ctx.setLineDash([10, 5]);
-            _.each(this.previewOrders, function(o) {
-                var unitVM, index, from, to;
-                unitVM = this.shipVM.getUnitVMByID(o.m.unitID);
-                if (!unitVM) {
-                    return;//is probably dead
-                }
-                index = unitVM.getInsertOrderIndex() - 1;
-                to = {x: o.pos.x + HALF_TILE, y: o.pos.y + HALF_TILE};
-                if (index >= 0) {
-                    from = {x: unitVM.orderVMs[index].pos.x + HALF_TILE,
-                        y: unitVM.orderVMs[index].pos.y + HALF_TILE};
-                } else {
-                    from = unitVM.pos;
-                }
-                draw.line(ctx, from, to, o.lightColor, 2);
-                o.draw(ctx);
-            }, this);
-            ctx.restore();
+            _.invoke(this.previewOrders, 'draw', ctx);
         }
 
         //highlight highlighted tiles
