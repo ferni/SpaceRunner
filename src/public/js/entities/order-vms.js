@@ -75,7 +75,9 @@ var orderVMs = (function() {
         },
         draw: function(ctx) {
             this.parent(ctx);
-
+            if (this.hidden()) {
+                return;
+            }
             if (!this.path) {
                 return;
             }
