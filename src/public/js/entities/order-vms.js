@@ -44,9 +44,16 @@ var orderVMs = (function() {
         },
         setX: function(x) {
             var shouldUpdatePath = x !== this.x,
-                returns = this.parent(x);
+                returns = this.parent(x),
+                orderVMs,
+                nextOrder;
             if (shouldUpdatePath) {
                 this.updatePath();
+                orderVMs = this.unitVM.orderVMs;
+                nextOrder = orderVMs[_.indexOf(orderVMs, this) + 1];
+                if (nextOrder) {
+                    nextOrder.updatePath();
+                }
             }
             return returns;
         },
