@@ -166,6 +166,10 @@ sh.items.Console = sh.Item.extendShared({
         'use strict';
         return sh.pr.console.compliesAt(x, y, ship.map);
     },
+    /**
+     * Get the item that is controlled by this console.
+     * @return {sh.Item}
+     */
     getControlled: function() {
         'use strict';
         var x, y, atTile;

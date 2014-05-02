@@ -199,6 +199,21 @@ if (typeof exports !== 'undefined') {
         }
     });
 
+    sh.orders.MoveToConsole = sh.orders.Move.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.set('MoveToConsole', ['consoleType'], json);
+        },
+        toString: function() {
+            return 'Move to Console';
+        },
+        isValid: function(ship, playerID) {
+            return this.parent(ship, playerID) &&
+                ship.itemsMap.at(this.destination.x,
+                    this.destination.y) instanceof sh.items.Console;
+        }
+    });
+
     sh.orders.SeekAndDestroy = sh.orders.GoTo.extendShared({
         init: function(json) {
             this.parent(json);

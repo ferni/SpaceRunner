@@ -13,13 +13,13 @@ var orderVMs = (function() {
         OrderVM;
     OrderVM = TileEntityVM.extend({
         isPreview: false,
-        init: function(order, image) {
+        init: function(order) {
             var pos;
             this.m = order;
             this.unitVM = me.state.current().shipVM.getUnitVMByID(order.unitID);
             pos = this.getMarkerTile();
             this.isSelectable = true;
-            this.parent(pos.x, pos.y, {image: image,
+            this.parent(pos.x, pos.y, {image: 'markers',
                 spritewidth: TILE_SIZE, spriteheight: TILE_SIZE,
                 name: 'order'});
         },
@@ -115,7 +115,9 @@ var orderVMs = (function() {
         lightColor: '#00AA00',//for the lines
         darkColor: '#006000',
         init: function(order) {
-            this.parent(order, 'marker-green');
+            this.parent(order);
+            this.addAnimation('default', [1]); //green marker
+            this.setCurrentAnimation('default');
         },
         getMarkerTile: function() {
             return this.m.destination;
@@ -135,11 +137,23 @@ var orderVMs = (function() {
         }
     });
 
+    orderVMs.MoveToConsole = orderVMs.Move.extend({
+        lightColor: '#0A4CA8',//for the lines
+        darkColor: '#051936',
+        init: function(order) {
+            this.parent(order);
+            this.addAnimation('default', [2]); //blue marker
+            this.setCurrentAnimation('default');
+        }
+    });
+
     orderVMs.SeekAndDestroy = OrderVM.extend({
         lightColor: '#CC0000',//for the lines
         darkColor: '#500000',
         init: function(order) {
-            this.parent(order, 'marker-red');
+            this.parent(order);
+            this.addAnimation('default', [0]); //red marker
+            this.setCurrentAnimation('default');
             this.targetVM = me.state.current().shipVM
                 .getUnitVMByID(this.m.targetID);
         },

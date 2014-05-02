@@ -235,13 +235,9 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/projectile.png'
 }, {
-    name: 'marker-green',
+    name: 'markers',
     type: 'image',
-    src: 'data/img/render/marker-green.png'
-}, {
-    name: 'marker-red',
-    type: 'image',
-    src: 'data/img/render/marker-red.png'
+    src: 'data/img/render/markers.png'
 }, {
     name: 'charging-weapon-icon',
     type: 'image',
