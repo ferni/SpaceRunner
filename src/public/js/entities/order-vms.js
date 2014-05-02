@@ -110,7 +110,7 @@ var orderVMs = (function() {
         convertToPreview: function() {
             this.isPreview = true;
             this.isSelectable = false;
-            this.alpha = 0.7;
+            this.alpha = 0.85;
         },
         hide: function() {
             this.parent();
