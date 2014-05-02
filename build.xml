@@ -1,4 +1,4 @@
-<project name="SpaceRunner" default="report">
+<project name="SpaceRunner" default="run">
     <property name="node-version" value="0.8.22"/>
     <property name="node-dir" value="node-v${node-version}-linux-x86"/>
     <property name="redis-version" value="2.6.10"/>
@@ -29,7 +29,11 @@
             </sequential>
         </parallel>
     </target>
-
+    <target name="clean" description="Erases everything on the tools folder">
+        <delete includeEmptyDirs="true">
+  		<fileset dir="tools" includes="*"/>
+	</delete>
+    </target>
     <!-- Test reports -->
 
 	<target name="report" depends="tools/phantomjs" description="Runs jscoverage to instrument code, runs the instrumented tests, gets the coverage report and makes a report file">
