@@ -82,9 +82,6 @@ var orderVMs = (function() {
         },
         draw: function(ctx) {
             this.parent(ctx);
-            if (this.hidden()) {
-                return;
-            }
             if (!this.path) {
                 return;
             }
@@ -93,15 +90,16 @@ var orderVMs = (function() {
             ctx.save();
             ctx.lineWidth = 2;
             ctx.strokeStyle = this.lightColor;
+            ctx.globalAlpha = this.alpha;
             if (ctx.setLineDash) {
                 ctx.setLineDash([4, 4]);
+                if (!this.hidden()) {
+                    ctx.lineDashOffset = draw.getLineDashOffset();
+                }
             }
             _.each(this.path, function(pos) {
                 ctx.moveTo((from[0] * TILE_SIZE) + HALF_TILE,
                         (from[1] * TILE_SIZE) + HALF_TILE);
-                if (ctx.setLineDash) {
-                    ctx.lineDashOffset = draw.getLineDashOffset();
-                }
                 ctx.lineTo((pos[0] * TILE_SIZE) + HALF_TILE,
                         (pos[1] * TILE_SIZE) + HALF_TILE);
                 from = pos;
@@ -113,6 +111,10 @@ var orderVMs = (function() {
             this.isPreview = true;
             this.isSelectable = false;
             this.alpha = 0.7;
+        },
+        hide: function() {
+            this.parent();
+            this.alpha = 0.4;
         }
     });
 
