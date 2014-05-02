@@ -202,7 +202,7 @@ if (typeof exports !== 'undefined') {
     sh.orders.MoveToConsole = sh.orders.Move.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set('MoveToConsole', ['consoleType'], json);
+            this.set('MoveToConsole', [], json);
         },
         toString: function() {
             return 'Move to Console';
