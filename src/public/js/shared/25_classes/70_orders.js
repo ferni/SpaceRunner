@@ -79,7 +79,7 @@ if (typeof exports !== 'undefined') {
             _.all(units, function(u) {
                 return !u.isAlive() ||//or they're either dead...
                     (u.moving && //...or they're going away
-                    sh.v.equal(u.moving.dest, tile) &&
+                    !sh.v.equal(u.moving.dest, tile) &&
                     u.moving.arrivalTime <= arrivalTime
                     );
             })) &&
