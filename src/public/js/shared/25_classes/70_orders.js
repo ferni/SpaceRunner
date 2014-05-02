@@ -87,12 +87,9 @@ if (typeof exports !== 'undefined') {
             !_.any(ship.units,
                 function(u) {
                     //no unit is moving there
-                    return (u.moving &&
-                        sh.v.equal(u.moving.dest, tile)) ||
-                        //no unit with higher rank prepared to move there
-                        (u.id > unit.id &&
-                            u.moveLock &&
-                            sh.v.equal(u.moveLock, tile));
+                    return u.id !== unit.id &&
+                        u.moving &&
+                        sh.v.equal(u.moving.dest, tile);
                 });
     }
 
@@ -136,8 +133,13 @@ if (typeof exports !== 'undefined') {
                 if (unit.moving) {
                     return null;
                 }
-                if (unit.moveLock &&
-                        tileIsClear(time, ship, unit, unit.moveLock)) {
+                if (state.pathIndex >= state.path.length) {
+                    this.goToState.arrived = true;
+                    return null;
+                }
+                nextTile = {x: state.path[state.pathIndex][0],
+                    y: state.path[state.pathIndex][1]};
+                if (tileIsClear(time, ship, unit, nextTile)) {
                     from = {x: unit.x, y: unit.y};
                     state.pathIndex++;
                     if (!state.path || state.pathIndex >= state.path.length) {
@@ -147,23 +149,8 @@ if (typeof exports !== 'undefined') {
                         time: time,
                         unitID: unit.id,
                         from: from,
-                        to: unit.moveLock,
-                        duration: unit.getTimeForMoving(from, unit.moveLock,
-                            ship)
-                    });
-                }
-                if (state.pathIndex >= state.path.length) {
-                    this.goToState.arrived = true;
-                    return null;
-                }
-                nextTile = {x: state.path[state.pathIndex][0],
-                    y: state.path[state.pathIndex][1]};
-                if (tileIsClear(time, ship, unit, nextTile)) {
-                    return new sh.actions.SetUnitProperty({
-                        time: time,
-                        unitID: unit.id,
-                        property: 'moveLock',
-                        value: nextTile
+                        to: nextTile,
+                        duration: unit.getTimeForMoving(from, nextTile, ship)
                     });
                 }
                 return null;
