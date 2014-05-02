@@ -108,6 +108,11 @@ var orderVMs = (function() {
             });
             ctx.stroke();
             ctx.restore();
+        },
+        convertToPreview: function() {
+            this.isPreview = true;
+            this.isSelectable = false;
+            this.alpha = 0.7;
         }
     });
 

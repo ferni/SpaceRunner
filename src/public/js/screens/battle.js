@@ -264,6 +264,7 @@ screens.register('battle', ConnectedScreen.extend({
                 enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
                     utils.isEnemy);
                 if (enemies.length > 0) {
+                    // IS SEEK AND DESTROY ORDER
                     _.each(unitsToGiveOrders, function(u) {
                         var order = new sh.orders.SeekAndDestroy({
                             unitID: u.m.id,
@@ -271,12 +272,25 @@ screens.register('battle', ConnectedScreen.extend({
                         });
                         if (order.isValid(gs.ship, gs.player.id)) {
                             self.previewOrders[u.m.id] = make.vm(order);
-                            self.previewOrders[u.m.id].isPreview = true;
-                            self.previewOrders[u.m.id].isSelectable = false;
-                            self.previewOrders[u.m.id].alpha = 0.7;
+                            self.previewOrders[u.m.id].convertToPreview();
+                        }
+                    });
+                } else if (gs.ship.itemsMap.at(mouse.x, mouse.y) instanceof
+                        sh.items.Console) {
+                    // IS MOVE TO CONSOLE ORDER
+                    _.each(unitsToGiveOrders, function(u) {
+                        var order = new sh.orders.MoveToConsole({
+                            unitID: u.m.id,
+                            destination: mouse
+                        });
+                        if (order.isValid(gs.ship, gs.player.id)) {
+                            self.previewOrders[u.m.id] = make.vm(order);
+                            self.previewOrders[u.m.id].convertToPreview();
+
                         }
                     });
                 } else {
+                    // IS MOVE ORDER
                     _.each(unitsToGiveOrders, function(u) {
                         var order = new sh.orders.Move({
                             unitID: u.m.id,
@@ -284,9 +298,7 @@ screens.register('battle', ConnectedScreen.extend({
                         });
                         if (order.isValid(gs.ship, gs.player.id)) {
                             self.previewOrders[u.m.id] = make.vm(order);
-                            self.previewOrders[u.m.id].isPreview = true;
-                            self.previewOrders[u.m.id].isSelectable = false;
-                            self.previewOrders[u.m.id].alpha = 0.7;
+                            self.previewOrders[u.m.id].convertToPreview();
                         }
                     });
                 }
