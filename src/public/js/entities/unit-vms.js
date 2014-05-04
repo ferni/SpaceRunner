@@ -59,6 +59,7 @@ var UnitVM = TileEntityVM.extend({
                 .fail(function() {
                     console.error('Server error when submitting orders.');
                 });
+
         }, this);
         this.isSelectable = this.isMine();
         this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy',
@@ -78,14 +79,17 @@ var UnitVM = TileEntityVM.extend({
                 this.faceLeft(true);
             }
         }
+        this.updateOrderVMs();
+        this.prevX = this.pos.x;
+        return true;
+    },
+    updateOrderVMs: function() {
+        'use strict';
         if (utils.updateVMs(this.m.orders, this.orderVMs,
                 ui.layers.indicators)) {
             _.invoke(this.orderVMs, 'updatePath');
             me.game.sort();
         }
-
-        this.prevX = this.pos.x;
-        return true;
     },
     onModelChanged: function(changed) {
         'use strict';
@@ -260,6 +264,8 @@ var UnitVM = TileEntityVM.extend({
         this.m.orders.splice(this.getInsertOrderIndex());
         this.m.orders.push(order);
         this.orders(this.m.orders);//so it updates the server and vms
+        this.updateOrderVMs();
+        _.last(this.orderVMs).select();
     },
     getInsertOrderIndex: function() {
         'use strict';
