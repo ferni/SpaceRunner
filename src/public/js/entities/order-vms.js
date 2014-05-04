@@ -43,27 +43,30 @@ var orderVMs = (function() {
             this.setY(tile.y);
         },
         setX: function(x) {
-            var shouldUpdatePath = x !== this.x,
-                returns = this.parent(x),
-                orderVMs,
-                nextOrder;
-            if (shouldUpdatePath) {
-                this.updatePath();
-                orderVMs = this.unitVM.orderVMs;
-                nextOrder = orderVMs[_.indexOf(orderVMs, this) + 1];
-                if (nextOrder) {
-                    nextOrder.updatePath();
-                }
+            var posChanged = x !== this.x,
+                returns = this.parent(x);
+            if (posChanged) {
+                this.onPosChanged();
             }
             return returns;
         },
         setY: function(y) {
-            var shouldUpdatePath = y !== this.y,
+            var posChanged = y !== this.y,
                 returns = this.parent(y);
-            if (shouldUpdatePath) {
-                this.updatePath();
+            if (posChanged) {
+                this.onPosChanged();
             }
             return returns;
+        },
+        onPosChanged: function() {
+            var orderVMs,
+                nextOrder;
+            this.updatePath();
+            orderVMs = this.unitVM.orderVMs;
+            nextOrder = orderVMs[_.indexOf(orderVMs, this) + 1];
+            if (nextOrder) {
+                nextOrder.updatePath();
+            }
         },
         updatePath: function() {
             var from, index, orderVMs = this.unitVM.orderVMs;
