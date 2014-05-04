@@ -80,6 +80,7 @@ var UnitVM = TileEntityVM.extend({
         }
         if (utils.updateVMs(this.m.orders, this.orderVMs,
                 ui.layers.indicators)) {
+            _.invoke(this.orderVMs, 'updatePath');
             me.game.sort();
         }
 
