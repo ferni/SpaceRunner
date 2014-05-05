@@ -14,8 +14,7 @@ var UnitVM = TileEntityVM.extend({
     cannonTile: [-0.25, -0.25],//image offset
     init: function(unitModel) {
         'use strict';
-        var screen = me.state.current();
-        this.screen = screen;
+        var self = this;
         this.m = unitModel;
         this.size = unitModel.size;
         this.speed = unitModel.speed;
@@ -51,7 +50,7 @@ var UnitVM = TileEntityVM.extend({
             this.m.orders = newValue;
             ordersObject[this.m.id] = newValue;
             $.post('/battle/sendorders',
-                {id: screen.id,//battle id
+                {id: self.screen.id,//battle id
                     orders: new sh.OrderPackage(ordersObject).toJson()},
                 function() {
                     console.log('Orders successfully submitted');
@@ -230,8 +229,11 @@ var UnitVM = TileEntityVM.extend({
             ui.layers.effects);
         me.game.sort();
     },
-    onMouseDown: function() {
+    onMouseUp: function() {
         'use strict';
+        if (this.screen.dragging) {
+            return;
+        }
         if (this.isSelectable) {
             //deselect all the units first
             _.chain(gs.selected)

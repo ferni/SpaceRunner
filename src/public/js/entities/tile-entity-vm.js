@@ -19,6 +19,7 @@ var TileEntityVM = me.ObjectEntity.extend({
     init: function(x, y, settings) {
         'use strict';
         var type, selected = false;
+        this.screen = me.state.current();
         if (this.type !== 0) {
             type = this.type;
             settings.image = this.type.toLowerCase();
@@ -110,22 +111,18 @@ var TileEntityVM = me.ObjectEntity.extend({
     },
     onMouseDown: function() {
         'use strict';
-        //console.log('mouse down on ' + this.type);
+    },
+    onMouseUp: function() {
+        'use strict';
         if (this.isSelectable) {
             this.select();
         }
     },
-    onMouseUp: function() {
-        'use strict';
-        //console.log('mouse up on ' + this.type);
-    },
     onMouseEnter: function() {
         'use strict';
-        //console.log('mouse entered ' + this.type);
     },
     onMouseLeave: function() {
         'use strict';
-        //console.log('mouse left ' + this.type);
         if (this.isSelectable) {
             utils.setCursor('default');
         }
