@@ -193,7 +193,6 @@ screens.register('battle', ConnectedScreen.extend({
             if (this.dragBox) {
                 this.releaseDragBox();
             } else if (this.dragging) {//an order
-                console.log('mouse up while dragging activated');
                 if (!sh.v.equal(this.dragging.m.destination, mouse)) {
                     draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
@@ -244,7 +243,6 @@ screens.register('battle', ConnectedScreen.extend({
     updatePreviewOrders: function(mouse) {
         'use strict';
         var unitsToGiveOrders,
-            enemies,
             self = this;
         this.previewOrders = {};
         if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
@@ -260,49 +258,13 @@ screens.register('battle', ConnectedScreen.extend({
                         (u.orders().length === 0 ||
                             _.last(u.orderVMs).selected());
                 });
-            if (unitsToGiveOrders.length > 0) {
-                enemies = _.filter(gs.ship.unitsMap.at(mouse.x, mouse.y),
-                    utils.isEnemy);
-                if (enemies.length > 0) {
-                    // IS SEEK AND DESTROY ORDER
-                    _.each(unitsToGiveOrders, function(u) {
-                        var order = new sh.orders.SeekAndDestroy({
-                            unitID: u.m.id,
-                            targetID: enemies[0].id
-                        });
-                        if (order.isValid(gs.ship, gs.player.id)) {
-                            self.previewOrders[u.m.id] = make.vm(order);
-                            self.previewOrders[u.m.id].convertToPreview();
-                        }
-                    });
-                } else if (gs.ship.itemsMap.at(mouse.x, mouse.y) instanceof
-                        sh.items.Console) {
-                    // IS MOVE TO CONSOLE ORDER
-                    _.each(unitsToGiveOrders, function(u) {
-                        var order = new sh.orders.MoveToConsole({
-                            unitID: u.m.id,
-                            destination: mouse
-                        });
-                        if (order.isValid(gs.ship, gs.player.id)) {
-                            self.previewOrders[u.m.id] = make.vm(order);
-                            self.previewOrders[u.m.id].convertToPreview();
-
-                        }
-                    });
-                } else {
-                    // IS MOVE ORDER
-                    _.each(unitsToGiveOrders, function(u) {
-                        var order = new sh.orders.Move({
-                            unitID: u.m.id,
-                            destination: mouse
-                        });
-                        if (order.isValid(gs.ship, gs.player.id)) {
-                            self.previewOrders[u.m.id] = make.vm(order);
-                            self.previewOrders[u.m.id].convertToPreview();
-                        }
-                    });
+            _.each(unitsToGiveOrders, function(u) {
+                var order = gs.ship.getValidOrderForPos(u.m, mouse);
+                if (order) {
+                    self.previewOrders[u.m.id] = make.vm(order);
+                    self.previewOrders[u.m.id].convertToPreview();
                 }
-            }
+            });
         }
     },
     getModelDifferenceUrl: function() {

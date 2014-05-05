@@ -394,6 +394,39 @@ sh.Ship = sh.SharedClass.extendShared({
                 return new sh.orders[o.type](o);
             });
         });
+    },
+    getValidOrderForPos: function(unit, pos) {
+        'use strict';
+        var stuff = this.map.at(pos.x, pos.y),
+            enemies,
+            order;
+        if (_.isArray(stuff)) {
+            enemies = _.filter(stuff, function(u) {
+                return u instanceof sh.Unit && u.isEnemy(unit);
+            });
+            if (enemies.length > 0) {
+                order = new sh.orders.SeekAndDestroy({
+                    unitID: unit.id,
+                    targetID: enemies[0].id
+                });
+            }
+        } else {
+            if (stuff instanceof sh.items.Console) {
+                order = new sh.orders.MoveToConsole({
+                    unitID: unit.id,
+                    destination: {x: pos.x, y: pos.y}
+                });
+            } else if (this.isWalkable(pos.x, pos.y)) {
+                order = new sh.orders.Move({
+                    unitID: unit.id,
+                    destination: {x: pos.x, y: pos.y}
+                });
+            }
+        }
+        if (order && order.isValid(this, unit.ownerID)) {
+            return order;
+        }
+        return null;
     }
 });
 
