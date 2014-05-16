@@ -82,7 +82,7 @@ if (typeof exports !== 'undefined') {
         // to the script over time)
         while (queue.length > 0 && queue[0].time <= turnDuration) {
             time = queue[0].time;
-            console.log('applying changes from time:' + time);
+//            console.log('applying changes from time:' + time);
             changes = _.where(queue, {time: time});
             _.invoke(changes, 'apply', ship);
             _.each(changes, script.registerChange, script);
