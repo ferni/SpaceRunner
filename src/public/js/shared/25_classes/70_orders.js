@@ -64,7 +64,6 @@ if (typeof exports !== 'undefined') {
     sh.Order = sh.Jsonable.extendShared({
         init: function(json) {
             this.set('Order', ['unitID'], json);
-            this.finished = false;
         },
         isValid: function(ship, playerID) {
             var unit = ship.getUnitByID(this.unitID);
@@ -177,9 +176,6 @@ if (typeof exports !== 'undefined') {
          */
         getActions: function(time, ship) {
             var move;
-            if (this.finished) {
-                return [];
-            }
             if (!this.goToState) {
                 this.goTo(this.destination, ship);
             }
@@ -187,7 +183,6 @@ if (typeof exports !== 'undefined') {
                 move = this.getMoveAction(time, ship);
                 return move ? [move] : [];
             }
-            this.finished = true;
             return [new sh.actions.FinishOrder({
                 time: time,
                 unitID: this.unitID
@@ -224,14 +219,10 @@ if (typeof exports !== 'undefined') {
         },
         getActions: function(time, ship) {
             var unit, target, move;
-            if (this.finished) {
-                return [];
-            }
             unit = ship.getUnitByID(this.unitID);
             target = ship.getUnitByID(this.targetID);
             if (!target || !target.isAlive()) {
                 //unit is already dead
-                this.finished = true;
                 return [new sh.actions.SetUnitProperty({
                     time: time,
                     unitID: unit.id,
