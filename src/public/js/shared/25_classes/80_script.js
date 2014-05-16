@@ -25,7 +25,6 @@ if (typeof exports !== 'undefined') {
     sh.Script = sh.SharedClass.extendShared({
         turnDuration: 0,
         actions: [],
-        byUnit: {},
         sortedModelChangesIndex: [],
         init: function(parameters) {
             if (parameters) {
@@ -42,7 +41,6 @@ if (typeof exports !== 'undefined') {
                 return new sh.actions[actionJson.type](actionJson);
             });
             this.sortedModelChangesIndex = json.sortedModelChangesIndex;
-            this.updateActionsByUnit();
             return this;
         },
         toJson: function() {
@@ -59,7 +57,6 @@ if (typeof exports !== 'undefined') {
         },
         sort: function() {
             this.actions = _.sortBy(this.actions, 'time');
-            this.updateActionsByUnit();
         },
         /**
          * Inserts an action maintaining their order
@@ -85,20 +82,6 @@ if (typeof exports !== 'undefined') {
                 return a.type === type;
             });
         },
-        updateActionsByUnit: function() {
-            var actionsByUnit = {};
-            _.each(this.actions, function(action) {
-                var unitID = action.type === 'Attack' ? action.attackerID :
-                        action.unitID;
-                if (unitID !== undefined) {
-                    if (!actionsByUnit[unitID]) {
-                        actionsByUnit[unitID] = [];
-                    }
-                    actionsByUnit[unitID].push(action);
-                }
-            });
-            this.byUnit = actionsByUnit;
-        },
         registerChange: function(modelChange) {
             if (modelChange.actionIndex === undefined) {
                 return;
@@ -117,16 +100,6 @@ if (typeof exports !== 'undefined') {
             return _.map(this.sortedModelChangesIndex, function(i) {
                 return this.actions[i.actionIndex].modelChanges[i.index];
             }, this);
-        },
-        toString: function() {
-            var result = '';
-            _.each(this.byUnit, function(actions, unitID) {
-                result += '* Unit ' + unitID + '\'s actions *\n';
-                _.each(actions, function(a) {
-                    result += a.time + 'ms: ' + a.type + '\n';
-                });
-            });
-            return result;
         }
     });
 }());

@@ -112,7 +112,6 @@ if (typeof exports !== 'undefined') {
         if (resetShip) {
             ship.endOfTurnReset(turnDuration);
         }
-        script.updateActionsByUnit();
         return script;
     }
 
