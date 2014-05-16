@@ -147,47 +147,6 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return [];
     },
-    getCombatActions: function(turnTime, ship) {
-        'use strict';
-        var self = this,
-            unitsInTile,
-            enemiesNotInCombat,
-            enemy;
-        if (!this.inCombat && !this.moving && !this.dizzy) {
-            unitsInTile = ship.at(this.x, this.y);
-            if (unitsInTile) {
-                enemiesNotInCombat = _.filter(unitsInTile, function(u) {
-                    return self.isEnemy(u) &&
-                        !u.moving &&
-                        !u.dizzy &&
-                        !u.inCombat &&
-                        u.isAlive();
-                });
-                if (enemiesNotInCombat.length > 0) {
-                    //engage with one enemy
-                    return [new sh.actions.LockInCombat({
-                        time: turnTime,
-                        unit1ID: this.id,
-                        unit2ID: enemiesNotInCombat[0].id,
-                        tile: {
-                            x: this.x,
-                            y: this.y
-                        }
-                    })];
-                }
-            }
-        } else if (this.inCombat) {
-            enemy = ship.getUnitByID(this.inCombat.enemyID);
-            if (!enemy.isAlive() || !sh.v.equal(this, enemy)) {
-                //enemy died or left, end combat
-                return [new sh.actions.EndCombat({
-                    time: turnTime,
-                    tile: {x: this.x, y: this.y}
-                })];
-            }
-        }
-        return [];
-    },
     getDamageShipActions: function(turnTime, ship) {
         'use strict';
         if (this.ownerID === -1 && //AI unit (in the future, use ship ownership)
@@ -276,7 +235,6 @@ sh.Unit = sh.TileEntity.extendShared({
             }
         }
         actions = actions.concat(this.getOrdersActions(turnTime, ship));
-        actions = actions.concat(this.getCombatActions(turnTime, ship));
 
         return actions;
     },
