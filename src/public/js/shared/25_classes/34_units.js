@@ -121,16 +121,7 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         var actions;
         if (this.orders.length > 0) {
-            if (this.orders[0].finished) {
-                return [];
-            }
             actions = this.orders[0].getActions(turnTime, ship);
-            if (this.orders[0].finished) {
-                actions.push(new sh.actions.FinishOrder({
-                    time: turnTime,
-                    unitID: this.id
-                }));
-            }
             //if it's not gonna make it,
             //force arrival to the tile at end of turn
             if (turnTime < 4000) {

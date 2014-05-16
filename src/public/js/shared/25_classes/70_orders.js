@@ -178,7 +178,7 @@ if (typeof exports !== 'undefined') {
         getActions: function(time, ship) {
             var move;
             if (this.finished) {
-                throw 'Order was already finished';
+                return [];
             }
             if (!this.goToState) {
                 this.goTo(this.destination, ship);
@@ -188,7 +188,10 @@ if (typeof exports !== 'undefined') {
                 return move ? [move] : [];
             }
             this.finished = true;
-            return [];
+            return [new sh.actions.FinishOrder({
+                time: time,
+                unitID: this.unitID
+            })];
         },
         toString: function() {
             return 'Move to ' + sh.v.str(this.destination);
@@ -222,7 +225,7 @@ if (typeof exports !== 'undefined') {
         getActions: function(time, ship) {
             var unit, target, move;
             if (this.finished) {
-                throw 'Order was already finished';
+                return [];
             }
             unit = ship.getUnitByID(this.unitID);
             target = ship.getUnitByID(this.targetID);
@@ -234,7 +237,11 @@ if (typeof exports !== 'undefined') {
                     unitID: unit.id,
                     property: 'targetID',
                     value: null
-                })];
+                }),
+                    new sh.actions.FinishOrder({
+                        time: time,
+                        unitID: unit.id
+                    })];
             }
             if (unit.targetID === null || unit.targetID === undefined) {
                 return [new sh.actions.SetUnitProperty({
