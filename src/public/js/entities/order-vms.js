@@ -36,6 +36,7 @@ var orderVMs = (function() {
                 }, this)
                 .invoke('deselect');
             this.unitVM.select();
+            console.log('Order timeline: ' + this.start + ' -> ' + this.end);
         },
         updatePos: function() {
             var tile = this.getMarkerTile();

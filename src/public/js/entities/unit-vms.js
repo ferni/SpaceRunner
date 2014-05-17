@@ -61,6 +61,7 @@ var UnitVM = TileEntityVM.extend({
             if (!this.updateOrderVMs()) {
                 _.invoke(this.orderVMs, 'updatePath');
             }
+            self.screen.updateOrderVMsDuration();
         }, this);
         this.isSelectable = this.isMine();
         this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy',

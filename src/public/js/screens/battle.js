@@ -267,6 +267,25 @@ screens.register('battle', ConnectedScreen.extend({
             });
         }
     },
+    updateOrderVMsDuration: function() {
+        'use strict';
+        var self = this,
+            resultingShip = gs.ship.clone(),
+            script = sh.createScript(gs.ship.extractOrders(),
+                resultingShip, this.turnDuration);
+        _.chain(script.byType('FinishOrder'))
+            .groupBy('unitID')
+            .each(function(finishActions, unitID) {
+                var unitVM = self.shipVM.getUnitVMByID(unitID),
+                    prevTime = 0;
+                _.each(finishActions, function(action, index) {
+                    unitVM.orderVMs[index].start = prevTime;
+                    unitVM.orderVMs[index].end = action.time;
+                    unitVM.orderVMs[index].duration = action.time - prevTime;
+                    prevTime = action.time;
+                });
+            });
+    },
     getModelDifferenceUrl: function() {
         'use strict';
         var screen = this,
