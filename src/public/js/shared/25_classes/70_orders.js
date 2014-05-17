@@ -132,7 +132,7 @@ if (typeof exports !== 'undefined') {
                 if (unit.moving) {
                     return null;
                 }
-                if (state.pathIndex >= state.path.length) {
+                if (!state.path || state.pathIndex >= state.path.length) {
                     this.goToState.arrived = true;
                     return null;
                 }
@@ -141,9 +141,6 @@ if (typeof exports !== 'undefined') {
                 if (tileIsClear(time, ship, unit, nextTile)) {
                     from = {x: unit.x, y: unit.y};
                     state.pathIndex++;
-                    if (!state.path || state.pathIndex >= state.path.length) {
-                        this.goToState.arrived = true;
-                    }
                     return new sh.actions.Move({
                         time: time,
                         unitID: unit.id,
