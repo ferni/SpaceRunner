@@ -18,7 +18,6 @@ var ScriptPlayer = function(battleScreen) {
     var script, next, actionPlayers = [],
         nextChange,
         modelChanges = [],
-        clouds = [],
         v = sh.v, //vector math
         moveThroughRightLane = false,
         movementLanes = (function() {
@@ -84,48 +83,6 @@ var ScriptPlayer = function(battleScreen) {
         unitVM.tweenTo(toPx, action.duration);
     }
 
-    function playLockInCombatAction(action) {
-        var mineCombatPos = {x: 24, y: 8},
-            enemyCombatPos = {x: 8, y: 24},
-            units = [],
-            cloud;
-
-        units[0] = battleScreen.shipVM.getUnitVMByID(action.unit1ID);
-        units[1] = battleScreen.shipVM.getUnitVMByID(action.unit2ID);
-        _.each(units, function(u) {
-            var floorPos, combatPos;
-            floorPos = v.mul(action.tile, TILE_SIZE);
-            if (u.isMine()) {
-                combatPos = v.add(floorPos, mineCombatPos);
-            } else {
-                combatPos = v.add(floorPos, enemyCombatPos);
-            }
-            u.tweenTo(combatPos, 700, me.Tween.Easing.Quadratic.EaseOut);
-        });
-
-        //add a cloud over the tile
-        if (!_.any(clouds, function(c) {
-                return sh.v.equal(c.tile, action.tile);
-            })) {
-            cloud = new ui.Cloud(action.tile);
-            clouds.push({
-                tile: action.tile,
-                cloud: cloud
-            });
-            me.game.add(cloud, ui.layers.effects);
-        }
-    }
-
-    function playEndCombatAction(action) {
-        var cloudRegistry = _.find(clouds, function(c) {
-            return sh.v.equal(c.tile, action.tile);
-        });
-        if (cloudRegistry) {//there's actually a cloud there
-            clouds.splice(_.indexOf(clouds, cloudRegistry), 1);
-            me.game.remove(cloudRegistry.cloud, true);
-        }
-    }
-
     function playAttackAction(action) {
         var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
         battleScreen.shipVM
@@ -161,17 +118,10 @@ var ScriptPlayer = function(battleScreen) {
         case 'Attack':
             playAttackAction(action);
             break;
-        case 'LockInCombat':
-            playLockInCombatAction(action);
-            break;
-        case 'EndCombat':
-            playEndCombatAction(action);
-            break;
         case 'DamageShip':
             playDamageShipAction(action);
             break;
         case 'DeclareWinner':
-
             break;
         case 'FireShipWeapon':
             playFireShipWeaponAction(action);
