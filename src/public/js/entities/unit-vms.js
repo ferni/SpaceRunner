@@ -43,7 +43,7 @@ var UnitVM = TileEntityVM.extend({
         this.pos.x = (this.m.x * TILE_SIZE) + HALF_TILE;
         this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
         this.updateHealthBar();
-        this.orderVMs = [];
+        this.orderVMs = ko.observableArray([]);
         this.orders = ko.observableArray(unitModel.orders);
         this.orders.subscribe(function(newValue) {
             var ordersObject = {};
@@ -59,7 +59,7 @@ var UnitVM = TileEntityVM.extend({
                     console.error('Server error when submitting orders.');
                 });
             if (!this.updateOrderVMs()) {
-                _.invoke(this.orderVMs, 'updatePath');
+                _.invoke(this.orderVMs(), 'updatePath');
             }
             self.screen.updateOrderVMsDuration();
         }, this);
@@ -87,9 +87,11 @@ var UnitVM = TileEntityVM.extend({
     },
     updateOrderVMs: function() {
         'use strict';
-        if (utils.updateVMs(this.m.orders, this.orderVMs,
+        var orderVMsArray = this.orderVMs();
+        if (utils.updateVMs(this.m.orders, orderVMsArray,
                 ui.layers.indicators)) {
-            _.invoke(this.orderVMs, 'updatePath');
+            this.orderVMs(orderVMsArray);
+            _.invoke(this.orderVMs(), 'updatePath');
             me.game.sort();
             return true;
         }
@@ -127,8 +129,8 @@ var UnitVM = TileEntityVM.extend({
             }
         }
         if (changed.x || changed.y) {
-            if (this.orderVMs.length > 0) {
-                this.orderVMs[0].updatePath();
+            if (this.orderVMs().length > 0) {
+                this.orderVMs()[0].updatePath();
             }
         }
     },
@@ -248,12 +250,12 @@ var UnitVM = TileEntityVM.extend({
         console.log('Selected unit ' + this.m.id + ' - pos: ' +
             sh.v.str(this.m) + ', GUID: ' + this.GUID);
         me.state.current().updateUnitHud();
-        _.invoke(this.orderVMs, 'show');
+        _.invoke(this.orderVMs(), 'show');
     },
     onDeselected: function() {
         'use strict';
         me.state.current().updateUnitHud();
-        _.invoke(this.orderVMs, 'hide');
+        _.invoke(this.orderVMs(), 'hide');
     },
     occupies: function(tile) {
         'use strict';
@@ -272,11 +274,11 @@ var UnitVM = TileEntityVM.extend({
         this.m.orders.push(order);
         this.orders(this.m.orders);//so it updates the server and vms
         this.updateOrderVMs();
-        _.last(this.orderVMs).select();
+        _.last(this.orderVMs()).select();
     },
     getInsertOrderIndex: function() {
         'use strict';
-        var lastSelected = _.last(_.filter(this.orderVMs,
+        var lastSelected = _.last(_.filter(this.orderVMs(),
             function(o) {return o.selected(); }));
         return lastSelected ? this.orderVMs.indexOf(lastSelected) + 1 : 0;
     },
@@ -287,7 +289,7 @@ var UnitVM = TileEntityVM.extend({
     onDestroyEvent: function() {
         'use strict';
         this.parent();
-        _.each(this.orderVMs, function(o) {
+        _.each(this.orderVMs(), function(o) {
             me.game.remove(o, true);
         });
     }

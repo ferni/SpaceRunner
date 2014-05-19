@@ -63,14 +63,14 @@ var orderVMs = (function() {
             var orderVMs,
                 nextOrder;
             this.updatePath();
-            orderVMs = this.unitVM.orderVMs;
+            orderVMs = this.unitVM.orderVMs();
             nextOrder = orderVMs[_.indexOf(orderVMs, this) + 1];
             if (nextOrder) {
                 nextOrder.updatePath();
             }
         },
         updatePath: function() {
-            var from, index, orderVMs = this.unitVM.orderVMs;
+            var from, index, orderVMs = this.unitVM.orderVMs();
             if (orderVMs[0] === this) {
                 from = this.unitVM.m;
             } else {
