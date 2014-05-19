@@ -161,6 +161,15 @@ var utils = {
         vms.splice(models.length, vms.length - models.length);
         return somethingChanged;
     },
+    getVM: function(model, modelArray, vmArray) {
+        'use strict';
+        var index = modelArray.indexOf(model);
+        if (index !== null && index !== undefined &&
+                vmArray[index].m === model) {
+            return vmArray[index];
+        }
+        throw 'Did not find view model, try calling update first.';
+    },
     removeFromArray: function(item, array) {
         'use strict';
         var index = array.indexOf(item);

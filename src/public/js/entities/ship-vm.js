@@ -65,22 +65,12 @@ var ShipVM = function(shipModel) {
         });
     };
 
-    //internal function used by getVM
-    function getMatch(model, modelArray, vmArray) {
-        var index = modelArray.indexOf(model);
-        if (index !== null && index !== undefined &&
-                vmArray[index].m === model) {
-            return vmArray[index];
-        }
-        throw 'Did not find view model, try calling update first.';
-    }
-
     this.getVM = function(model) {
         if (model instanceof sh.Item) {
-            return getMatch(model, this.m.built, this.itemVMs);
+            return utils.getVM(model, this.m.built, this.itemVMs);
         }
         if (model instanceof sh.Unit) {
-            return getMatch(model, this.m.units, this.unitVMs);
+            return utils.getVM(model, this.m.units, this.unitVMs);
         }
         throw 'Invalid type of model.';
     };
