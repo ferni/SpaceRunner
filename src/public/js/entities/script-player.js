@@ -18,68 +18,14 @@ var ScriptPlayer = function(battleScreen) {
     var script, next,
         nextChange,
         modelChanges = [],
-        v = sh.v, //vector math
-        moveThroughRightLane = false,
-        movementLanes = (function() {
-            var tile = TILE_SIZE, quarter = TILE_SIZE / 4;
-            return {
-                right: {
-                    direction: {x: 1, y: 0},
-                    entryPoint: {x: 0, y: tile - quarter}
-                },
-                left: {
-                    direction: {x: -1, y: 0},
-                    entryPoint: {x: tile, y: quarter}
-                },
-                down: {
-                    direction: {x: 0, y: 1},
-                    entryPoint: {x: quarter, y: 0}
-                },
-                up: {
-                    direction: {x: 0, y: -1},
-                    entryPoint: {x: tile - quarter, y: tile}
-                },
-                right_down: {
-                    direction: {x: 1, y: 1},
-                    entryPoint: {x: 0, y: quarter}
-                },
-                left_down: {
-                    direction: {x: -1, y: 1},
-                    entryPoint: {x: tile - quarter, y: 0}
-                },
-                left_up: {
-                    direction: {x: -1, y: -1},
-                    entryPoint: {x: tile, y: tile - quarter}
-                },
-                right_up: {
-                    direction: {x: 1, y: -1},
-                    entryPoint: {x: quarter, y: tile}
-                }
-            };
-        }());
-
-    function sign(x) { return x ? x < 0 ? -1 : 1 : 0; }
-    function getLane(from, to) {
-        var diff = v.sub(to, from),
-            signs = v.map(diff, sign);
-        return _.find(movementLanes, function(l) {
-            return v.equal(l.direction, signs);
-        });
-    }
+        v = sh.v; //vector math
 
     function playMoveAction(action) {
         var unitVM = battleScreen.shipVM.getUnitVMByID(
             action.unitID
         ),
             tilePx = v.mul(action.to, TILE_SIZE),
-            lane, toPx;
-        if (moveThroughRightLane) {
-            lane = getLane(action.from, action.to);
-            //adjust for entry point
-            toPx = v.add(tilePx, lane.entryPoint);
-        } else {
             toPx = v.add(tilePx, {x: 8, y: 8});//center
-        }
         unitVM.tweenTo(toPx, action.duration);
     }
 
