@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, TILE_SIZE, _, gs, me, utils, HALF_TILE, draw, sh*/
+/*global TileEntityVM, TILE_SIZE, _, gs, me, utils, HALF_TILE, draw, sh, ko*/
 
 var orderVMs = (function() {
     'use strict';
@@ -22,6 +22,20 @@ var orderVMs = (function() {
             this.parent(pos.x, pos.y, {image: 'markers',
                 spritewidth: TILE_SIZE, spriteheight: TILE_SIZE,
                 name: 'order'});
+
+            //Timeline item stuff
+            this.timeInfo = ko.observable({});//start, end, duration
+            this.itemHeight = ko.computed(function() {
+                var duration = this.timeInfo().duration,
+                    height;
+                if (duration !== null && duration !== undefined) {
+                    height = duration / 20;
+                    if (height > 35) {
+                        return height + 'px';
+                    }
+                }
+                return '35px';
+            }, this);
         },
         getMarkerTile: function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
@@ -36,7 +50,8 @@ var orderVMs = (function() {
                 }, this)
                 .invoke('deselect');
             this.unitVM.select();
-            console.log('Order timeline: ' + this.start + ' -> ' + this.end);
+            console.log('Order timeline: ' + this.timeInfo().start + ' -> ' +
+                this.timeInfo().end);
         },
         updatePos: function() {
             var tile = this.getMarkerTile();

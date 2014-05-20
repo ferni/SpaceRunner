@@ -276,9 +276,11 @@ screens.register('battle', ConnectedScreen.extend({
                 var unitVM = self.shipVM.getUnitVMByID(unitID),
                     prevTime = 0;
                 _.each(finishActions, function(action, index) {
-                    unitVM.orderVMs()[index].start = prevTime;
-                    unitVM.orderVMs()[index].end = action.time;
-                    unitVM.orderVMs()[index].duration = action.time - prevTime;
+                    unitVM.orderVMs()[index].timeInfo({
+                        start: prevTime,
+                        end: action.time,
+                        duration: action.time - prevTime
+                    });
                     prevTime = action.time;
                 });
             });
