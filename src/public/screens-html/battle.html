@@ -16,9 +16,8 @@
                 <!-- ko if:$parent.getOrderVM($data) -->
                     <!-- ko with:$parent.getOrderVM($data) -->
                     <li>
-                        <!--<span data-bind="text:lightColor"></span>-->
                         <span data-bind="text:m.toString()"></span>
-                        <!--<button class="delete-button" data-bind="click:$parent.$parent.removeOrder.bind($data.m, $root.selectedUnit())">x</button>-->
+                        <button class="delete-button" data-bind="click:remove">x</button>
                     </li>
                     <!-- /ko -->
                 <!-- /ko -->

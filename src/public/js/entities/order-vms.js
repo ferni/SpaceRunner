@@ -119,6 +119,9 @@ var orderVMs = (function() {
         hide: function() {
             this.parent();
             this.alpha = 0.4;
+        },
+        remove: function() {
+            this.unitVM.removeOrder(this.unitVM, this.m);
         }
     });
 
