@@ -164,11 +164,12 @@ var utils = {
     getVM: function(model, modelArray, vmArray) {
         'use strict';
         var index = modelArray.indexOf(model);
-        if (index !== null && index !== undefined &&
+        if (index !== null && index !== undefined && vmArray[index] &&
                 vmArray[index].m === model) {
             return vmArray[index];
         }
-        throw 'Did not find view model, try calling update first.';
+        throw 'Did not find the view model for ' + model.type +
+            ' in the array. Try calling utils.updateVMs first.';
     },
     removeFromArray: function(item, array) {
         'use strict';
