@@ -13,10 +13,15 @@
                 HP: <span data-bind="text:m.hp"></span>
             </div>
             <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
-                <li>
-                    <span data-bind="text:toString()"></span>
-                    <button class="delete-button" data-bind="click:$parent.removeOrder.bind($data, $root.selectedUnit())">x</button>
-                </li>
+                <!-- ko if:$parent.getOrderVM($data) -->
+                    <!-- ko with:$parent.getOrderVM($data) -->
+                    <li>
+                        <!--<span data-bind="text:lightColor"></span>-->
+                        <span data-bind="text:m.toString()"></span>
+                        <!--<button class="delete-button" data-bind="click:$parent.$parent.removeOrder.bind($data.m, $root.selectedUnit())">x</button>-->
+                    </li>
+                    <!-- /ko -->
+                <!-- /ko -->
             </ul>
         </div>
         <!-- /ko -->

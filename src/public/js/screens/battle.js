@@ -141,7 +141,7 @@ screens.register('battle', ConnectedScreen.extend({
                         var unit = gs.ship.getUnitByID(orderVM.m.unitID),
                             unitVM = this.shipVM.getVM(unit);
                         orderVM.deselect();
-                        unitVM.orders.remove(orderVM.m);
+                        unitVM.removeOrder(unitVM, orderVM.m);
                     }, this);
 
             }

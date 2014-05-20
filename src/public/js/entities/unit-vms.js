@@ -97,6 +97,14 @@ var UnitVM = TileEntityVM.extend({
         }
         return false;
     },
+    getOrderVM: function(orderModel) {
+        'use strict';
+        try {
+            return utils.getVM(orderModel, this.m.orders, this.orderVMs());
+        } catch (e) {
+            return null;
+        }
+    },
     onModelChanged: function(changed) {
         'use strict';
         if (changed.hp) {
