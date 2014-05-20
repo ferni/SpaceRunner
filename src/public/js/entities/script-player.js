@@ -67,8 +67,6 @@ var ScriptPlayer = function(battleScreen) {
         case 'DamageShip':
             playDamageShipAction(action);
             break;
-        case 'DeclareWinner':
-            break;
         case 'FireShipWeapon':
             playFireShipWeaponAction(action);
             break;
