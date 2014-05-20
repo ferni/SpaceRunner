@@ -15,7 +15,7 @@
  */
 var ScriptPlayer = function(battleScreen) {
     'use strict';
-    var script, next, actionPlayers = [],
+    var script, next,
         nextChange,
         modelChanges = [],
         v = sh.v, //vector math
@@ -133,10 +133,6 @@ var ScriptPlayer = function(battleScreen) {
         script = s;
         next = 0;
         nextChange = 0;
-        _.each(actionPlayers, function(ap) {
-            ap.onNextTurn();
-        });
-        actionPlayers = [];
         modelChanges = script.getSortedModelChanges();
     };
 
@@ -162,9 +158,6 @@ var ScriptPlayer = function(battleScreen) {
             nextChange++;
         }
 
-        _.each(actionPlayers, function(ap) {
-            ap.update(elapsed);
-        });
     };
 
     this.onPause = function() {
