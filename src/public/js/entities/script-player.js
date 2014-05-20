@@ -51,9 +51,6 @@ var ScriptPlayer = function(battleScreen) {
         battleScreen.shipVM.getVM(
             gs.ship.getItemByID(action.weaponID)
         ).playFire();
-        /*console.log('attacked with the ship. starting time: ' +
-            gs.ship.getUnitByID(action.unitID).chargingShipWeapon.startingTime +
-            ' turn elapsed: ' + battleScreen.elapsed);*/
     }
 
     function playAction(action) {
