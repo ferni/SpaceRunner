@@ -342,6 +342,7 @@ screens.register('battle', ConnectedScreen.extend({
         $('#elapsed').show();
         //reset time
         this.turnBeginTime = me.timer.getTime();
+        _.invoke(this.shipVM.unitVMs, 'deselect');
         this.paused = false;
     },
     //When a player clicks "Ready"
