@@ -137,8 +137,10 @@ screens.register('battle', ConnectedScreen.extend({
             if (me.input.isKeyPressed('delete')) {
                 _.chain(gs.selected)
                     .where({name: 'order'})
-                    .invoke('deselect')
-                    .invoke('remove');
+                    .each(function(orderVM) {
+                        orderVM.deselect();
+                        orderVM.remove();
+                    });
             }
             if (me.input.isKeyPressed('escape')) {
                 _.invoke(gs.selected, 'deselect');
