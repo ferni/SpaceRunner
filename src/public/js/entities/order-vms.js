@@ -121,7 +121,7 @@ var orderVMs = (function() {
             this.alpha = 0.4;
         },
         remove: function() {
-            this.unitVM.removeOrder(this.unitVM, this.m);
+            this.unitVM.orders.remove(this.m);
         }
     });
 

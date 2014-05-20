@@ -137,13 +137,8 @@ screens.register('battle', ConnectedScreen.extend({
             if (me.input.isKeyPressed('delete')) {
                 _.chain(gs.selected)
                     .where({name: 'order'})
-                    .each(function(orderVM) {
-                        var unit = gs.ship.getUnitByID(orderVM.m.unitID),
-                            unitVM = this.shipVM.getVM(unit);
-                        orderVM.deselect();
-                        unitVM.removeOrder(unitVM, orderVM.m);
-                    }, this);
-
+                    .invoke('deselect')
+                    .invoke('remove');
             }
             if (me.input.isKeyPressed('escape')) {
                 _.invoke(gs.selected, 'deselect');
@@ -329,7 +324,7 @@ screens.register('battle', ConnectedScreen.extend({
             if (oVM.m.isValid(gs.ship, gs.player.id)) {
                 oVM.updatePos();
             } else {
-                oVM.unitVM.removeOrder(oVM.unitVM, oVM.m);
+                oVM.remove();
             }
         });
         this.elapsed = 0;

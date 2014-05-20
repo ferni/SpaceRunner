@@ -290,10 +290,6 @@ var UnitVM = TileEntityVM.extend({
             function(o) {return o.selected(); }));
         return lastSelected ? this.orderVMs.indexOf(lastSelected) + 1 : 0;
     },
-    removeOrder: function(self, order) {
-        'use strict';
-        self.orders.remove(order);
-    },
     onDestroyEvent: function() {
         'use strict';
         this.parent();
