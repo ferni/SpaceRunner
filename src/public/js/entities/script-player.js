@@ -83,13 +83,6 @@ var ScriptPlayer = function(battleScreen) {
 
     this.update = function(elapsed) {
         var actions = script.actions;
-        //play actions
-        if (next < actions.length && elapsed >= actions[next].time) {
-            if (script.isWithinTurn(actions[next])) {
-                playAction(actions[next], elapsed);
-            }
-            next++;
-        }
 
         //apply model changes to ship
         if (nextChange < modelChanges.length &&
@@ -102,6 +95,13 @@ var ScriptPlayer = function(battleScreen) {
             nextChange++;
         }
 
+        //play actions
+        if (next < actions.length && elapsed >= actions[next].time) {
+            if (script.isWithinTurn(actions[next])) {
+                playAction(actions[next], elapsed);
+            }
+            next++;
+        }
     };
 
     this.onPause = function() {
