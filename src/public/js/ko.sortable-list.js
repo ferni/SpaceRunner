@@ -18,7 +18,7 @@ ko.bindingHandlers.sortableList = {
         $(element).sortable().bind('sortupdate', function() {
             //reconstruct the list
             list(_.map($(this).children(), function(item) {
-                return ko.dataFor(item);
+                return ko.dataFor(item).m;
             }));
         });
     },
