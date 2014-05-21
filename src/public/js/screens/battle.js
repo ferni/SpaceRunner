@@ -269,7 +269,7 @@ screens.register('battle', ConnectedScreen.extend({
         var self = this,
             resultingShip = gs.ship.clone(),
             script = sh.createScript(gs.ship.extractOrders(),
-                resultingShip, this.turnDuration);
+                resultingShip, this.turnDuration * 2);
         _.chain(script.byType('FinishOrder'))
             .groupBy('unitID')
             .each(function(finishActions, unitID) {

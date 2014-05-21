@@ -36,6 +36,9 @@ var orderVMs = (function() {
                 }
                 return '35px';
             }, this);
+            this.willCompleteThisTurn = ko.computed(function() {
+                return this.timeInfo().end <= this.screen.turnDuration;
+            }, this);
         },
         getMarkerTile: function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
