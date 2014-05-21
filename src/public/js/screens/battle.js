@@ -249,11 +249,11 @@ screens.register('battle', ConnectedScreen.extend({
             unitsToGiveOrders = _.filter(this.shipVM.selected(),
                 function(u) {
                     //can't place order in same spot as another order
-                    return !_.any(u.orderVMs(), function(o) {
+                    return !_.any(u.orderVMs, function(o) {
                         return sh.v.equal(o.getMarkerTile(), mouse);
                     }) &&
                         (u.orders().length === 0 ||
-                            _.last(u.orderVMs()).selected());
+                            _.last(u.orderVMs).selected());
                 });
             _.each(unitsToGiveOrders, function(u) {
                 var order = gs.ship.getValidOrderForPos(u.m, mouse);
@@ -276,7 +276,7 @@ screens.register('battle', ConnectedScreen.extend({
                 var unitVM = self.shipVM.getUnitVMByID(unitID),
                     prevTime = 0;
                 _.each(finishActions, function(action, index) {
-                    unitVM.orderVMs()[index].timeInfo({
+                    unitVM.orderVMs[index].timeInfo({
                         start: prevTime,
                         end: action.time,
                         duration: action.time - prevTime
