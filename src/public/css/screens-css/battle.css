@@ -1,3 +1,7 @@
+#battle-screen h3 {
+    margin: 2px;
+}
+
 #battle-screen body{
     font-family: Verdana,serif;
 }
@@ -55,7 +59,7 @@
     top: 50px;
     left: 0;
     height: 400px;
-    width: 200px;
+    width: 222px;
     overflow-x: visible;
     overflow-y: hidden;
 }
@@ -71,10 +75,11 @@
     position: relative;
     border: 1px solid white;
     background-color: #4944C0;
+    /*next turn: #474579 (more grayish)*/
     color: white;
     text-shadow: 0px 0px 3px #FFFFFF;
     font-size: 12pt;
-    height: 100px;
+    height: 98px;/*total with borders: 100*/
     width: 20px;
 
     text-align: center;
@@ -93,18 +98,36 @@
 }
 
 #battle-screen #time-ruler hr {
+    position: absolute;
     background-color: white;
     color: white;
     height: 2px;
+    width: 100%;
     margin: 0;
     border: 0;
     box-shadow: 0 12px 12px -12px rgba(255,255,255,0.5);
+}
+
+#separator-now {
+    top: 99px;
+}
+
+#separator-next {
+    top: 499px;
 }
 
 #battle-screen #unit-portrait {
     border: 1px solid gray;
     background-color: #222;
     color: green;
+}
+
+#battle-screen #unit-orders {
+    position: absolute;
+    top: 100px;
+    left: 22px;
+    padding: 0;
+    margin: 0;
 }
 
 #battle-screen #unit-orders li {
@@ -114,6 +137,7 @@
     color: white;
     margin: 3px;
     padding: 3px;
+    width: 140px;
 }
 
 #battle-screen #unit-orders li.outOfTime {
