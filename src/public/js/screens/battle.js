@@ -94,6 +94,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.isReset) {
             ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
         }
+        $('#time-line').jScrollPane();
     },
     onData: function(data) {
         'use strict';

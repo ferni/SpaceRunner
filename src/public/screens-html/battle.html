@@ -6,11 +6,28 @@
         <span id="hp">[Own: <span data-bind="text:shipVM().hp"></span>]</span>
         <span id="enemyHP">[Enemy: <span data-bind="text:shipVM().enemyHP"></span>]</span>
     </div>
-    <div id="left-hud">
+    <div id="time-line">
+        <div id="time-ruler">
+            <div>4</div>
+            <hr />
+            <h3>Now</h3>
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <hr />
+            <h3>Next</h3>
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+        </div>
         <!-- ko if:selectedUnit() -->
-        <div data-bind="with:selectedUnit">
+        <div id="unit-info" data-bind="with:selectedUnit">
             <div id="unit-portrait">
+                <h3 data-bind="text:m.type"></h3>
                 HP: <span data-bind="text:m.hp"></span>
+                Damage: <span data-bind="text:m.meleeDamage"></span>
             </div>
             <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
                 <!-- ko if:$parent.getOrderVM($data) -->
@@ -22,6 +39,7 @@
                     <!-- /ko -->
                 <!-- /ko -->
             </ul>
+
         </div>
         <!-- /ko -->
     </div>
