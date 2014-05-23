@@ -10,7 +10,6 @@ ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
-    //scriptPrediction: null,
     scriptPlayer: null,
     scriptServer: [],
     mouseDownPos: null,
@@ -24,7 +23,6 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
-        //this.scriptPrediction = new ScriptPrediction(this);
         this.scriptPlayer = new ScriptPlayer(this);
         me.input.bindKey(me.input.KEY.ESC, 'escape');
         me.input.bindKey(me.input.KEY.D, 'delete');
@@ -39,8 +37,6 @@ screens.register('battle', ConnectedScreen.extend({
 
         if (battleModel.orders) {
             gs.ship.insertOrders(battleModel.orders);
-            //update script prediction with new script model
-            //this.scriptPrediction.predict();
         }
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
@@ -154,18 +150,11 @@ screens.register('battle', ConnectedScreen.extend({
         'use strict';
         this.parent(ctx);
         if (this.paused) {
-            //this.scriptPrediction.draw(ctx);
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
             }
             _.invoke(this.previewOrders, 'draw', ctx);
         }
-
-        //highlight highlighted tiles
-        /*_.each(this.highlightedTiles, function(t){
-            screen.drawTileHighlight(ctx, t.x, t.y, 'black', 2);
-        });*/
-
     },
     mouseDown: function(e) {
         'use strict';
@@ -325,12 +314,8 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
-        //this.scriptPrediction.clear();
-        //this.scriptPrediction.predict();
         me.game.sort();
         me.game.repaint();
-        //empty the script
-        //this.scriptServer = [];
 
         _.each(me.game.getEntityByName('order'), function(oVM) {
             if (oVM.m.isValid(gs.ship, gs.player.id)) {
