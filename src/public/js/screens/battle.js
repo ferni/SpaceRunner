@@ -314,6 +314,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
+        this.updateOrderVMsDuration();
         me.game.sort();
         me.game.repaint();
 
