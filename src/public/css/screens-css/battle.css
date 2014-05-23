@@ -60,24 +60,30 @@
     height: 700px;
     left: 0;
     width: 230px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #8ba5ff;
+    background-color: rgba(46, 89, 232, 0.5);
 }
 
 #battle-screen #unit-portrait {
-    border: 1px solid gray;
-    background-color: #222;
-    color: green;
+    border: 1px solid rgb(76, 191, 255);
+    background-color: #000;
+    color: rgb(76, 191, 255);
     position: absolute;
     left: 5px;
     right: 5px;
     top: 5px;
     height: 60px;
     text-align: center;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
 }
 
 #battle-screen #time-line {
     position: absolute;
     top: 77px;
-    left: 0;
+    left: -1px;/*accounting for parent border*/
     bottom: 5px;
     width: 222px;
 }
@@ -123,7 +129,8 @@
     width: 100%;
     margin: 0;
     border: 0;
-    box-shadow: 0 12px 12px -12px rgba(255,255,255,0.5);
+    -webkit-box-shadow: 1px 1px 1px 0 #000000;
+    box-shadow: 1px 1px 1px 0 #000000;
 }
 
 #separator-now {
