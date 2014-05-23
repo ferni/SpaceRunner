@@ -6,46 +6,48 @@
         <span id="hp">[Own: <span data-bind="text:shipVM().hp"></span>]</span>
         <span id="enemyHP">[Enemy: <span data-bind="text:shipVM().enemyHP"></span>]</span>
     </div>
-    <!-- ko if:selectedUnit() -->
-    <div id="unit-portrait" data-bind="with: selectedUnit">
-        <h3 data-bind="text:m.type"></h3>
-        HP: <span data-bind="text:m.hp"></span>
-        Damage: <span data-bind="text:m.meleeDamage"></span>
-    </div>
-    <!-- /ko -->
-    <div id="time-line">
-        <div id="time-ruler">
-            <hr id="separator-now"/>
-            <h3>Now</h3>
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <hr id="separator-next"/>
-            <h3>Next</h3>
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-        </div>
-
+    <div id="left-hud">
         <!-- ko if:selectedUnit() -->
-        <div data-bind="with:selectedUnit">
-            <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
-                <!-- ko if:$parent.getOrderVM($data) -->
-                    <!-- ko with:$parent.getOrderVM($data) -->
-                        <!-- ko ifnot:isBeyondNextTurn() -->
-                        <li data-bind="style:{height:itemHeight(), top:itemTop()},
-                            css:{outOfTime:!willCompleteThisTurn()}">
-                            <span data-bind="text:m.toString()"></span>
-                            <button class="delete-button" data-bind="click:remove">x</button>
-                        </li>
-                        <!-- /ko -->
-                    <!-- /ko -->
-                <!-- /ko -->
-            </ul>
+        <div id="unit-portrait" data-bind="with: selectedUnit">
+            <h3 data-bind="text:m.type"></h3>
+            HP: <span data-bind="text:m.hp"></span>
+            Damage: <span data-bind="text:m.meleeDamage"></span>
         </div>
         <!-- /ko -->
+        <div id="time-line">
+            <div id="time-ruler">
+                <hr id="separator-now"/>
+                <h3>Now</h3>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <hr id="separator-next"/>
+                <h3>Next</h3>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+            </div>
+
+            <!-- ko if:selectedUnit() -->
+            <div data-bind="with:selectedUnit">
+                <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
+                    <!-- ko if:$parent.getOrderVM($data) -->
+                        <!-- ko with:$parent.getOrderVM($data) -->
+                            <!-- ko ifnot:isBeyondNextTurn() -->
+                            <li data-bind="style:{height:itemHeight(), top:itemTop()},
+                                css:{outOfTime:!willCompleteThisTurn()}">
+                                <span data-bind="text:m.toString()"></span>
+                                <button class="delete-button" data-bind="click:remove">x</button>
+                            </li>
+                            <!-- /ko -->
+                        <!-- /ko -->
+                    <!-- /ko -->
+                </ul>
+            </div>
+            <!-- /ko -->
+        </div>
     </div>
     <button id="ready-button" class="button">Ready</button>
 </div>

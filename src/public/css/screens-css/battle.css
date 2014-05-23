@@ -54,14 +54,32 @@
     color: orangered;
 }
 
-#battle-screen #time-line {
+#battle-screen #left-hud {
     position: fixed;
     top: 50px;
+    height: 700px;
     left: 0;
-    height: 400px;
+    width: 230px;
+}
+
+#battle-screen #unit-portrait {
+    border: 1px solid gray;
+    background-color: #222;
+    color: green;
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    height: 60px;
+    text-align: center;
+}
+
+#battle-screen #time-line {
+    position: absolute;
+    top: 77px;
+    left: 0;
+    bottom: 5px;
     width: 222px;
-    overflow-x: visible;
-    overflow-y: hidden;
 }
 
 /* Force the scroll bar to the left hand side of the div */
@@ -114,12 +132,6 @@
 
 #separator-next {
     top: 399px;
-}
-
-#battle-screen #unit-portrait {
-    border: 1px solid gray;
-    background-color: #222;
-    color: green;
 }
 
 #battle-screen #unit-orders {
