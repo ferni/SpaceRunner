@@ -260,18 +260,27 @@ screens.register('battle', ConnectedScreen.extend({
             resultingShip = gs.ship.clone(),
             script = sh.createScript(gs.ship.extractOrders(),
                 resultingShip, this.turnDuration * 2);
+
+        //hack for unit with one order that never finishes, part 1
+        _.each(self.shipVM.unitVMs, function(unitVM) {
+            if (unitVM.orderVMs.length === 1) {
+                unitVM.orderVMs[0].timeInfo({});
+            }
+        });
+        //end of hack part 1
+
         _.chain(script.byType('FinishOrder'))
             .groupBy('unitID')
-            .each(function(finishActions, unitID) {
+            .each(function(finishOrderActions, unitID) {
                 var unitVM = self.shipVM.getUnitVMByID(unitID),
                     prevTime = 0,
                     lastIndex = 0;
-                _.each(finishActions, function(action, index) {
+                _.each(finishOrderActions, function(finish, index) {
                     unitVM.orderVMs[index].timeInfo({
                         start: prevTime,
-                        end: action.time
+                        end: finish.time
                     });
-                    prevTime = action.time;
+                    prevTime = finish.time;
                     lastIndex = index;
                 });
                 if (unitVM.orderVMs[lastIndex + 1]) {
@@ -281,6 +290,18 @@ screens.register('battle', ConnectedScreen.extend({
                     });
                 }
             });
+
+        //hack for unit with one order that never finishes, part 2
+        _.each(self.shipVM.unitVMs, function(unitVM) {
+            if (unitVM.orderVMs.length === 1 &&
+                    unitVM.orderVMs[0].timeInfo().start === undefined) {
+                unitVM.orderVMs[0].timeInfo({
+                    start: 0,
+                    end: 8200
+                });
+            }
+        });
+        //end of hack part 2
     },
     getModelDifferenceUrl: function() {
         'use strict';
