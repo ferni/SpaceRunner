@@ -64,7 +64,7 @@
     overflow-y: hidden;
 }
 
-/* Force the scroll bar to the left hand side of the screen */
+/* Force the scroll bar to the left hand side of the div */
 #battle-screen #time-line .jspVerticalBar
 {
     left: 0;
@@ -109,11 +109,11 @@
 }
 
 #separator-now {
-    top: 99px;
+    top: -1px;
 }
 
 #separator-next {
-    top: 499px;
+    top: 399px;
 }
 
 #battle-screen #unit-portrait {
@@ -124,13 +124,14 @@
 
 #battle-screen #unit-orders {
     position: absolute;
-    top: 100px;
+    top: 0;
     left: 22px;
     padding: 0;
     margin: 0;
 }
 
 #battle-screen #unit-orders li {
+    position: absolute;
     list-style: none;
     border: 1px solid white;
     background-color: green;

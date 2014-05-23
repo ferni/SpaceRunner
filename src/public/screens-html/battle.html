@@ -15,7 +15,6 @@
     <!-- /ko -->
     <div id="time-line">
         <div id="time-ruler">
-            <div>4</div>
             <hr id="separator-now"/>
             <h3>Now</h3>
             <div>1</div>
@@ -35,10 +34,13 @@
             <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
                 <!-- ko if:$parent.getOrderVM($data) -->
                     <!-- ko with:$parent.getOrderVM($data) -->
-                    <li data-bind="style:{height:itemHeight()},css:{outOfTime:!willCompleteThisTurn()}">
-                        <span data-bind="text:m.toString()"></span>
-                        <button class="delete-button" data-bind="click:remove">x</button>
-                    </li>
+                        <!-- ko ifnot:isBeyondNextTurn() -->
+                        <li data-bind="style:{height:itemHeight(), top:itemTop()},
+                            css:{outOfTime:!willCompleteThisTurn()}">
+                            <span data-bind="text:m.toString()"></span>
+                            <button class="delete-button" data-bind="click:remove">x</button>
+                        </li>
+                        <!-- /ko -->
                     <!-- /ko -->
                 <!-- /ko -->
             </ul>

@@ -25,16 +25,28 @@ var orderVMs = (function() {
 
             //Timeline item stuff
             this.timeInfo = ko.observable({});//start, end, duration
+            this.isBeyondNextTurn = ko.computed(function() {
+                return this.timeInfo().start === undefined;
+            }, this);
             this.itemHeight = ko.computed(function() {
-                var duration = this.timeInfo().duration,
+                var duration = this.timeInfo().end - this.timeInfo().start,
                     height;
-                if (duration !== null && duration !== undefined) {
-                    height = duration / 20;
+                if (duration) {
+                    height = duration / 10;
+                    height -= 6; //accounting for padding
+                    height -= 2; //accounting for border
+                    height -= 2; //some space for next order
                     if (height > 35) {
                         return height + 'px';
                     }
                 }
                 return '35px';
+            }, this);
+            this.itemTop = ko.computed(function() {
+                var start = this.timeInfo().start;
+                if (start !== null && start !== undefined) {
+                    return (start / 10) + 'px';
+                }
             }, this);
             this.willCompleteThisTurn = ko.computed(function() {
                 return this.timeInfo().end <= this.screen.turnDuration;

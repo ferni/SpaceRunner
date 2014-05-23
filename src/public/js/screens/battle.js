@@ -275,15 +275,22 @@ screens.register('battle', ConnectedScreen.extend({
             .groupBy('unitID')
             .each(function(finishActions, unitID) {
                 var unitVM = self.shipVM.getUnitVMByID(unitID),
-                    prevTime = 0;
+                    prevTime = 0,
+                    lastIndex = 0;
                 _.each(finishActions, function(action, index) {
                     unitVM.orderVMs[index].timeInfo({
                         start: prevTime,
-                        end: action.time,
-                        duration: action.time - prevTime
+                        end: action.time
                     });
                     prevTime = action.time;
+                    lastIndex = index;
                 });
+                if (unitVM.orderVMs[lastIndex + 1]) {
+                    unitVM.orderVMs[lastIndex + 1].timeInfo({
+                        start: prevTime,
+                        end: 8200//beyond next turn
+                    });
+                }
             });
     },
     getModelDifferenceUrl: function() {
