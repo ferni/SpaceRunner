@@ -51,6 +51,9 @@ var orderVMs = (function() {
             this.willCompleteThisTurn = ko.computed(function() {
                 return this.timeInfo().end <= this.screen.turnDuration;
             }, this);
+            this.itemColorObs = ko.computed(function() {
+                return this.willCompleteThisTurn() ? this.itemColor : 'dimgray';
+            }, this);
         },
         getMarkerTile: function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
@@ -156,8 +159,8 @@ var orderVMs = (function() {
     });
 
     orderVMs.Move = OrderVM.extend({
-        lightColor: '#00AA00',//for the lines
-        darkColor: '#006000',
+        lightColor: '#00AA00',//for the path lines
+        itemColor: '#008000', //for the timeline
         init: function(order) {
             this.parent(order);
             this.addAnimation('default', [1]); //green marker
@@ -182,8 +185,8 @@ var orderVMs = (function() {
     });
 
     orderVMs.MoveToConsole = orderVMs.Move.extend({
-        lightColor: '#0A4CA8',//for the lines
-        darkColor: '#051936',
+        lightColor: '#0A4CA8',
+        itemColor: '#000080',
         init: function(order) {
             this.parent(order);
             this.addAnimation('default', [2]); //blue marker
@@ -192,8 +195,8 @@ var orderVMs = (function() {
     });
 
     orderVMs.SeekAndDestroy = OrderVM.extend({
-        lightColor: '#CC0000',//for the lines
-        darkColor: '#500000',
+        lightColor: '#CC0000',
+        itemColor: '#800000',
         init: function(order) {
             this.parent(order);
             this.addAnimation('default', [0]); //red marker

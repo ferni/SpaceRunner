@@ -160,10 +160,6 @@
     width: 140px;
 }
 
-#battle-screen #unit-orders li.outOfTime {
-    background-color: dimgray;
-}
-
 #battle-screen #unit-orders li.sortable-placeholder {
     height: 23px;
     background-color: rgba(0,80,0,0.5);
