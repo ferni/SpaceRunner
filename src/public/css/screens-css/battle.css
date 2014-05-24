@@ -60,10 +60,6 @@
     height: 700px;
     left: 0;
     width: 230px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    border: 1px solid #8ba5ff;
-    background-color: rgba(46, 89, 232, 0.5);
 }
 
 #battle-screen #unit-portrait {
@@ -71,8 +67,8 @@
     background-color: #000;
     color: rgb(76, 191, 255);
     position: absolute;
-    left: 5px;
-    right: 5px;
+    left: 44px;
+    right: 38px;
     top: 5px;
     height: 60px;
     text-align: center;
@@ -82,7 +78,7 @@
 
 #battle-screen #time-line {
     position: absolute;
-    top: 77px;
+    top: 74px;
     left: -1px;/*accounting for parent border*/
     bottom: 5px;
     width: 222px;
@@ -101,7 +97,7 @@
     background-color: #4944C0;
     /*next turn: #474579 (more grayish)*/
     color: white;
-    text-shadow: 0px 0px 3px #FFFFFF;
+    text-shadow: 0 0 3px #FFFFFF;
     font-size: 12pt;
     height: 98px;/*total with borders: 100*/
     width: 20px;
