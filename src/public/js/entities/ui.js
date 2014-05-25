@@ -40,7 +40,7 @@ var ui = (function() {
         },
         draw: function(ctx) {
             this.parent(ctx);
-            ctx.strokeStyle = 'limegreen';
+            ctx.strokeStyle = 'blue';
             ctx.lineWidth = 2;
             ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
         },
