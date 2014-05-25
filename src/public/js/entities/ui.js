@@ -40,10 +40,8 @@ var ui = (function() {
         },
         draw: function(ctx) {
             this.parent(ctx);
-            ctx.fillStyle = 'rgba(0,0,255,0.3)';
-            ctx.strokeStyle = 'blue';
-            ctx.lineWidth = 1;
-            ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+            ctx.strokeStyle = 'limegreen';
+            ctx.lineWidth = 2;
             ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
         },
         updateFromMouse: function(mouse) {
