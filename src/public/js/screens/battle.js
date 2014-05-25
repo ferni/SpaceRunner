@@ -152,6 +152,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.paused) {
             if (this.dragBox) {
                 this.dragBox.draw(ctx);
+                utils.setCursor('crosshair');
             }
             _.invoke(this.previewOrders, 'draw', ctx);
         }
@@ -398,7 +399,6 @@ screens.register('battle', ConnectedScreen.extend({
     startDragBox: function(pos) {
         'use strict';
         this.dragBox = new ui.DragBox(pos);
-        utils.setCursor('crooshair');
     },
     releaseDragBox: function() {
         'use strict';
