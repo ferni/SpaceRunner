@@ -6,7 +6,7 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko*/
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
@@ -24,6 +24,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.shipVM.showInScreen();
         this.shipVM.update();
         this.scriptPlayer = new ScriptPlayer(this);
+        this.timeline = new Timeline(this);
         me.input.bindKey(me.input.KEY.ESC, 'escape');
         me.input.bindKey(me.input.KEY.D, 'delete');
         me.input.registerMouseEvent('mouseup', me.game.viewport,
@@ -98,14 +99,12 @@ screens.register('battle', ConnectedScreen.extend({
         this.currentTurnID = data.currentTurnID;
         $('#turn-number').html(this.currentTurnID);
         if (this.paused && data.scriptReady) {
-            //get the script
             $.post('/battle/getscript', {id: screen.id}, function(data) {
                 var script = new sh.Script().fromJson(data.script);
                 screen.scriptServer = script;
                 screen.scriptPlayer.loadScript(script);
                 screen.shipVM.update();
                 screen.resultingShip = data.resultingShip;
-                //screen.logActions(script);
                 screen.resume();
                 screen.stopFetching();
                 $.post('/battle/scriptreceived', {id: screen.id}, function() {
@@ -144,7 +143,6 @@ screens.register('battle', ConnectedScreen.extend({
                 this.previewOrders = {};
             }
         }
-        //return true;
     },
     draw: function(ctx) {
         'use strict';
@@ -255,60 +253,6 @@ screens.register('battle', ConnectedScreen.extend({
             });
         }
     },
-    updateTimeline: function() {
-        'use strict';
-        var self = this,
-            resultingShip = gs.ship.clone(),
-            script = sh.createScript(gs.ship.extractOrders(),
-                resultingShip, this.turnDuration * 2),
-            actionsByType = _.groupBy(script.actions, 'type');
-        this.updateOrderVMsDuration(actionsByType.FinishOrder);
-    },
-    updateOrderVMsDuration: function(finishOrderActions) {
-        'use strict';
-        var self = this;
-        //hack for unit with one order that never finishes, part 1
-        _.each(self.shipVM.unitVMs, function(unitVM) {
-            if (unitVM.orderVMs.length === 1) {
-                unitVM.orderVMs[0].timeInfo({});
-            }
-        });
-        //end of hack part 1
-
-        _.chain(finishOrderActions)
-            .groupBy('unitID')
-            .each(function(finishOrderActions, unitID) {
-                var unitVM = self.shipVM.getUnitVMByID(unitID),
-                    prevTime = 0,
-                    lastIndex = 0;
-                _.each(finishOrderActions, function(finish, index) {
-                    unitVM.orderVMs[index].timeInfo({
-                        start: prevTime,
-                        end: finish.time
-                    });
-                    prevTime = finish.time;
-                    lastIndex = index;
-                });
-                if (unitVM.orderVMs[lastIndex + 1]) {
-                    unitVM.orderVMs[lastIndex + 1].timeInfo({
-                        start: prevTime,
-                        end: 8200//beyond next turn
-                    });
-                }
-            });
-
-        //hack for unit with one order that never finishes, part 2
-        _.each(self.shipVM.unitVMs, function(unitVM) {
-            if (unitVM.orderVMs.length === 1 &&
-                    unitVM.orderVMs[0].timeInfo().start === undefined) {
-                unitVM.orderVMs[0].timeInfo({
-                    start: 0,
-                    end: 8200
-                });
-            }
-        });
-        //end of hack part 2
-    },
     getModelDifferenceUrl: function() {
         'use strict';
         var screen = this,
@@ -341,7 +285,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
-        this.updateTimeline();
+        this.timeline.update();
         me.game.sort();
         me.game.repaint();
 
