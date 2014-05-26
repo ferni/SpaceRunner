@@ -227,10 +227,6 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/nothing.png'
 }, {
-    name: 'cloud',
-    type: 'image',
-    src: 'data/img/render/cloud.png'
-}, {
     name: 'projectile',
     type: 'image',
     src: 'data/img/render/projectile.png'

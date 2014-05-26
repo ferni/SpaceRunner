@@ -130,26 +130,6 @@ var ui = (function() {
         }
     });
 
-
-    ui.Cloud = me.ObjectEntity.extend({
-        init: function(tile) {
-            this.parent(tile.x * TILE_SIZE,
-                tile.y * TILE_SIZE,
-                {
-                    image: 'cloud',
-                    spritewidth: 32,
-                    spriteheight: 32
-                });
-            this.alpha = 0.3;
-        },
-        update: function() {
-            if (me.state.current().name === 'battle' &&
-                    !me.state.current().paused) {
-                this.angle += 0.1;
-            }
-        }
-    });
-
     /**
      * A button with text.
      * @type {*}
