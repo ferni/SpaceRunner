@@ -255,13 +255,18 @@ screens.register('battle', ConnectedScreen.extend({
             });
         }
     },
-    updateOrderVMsDuration: function() {
+    updateTimeline: function() {
         'use strict';
         var self = this,
             resultingShip = gs.ship.clone(),
             script = sh.createScript(gs.ship.extractOrders(),
-                resultingShip, this.turnDuration * 2);
-
+                resultingShip, this.turnDuration * 2),
+            actionsByType = _.groupBy(script.actions, 'type');
+        this.updateOrderVMsDuration(actionsByType.FinishOrder);
+    },
+    updateOrderVMsDuration: function(finishOrderActions) {
+        'use strict';
+        var self = this;
         //hack for unit with one order that never finishes, part 1
         _.each(self.shipVM.unitVMs, function(unitVM) {
             if (unitVM.orderVMs.length === 1) {
@@ -270,7 +275,7 @@ screens.register('battle', ConnectedScreen.extend({
         });
         //end of hack part 1
 
-        _.chain(script.byType('FinishOrder'))
+        _.chain(finishOrderActions)
             .groupBy('unitID')
             .each(function(finishOrderActions, unitID) {
                 var unitVM = self.shipVM.getUnitVMByID(unitID),
@@ -336,7 +341,7 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.resultingShip) {
             this.compareModelWithServer();
         }
-        this.updateOrderVMsDuration();
+        this.updateTimeline();
         me.game.sort();
         me.game.repaint();
 
