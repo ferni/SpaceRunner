@@ -59,22 +59,21 @@ screens.register('battle', ConnectedScreen.extend({
         var screen = this;
         this.readyButton = (function() {
             var btn = {},
-                //reference to the dom node
-                $node = $('#ready-button');
+                $ready = $('#ready-button');
             btn.enabled = true;
-            $node.click(function() {
+            $ready.click(function() {
                 if (btn.enabled) {
                     screen.onReady();
                 }
             });
             btn.enable = function() {
                 btn.enabled = true;
-                $node.removeClass('disabled')
+                $ready.removeClass('disabled')
                     .html('Ready');
             };
             btn.disable = function() {
                 btn.enabled = false;
-                $node.addClass('disabled')
+                $ready.addClass('disabled')
                     .html('Awaiting players...');
             };
             return btn;
