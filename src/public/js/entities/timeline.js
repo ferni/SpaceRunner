@@ -5,10 +5,11 @@
 * All rights reserved.
 */
 
-/*global ko, _, gs, sh*/
+/*global ko, _, gs, sh, $*/
 
 var Timeline = function(screen) {
     'use strict';
+    var $ruler = $('#time-ruler');
     function updateOrderVMsDuration(finishOrderActions) {
         //hack for unit with one order that never finishes, part 1
         _.each(screen.shipVM.unitVMs, function(unitVM) {
@@ -53,6 +54,24 @@ var Timeline = function(screen) {
         //end of hack part 2
     }
 
+    function clearMarkers() {
+        $ruler.children('.marker').remove();
+    }
+
+    function placeMarker(time, color, legend) {
+        $ruler.append('<div class="marker" style="background-color: ' + color +
+            '; border-color:' + color + '; top:' + ((time / 10) - 1) +
+            'px;" title="' + legend + '"></div>');
+    }
+
+    function placeAttackMarker(attackAction) {
+        var attacker = gs.ship.getUnitByID(attackAction.attackerID),
+            receiver = gs.ship.getUnitByID(attackAction.receiverID);
+        placeMarker(attackAction.time + attackAction.damageDelay, '#FC7600',
+                attacker.type + ' deals ' + attackAction.damage + ' to ' +
+                    receiver.type);
+    }
+
     return {
         update: function() {
             var resultingShip = gs.ship.clone(),
@@ -60,6 +79,25 @@ var Timeline = function(screen) {
                     resultingShip, screen.turnDuration * 2),
                 actionsByType = _.groupBy(script.actions, 'type');
             updateOrderVMsDuration(actionsByType.FinishOrder);
+            //Markers
+            clearMarkers();
+            _.each(actionsByType.Attack, placeAttackMarker);
+            $('.marker').hover(
+                function() {
+                    $(this).animate({
+                        top: '-=1',
+                        height: '+=2',
+                        opacity: 1
+                    }, 100);
+                },
+                function() {
+                    $(this).animate({
+                        top: '+=1',
+                        height: '-=2',
+                        opacity: 0.5
+                    }, 100);
+                }
+            );
         }
     };
 };

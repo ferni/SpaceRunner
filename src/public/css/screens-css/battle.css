@@ -129,6 +129,16 @@
     box-shadow: 1px 1px 1px 0 #000000;
 }
 
+#battle-screen #time-ruler .marker {
+    position: absolute;
+    left: 1px;
+    width: 18px;
+    height: 4px;
+    -webkit-border-radius: 2px 2px 2px 2px;
+    border-radius: 2px 2px 2px 2px;
+    opacity: 0.5;
+}
+
 #separator-now {
     top: -1px;
 }
