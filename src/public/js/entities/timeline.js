@@ -59,9 +59,26 @@ var Timeline = function(screen) {
     }
 
     function placeMarker(time, color, legend) {
-        $ruler.append('<div class="marker" style="background-color: ' + color +
+        var marker = $('<div class="marker" style="background-color: ' + color +
             '; border-color:' + color + '; top:' + ((time / 10) - 1) +
             'px;" title="' + legend + '"></div>');
+        $ruler.append(marker);
+        marker.hover(
+            function() {
+                $(this).animate({
+                    top: '-=1',
+                    height: '+=2',
+                    opacity: 1
+                }, 100);
+            },
+            function() {
+                $(this).animate({
+                    top: '+=1',
+                    height: '-=2',
+                    opacity: 0.5
+                }, 100);
+            }
+        );
     }
 
     function placeAttackMarker(attackAction) {
@@ -82,22 +99,6 @@ var Timeline = function(screen) {
             //Markers
             clearMarkers();
             _.each(actionsByType.Attack, placeAttackMarker);
-            $('.marker').hover(
-                function() {
-                    $(this).animate({
-                        top: '-=1',
-                        height: '+=2',
-                        opacity: 1
-                    }, 100);
-                },
-                function() {
-                    $(this).animate({
-                        top: '+=1',
-                        height: '-=2',
-                        opacity: 0.5
-                    }, 100);
-                }
-            );
         }
     };
 };
