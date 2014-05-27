@@ -9,7 +9,16 @@
 
 var Timeline = function(screen) {
     'use strict';
-    var $ruler = $('#time-ruler');
+    var markers = [],
+        $ruler = $('#time-ruler'),
+        $zoomedWrapper = $('#zoomed-time-segment'),
+        $zoomed = $zoomedWrapper.children('div');
+    $('.time-segment').hover(function() {
+        $zoomed.text($(this).text());
+        $zoomedWrapper.show();
+    }, function() {
+        $zoomedWrapper.hide();
+    });
     function updateOrderVMsDuration(finishOrderActions) {
         //hack for unit with one order that never finishes, part 1
         _.each(screen.shipVM.unitVMs, function(unitVM) {
