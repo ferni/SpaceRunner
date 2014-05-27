@@ -89,6 +89,17 @@ var Timeline = function(screen) {
                     receiver.type);
     }
 
+    function placeDamageShipMarker(damageShipAction) {
+        placeMarker(damageShipAction.time, '#9C0000', 'The ship receives ' +
+            damageShipAction.damage + ' dmg.');
+    }
+
+    function placeFireShipWeaponMarker(fswAction) {
+        var damage = gs.ship.getItemByID(fswAction.weaponID).damage;
+        placeMarker(fswAction.time, 'blue', 'Enemy ship receives ' +
+            damage + ' dmg.');
+    }
+
     return {
         update: function() {
             var resultingShip = gs.ship.clone(),
@@ -99,6 +110,8 @@ var Timeline = function(screen) {
             //Markers
             clearMarkers();
             _.each(actionsByType.Attack, placeAttackMarker);
+            _.each(actionsByType.DamageShip, placeDamageShipMarker);
+            _.each(actionsByType.FireShipWeapon, placeFireShipWeaponMarker);
         }
     };
 };
