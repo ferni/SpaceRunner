@@ -15,21 +15,22 @@
         </div>
         <!-- /ko -->
         <div id="time-line">
-            <div id="time-ruler">
-                <hr id="separator-now"/>
-                <h3>Now</h3>
-                <div class="time-segment">1</div>
-                <div class="time-segment">2</div>
-                <div class="time-segment">3</div>
-                <div class="time-segment">4</div>
-                <hr id="separator-next"/>
-                <h3>Next</h3>
-                <div class="time-segment">1</div>
-                <div class="time-segment">2</div>
-                <div class="time-segment">3</div>
-                <div class="time-segment">4</div>
-                <div id="zoomed-time-segment">
-                    <div></div>
+            <div id="time-ruler" data-bind="with:timeline">
+                <div data-bind="foreach: turns">
+                    <hr data-bind="attr:{id:separatorID}"/>
+                    <h3 data-bind="text:separatorLabel">Now</h3>
+                    <!-- ko foreach:segments -->
+                    <div class="time-segment">
+                        <label data-bind="text:$index() + 1"></label>
+                        <!-- ko foreach:markers -->
+                        <div class="marker" data-bind="style:{backgroundColor:color,
+                        top:top}"></div>
+                        <!-- /ko -->
+                    </div>
+                    <!-- /ko -->
+                    <div id="zoomed-time-segment">
+                        <div></div>
+                    </div>
                 </div>
             </div>
 

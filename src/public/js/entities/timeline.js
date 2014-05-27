@@ -9,16 +9,31 @@
 
 var Timeline = function(screen) {
     'use strict';
-    var markers = [],
-        $ruler = $('#time-ruler'),
-        $zoomedWrapper = $('#zoomed-time-segment'),
-        $zoomed = $zoomedWrapper.children('div');
-    $('.time-segment').hover(function() {
-        $zoomed.text($(this).text());
-        $zoomedWrapper.show();
-    }, function() {
-        $zoomedWrapper.hide();
+    var self = this,
+        turnDurationSec = screen.turnDuration / 1000;
+    function Segment() {
+        this.markers = ko.observableArray([]);
+    }
+    this.turns = [
+        {
+            separatorID: 'separator-now',
+            separatorLabel: 'Now',
+            segments: []
+        },
+        {
+            separatorID: 'separator-next',
+            separatorLabel: 'Next',
+            segments: []
+        }
+    ];
+    _.each(this.turns, function(t) {
+        var i;
+        for (i = 0; i < 4; i++) {
+            t.segments.push(new Segment());
+        }
     });
+    this.selectedSegment = ko.observable(null);
+
     function updateOrderVMsDuration(finishOrderActions) {
         //hack for unit with one order that never finishes, part 1
         _.each(screen.shipVM.unitVMs, function(unitVM) {
@@ -64,30 +79,36 @@ var Timeline = function(screen) {
     }
 
     function clearMarkers() {
-        $ruler.children('.marker').remove();
+        _.each(self.turns, function(t) {
+            _.each(t.segments, function(s) {
+                s.markers([]);
+            });
+        });
     }
 
     function placeMarker(time, color, legend) {
-        var marker = $('<div class="marker" style="background-color: ' + color +
-            '; border-color:' + color + '; top:' + ((time / 10) - 1) +
-            'px;" title="' + legend + '"></div>');
-        $ruler.append(marker);
-        marker.hover(
-            function() {
-                $(this).animate({
-                    top: '-=1',
-                    height: '+=2',
-                    opacity: 1
-                }, 100);
-            },
-            function() {
-                $(this).animate({
-                    top: '+=1',
-                    height: '-=2',
-                    opacity: 0.5
-                }, 100);
+        var second = Math.floor(time / 1000),
+            turnIndex = Math.floor(second / turnDurationSec),
+            segmentIndex = second % turnDurationSec,
+            turn = self.turns[turnIndex],
+            segment;
+
+        if (turn) {
+            segment = turn.segments[segmentIndex];
+            if (segment) {
+                segment.markers.push({
+                    time: time,
+                    top: ((time % 1000) / 10) + 'px',
+                    color: color,
+                    legend: legend
+                });
+            } else {
+                console.warn('Segment not found: ' + segmentIndex);
             }
-        );
+        } else {
+            console.warn('Turn not found: ' + turnIndex +
+                '(time: ' + time + ')');
+        }
     }
 
     function placeAttackMarker(attackAction) {
@@ -109,19 +130,17 @@ var Timeline = function(screen) {
             damage + ' dmg.');
     }
 
-    return {
-        update: function() {
-            var resultingShip = gs.ship.clone(),
-                script = sh.createScript(gs.ship.extractOrders(),
-                    resultingShip, screen.turnDuration * 2),
-                actionsByType = _.groupBy(script.actions, 'type');
-            updateOrderVMsDuration(actionsByType.FinishOrder);
-            //Markers
-            clearMarkers();
-            _.each(actionsByType.Attack, placeAttackMarker);
-            _.each(actionsByType.DamageShip, placeDamageShipMarker);
-            _.each(actionsByType.FireShipWeapon, placeFireShipWeaponMarker);
-        }
+    this.update = function() {
+        var resultingShip = gs.ship.clone(),
+            script = sh.createScript(gs.ship.extractOrders(),
+                resultingShip, screen.turnDuration * 2),
+            actionsByType = _.groupBy(script.actions, 'type');
+        updateOrderVMsDuration(actionsByType.FinishOrder);
+        //Markers
+        clearMarkers();
+        _.each(actionsByType.Attack, placeAttackMarker);
+        _.each(actionsByType.DamageShip, placeDamageShipMarker);
+        _.each(actionsByType.FireShipWeapon, placeFireShipWeaponMarker);
     };
 };
 

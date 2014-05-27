@@ -13,47 +13,9 @@ screens.register('battle', ConnectedScreen.extend({
     scriptPlayer: null,
     scriptServer: [],
     mouseDownPos: null,
-    onReset: function(battleModel) {
-        'use strict';
-        this.parent({id: battleModel.id});
-        this.turnDuration = battleModel.turnDuration;
-        gs.ship = new sh.Ship({json: battleModel.ship});
-        this.stopFetching();
-        console.log('Battle id is ' + this.id);
-        this.shipVM = new ShipVM(gs.ship);
-        this.shipVM.showInScreen();
-        this.shipVM.update();
-        this.scriptPlayer = new ScriptPlayer(this);
-        this.timeline = new Timeline(this);
-        me.input.bindKey(me.input.KEY.ESC, 'escape');
-        me.input.bindKey(me.input.KEY.D, 'delete');
-        me.input.registerMouseEvent('mouseup', me.game.viewport,
-            this.mouseUp.bind(this));
-        me.input.registerMouseEvent('mousedown', me.game.viewport,
-            this.mouseDown.bind(this));
-        me.input.registerMouseEvent('mousemove', me.game.viewport,
-            this.mouseMove.bind(this));
-
-        this.pause();
-
-        if (battleModel.orders) {
-            gs.ship.insertOrders(battleModel.orders);
-        }
-        //orders shown for each unit when moving the mouse around
-        this.previewOrders = {};
-        this.prevMouse = {x: 0, y: 0};
-        if (this.htmlVM) {
-            ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
-        }
-    },
-    onDestroy: function() {
-        'use strict';
-        me.input.unbindKey(me.input.KEY.ESC);
-        me.input.unbindKey(me.input.KEY.D);
-        me.input.releaseMouseEvent('mouseup', me.game.viewport);
-        me.input.releaseMouseEvent('mousedown', me.game.viewport);
-        me.input.releaseMouseEvent('mousemove', me.game.viewport);
-    },
+    /**
+     * Gets executed before onReset.
+     */
     onHtmlLoaded: function() {
         'use strict';
         var screen = this;
@@ -85,12 +47,55 @@ screens.register('battle', ConnectedScreen.extend({
                 return screen.shipVM;
             };
             this.selectedUnit = ko.observable(null);
+            this.timeline = null;//set on onReset
         }
         this.htmlVM = new ViewModel();
         if (this.isReset) {
             ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
         }
         $('#time-line').jScrollPane();
+    },
+    onReset: function(battleModel) {
+        'use strict';
+        this.parent({id: battleModel.id});
+        this.turnDuration = battleModel.turnDuration;
+        gs.ship = new sh.Ship({json: battleModel.ship});
+        this.stopFetching();
+        console.log('Battle id is ' + this.id);
+        this.shipVM = new ShipVM(gs.ship);
+        this.shipVM.showInScreen();
+        this.shipVM.update();
+        this.scriptPlayer = new ScriptPlayer(this);
+        this.timeline = new Timeline(this);
+        me.input.bindKey(me.input.KEY.ESC, 'escape');
+        me.input.bindKey(me.input.KEY.D, 'delete');
+        me.input.registerMouseEvent('mouseup', me.game.viewport,
+            this.mouseUp.bind(this));
+        me.input.registerMouseEvent('mousedown', me.game.viewport,
+            this.mouseDown.bind(this));
+        me.input.registerMouseEvent('mousemove', me.game.viewport,
+            this.mouseMove.bind(this));
+
+        this.pause();
+
+        if (battleModel.orders) {
+            gs.ship.insertOrders(battleModel.orders);
+        }
+        //orders shown for each unit when moving the mouse around
+        this.previewOrders = {};
+        this.prevMouse = {x: 0, y: 0};
+        this.htmlVM.timeline = this.timeline;
+        if (this.htmlVM) {
+            ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+        }
+    },
+    onDestroy: function() {
+        'use strict';
+        me.input.unbindKey(me.input.KEY.ESC);
+        me.input.unbindKey(me.input.KEY.D);
+        me.input.releaseMouseEvent('mouseup', me.game.viewport);
+        me.input.releaseMouseEvent('mousedown', me.game.viewport);
+        me.input.releaseMouseEvent('mousemove', me.game.viewport);
     },
     onData: function(data) {
         'use strict';
