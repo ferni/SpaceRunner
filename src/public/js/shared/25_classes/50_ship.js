@@ -360,15 +360,21 @@ sh.Ship = sh.SharedClass.extendShared({
     },
     endOfTurnReset: function(turnDuration) {
         'use strict';
-        var self = this;
-        _.each(this.units, function(u) {
-            if (!u.isAlive()) {
-                self.removeUnit(u);
-            } else if (u.chargingShipWeapon) {
-                u.chargingShipWeapon.startingTime -= turnDuration;
+        var self = this,
+            i,
+            unit;
+        for (i = 0; i < this.units.length; i++) {
+            unit = this.units[i];
+            if (!unit.isAlive()) {
+                self.removeUnit(unit);
+                i--;
+            } else {
+                if (unit.chargingShipWeapon) {
+                    unit.chargingShipWeapon.startingTime -= turnDuration;
+                }
+                unit.distracted = false;
             }
-            u.distracted = false;
-        });
+        }
         this.unitsMap.update();
     },
     extractOrders: function() {
