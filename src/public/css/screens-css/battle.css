@@ -107,6 +107,10 @@
     line-height: 100px;
 }
 
+#battle-screen #time-ruler div:hover {
+    cursor: default;
+}
+
 #battle-screen #time-ruler h3 {
     position: absolute;
     right: 2px;
