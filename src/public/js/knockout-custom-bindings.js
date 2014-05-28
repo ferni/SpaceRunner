@@ -39,22 +39,24 @@ ko.bindingHandlers.timeline = {
     init: function(element, valueAccessor) {
         'use strict';
         var $mouseMarker = $('#mouse-marker'),
-            timelineTop = parseInt($('#time-line').css('top'), 10),
-            timeline = valueAccessor();
+            timeline = valueAccessor(),
+            jScrollApi;
         //manually set height for jScrollPane to work properly
         $('#time-ruler').css('height', timeline.getHeight() + 'px');
-        $(element).jScrollPane().hover(function() {
+        jScrollApi = $(element).jScrollPane().data('jsp');
+        $(element).hover(function(e) {
             $mouseMarker.show();
         }, function() {
             $mouseMarker.hide();
         }).mousemove(function(e) {
-            /*
-            var relativeXPosition = (e.pageX - this.offsetLeft);
-            var relativeYPosition = (e.pageY - this.offsetTop);
-            */
+            var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
+                10;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
-            console.log('pageY:' + e.pageY + '; clientY:' + e.clientY +
-                'offsetTop:' + this.offsetTop);
+            console.log('clientY:' + e.clientY +
+                'offsetTop:' + this.offsetTop +
+                '; scroll.getContentPositionY:' +
+                jScrollApi.getContentPositionY());
+            console.log('Time pointed: ' + time);
         });
     }
 };

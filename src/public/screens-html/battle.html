@@ -20,7 +20,7 @@
                     <hr class="separator" data-bind="attr:{id:separatorID}"/>
                     <h3 data-bind="text:separatorLabel">Now</h3>
                     <!-- ko foreach:segments -->
-                    <div class="time-segment" data-bind="markersOnHover:$data">
+                    <div class="time-segment">
                         <label data-bind="text:$index() + 1"></label>
                         <!-- ko foreach:markers -->
                         <div class="marker" data-bind="style:{backgroundColor:color,
@@ -28,9 +28,6 @@
                         <!-- /ko -->
                     </div>
                     <!-- /ko -->
-                    <div id="zoomed-time-segment">
-                        <div></div>
-                    </div>
                 </div>
             </div>
 
