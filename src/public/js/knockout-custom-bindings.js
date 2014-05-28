@@ -44,7 +44,7 @@ ko.bindingHandlers.timeline = {
         //manually set height for jScrollPane to work properly
         $('#time-ruler').css('height', timeline.getHeight() + 'px');
         jScrollApi = $(element).jScrollPane().data('jsp');
-        $(element).hover(function(e) {
+        $('#numbers').hover(function() {
             $mouseMarker.show();
         }, function() {
             $mouseMarker.hide();
@@ -52,10 +52,6 @@ ko.bindingHandlers.timeline = {
             var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
                 10;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
-            console.log('clientY:' + e.clientY +
-                'offsetTop:' + this.offsetTop +
-                '; scroll.getContentPositionY:' +
-                jScrollApi.getContentPositionY());
             console.log('Time pointed: ' + time);
         });
     }
