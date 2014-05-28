@@ -53,6 +53,12 @@ ko.bindingHandlers.timeline = {
                 10;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
             console.log('Time pointed: ' + time);
+        }).click(function(e) {
+            var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
+                10;
+            _.each(timeline.getMarkersNear(time), function(m) {
+                console.log(m.time + 'ms: ' + m.legend);
+            });
         });
     }
 };

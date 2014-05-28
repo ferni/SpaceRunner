@@ -9,7 +9,8 @@
 
 var Timeline = function(screen) {
     'use strict';
-    var self = this;
+    var self = this,
+        markerProximityThreshold = 40;//milliseconds
     this.turns = [
         {
             separatorID: 'separator-now',
@@ -119,6 +120,13 @@ var Timeline = function(screen) {
             segmentCount += t.segments.length;
         });
         return segmentCount * 100;
+    };
+
+    this.getMarkersNear = function(time) {
+        return _.filter(self.markers(), function(m) {
+            return m.time <= time + markerProximityThreshold &&
+                m.time >= time - markerProximityThreshold;
+        });
     };
 };
 
