@@ -148,6 +148,15 @@
     opacity: 0.5;
 }
 
+#battle-screen #marker-labels {
+    width: 100px;
+    height: 80px;
+    border: 1px dashed white;
+
+    position: absolute;
+    z-index: 30;
+}
+
 #separator-now {
     top: -1px;
 }

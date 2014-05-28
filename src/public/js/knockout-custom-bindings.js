@@ -39,8 +39,11 @@ ko.bindingHandlers.timeline = {
     init: function(element, valueAccessor) {
         'use strict';
         var $mouseMarker = $('#mouse-marker'),
+            $markerLabels = $('#marker-labels'),
             timeline = valueAccessor(),
-            jScrollApi;
+            jScrollApi,
+            minMovementForLabel = 30,
+            lastMarkerLabel = -100;
         //manually set height for jScrollPane to work properly
         $('#time-ruler').css('height', timeline.getHeight() + 'px');
         jScrollApi = $(element).jScrollPane().data('jsp');
@@ -50,15 +53,23 @@ ko.bindingHandlers.timeline = {
             $mouseMarker.hide();
         }).mousemove(function(e) {
             var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
-                10;
+                10,
+                markers;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
-            console.log('Time pointed: ' + time);
-        }).click(function(e) {
-            var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
-                10;
-            _.each(timeline.getMarkersNear(time), function(m) {
-                console.log(m.time + 'ms: ' + m.legend);
-            });
+            if (lastMarkerLabel - time >= minMovementForLabel ||
+                    time - lastMarkerLabel >= minMovementForLabel) {
+                markers = timeline.getMarkersNear(time);
+                $markerLabels.html('');
+                if (markers.length > 0) {
+                    $markerLabels.css('top', (markers[0].time / 10) + 'px');
+                    _.each(markers, function(m) {
+                        $markerLabels.append('<div class="marker-label" ' +
+                            'style="background-color: ' + m.color + '">' +
+                            m.legend + '</div>');
+                    });
+                }
+                lastMarkerLabel = time;
+            }
         });
     }
 };
