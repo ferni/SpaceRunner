@@ -140,7 +140,7 @@
 
 #battle-screen #time-ruler .marker {
     position: absolute;
-    left: 1px;
+    left: 2px;
     width: 18px;
     height: 4px;
     -webkit-border-radius: 2px 2px 2px 2px;
