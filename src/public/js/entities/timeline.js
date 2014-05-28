@@ -11,8 +11,11 @@ var Timeline = function(screen) {
     'use strict';
     var self = this,
         turnDurationSec = screen.turnDuration / 1000;
-    function Segment() {
+    function Segment(second, turn) {
         this.markers = ko.observableArray([]);
+        this.second = second;
+        this.turn = turn;
+        this.totalSeconds = second * turn;
     }
     this.turns = [
         {
@@ -26,10 +29,10 @@ var Timeline = function(screen) {
             segments: []
         }
     ];
-    _.each(this.turns, function(t) {
+    _.each(this.turns, function(t, turnIndex) {
         var i;
-        for (i = 0; i < 4; i++) {
-            t.segments.push(new Segment());
+        for (i = 1; i < 5; i++) {
+            t.segments.push(new Segment(i, turnIndex + 1));
         }
     });
     this.selectedSegment = ko.observable(null);
@@ -141,6 +144,14 @@ var Timeline = function(screen) {
         _.each(actionsByType.Attack, placeAttackMarker);
         _.each(actionsByType.DamageShip, placeDamageShipMarker);
         _.each(actionsByType.FireShipWeapon, placeFireShipWeaponMarker);
+    };
+
+    this.getHeight = function() {
+        var segmentCount = 0;
+        _.each(this.turns, function(t) {
+            segmentCount += t.segments.length;
+        });
+        return segmentCount * 100;
     };
 };
 

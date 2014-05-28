@@ -105,34 +105,8 @@
     line-height: 100px;
 }
 
-#battle-screen #time-ruler .time-segment:hover,
-    #battle-screen #zoomed-time-segment div:hover{
-    cursor: default;
-    background-color: #5b55ff;
-}
 
-#battle-screen #zoomed-time-segment {
-    display: none;
-    background-color: rgba(0, 0, 0, 0.8);
-    height: 400px;
-    width: 182px;
-    position: absolute;
-    top: 0;
-    left: 22px;
-    z-index: 20;
-    line-height: 400px;
-}
-
-#battle-screen #zoomed-time-segment div {
-    border: 3px solid;
-    border-left-width: 1px;
-    font-size: 24pt;
-    height: 394px;
-    width: 100px;
-}
-
-#battle-screen #time-ruler .time-segment,
-    #battle-screen #zoomed-time-segment div {
+#battle-screen #time-ruler .time-segment {
     border-color: white;
     background-color: #4944C0;
     /*next turn: #474579 (more grayish)*/
@@ -152,7 +126,7 @@
     font-size: 10pt;
 }
 
-#battle-screen #time-ruler hr {
+#battle-screen #time-ruler .separator {
     position: absolute;
     background-color: white;
     color: white;
@@ -180,6 +154,16 @@
 
 #separator-next {
     top: 399px;
+}
+
+#mouse-marker {
+    position: fixed;
+    left: 20px;
+    width: 20px;
+    height: 1px;
+    background-color: white;
+    color: white;
+    display: none;
 }
 
 #battle-screen #unit-orders {

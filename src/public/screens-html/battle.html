@@ -14,13 +14,13 @@
             Damage: <span data-bind="text:m.meleeDamage"></span>
         </div>
         <!-- /ko -->
-        <div id="time-line">
+        <div id="time-line" data-bind="timeline:timeline">
             <div id="time-ruler" data-bind="with:timeline">
                 <div data-bind="foreach: turns">
-                    <hr data-bind="attr:{id:separatorID}"/>
+                    <hr class="separator" data-bind="attr:{id:separatorID}"/>
                     <h3 data-bind="text:separatorLabel">Now</h3>
                     <!-- ko foreach:segments -->
-                    <div class="time-segment">
+                    <div class="time-segment" data-bind="markersOnHover:$data">
                         <label data-bind="text:$index() + 1"></label>
                         <!-- ko foreach:markers -->
                         <div class="marker" data-bind="style:{backgroundColor:color,
@@ -52,6 +52,7 @@
             </div>
             <!-- /ko -->
         </div>
+        <hr id="mouse-marker"/>
     </div>
     <button id="ready-button" class="button">Ready</button>
 </div>
