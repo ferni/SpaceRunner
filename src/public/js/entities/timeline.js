@@ -12,7 +12,6 @@ var Timeline = function(screen) {
     var self = this,
         turnDurationSec = screen.turnDuration / 1000;
     function Segment(second, turn) {
-        this.markers = ko.observableArray([]);
         this.second = second;
         this.turn = turn;
         this.totalSeconds = second * turn;
@@ -29,6 +28,7 @@ var Timeline = function(screen) {
             segments: []
         }
     ];
+    this.markers = ko.observableArray([]);
     _.each(this.turns, function(t, turnIndex) {
         var i;
         for (i = 1; i < 5; i++) {
@@ -82,36 +82,16 @@ var Timeline = function(screen) {
     }
 
     function clearMarkers() {
-        _.each(self.turns, function(t) {
-            _.each(t.segments, function(s) {
-                s.markers([]);
-            });
-        });
+        self.markers([]);
     }
 
     function placeMarker(time, color, legend) {
-        var second = Math.floor(time / 1000),
-            turnIndex = Math.floor(second / turnDurationSec),
-            segmentIndex = second % turnDurationSec,
-            turn = self.turns[turnIndex],
-            segment;
-
-        if (turn) {
-            segment = turn.segments[segmentIndex];
-            if (segment) {
-                segment.markers.push({
-                    time: time,
-                    top: ((time % 1000) / 10) + 'px',
-                    color: color,
-                    legend: legend
-                });
-            } else {
-                console.warn('Segment not found: ' + segmentIndex);
-            }
-        } else {
-            console.warn('Turn not found: ' + turnIndex +
-                '(time: ' + time + ')');
-        }
+        self.markers.push({
+            time: time,
+            top: (time / 10) + 'px',
+            color: color,
+            legend: legend
+        });
     }
 
     function placeAttackMarker(attackAction) {

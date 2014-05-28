@@ -16,18 +16,20 @@
         <!-- /ko -->
         <div id="time-line" data-bind="timeline:timeline">
             <div id="time-ruler" data-bind="with:timeline">
-                <div data-bind="foreach: turns">
-                    <hr class="separator" data-bind="attr:{id:separatorID}"/>
-                    <h3 data-bind="text:separatorLabel">Now</h3>
-                    <!-- ko foreach:segments -->
-                    <div class="time-segment">
-                        <label data-bind="text:$index() + 1"></label>
-                        <!-- ko foreach:markers -->
-                        <div class="marker" data-bind="style:{backgroundColor:color,
-                        top:top}"></div>
+                <div id="numbers">
+                    <div data-bind="foreach: turns">
+                        <hr class="separator" data-bind="attr:{id:separatorID}"/>
+                        <h3 data-bind="text:separatorLabel">Now</h3>
+                        <!-- ko foreach:segments -->
+                        <div class="time-segment">
+                            <label data-bind="text:$index() + 1"></label>
+                        </div>
                         <!-- /ko -->
                     </div>
-                    <!-- /ko -->
+                    <div id="markers" data-bind="foreach:markers">
+                        <div class="marker" data-bind="style:{backgroundColor:color,
+                            top:top}"></div>
+                    </div>
                 </div>
             </div>
 
