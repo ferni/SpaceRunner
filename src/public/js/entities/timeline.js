@@ -9,33 +9,20 @@
 
 var Timeline = function(screen) {
     'use strict';
-    var self = this,
-        turnDurationSec = screen.turnDuration / 1000;
-    function Segment(second, turn) {
-        this.second = second;
-        this.turn = turn;
-        this.totalSeconds = second * turn;
-    }
+    var self = this;
     this.turns = [
         {
             separatorID: 'separator-now',
             separatorLabel: 'Now',
-            segments: []
+            segments: [{}, {}, {}, {}]
         },
         {
             separatorID: 'separator-next',
             separatorLabel: 'Next',
-            segments: []
+            segments: [{}, {}, {}, {}]
         }
     ];
     this.markers = ko.observableArray([]);
-    _.each(this.turns, function(t, turnIndex) {
-        var i;
-        for (i = 1; i < 5; i++) {
-            t.segments.push(new Segment(i, turnIndex + 1));
-        }
-    });
-    this.selectedSegment = ko.observable(null);
 
     function updateOrderVMsDuration(finishOrderActions) {
         //hack for unit with one order that never finishes, part 1
