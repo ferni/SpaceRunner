@@ -88,7 +88,7 @@ var Timeline = function(screen) {
         var attacker = gs.ship.getUnitByID(attackAction.attackerID),
             receiver = gs.ship.getUnitByID(attackAction.receiverID);
         markersTemp.push(makeMarker(attackAction.time +
-                attackAction.damageDelay, '#FC7600', attacker.type +
+                attackAction.damageDelay, '#ED6F00', attacker.type +
             ' deals ' + attackAction.damage + 'dmg' + ' to ' + receiver.type));
     }
 
