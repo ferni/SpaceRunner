@@ -10,7 +10,8 @@
 var Timeline = function(screen) {
     'use strict';
     var self = this,
-        markerProximityThreshold = 40;//milliseconds
+        markerProximityThreshold = 40,//milliseconds
+        markersTemp = [];
     this.turns = [
         {
             separatorID: 'separator-now',
@@ -70,35 +71,38 @@ var Timeline = function(screen) {
     }
 
     function clearMarkers() {
+        markersTemp = [];
         self.markers([]);
     }
 
-    function placeMarker(time, color, legend) {
-        self.markers.push({
+    function makeMarker(time, color, legend) {
+        return {
             time: time,
             top: (time / 10) + 'px',
             color: color,
             legend: legend
-        });
+        };
     }
 
     function placeAttackMarker(attackAction) {
         var attacker = gs.ship.getUnitByID(attackAction.attackerID),
             receiver = gs.ship.getUnitByID(attackAction.receiverID);
-        placeMarker(attackAction.time + attackAction.damageDelay, '#FC7600',
-                attacker.type + ' deals ' + attackAction.damage + ' to ' +
-                    receiver.type);
+        markersTemp.push(makeMarker(attackAction.time +
+                attackAction.damageDelay, '#FC7600', attacker.type +
+            ' deals ' + attackAction.damage + 'dmg' + ' to ' + receiver.type));
     }
 
     function placeDamageShipMarker(damageShipAction) {
-        placeMarker(damageShipAction.time, '#9C0000', 'The ship receives ' +
-            damageShipAction.damage + ' dmg.');
+        markersTemp.push(makeMarker(damageShipAction.time, '#9C0000',
+            'The ship receives ' +
+            damageShipAction.damage + ' dmg'));
     }
 
     function placeFireShipWeaponMarker(fswAction) {
         var damage = gs.ship.getItemByID(fswAction.weaponID).damage;
-        placeMarker(fswAction.time, 'blue', 'Enemy ship receives ' +
-            damage + ' dmg.');
+        markersTemp.push(makeMarker(fswAction.time, 'blue',
+            'Enemy ship receives ' +
+            damage + ' dmg'));
     }
 
     this.update = function() {
@@ -112,6 +116,7 @@ var Timeline = function(screen) {
         _.each(actionsByType.Attack, placeAttackMarker);
         _.each(actionsByType.DamageShip, placeDamageShipMarker);
         _.each(actionsByType.FireShipWeapon, placeFireShipWeaponMarker);
+        this.markers(_.sortBy(markersTemp, 'time'));
     };
 
     this.getHeight = function() {
