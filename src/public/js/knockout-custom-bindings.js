@@ -39,6 +39,7 @@ ko.bindingHandlers.timeline = {
     init: function(element, valueAccessor) {
         'use strict';
         var $mouseMarker = $('#mouse-marker'),
+            $markerLabelsCont = $('#marker-labels-container'),
             $markerLabels = $('#marker-labels'),
             timeline = valueAccessor(),
             jScrollApi,
@@ -61,12 +62,16 @@ ko.bindingHandlers.timeline = {
                 markers = timeline.getMarkersNear(time);
                 $markerLabels.html('');
                 if (markers.length > 0) {
-                    $markerLabels.css('top', (markers[0].time / 10) + 'px');
+                    $markerLabelsCont.css('top', ((markers[0].time / 10) -
+                        99) + 'px'); //-100 because it has 200 height (center)
                     _.each(markers, function(m) {
                         $markerLabels.append('<div class="marker-label" ' +
                             'style="background-color: ' + m.color + '">' +
                             m.legend + '</div>');
                     });
+                    $markerLabelsCont.show();
+                } else {
+                    $markerLabelsCont.hide();
                 }
                 lastMarkerLabel = time;
             }

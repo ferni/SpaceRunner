@@ -30,7 +30,17 @@
                         <div class="marker" data-bind="style:{backgroundColor:color,
                             top:top}"></div>
                     </div>
-                    <div id="marker-labels"></div>
+                    <table id="marker-labels-container" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td>
+                                <img id="balloon-pointer" src="data/img/render/balloon-pointer.png"
+                                        height="10px"/>
+                            </td>
+                            <td valign="middle">
+                                <div id="marker-labels"></div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 
