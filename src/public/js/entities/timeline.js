@@ -78,7 +78,7 @@ var Timeline = function(screen) {
     function makeMarker(time, color, legend) {
         return {
             time: time,
-            top: (time / 10) + 'px',
+            top: ((time / 10) - 1) + 'px',
             color: color,
             legend: legend
         };
