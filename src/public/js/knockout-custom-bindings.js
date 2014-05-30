@@ -19,7 +19,7 @@ ko.bindingHandlers.sortableList = {
         $(element).sortable({
             // animation on drop
             onDrop: function(item, targetContainer, _super) {
-                var clonedItem = $('<li/>').css({height: 0});
+                var clonedItem = $('<li class="cloned"/>').css({height: 0});
                 item.before(clonedItem);
                 clonedItem.animate({'height': item.height()});
 
