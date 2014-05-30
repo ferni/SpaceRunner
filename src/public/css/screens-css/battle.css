@@ -128,14 +128,14 @@
 
 #battle-screen #time-ruler .separator {
     position: absolute;
+    z-index: 20;
     background-color: white;
+    opacity: 0.5;
     color: white;
     height: 2px;
     width: 100%;
     margin: 0;
     border: 0;
-    -webkit-box-shadow: 1px 1px 1px 0 #000000;
-    box-shadow: 1px 1px 1px 0 #000000;
 }
 
 #battle-screen #time-ruler .marker {
