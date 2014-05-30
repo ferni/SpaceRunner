@@ -231,7 +231,14 @@ body.dragging, body.dragging * {
 #battle-screen #unit-orders li.placeholder {
     position: relative;
     /** More li styles **/
+    margin: 3px 0 0 3px;
+    padding: 0;
+    height: 0;
+    width: 146px;
+    border: 1px white solid;
+    border-top-width: 2px;
 }
+
 #battle-screen #unit-orders li.placeholder:before {
     position: absolute;
     /** Define arrowhead **/
