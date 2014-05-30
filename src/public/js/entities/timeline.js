@@ -10,7 +10,7 @@
 var Timeline = function(screen) {
     'use strict';
     var self = this,
-        markerProximityThreshold = 40,//milliseconds
+        markerProximityThreshold = 50,//milliseconds
         markersTemp = [];
     this.turns = [
         {
