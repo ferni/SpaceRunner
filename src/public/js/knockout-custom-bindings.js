@@ -16,8 +16,10 @@ ko.bindingHandlers.sortableList = {
         'use strict';
         var list = valueAccessor();
         $(element).sortable({onDrop: function(item, targetContainer, _super) {
-            console.log('on drop');
-            _super(item);
+            item.removeClass('dragged')
+                .css('left', '')
+                .css('top', '');
+            $('body').removeClass('dragging');
             //reconstruct the list
             list(_.map($(element).children(), function(item) {
                 return ko.dataFor(item).m;
