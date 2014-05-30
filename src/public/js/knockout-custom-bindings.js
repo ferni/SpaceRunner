@@ -14,17 +14,47 @@
 ko.bindingHandlers.sortableList = {
     init: function(element, valueAccessor) {
         'use strict';
-        var list = valueAccessor();
-        $(element).sortable({onDrop: function(item, targetContainer, _super) {
-            item.removeClass('dragged')
-                .css('left', '')
-                .css('top', '');
-            $('body').removeClass('dragging');
-            //reconstruct the list
-            list(_.map($(element).children(), function(item) {
-                return ko.dataFor(item).m;
-            }));
-        }});
+        var list = valueAccessor(),
+            adjustment;
+        $(element).sortable({
+            // animation on drop
+            onDrop: function(item, targetContainer, _super) {
+                var clonedItem = $('<li/>').css({height: 0});
+                item.before(clonedItem);
+                clonedItem.animate({'height': item.height()});
+
+                item.animate(clonedItem.position(), function() {
+                    clonedItem.detach();
+                    item.removeClass('dragged')
+                        .css('left', '')
+                        .css('top', '');
+                    $('body').removeClass('dragging');
+                    //reconstruct the list
+                    list(_.map($(element).children(), function(item) {
+                        return ko.dataFor(item).m;
+                    }));
+                });
+            },
+
+            // set item relative to cursor position
+            onDragStart: function($item, container, _super) {
+                var offset = $item.offset(),
+                    pointer = container.rootGroup.pointer;
+
+                adjustment = {
+                    left: pointer.left - offset.left,
+                    top: pointer.top - offset.top
+                };
+
+                _super($item, container);
+            },
+            onDrag: function($item, position) {
+                $item.css({
+                    left: position.left - adjustment.left,
+                    top: position.top - adjustment.top
+                });
+            }
+        });
     },
     update: function(element, valueAccessor) {
         'use strict';
