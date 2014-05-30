@@ -36,11 +36,8 @@ var orderVMs = (function() {
                     height -= 6; //accounting for padding
                     height -= 2; //accounting for border
                     height -= 2; //some space for next order
-                    if (height > 35) {
-                        return height + 'px';
-                    }
+                    return height + 'px';
                 }
-                return '35px';
             }, this);
             this.itemTop = ko.computed(function() {
                 var start = this.timeInfo().start;

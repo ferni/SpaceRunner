@@ -208,7 +208,6 @@
 }
 
 #battle-screen #unit-orders li {
-    position: absolute;
     list-style: none;
     border: 1px solid white;
     background-color: green;
@@ -219,14 +218,23 @@
     z-index: 10;
 }
 
-#battle-screen #unit-orders li.sortable-placeholder {
-    height: 23px;
-    background-color: rgba(0,80,0,0.5);
-    border-style: dotted;
+body.dragging, body.dragging * {
+    cursor: move !important;
 }
 
-#battle-screen #unit-orders li.sortable-dragging {
+#battle-screen .dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
+}
 
+#battle-screen #unit-orders li.placeholder {
+    position: relative;
+    /** More li styles **/
+}
+#battle-screen #unit-orders li.placeholder:before {
+    position: absolute;
+    /** Define arrowhead **/
 }
 
 #battle-screen .delete-button {

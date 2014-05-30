@@ -15,19 +15,15 @@ ko.bindingHandlers.sortableList = {
     init: function(element, valueAccessor) {
         'use strict';
         var list = valueAccessor();
-        $(element).sortable().bind('sortupdate', function() {
+        $(element).sortable({onDrop: function(item, targetContainer, _super) {
+            console.log('on drop');
+            _super(item);
             //reconstruct the list
-            list(_.map($(this).children(), function(item) {
+            list(_.map($(element).children(), function(item) {
                 return ko.dataFor(item).m;
             }));
-        });
-    },
-    update: function(element, valueAccessor) {
-        'use strict';
-        valueAccessor()();
-        $(element).sortable();
+        }});
     }
-
 };
 
 /**

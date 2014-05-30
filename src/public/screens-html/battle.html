@@ -46,7 +46,7 @@
 
             <!-- ko if:selectedUnit() -->
             <div data-bind="with:selectedUnit">
-                <ul id="unit-orders" data-bind="foreach: orders, sortableList: orders">
+                <ol id="unit-orders" data-bind="foreach: orders, sortableList: orders">
                     <!-- ko if:$parent.getOrderVM($data) -->
                         <!-- ko with:$parent.getOrderVM($data) -->
                             <!-- ko ifnot:isBeyondNextTurn() -->
@@ -58,7 +58,7 @@
                             <!-- /ko -->
                         <!-- /ko -->
                     <!-- /ko -->
-                </ul>
+                </ol>
             </div>
             <!-- /ko -->
         </div>
