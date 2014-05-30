@@ -50,7 +50,7 @@
                     <!-- ko if:$parent.getOrderVM($data) -->
                         <!-- ko with:$parent.getOrderVM($data) -->
                             <!-- ko ifnot:isBeyondNextTurn() -->
-                            <li data-bind="style:{height:itemHeight(), top:itemTop(),
+                            <li data-bind="style:{height:itemHeight(),
                                 backgroundColor: itemColorObs()}">
                                 <span data-bind="text:m.toString()"></span>
                                 <button class="delete-button" data-bind="click:remove">x</button>

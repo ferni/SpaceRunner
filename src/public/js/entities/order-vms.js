@@ -39,12 +39,6 @@ var orderVMs = (function() {
                     return height + 'px';
                 }
             }, this);
-            this.itemTop = ko.computed(function() {
-                var start = this.timeInfo().start;
-                if (start !== null && start !== undefined) {
-                    return (start / 10) + 'px';
-                }
-            }, this);
             this.willCompleteThisTurn = ko.computed(function() {
                 return this.timeInfo().end <= this.screen.turnDuration;
             }, this);
