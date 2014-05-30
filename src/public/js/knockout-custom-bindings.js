@@ -25,6 +25,15 @@ ko.bindingHandlers.sortableList = {
                 return ko.dataFor(item).m;
             }));
         }});
+    },
+    update: function(element, valueAccessor) {
+        'use strict';
+        var list = valueAccessor();
+        if (list().length === 1) {
+            $(element).sortable('disable');
+        } else {
+            $(element).sortable('enable');
+        }
     }
 };
 
