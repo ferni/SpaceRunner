@@ -32,11 +32,11 @@ var orderVMs = (function() {
                 var duration = this.timeInfo().end - this.timeInfo().start,
                     height;
                 if (duration) {
-                    height = duration / 10;
+                    height = duration / 10 * this.screen.timeline.zoomLevel();
                     height -= 6; //accounting for padding
                     height -= 2; //accounting for border
                     height -= 2; //some space for next order
-                    return (height * this.screen.timeline.zoomLevel()) + 'px';
+                    return height + 'px';
                 }
             }, this);
             this.willCompleteThisTurn = ko.computed(function() {
