@@ -11,17 +11,27 @@ var Timeline = function(screen) {
     'use strict';
     var self = this,
         markerProximityThreshold = 50,//milliseconds
-        markersTemp = [];
+        markersTemp = [],
+        Segment = function(timeline) {
+            this.height = ko.computed(function() {
+                return ((100 * timeline.zoomLevel()) - 2) + 'px';
+                //(-2 for border)
+            });
+        };
+    function seg() {
+        return new Segment(self);
+    }
+    this.zoomLevel = ko.observable(1);
     this.turns = [
         {
             separatorID: 'separator-now',
             separatorLabel: 'Now',
-            segments: [{}, {}, {}, {}]
+            segments: [seg(), seg(), seg(), seg()]
         },
         {
             separatorID: 'separator-next',
             separatorLabel: 'Next',
-            segments: [{}, {}, {}, {}]
+            segments: [seg(), seg(), seg(), seg()]
         }
     ];
     this.markers = ko.observableArray([]);

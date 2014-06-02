@@ -24,7 +24,7 @@ var orderVMs = (function() {
                 name: 'order'});
 
             //Timeline item stuff
-            this.timeInfo = ko.observable({});//start, end, duration
+            this.timeInfo = ko.observable({});//start, end
             this.isBeyondNextTurn = ko.computed(function() {
                 return this.timeInfo().start === undefined;
             }, this);
@@ -36,7 +36,7 @@ var orderVMs = (function() {
                     height -= 6; //accounting for padding
                     height -= 2; //accounting for border
                     height -= 2; //some space for next order
-                    return height + 'px';
+                    return (height * this.screen.timeline.zoomLevel()) + 'px';
                 }
             }, this);
             this.willCompleteThisTurn = ko.computed(function() {

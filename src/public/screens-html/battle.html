@@ -21,7 +21,7 @@
                         <hr class="separator" data-bind="attr:{id:separatorID}"/>
                         <h3 data-bind="text:separatorLabel">Now</h3>
                         <!-- ko foreach:segments -->
-                        <div class="time-segment">
+                        <div class="time-segment" data-bind="style:{height:height(), lineHeight:height()}">
                             <label data-bind="text:$index() + 1"></label>
                         </div>
                         <!-- /ko -->

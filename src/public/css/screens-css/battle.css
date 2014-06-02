@@ -93,27 +93,25 @@
 #battle-screen #time-ruler .time-segment
 {
     position: relative;
-    border: 1px solid;
+    border: 1px solid white;
     background-color: #4944C0;
     /*next turn: #474579 (more grayish)*/
     color: white;
     text-shadow: 0 0 3px #FFFFFF;
     font-size: 12pt;
-    height: 98px;/*total with borders: 100*/
     width: 20px;
 
-    line-height: 100px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 
 #battle-screen #time-ruler .time-segment {
-    border-color: white;
+
     background-color: #4944C0;
     /*next turn: #474579 (more grayish)*/
     color: white;
     text-shadow: 0 0 3px #FFFFFF;
-    text-align: center;
-    vertical-align: middle;
 }
 
 #battle-screen #time-ruler h3 {
