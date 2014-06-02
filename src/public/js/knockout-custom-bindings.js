@@ -79,9 +79,7 @@ ko.bindingHandlers.timeline = {
             $markerLabelsCont = $('#marker-labels-container'),
             $markerLabels = $('#marker-labels'),
             timeline = valueAccessor(),
-            jScrollApi,
-            minMovementForLabel = 30,
-            lastMarkerLabel = -100;
+            jScrollApi;
         //manually set height for jScrollPane to work properly
         $('#time-ruler').css('height', timeline.getHeight() + 'px');
         jScrollApi = $(element).jScrollPane().data('jsp');
@@ -90,28 +88,25 @@ ko.bindingHandlers.timeline = {
         }, function() {
             $mouseMarker.hide();
         }).mousemove(function(e) {
-            var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
-                10 / timeline.zoomLevel(),
+            var pixelTime = e.clientY - 125 + jScrollApi.getContentPositionY(),
+                time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
-            if (lastMarkerLabel - time >= minMovementForLabel ||
-                    time - lastMarkerLabel >= minMovementForLabel) {
-                markers = timeline.getMarkersNear(time);
-                $markerLabels.html('');
-                if (markers.length > 0) {
-                    $markerLabelsCont.css('top', ((markers[0].time / 10 *
-                        timeline.zoomLevel()) - 99) + 'px');
-                        //-99 because it has 200 height (center)
-                    _.each(markers, function(m) {
-                        $markerLabels.append('<div class="marker-label" ' +
-                            'style="background-color: ' + m.color + '">' +
-                            m.legend + '</div>');
-                    });
-                    $markerLabelsCont.show();
-                } else {
-                    $markerLabelsCont.hide();
-                }
-                lastMarkerLabel = time;
+            console.log('getting markers near ' + pixelTime);
+            markers = timeline.getMarkersNear(pixelTime);
+            $markerLabels.html('');
+            if (markers.length > 0) {
+                $markerLabelsCont.css('top', ((markers[0].time / 10 *
+                    timeline.zoomLevel()) - 99) + 'px');
+                    //-99 because it has 200 height (for centering)
+                _.each(markers, function(m) {
+                    $markerLabels.append('<div class="marker-label" ' +
+                        'style="background-color: ' + m.color + '">' +
+                        m.legend + '</div>');
+                });
+                $markerLabelsCont.show();
+            } else {
+                $markerLabelsCont.hide();
             }
         });
     }

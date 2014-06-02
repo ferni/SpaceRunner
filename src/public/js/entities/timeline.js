@@ -10,7 +10,7 @@
 var Timeline = function(screen) {
     'use strict';
     var self = this,
-        markerProximityThreshold = 50,//milliseconds
+        markerProximityThreshold = 5,//pixels
         markersTemp = [],
         Segment = function(timeline) {
             this.height = ko.computed(function() {
@@ -85,34 +85,35 @@ var Timeline = function(screen) {
         self.markers([]);
     }
 
-    function makeMarker(time, color, legend) {
-        return {
-            time: time,
-            top: ko.computed(function() {
-                return ((time / 10 * self.zoomLevel()) - 1) + 'px';
-            }),
-            color: color,
-            legend: legend
-        };
+    function Marker(time, color, legend) {
+        this.time = time;
+        this.pixelPos = ko.computed(function() {
+            return (time / 10 * self.zoomLevel());
+        });
+        this.top = ko.computed(function() {
+            return (this.pixelPos() - 2) + 'px';
+        }, this);
+        this.color = color;
+        this.legend = legend;
     }
 
     function placeAttackMarker(attackAction) {
         var attacker = gs.ship.getUnitByID(attackAction.attackerID),
             receiver = gs.ship.getUnitByID(attackAction.receiverID);
-        markersTemp.push(makeMarker(attackAction.time +
+        markersTemp.push(new Marker(attackAction.time +
                 attackAction.damageDelay, '#ED6F00', attacker.type +
             ' deals ' + attackAction.damage + 'dmg' + ' to ' + receiver.type));
     }
 
     function placeDamageShipMarker(damageShipAction) {
-        markersTemp.push(makeMarker(damageShipAction.time, '#9C0000',
+        markersTemp.push(new Marker(damageShipAction.time, '#9C0000',
             'The ship receives ' +
             damageShipAction.damage + ' dmg'));
     }
 
     function placeFireShipWeaponMarker(fswAction) {
         var damage = gs.ship.getItemByID(fswAction.weaponID).damage;
-        markersTemp.push(makeMarker(fswAction.time, 'blue',
+        markersTemp.push(new Marker(fswAction.time, 'blue',
             'Enemy ship receives ' +
             damage + ' dmg'));
     }
@@ -139,10 +140,10 @@ var Timeline = function(screen) {
         return segmentCount * 100;
     };
 
-    this.getMarkersNear = function(time) {
+    this.getMarkersNear = function(pixelY) {
         return _.filter(self.markers(), function(m) {
-            return m.time <= time + markerProximityThreshold &&
-                m.time >= time - markerProximityThreshold;
+            return m.pixelPos() <= pixelY + markerProximityThreshold &&
+                m.pixelPos() >= pixelY - markerProximityThreshold;
         });
     };
 };
