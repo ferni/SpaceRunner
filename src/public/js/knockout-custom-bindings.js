@@ -91,7 +91,7 @@ ko.bindingHandlers.timeline = {
             $mouseMarker.hide();
         }).mousemove(function(e) {
             var time = (e.clientY - 125 + jScrollApi.getContentPositionY()) *
-                10,
+                10 / timeline.zoomLevel(),
                 markers;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
             if (lastMarkerLabel - time >= minMovementForLabel ||
@@ -99,8 +99,9 @@ ko.bindingHandlers.timeline = {
                 markers = timeline.getMarkersNear(time);
                 $markerLabels.html('');
                 if (markers.length > 0) {
-                    $markerLabelsCont.css('top', ((markers[0].time / 10) -
-                        99) + 'px'); //-100 because it has 200 height (center)
+                    $markerLabelsCont.css('top', ((markers[0].time / 10 *
+                        timeline.zoomLevel()) - 99) + 'px');
+                        //-99 because it has 200 height (center)
                     _.each(markers, function(m) {
                         $markerLabels.append('<div class="marker-label" ' +
                             'style="background-color: ' + m.color + '">' +
