@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global ko, $, _*/
+/*global ko, $, _, dhtmlxSlider*/
 
 /**
  * Makes a list sortable.
@@ -79,10 +79,23 @@ ko.bindingHandlers.timeline = {
             $markerLabelsCont = $('#marker-labels-container'),
             $markerLabels = $('#marker-labels'),
             timeline = valueAccessor(),
-            jScrollApi;
+            jScrollApi,
+            sld;
+
         //manually set height for jScrollPane to work properly
         $('#time-ruler').css('height', timeline.getHeight() + 'px');
         jScrollApi = $(element).jScrollPane().data('jsp');
+
+        //zoom slider
+        sld = new dhtmlxSlider('zoom-slider', 200,
+            'arrowgreen', false, 0.25, 3, 1, 0.25);
+        sld.setImagePath('data/img/render/slider/');
+        $('#zoom-slider').append(sld);
+        sld.setOnChangeHandler(function(value) {
+            timeline.zoomLevel(value);
+        });
+        sld.init();
+
         $('#numbers').hover(function() {
             $mouseMarker.show();
         }, function() {
@@ -92,7 +105,6 @@ ko.bindingHandlers.timeline = {
                 time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
             $mouseMarker.css('top', (e.clientY - 18) + 'px');
-            console.log('getting markers near ' + pixelTime);
             markers = timeline.getMarkersNear(pixelTime);
             $markerLabels.html('');
             if (markers.length > 0) {

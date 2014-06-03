@@ -103,15 +103,7 @@
 
     text-align: center;
     vertical-align: middle;
-}
-
-
-#battle-screen #time-ruler .time-segment {
-
-    background-color: #4944C0;
-    /*next turn: #474579 (more grayish)*/
-    color: white;
-    text-shadow: 0 0 3px #FFFFFF;
+    transition: height 0.5s, line-height 0.5s;
 }
 
 #battle-screen #time-ruler h3 {
