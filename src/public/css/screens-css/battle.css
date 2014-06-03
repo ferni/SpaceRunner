@@ -70,10 +70,48 @@
     left: 44px;
     right: 38px;
     top: 5px;
-    height: 60px;
+    height: 40px;
     text-align: center;
     -webkit-border-radius: 5px 5px 0 0;
     border-radius: 5px 5px 0 0;
+}
+
+#battle-screen #unit-portrait h3 {
+    margin: 0;
+    height: 17px;
+}
+
+#battle-screen #unit-portrait span {
+    font-size: 10pt;
+}
+
+#battle-screen #zoom {
+    position: absolute;
+    top: 45px;
+    width: 220px;
+    color: white;
+}
+
+#battle-screen #zoom-info {
+    width: 47px;
+    float: left;
+    padding: 1px;
+    text-align: center;
+    font-size: 14px;
+}
+
+#battle-screen #zoom-slider {
+    margin-top: 2px;
+}
+
+#battle-screen #zoom #zoom-level,
+#battle-screen #zoom:hover #zoom-label{
+    display: none;
+}
+
+#battle-screen #zoom:hover #zoom-level,
+#battle-screen #zoom #zoom-label{
+    display: block;
 }
 
 #battle-screen #time-line {

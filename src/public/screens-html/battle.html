@@ -10,11 +10,17 @@
         <!-- ko if:selectedUnit() -->
         <div id="unit-portrait" data-bind="with: selectedUnit">
             <h3 data-bind="text:m.type"></h3>
-            HP: <span data-bind="text:m.hp"></span>
-            Damage: <span data-bind="text:m.meleeDamage"></span>
+            <span>HP: <span data-bind="text:m.hp"></span></span>
+            <span>Damage: <span data-bind="text:m.meleeDamage"></span></span>
         </div>
         <!-- /ko -->
-        <div id="zoom-slider"></div>
+        <div id="zoom">
+            <div id="zoom-info">
+                <label id="zoom-label">Zoom</label>
+                <label id="zoom-level" data-bind="text:timeline.zoomLevel() + 'x'"></label>
+            </div>
+            <div id="zoom-slider"></div>
+        </div>
         <div id="time-line" data-bind="timeline:timeline">
             <div id="time-ruler" data-bind="with:timeline">
                 <div id="numbers">
