@@ -25,8 +25,8 @@
             <div id="time-ruler" data-bind="with:timeline">
                 <div id="numbers">
                     <div data-bind="foreach: turns">
-                        <hr class="separator" data-bind="attr:{id:separatorID}"/>
-                        <h3 data-bind="text:separatorLabel">Now</h3>
+                        <hr class="separator" data-bind="style:{top:top()}"/>
+                        <h3 data-bind="text:separatorLabel"></h3>
                         <!-- ko foreach:segments -->
                         <div class="time-segment" data-bind="style:{height:height(), lineHeight:height()}">
                             <label data-bind="text:$index() + 1"></label>

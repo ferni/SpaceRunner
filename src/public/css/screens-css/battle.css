@@ -164,6 +164,7 @@
     width: 100%;
     margin: 0;
     border: 0;
+    transition: top 0.5s;
 }
 
 #battle-screen #time-ruler .marker {
@@ -207,14 +208,6 @@
     margin: 2px;
     color: white;
     text-shadow: 1px 1px 1px #000000;
-}
-
-#separator-now {
-    top: -1px;
-}
-
-#separator-next {
-    top: 399px;
 }
 
 #mouse-marker {

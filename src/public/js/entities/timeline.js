@@ -24,14 +24,16 @@ var Timeline = function(screen) {
     this.zoomLevel = ko.observable(1);
     this.turns = [
         {
-            separatorID: 'separator-now',
             separatorLabel: 'Now',
-            segments: [seg(), seg(), seg(), seg()]
+            segments: [seg(), seg(), seg(), seg()],
+            top: function() {return '-1px'; }
         },
         {
-            separatorID: 'separator-next',
             separatorLabel: 'Next',
-            segments: [seg(), seg(), seg(), seg()]
+            segments: [seg(), seg(), seg(), seg()],
+            top: ko.computed(function() {
+                return ((400 * self.zoomLevel()) - 1) + 'px';
+            })
         }
     ];
     this.markers = ko.observableArray([]);
