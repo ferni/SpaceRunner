@@ -85,6 +85,7 @@ ko.bindingHandlers.timeline = {
         //manually set height for jScrollPane to work properly
         $('#time-ruler').css('height', timeline.getHeight() + 'px');
         jScrollApi = $(element).jScrollPane().data('jsp');
+        $('#time-ruler').css('height', '');
 
         //zoom slider
         sld = new dhtmlxSlider('zoom-slider', 150,
@@ -93,6 +94,7 @@ ko.bindingHandlers.timeline = {
         $('#zoom-slider').append(sld);
         sld.setOnChangeHandler(function(value) {
             timeline.zoomLevel(value);
+            jScrollApi.reinitialise();
         });
         sld.init();
 
