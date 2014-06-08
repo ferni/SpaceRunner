@@ -257,13 +257,12 @@ screens.register('battle', ConnectedScreen.extend({
             });
         }
     },
-    getModelDifferenceUrl: function() {
+    getModelDifferenceUrl: function(aJsonString, bJsonString) {
         'use strict';
-        var screen = this,
-            hashObject = {
+        var hashObject = {
                 d: {
-                    a: JSON.stringify(gs.ship.toJson()),
-                    b: JSON.stringify(screen.resultingShip)
+                    a: aJsonString,
+                    b: bJsonString
                 }
             };
         return 'http://tlrobinson.net/projects/javascript-fun/jsondiff/#' +
@@ -271,12 +270,14 @@ screens.register('battle', ConnectedScreen.extend({
     },
     compareModelWithServer: function() {
         'use strict';
-        if (gs.ship.hasSameJson(this.resultingShip)) {
+        var clientString = JSON.stringify(gs.ship.toJson()),
+            serverString = JSON.stringify(this.resultingShip);
+        if (clientString === serverString) {
             console.log('Client ship correctly matches the server ship.');
         } else {
             console.error('Client ship is different than the server ship' +
                 ' (left: client, right: server): ' +
-                this.getModelDifferenceUrl());
+                this.getModelDifferenceUrl(clientString, serverString));
         }
     },
     pause: function() {
