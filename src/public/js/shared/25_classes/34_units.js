@@ -34,7 +34,8 @@ sh.Unit = sh.TileEntity.extendShared({
         this.parent(json);
         this.size = [1, 1];
         this.set('Unit', ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
-            'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID'],
+            'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID',
+            'chargingShipWeapon'],
             json);
         this.hp = this.maxHP;
         this.inCombat = false;
@@ -195,7 +196,7 @@ sh.Unit = sh.TileEntity.extendShared({
     getActions: function(turnTime, ship) {
         'use strict';
         var actions = [],
-            chargeInfo;
+            shipWeapon;
         if (!this.isAlive()) {
             return [];
         }
@@ -215,13 +216,13 @@ sh.Unit = sh.TileEntity.extendShared({
                 );
             }
         } else {
-            chargeInfo = this.chargingShipWeapon;
-            if (turnTime >= chargeInfo.startingTime +
-                    chargeInfo.weapon.chargeTime) {
+            shipWeapon = ship.getItemByID(this.chargingShipWeapon.weaponID);
+            if (turnTime >= this.chargingShipWeapon.startingTime +
+                    shipWeapon.chargeTime) {
                 actions.push(new sh.actions.FireShipWeapon({
                     time: turnTime,
                     unitID: this.id,
-                    weaponID: chargeInfo.weapon.id
+                    weaponID: this.chargingShipWeapon.weaponID
                 }));
             }
         }
@@ -237,10 +238,12 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         return sh.v.distance(unit, this) <= this.attackRange;
     },
-    cancelShipWeaponFire: function() {
+    cancelShipWeaponFire: function(ship) {
         'use strict';
+        var weapon;
         if (this.chargingShipWeapon) {
-            this.chargingShipWeapon.weapon.chargedBy = null;
+            weapon = ship.getItemByID(this.chargingShipWeapon.weaponID);
+            weapon.chargedBy = null;
             this.chargingShipWeapon = null;
         }
     }

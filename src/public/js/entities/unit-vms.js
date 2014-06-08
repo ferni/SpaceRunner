@@ -125,12 +125,17 @@ var UnitVM = TileEntityVM.extend({
         }
         if (changed.chargingShipWeapon) {
             if (this.m.chargingShipWeapon) {
-                this.chargingWeaponIcon = new ui.ChargingWeaponIcon(this);
-                me.game.add(this.chargingWeaponIcon, ui.layers.indicators);
+                this.chargingShipWeapon = {
+                    weapon: gs.ship
+                        .getItemByID(this.m.chargingShipWeapon.weaponID),
+                    icon: new ui.ChargingWeaponIcon(this)
+                };
+                me.game.add(this.chargingShipWeapon.icon, ui.layers.indicators);
                 me.game.sort();
             } else {
-                if (this.chargingWeaponIcon) {
-                    me.game.remove(this.chargingWeaponIcon, true);
+                if (this.chargingShipWeapon) {
+                    me.game.remove(this.chargingShipWeapon.icon, true);
+                    this.chargingShipWeapon = null;
                 }
             }
         }
@@ -172,13 +177,13 @@ var UnitVM = TileEntityVM.extend({
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
-        if (this.m.chargingShipWeapon) {
+        if (this.chargingShipWeapon) {
             this.drawWeaponChargeProgressBar(ctx);
         }
     },
     drawWeaponChargeProgressBar: function(ctx) {
         'use strict';
-        var weapon = this.m.chargingShipWeapon.weapon,
+        var weapon = this.chargingShipWeapon.weapon,
             pos = sh.v.mul(weapon, TILE_SIZE),
             elapsed = this.screen.elapsed -
                 this.m.chargingShipWeapon.startingTime,

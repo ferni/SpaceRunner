@@ -103,7 +103,7 @@ if (typeof exports !== 'undefined') {
                     };
                     unit.blocking = false;
                     //cancel weapon charging
-                    unit.cancelShipWeaponFire();
+                    unit.cancelShipWeaponFire(ship);
 
                 }
             });
@@ -121,7 +121,7 @@ if (typeof exports !== 'undefined') {
                         ship.unitsMap.update();
                     }
                     //cancel weapon charging
-                    unit.cancelShipWeaponFire();
+                    unit.cancelShipWeaponFire(ship);
                 }
             });
             this.addChange(this.duration + 100, function(ship) {
@@ -166,7 +166,7 @@ if (typeof exports !== 'undefined') {
                         receiver && receiver.isAlive()) {
                     receiver.hp -= self.damage;
                     //cancel weapon charging
-                    receiver.cancelShipWeaponFire();
+                    receiver.cancelShipWeaponFire(ship);
                     receiver.distracted = true;
                 }
             });
@@ -300,7 +300,7 @@ if (typeof exports !== 'undefined') {
                 var unit = ship.getUnitByID(self.unitID),
                     weapon = ship.getItemByID(self.weaponID);
                 unit.chargingShipWeapon = {
-                    weapon: weapon,
+                    weaponID: self.weaponID,
                     startingTime: self.time
                 };
                 weapon.chargedBy = unit;
@@ -324,7 +324,7 @@ if (typeof exports !== 'undefined') {
             this.addChange(0, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
                 ship.enemyHP -= ship.getItemByID(self.weaponID).damage;
-                unit.cancelShipWeaponFire();
+                unit.cancelShipWeaponFire(ship);
             });
         }
     });
