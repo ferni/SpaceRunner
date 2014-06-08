@@ -332,10 +332,6 @@ sh.Ship = sh.SharedClass.extendShared({
         });
         this.buildingsChanged();
     },
-    hasSameJson: function(json) {
-        'use strict';
-        return _.isEqual(this.toJson(), json);
-    },
     getPfMatrix: function() {
         'use strict';
         var ship = this,
