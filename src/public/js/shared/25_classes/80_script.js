@@ -37,19 +37,17 @@ if (typeof exports !== 'undefined') {
         fromJson: function(json) {
             //logic here
             this.turnDuration = json.turnDuration;
-            this.actions = _.map(json.actions, function(actionJson) {
-                return new sh.actions[actionJson.type](actionJson);
-            });
+            this.actions = sh.utils.mapFromJson(json.actions, sh.actions);
             this.sortedModelChangesIndex = json.sortedModelChangesIndex;
+            this.pendingActionsJson = json.pendingActionsJson;
             return this;
         },
         toJson: function() {
             return {
                 turnDuration: this.turnDuration,
-                actions: _.map(this.actions, function(action) {
-                    return action.toJson();
-                }),
-                sortedModelChangesIndex: this.sortedModelChangesIndex
+                actions: sh.utils.mapToJson(this.actions),
+                sortedModelChangesIndex: this.sortedModelChangesIndex,
+                pendingActionsJson: this.pendingActionsJson
             };
         },
         isWithinTurn: function(action) {

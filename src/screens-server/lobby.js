@@ -17,9 +17,7 @@ routes.add('get', function(req, res, next) {
     'use strict';
     try {
         res.json({
-            battleSetUps: _.map(battleSetUps, function(b) {
-                return b.toJson();
-            })
+            battleSetUps: sh.utils.mapToJson(battleSetUps)
         });
     } catch (e) {
         console.log(e);

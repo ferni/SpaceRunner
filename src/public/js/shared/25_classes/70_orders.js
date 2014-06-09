@@ -30,9 +30,7 @@ if (typeof exports !== 'undefined') {
         toJson: function() {
             var ordersJson = {};
             _.each(this.orders, function(unitsOrders, unitID) {
-                ordersJson[unitID] = _.map(unitsOrders, function(order) {
-                    return order.toJson();
-                });
+                ordersJson[unitID] = sh.utils.mapToJson(unitsOrders);
                 if (ordersJson[unitID].length === 0) {
                     ordersJson[unitID] = 'empty';
                 }
@@ -53,9 +51,8 @@ if (typeof exports !== 'undefined') {
                     self.orders[unitID] = [];
                     return;
                 }
-                self.orders[unitID] = _.map(unitsOrders, function(orderJson) {
-                    return new sh.orders[orderJson.type](orderJson);
-                });
+                self.orders[unitID] = sh.utils.mapFromJson(unitsOrders,
+                    sh.orders);
             });
             return this;
         }

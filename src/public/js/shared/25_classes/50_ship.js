@@ -48,6 +48,7 @@ sh.Ship = sh.SharedClass.extendShared({
             new sh.Map(this.hullMap).scale(sh.GRID_SUB), this.itemsMap,
             this.unitsMap
         ]);
+        this.pendingActions = [];
         if (settings.json) {
             this.fromJson(settings.json);
         }
@@ -294,12 +295,8 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         return {
             'tmxName': this.tmxName,
-            'buildings': _.map(this.built, function(b) {
-                return b.toJson();
-            }),
-            'units': _.map(this.units, function(u) {
-                return u.toJson();
-            }),
+            'buildings': sh.utils.mapToJson(this.built),
+            'units': sh.utils.mapToJson(this.units),
             'GRID_SUB': sh.GRID_SUB
         };
     },
@@ -377,9 +374,7 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         var orders = {};
         _.each(this.units, function(u) {
-            orders[u.id] = _.map(u.orders, function(o) {
-                return o.toJson();
-            });
+            orders[u.id] = sh.utils.mapToJson(u.orders);
         });
         return orders;
     },
