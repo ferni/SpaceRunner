@@ -47,6 +47,18 @@ sh.utils = {
         'use strict';
         pos.x = pos.x * (toGridSub / fromGridSub);
         pos.y = pos.y * (toGridSub / fromGridSub);
+    },
+    mapToJson: function(arrayOfObjects) {
+        'use strict';
+        return _.map(arrayOfObjects, function(o) {
+            return o.toJson();
+        });
+    },
+    mapFromJson: function(arrayOfJsons, constructorCollection) {
+        'use strict';
+        return _.map(arrayOfJsons, function(json) {
+            return new constructorCollection[json.type](json);
+        });
     }
 };
 
