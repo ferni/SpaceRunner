@@ -387,9 +387,7 @@ sh.Ship = sh.SharedClass.extendShared({
                 return;
             }
             unit = self.getUnitByID(unitOrders[0].unitID);
-            unit.orders = _.map(unitOrders, function(o) {
-                return new sh.orders[o.type](o);
-            });
+            unit.orders = sh.utils.mapFromJson(unitOrders, sh.orders);
         });
     },
     getValidOrderForPos: function(unit, pos) {
