@@ -107,6 +107,7 @@ if (typeof exports !== 'undefined') {
             .pluck('action')
             .uniq()
             .value();
+        script.pendingActionsJson = sh.utils.mapToJson(ship.pendingActions);
 
         //clean up
         if (resetShip) {

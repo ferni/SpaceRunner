@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global ko, _, gs, sh, $*/
+/*global ko, _, gs, sh, $, utils*/
 
 var Timeline = function(screen) {
     'use strict';
@@ -102,9 +102,12 @@ var Timeline = function(screen) {
     function placeAttackMarker(attackAction) {
         var attacker = gs.ship.getUnitByID(attackAction.attackerID),
             receiver = gs.ship.getUnitByID(attackAction.receiverID);
-        markersTemp.push(new Marker(attackAction.time +
+        if (attacker && receiver) {
+            markersTemp.push(new Marker(attackAction.time +
                 attackAction.damageDelay, '#ED6F00', attacker.type +
-            ' deals ' + attackAction.damage + 'dmg' + ' to ' + receiver.type));
+                ' deals ' + attackAction.damage + 'dmg' + ' to ' +
+                receiver.type));
+        }
     }
 
     function placeDamageShipMarker(damageShipAction) {
@@ -120,12 +123,47 @@ var Timeline = function(screen) {
             damage + ' dmg'));
     }
 
+    function setRelativeActionTime(turn) {
+        return function(a) {
+            a.setTime(a.time + (turn * screen.turnDuration));
+            return a;
+        };
+    }
+
     this.update = function() {
-        var resultingShip = gs.ship.clone(),
-            script = sh.createScript(gs.ship.extractOrders(),
-                resultingShip, screen.turnDuration * 2),
-            actionsByType = _.groupBy(script.actions, 'type');
-        updateOrderVMsDuration(actionsByType.FinishOrder);
+        var shipClone, script, actionsByType, i, actions = [],
+            turnsCovered = 2,
+            newActions;
+        function cloneAction(action) {
+            return new sh.actions[action.type](action.toJson());
+        }
+
+        shipClone = gs.ship.clone();
+        shipClone.insertOrders(gs.ship.extractOrders());
+        if (screen.scriptServer.pendingActionsJson) {
+            shipClone.pendingActions = sh.utils.mapFromJson(
+                screen.scriptServer.pendingActionsJson,
+                sh.actions
+            );
+        }
+        for (i = 0; i < turnsCovered; i++) {
+            script = sh.createScript(shipClone.extractOrders(),
+                shipClone, screen.turnDuration, true);
+            newActions = script.actions;
+            if (i !== turnsCovered - 1) { //is not last turn
+                newActions = _.difference(script.actions,
+                    shipClone.pendingActions);
+            }
+            actions = actions.concat(_.chain(newActions)
+                .map(cloneAction)
+                .map(setRelativeActionTime(i))
+                .value());
+        }
+
+
+
+        actionsByType = _.groupBy(actions, 'type');
+        updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
         //Markers
         clearMarkers();
         _.each(actionsByType.Attack, placeAttackMarker);
