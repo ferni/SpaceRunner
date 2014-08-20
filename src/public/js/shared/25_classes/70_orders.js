@@ -60,9 +60,9 @@ if (typeof exports !== 'undefined') {
 
     sh.Order = sh.Jsonable.extendShared({
         init: function(json) {
-            this.configJson({
+            this.setJson({
                 type: 'Order',
-                transfer: ['unitID'],
+                properties: ['unitID'],
                 json: json
             });
         },
@@ -163,9 +163,9 @@ if (typeof exports !== 'undefined') {
                 x: parseInt(json.destination.x, 10),
                 y: parseInt(json.destination.y, 10)
             };
-            this.configJson({
+            this.setJson({
                 type: 'Move',
-                transfer: ['destination'],
+                properties: ['destination'],
                 json: json
             });
         },
@@ -202,9 +202,9 @@ if (typeof exports !== 'undefined') {
     sh.orders.MoveToConsole = sh.orders.Move.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'MoveToConsole',
-                transfer: [],
+                properties: [],
                 json: json
             });
         },
@@ -221,9 +221,9 @@ if (typeof exports !== 'undefined') {
     sh.orders.SeekAndDestroy = sh.orders.GoTo.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'SeekAndDestroy',
-                transfer: ['targetID'],
+                properties: ['targetID'],
                 json: json
             });
         },

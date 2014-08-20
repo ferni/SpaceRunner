@@ -16,7 +16,13 @@ if (typeof exports !== 'undefined') {
 }
 
 sh.Battle = sh.Jsonable.extendShared({
+    ships: [],
     init: function(json) {
+        this.setJson({
+            type: 'Battle',
+            properties: [],
+            json: json
+        });
 
     }
 });

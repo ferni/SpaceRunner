@@ -36,11 +36,11 @@ if (typeof exports !== 'undefined') {
          * Sets the properties found in the json param to the object.
          * This properties are later used by toJson to return the json form
          * of the object.
-         * @param {{type:string, transfer:Array, json:Object}} settings
+         * @param {{type:string, properties:Array, json:Object}} settings
          */
-        configJson: function(settings) {
+        setJson: function(settings) {
             var type = settings.type,
-                properties = settings.transfer,
+                properties = settings.properties,
                 json = settings.json;
             if (!json) {
                 json = {};

@@ -61,9 +61,9 @@ if (typeof exports !== 'undefined') {
         time: 0,//ms
         modelChanges: [],
         init: function(json) {
-            this.configJson({
+            this.setJson({
                 type: 'Action',
-                transfer: ['time'],
+                properties: ['time'],
                 json: json
             });
         },
@@ -92,9 +92,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.Move = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'Move',
-                transfer: ['unitID', 'from', 'to', 'duration'],
+                properties: ['unitID', 'from', 'to', 'duration'],
                 json: json
             });
             this.updateModelChanges();
@@ -151,9 +151,9 @@ if (typeof exports !== 'undefined') {
             if (!json.damageDelay) {
                 json.damageDelay = 0;
             }
-            this.configJson({
+            this.setJson({
                 type: 'Attack',
-                transfer: ['attackerID', 'receiverID', 'damage', 'duration',
+                properties: ['attackerID', 'receiverID', 'damage', 'duration',
                     'damageDelay'],
                 json: json
             });
@@ -201,9 +201,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.Summon = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'Summon',
-                transfer: ['x', 'y', 'playerID', 'unitType'],
+                properties: ['x', 'y', 'playerID', 'unitType'],
                 json: json
             });
             this.updateModelChanges();
@@ -233,9 +233,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.DamageShip = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'DamageShip',
-                transfer: ['unitID', 'tile', 'damage', 'cooldown'],
+                properties: ['unitID', 'tile', 'damage', 'cooldown'],
                 json: json
             });
             this.updateModelChanges();
@@ -263,9 +263,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.DeclareWinner = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'DeclareWinner',
-                transfer: ['playerID'],
+                properties: ['playerID'],
                 json: json
             });
         }
@@ -274,9 +274,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.SetUnitProperty = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'SetUnitProperty',
-                transfer: ['unitID', 'property', 'value'],
+                properties: ['unitID', 'property', 'value'],
                 json: json
             });
             this.updateModelChanges();
@@ -299,9 +299,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.FinishOrder = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'FinishOrder',
-                transfer: ['unitID'],
+                properties: ['unitID'],
                 json: json
             });
             this.updateModelChanges();
@@ -319,9 +319,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.BeginShipWeaponCharge = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'BeginShipWeaponCharge',
-                transfer: ['unitID', 'weaponID', 'chargeTime'],
+                properties: ['unitID', 'weaponID', 'chargeTime'],
                 json: json
             });
             this.updateModelChanges();
@@ -348,9 +348,9 @@ if (typeof exports !== 'undefined') {
     sh.actions.FireShipWeapon = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'FireShipWeapon',
-                transfer: ['unitID', 'weaponID'],
+                properties: ['unitID', 'weaponID'],
                 json: json
             });
             this.updateModelChanges();

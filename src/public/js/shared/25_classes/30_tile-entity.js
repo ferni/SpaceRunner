@@ -24,9 +24,9 @@ sh.TileEntity = sh.Jsonable.extendShared({
     id: null, //the ship is in charge of setting the id
     init: function(json) {
         'use strict';
-        this.configJson({
+        this.setJson({
             type: 'TileEntity',
-            transfer: ['id', 'x', 'y'],
+            properties: ['id', 'x', 'y'],
             json: json
         });
     },

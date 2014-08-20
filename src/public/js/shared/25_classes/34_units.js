@@ -33,9 +33,9 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         this.parent(json);
         this.size = [1, 1];
-        this.configJson({
+        this.setJson({
             type: 'Unit',
-            transfer: ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
+            properties: ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
                 'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID',
                 'chargingShipWeapon'],
             json: json
@@ -268,9 +268,9 @@ sh.units = (function() {
             this.meleeDamage = 20;
             this.attackRange = 3;
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'Zealot',
-                transfer: [],
+                properties: [],
                 json: json
             });
         },
@@ -291,9 +291,9 @@ sh.units = (function() {
             this.meleeDamage = 8;
             this.imageFacesRight = false;
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'Critter',
-                transfer: [],
+                properties: [],
                 json: json
             });
         }
@@ -307,9 +307,9 @@ sh.units = (function() {
             this.meleeDamage = 25;
             this.imageFacesRight = false;
             this.parent(json);
-            this.configJson({
+            this.setJson({
                 type: 'MetalSpider',
-                transfer: [],
+                properties: [],
                 json: json
             });
         }
