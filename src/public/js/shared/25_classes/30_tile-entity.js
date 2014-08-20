@@ -24,7 +24,11 @@ sh.TileEntity = sh.Jsonable.extendShared({
     id: null, //the ship is in charge of setting the id
     init: function(json) {
         'use strict';
-        this.set('TileEntity', ['id', 'x', 'y'], json);
+        this.configJson({
+            type: 'TileEntity',
+            transfer: ['id', 'x', 'y'],
+            json: json
+        });
     },
     //takes rotation into account
     trueSize: function(index) {

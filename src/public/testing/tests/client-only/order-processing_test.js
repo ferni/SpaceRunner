@@ -50,7 +50,11 @@ test('script creation, carry over actions to next turn', function() {
         TestAction = sh.Action.extendShared({
             init: function(json) {
                 this.parent(json);
-                this.set('TestAction', [], json);
+                this.configJson({
+                    type: 'TestAction',
+                    transfer: [],
+                    json: json
+                });
                 this.updateModelChanges();
             },
             updateModelChanges: function() {

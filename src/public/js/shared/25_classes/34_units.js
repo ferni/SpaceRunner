@@ -33,10 +33,13 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         this.parent(json);
         this.size = [1, 1];
-        this.set('Unit', ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
-            'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID',
-            'chargingShipWeapon'],
-            json);
+        this.configJson({
+            type: 'Unit',
+            transfer: ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
+                'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID',
+                'chargingShipWeapon'],
+            json: json
+        });
         this.hp = this.maxHP;
         this.inCombat = false;
         this.orders = [];
@@ -265,7 +268,11 @@ sh.units = (function() {
             this.meleeDamage = 20;
             this.attackRange = 3;
             this.parent(json);
-            this.set('Zealot', [], json);
+            this.configJson({
+                type: 'Zealot',
+                transfer: [],
+                json: json
+            });
         },
         getAttackActions: function(turnTime, ship) {
             return _.map(this.parent(turnTime, ship), function(action) {
@@ -284,7 +291,11 @@ sh.units = (function() {
             this.meleeDamage = 8;
             this.imageFacesRight = false;
             this.parent(json);
-            this.set('Critter', [], json);
+            this.configJson({
+                type: 'Critter',
+                transfer: [],
+                json: json
+            });
         }
     });
     u.MetalSpider = sh.Unit.extendShared({
@@ -296,7 +307,11 @@ sh.units = (function() {
             this.meleeDamage = 25;
             this.imageFacesRight = false;
             this.parent(json);
-            this.set('MetalSpider', [], json);
+            this.configJson({
+                type: 'MetalSpider',
+                transfer: [],
+                json: json
+            });
         }
     });
     return u;

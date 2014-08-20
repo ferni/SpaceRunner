@@ -26,7 +26,11 @@ sh.Item = sh.TileEntity.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Item', [], json);
+        this.configJson({
+            type: 'Item',
+            transfer: [],
+            json: json
+        });
         if (json) {
             this.rotated(json.r);
             this.ship = json.ship;
@@ -110,7 +114,11 @@ sh.items.Weapon = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Weapon', [], json);
+        this.configJson({
+            type: 'Weapon',
+            transfer: [],
+            json: json
+        });
         this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
     },
     canBuildAt: function(x, y, ship) {
@@ -127,7 +135,11 @@ sh.items.Engine = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Engine', [], json);
+        this.configJson({
+            type: 'Engine',
+            transfer: [],
+            json: json
+        });
         this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
     },
     canBuildAt: function(x, y, ship) {
@@ -144,7 +156,11 @@ sh.items.Power = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Power', [], json);
+        this.configJson({
+            type: 'Power',
+            transfer: [],
+            json: json
+        });
         this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
     }
 });
@@ -158,7 +174,11 @@ sh.items.Console = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Console', [], json);
+        this.configJson({
+            type: 'Console',
+            transfer: [],
+            json: json
+        });
         this.setSize(sh.GRID_SUB, sh.GRID_SUB);
         this.walkable = true;
     },
@@ -200,7 +220,11 @@ sh.items.Component = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Component', [], json);
+        this.configJson({
+            type: 'Component',
+            transfer: [],
+            json: json
+        });
         this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
     }
 });
@@ -213,7 +237,11 @@ sh.items.Door = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Door', [], json);
+        this.configJson({
+            type: 'Door',
+            transfer: [],
+            json: json
+        });
         this.setSize(2 * sh.GRID_SUB, sh.GRID_SUB);
         this.walkable = true;
     },
@@ -235,7 +263,11 @@ sh.items.Wall = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('Wall', [], json);
+        this.configJson({
+            type: 'Wall',
+            transfer: [],
+            json: json
+        });
         this.setSize(sh.GRID_SUB, sh.GRID_SUB);
         this.connected = {
             top: false,
@@ -319,7 +351,11 @@ sh.items.WeakSpot = sh.Item.extendShared({
     init: function(json) {
         'use strict';
         this.parent(json);
-        this.set('WeakSpot', [], json);
+        this.configJson({
+            type: 'WeakSpot',
+            transfer: [],
+            json: json
+        });
         this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
         this.walkable = true;
     }

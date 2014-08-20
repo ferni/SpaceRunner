@@ -11,7 +11,11 @@ test('Jsonable conserving numbers types', function() {
     'use strict';
     var Person = sh.Jsonable.extendShared({
         init: function(json) {
-            this.set('Person', ['name', 'age', 'height'], json);
+            this.configJson({
+                type: 'Person',
+                transfer: ['name', 'age', 'height'],
+                json: json
+            });
         }
     }),
         john = new Person({

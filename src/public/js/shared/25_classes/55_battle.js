@@ -14,3 +14,9 @@ if (typeof exports !== 'undefined') {
      */
     sh = module.exports = sh;
 }
+
+sh.Battle = sh.Jsonable.extendShared({
+    init: function(json) {
+
+    }
+});

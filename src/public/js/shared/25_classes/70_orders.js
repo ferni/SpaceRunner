@@ -60,7 +60,11 @@ if (typeof exports !== 'undefined') {
 
     sh.Order = sh.Jsonable.extendShared({
         init: function(json) {
-            this.set('Order', ['unitID'], json);
+            this.configJson({
+                type: 'Order',
+                transfer: ['unitID'],
+                json: json
+            });
         },
         isValid: function(ship, playerID) {
             var unit = ship.getUnitByID(this.unitID);
@@ -159,7 +163,11 @@ if (typeof exports !== 'undefined') {
                 x: parseInt(json.destination.x, 10),
                 y: parseInt(json.destination.y, 10)
             };
-            this.set('Move', ['destination'], json);
+            this.configJson({
+                type: 'Move',
+                transfer: ['destination'],
+                json: json
+            });
         },
         /**
          * Returns the actions for the unit to do while the order is the
@@ -194,7 +202,11 @@ if (typeof exports !== 'undefined') {
     sh.orders.MoveToConsole = sh.orders.Move.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set('MoveToConsole', [], json);
+            this.configJson({
+                type: 'MoveToConsole',
+                transfer: [],
+                json: json
+            });
         },
         toString: function() {
             return 'Move to Console';
@@ -209,7 +221,11 @@ if (typeof exports !== 'undefined') {
     sh.orders.SeekAndDestroy = sh.orders.GoTo.extendShared({
         init: function(json) {
             this.parent(json);
-            this.set('SeekAndDestroy', ['targetID'], json);
+            this.configJson({
+                type: 'SeekAndDestroy',
+                transfer: ['targetID'],
+                json: json
+            });
         },
         getActions: function(time, ship) {
             var unit, target, move;
