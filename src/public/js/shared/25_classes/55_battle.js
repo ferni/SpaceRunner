@@ -23,6 +23,23 @@ sh.Battle = sh.Jsonable.extendShared({
             properties: [],
             json: json
         });
-
+        this.ships = _.map(json.ships, function(shipJson) {
+            return new sh.Ship({json: shipJson});
+        });
+        this.players = _.map(json.players, function(playerJson) {
+            return new sh.Player(playerJson);
+        });
+    },
+    toJson: function() {
+        var json = this.parent();
+        json.ships = _.utils.mapToJson(this.ships);
+        json.players = _.utils.mapToJson(this.players);
+        return json;
+    },
+    /**
+     *@return Array Objects that have the .getActions method.
+     */
+    getActors: function() {
+        return _.flatten(_.pluck(this.ship, 'units'));
     }
 });
