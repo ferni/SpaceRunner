@@ -154,8 +154,7 @@ routes.add('newchallenge', function(req, res, next) {
                         ships: [battle.ship.toJson()],
                         players: [battle.playerLeft.toJson(),
                             battle.playerRight.toJson()]
-                    }).toJson(),
-                    orders: null
+                    }).toJson()
                 });
         } else {
             next(new Error('No player in session'));
