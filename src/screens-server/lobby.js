@@ -146,7 +146,17 @@ routes.add('newchallenge', function(req, res, next) {
             });
             battles.push(battle);
             battle.nextTurn();
-            res.json(battle.toJson());
+
+            res.json({
+                    battle: new sh.Battle({
+                        id: battle.id,
+                        turnDuration: battle.turnDuration,
+                        ships: [battle.ship.toJson()],
+                        players: [battle.playerLeft.toJson(),
+                            battle.playerRight.toJson()]
+                    }).toJson(),
+                    orders: null
+                });
         } else {
             next(new Error('No player in session'));
         }

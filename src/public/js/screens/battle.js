@@ -55,11 +55,17 @@ screens.register('battle', ConnectedScreen.extend({
         }
         $('#time-line').jScrollPane();
     },
-    onReset: function(battleModel) {
+    /**
+     *
+     * @param battle sh.Battle
+     * @param orders Object
+     */
+    onReset: function(battle, orders) {
         'use strict';
-        this.parent({id: battleModel.id});
-        this.turnDuration = battleModel.turnDuration;
-        gs.ship = new sh.Ship({json: battleModel.ship});
+        this.parent({id: battle.id});
+        this.turnDuration = battle.turnDuration;
+        gs.battle = battle;
+        gs.ship = battle.ships[0];
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
@@ -78,8 +84,8 @@ screens.register('battle', ConnectedScreen.extend({
 
         this.pause();
 
-        if (battleModel.orders) {
-            gs.ship.insertOrders(battleModel.orders);
+        if (orders) {
+            battle.insertOrders(orders);
         }
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};

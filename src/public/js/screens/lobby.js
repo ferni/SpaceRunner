@@ -60,8 +60,9 @@ screens.register('lobby', GameScreen.extend({
     startChallenge: function(challengeIndex) {
         'use strict';
         $.post('/lobby/newchallenge', {challengeIndex: challengeIndex},
-            function(battle) {
-                me.state.change('battle', battle);
+            function(data) {
+                me.state.change('battle', new sh.Battle(data.battle),
+                    data.orders);
             }, 'json');
     },
     hostBattle: function() {
