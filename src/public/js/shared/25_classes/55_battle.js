@@ -40,6 +40,35 @@ sh.Battle = sh.Jsonable.extendShared({
      *@return Array Objects that have the .getActions method.
      */
     getActors: function() {
+        return this.getUnits();
+    },
+    getUnits: function() {
         return _.flatten(_.pluck(this.ship, 'units'));
+    },
+    extractOrders: function() {
+        'use strict';
+        var orders = {};
+        _.each(this.getUnits(), function(u) {
+            orders[u.id] = sh.utils.mapToJson(u.orders);
+        });
+        return orders;
+    },
+    insertOrders: function(orders) {
+        'use strict';
+        var self = this;
+        _.each(orders, function(unitOrders) {
+            var unit;
+            if (unitOrders.length <= 0) {
+                return;
+            }
+            unit = self.getUnitByID(unitOrders[0].unitID);
+            unit.orders = sh.utils.mapFromJson(unitOrders, sh.orders);
+        });
+    },
+    getUnitByID: function(id) {
+        'use strict';
+        return _.find(this.getUnits(), function(u) {
+            return u.id === parseInt(id, 10);
+        });
     }
 });
