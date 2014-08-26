@@ -190,7 +190,9 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     /**
      * This method will be called by the script creator every time something
-     * changed. The unit's properties should not be changed in this method.
+     * changed. The unit's properties should not be changed in this method;
+     * the script creator does that through the modelChanges array found in
+     * each action.
      * @param {int} turnTime The current time.
      * @param {sh.Ship} ship The ship, representing the entire model (should be
      * Battle in the future.
