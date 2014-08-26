@@ -49,7 +49,6 @@ sh.Ship = sh.SharedClass.extendShared({
             new sh.Map(this.hullMap).scale(sh.GRID_SUB), this.itemsMap,
             this.unitsMap
         ]);
-        this.pendingActions = [];
         if (settings.json) {
             this.fromJson(settings.json);
         }

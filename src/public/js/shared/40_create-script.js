@@ -32,13 +32,13 @@ if (typeof exports !== 'undefined') {
     /**
      * Generates a "script" for the units given all the orders issued.
      * @param {Array} orders
-     * @param {sh.Ship} ship
+     * @param {sh.Battle} battle
      * @param {int} turnDuration
-     * @param {Boolean} resetShip Should the ship be cleaned up at the end.
+     * @param {Boolean} resetBattle Should the battle be cleaned up at the end.
      * @return {sh.Script}
      */
-    function createScript(orders, ship, turnDuration, resetShip) {
-        var script, queue, changes, time, unit, i,
+    function createScript(orders, battle, turnDuration, resetBattle) {
+        var script, queue, changes, time, actors, actor, i,
             registerActionReturned = {};
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
@@ -56,7 +56,7 @@ if (typeof exports !== 'undefined') {
                         mc.index = index;
                         if (mc.time === action.time) {
                             //apply immediate changes
-                            mc.apply(ship);
+                            mc.apply(battle);
                             script.registerChange(mc);
                             returned.thereWereImmediateChanges = true;
                         } else {
@@ -68,33 +68,33 @@ if (typeof exports !== 'undefined') {
         }
 
         //set the orders to the units
-        ship.insertOrders(orders);
+        battle.insertOrders(orders);
 
         //null change to kick-start the process
         queue.push(getVoidModelChange(0));
 
-        _.each(ship.pendingActions, function(action) {
+        _.each(battle.pendingActions, function(action) {
             action.setTime(action.time - turnDuration);
             registerAction()(action);
         });
 
-        //simulation loop (the ship gets modified and actions get added
+        //simulation loop (the battle gets modified and actions get added
         // to the script over time)
         while (queue.length > 0 && queue[0].time <= turnDuration) {
             time = queue[0].time;
 //            console.log('applying changes from time:' + time);
             changes = _.where(queue, {time: time});
-            _.invoke(changes, 'apply', ship);
+            _.invoke(changes, 'apply', battle);
             _.each(changes, script.registerChange, script);
             queue = queue.slice(changes.length);
 
             if (time < turnDuration) {
                 //actions can't start at end of turn
                 registerActionReturned.thereWereImmediateChanges = false;
-                //ship.units would be battle.objects in the future
-                for (i = 0; i < ship.units.length; i++) {
-                    unit = ship.units[i];
-                    _.each(unit.getActions(time, ship),
+                actors = battle.getActors();
+                for (i = 0; i < actors.length; i++) {
+                    actor = actors[i];
+                    _.each(actor.getActions(time, battle),
                         registerAction(registerActionReturned));
                 }
                 if (registerActionReturned.thereWereImmediateChanges) {
@@ -103,15 +103,15 @@ if (typeof exports !== 'undefined') {
             }
         }
 
-        ship.pendingActions = _.chain(queue)
+        battle.pendingActions = _.chain(queue)
             .pluck('action')
             .uniq()
             .value();
-        script.pendingActionsJson = sh.utils.mapToJson(ship.pendingActions);
+        script.pendingActionsJson = sh.utils.mapToJson(battle.pendingActions);
 
         //clean up
-        if (resetShip) {
-            ship.endOfTurnReset(turnDuration);
+        if (resetBattle) {
+            battle.endOfTurnReset(turnDuration);
         }
         return script;
     }

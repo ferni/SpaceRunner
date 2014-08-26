@@ -29,6 +29,7 @@ sh.Battle = sh.Jsonable.extendShared({
         this.players = _.map(json.players, function(playerJson) {
             return new sh.Player(playerJson);
         });
+        this.pendingActions = [];
     },
     toJson: function() {
         var json = this.parent();
@@ -70,5 +71,9 @@ sh.Battle = sh.Jsonable.extendShared({
         return _.find(this.getUnits(), function(u) {
             return u.id === parseInt(id, 10);
         });
+    },
+    endOfTurnReset: function(turnDuration) {
+        'use strict';
+        _.invoke(this.ships, 'endOfTurnReset', turnDuration);
     }
 });
