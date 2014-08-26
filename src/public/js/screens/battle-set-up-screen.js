@@ -55,7 +55,7 @@ screens.register('battle-set-up', ConnectedScreen.extend({
         ko.mapping.fromJS(this.data, this.vm);
         if (this.data.battle) {
             //this means it started!
-            me.state.change('battle', this.data.battle);
+            me.state.change('battle', new sh.Battle(this.data.battle));
         }
         //this somehow makes both players use different battle ids.
         /*if(gs.modes.auto && this.bothPlayersPresent()) {

@@ -220,7 +220,13 @@ exports.BattleSetUp = function(params) {
         return {
             id: this.id,
             battle: this.battle ?
-                    this.battle.toJson() : null,
+                new sh.Battle({
+                    id: this.battle.id,
+                    turnDuration: this.battle.turnDuration,
+                    ships: [this.battle.ship.toJson()],
+                    players: [this.battle.playerLeft.toJson(),
+                        this.battle.playerRight.toJson()]
+                }).toJson() : null,
             creator: this.creator ?
                     this.creator.toJson() : {name: '<empty>'},
             challenger: this.challenger ?
