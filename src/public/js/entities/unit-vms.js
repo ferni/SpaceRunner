@@ -177,7 +177,7 @@ var UnitVM = TileEntityVM.extend({
         if (this.m.isAlive()) {
             this.drawHealthBar(ctx);
         }
-        if (this.chargingShipWeapon) {
+        if (this.chargingShipWeapon && this.m.chargingShipWeapon) {
             this.drawWeaponChargeProgressBar(ctx);
         }
     },
