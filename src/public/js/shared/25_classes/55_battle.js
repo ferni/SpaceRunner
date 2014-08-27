@@ -46,6 +46,12 @@ sh.Battle = sh.Jsonable.extendShared({
     getUnits: function() {
         return _.flatten(_.pluck(this.ship, 'units'));
     },
+    getUnitByID: function(id) {
+        'use strict';
+        return _.find(this.getUnits(), function(u) {
+            return u.id === parseInt(id, 10);
+        });
+    },
     extractOrders: function() {
         'use strict';
         var orders = {};
@@ -64,12 +70,6 @@ sh.Battle = sh.Jsonable.extendShared({
             }
             unit = self.getUnitByID(unitOrders[0].unitID);
             unit.orders = sh.utils.mapFromJson(unitOrders, sh.orders);
-        });
-    },
-    getUnitByID: function(id) {
-        'use strict';
-        return _.find(this.getUnits(), function(u) {
-            return u.id === parseInt(id, 10);
         });
     },
     endOfTurnReset: function(turnDuration) {
