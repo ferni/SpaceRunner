@@ -111,7 +111,7 @@ if (typeof exports !== 'undefined') {
                     };
                     unit.blocking = false;
                     //cancel weapon charging
-                    unit.cancelShipWeaponFire(ship);
+                    unit.cancelShipWeaponFire();
 
                 }
             });
@@ -129,7 +129,7 @@ if (typeof exports !== 'undefined') {
                         ship.unitsMap.update();
                     }
                     //cancel weapon charging
-                    unit.cancelShipWeaponFire(ship);
+                    unit.cancelShipWeaponFire();
                 }
             });
             this.addChange(this.duration + 100, function(ship) {
@@ -177,7 +177,7 @@ if (typeof exports !== 'undefined') {
                         receiver && receiver.isAlive()) {
                     receiver.hp -= self.damage;
                     //cancel weapon charging
-                    receiver.cancelShipWeaponFire(ship);
+                    receiver.cancelShipWeaponFire();
                     receiver.distracted = true;
                 }
             });
@@ -361,7 +361,7 @@ if (typeof exports !== 'undefined') {
             this.addChange(0, function(ship) {
                 var unit = ship.getUnitByID(self.unitID);
                 ship.enemyHP -= ship.getItemByID(self.weaponID).damage;
-                unit.cancelShipWeaponFire(ship);
+                unit.cancelShipWeaponFire();
             });
         }
     });
