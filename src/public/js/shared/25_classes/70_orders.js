@@ -66,8 +66,8 @@ if (typeof exports !== 'undefined') {
                 json: json
             });
         },
-        isValid: function(ship, playerID) {
-            var unit = ship.getUnitByID(this.unitID);
+        isValid: function(battle, playerID) {
+            var unit = battle.getUnitByID(this.unitID);
             return unit && unit.ownerID === playerID;
         }
     });
@@ -100,9 +100,10 @@ if (typeof exports !== 'undefined') {
         init: function(json) {
             this.parent(json);
         },
-        goTo: function(pos, ship) {
+        goTo: function(pos, battle) {
             var self = this,
-                unit = ship.getUnitByID(this.unitID);
+                unit = battle.getUnitByID(this.unitID),
+                ship = unit.ship;
             this.goToState = {
                 to: pos,
                 arrived: false,
@@ -118,13 +119,15 @@ if (typeof exports !== 'undefined') {
             return pathfinder.findPath(from.x, from.y, to.x, to.y,
                 this.gridForPath.clone());
         },
-        getMoveAction: function(time, ship) {
+        getMoveAction: function(time, battle) {
             var state = this.goToState,
                 unit,
+                ship,
                 nextTile,
                 from;
             if (state && !state.arrived) {
-                unit = ship.getUnitByID(this.unitID);
+                unit = battle.getUnitByID(this.unitID);
+                ship = unit.ship;
                 if (sh.v.equal(unit, state.to)) {
                     //unit is already at destination
                     state.arrived = true;
@@ -173,16 +176,16 @@ if (typeof exports !== 'undefined') {
          * Returns the actions for the unit to do while the order is the
          * active one.
          * @param {int} time
-         * @param {sh.Ship} ship
+         * @param {sh.Battle} battle
          * @return {Array}
          */
-        getActions: function(time, ship) {
+        getActions: function(time, battle) {
             var move;
             if (!this.goToState) {
-                this.goTo(this.destination, ship);
+                this.goTo(this.destination, battle);
             }
             if (!this.goToState.arrived) {
-                move = this.getMoveAction(time, ship);
+                move = this.getMoveAction(time, battle);
                 return move ? [move] : [];
             }
             return [new sh.actions.FinishOrder({
@@ -193,8 +196,9 @@ if (typeof exports !== 'undefined') {
         toString: function() {
             return 'Move to ' + sh.v.str(this.destination);
         },
-        isValid: function(ship, playerID) {
-            return this.parent(ship, playerID) &&
+        isValid: function(battle, playerID) {
+            var ship = battle.getUnitByID(this.unitID).ship;
+            return this.parent(battle, playerID) &&
                 ship.isWalkable(this.destination.x, this.destination.y);
         }
     });
@@ -211,8 +215,9 @@ if (typeof exports !== 'undefined') {
         toString: function() {
             return 'Move to Console';
         },
-        isValid: function(ship, playerID) {
-            return this.parent(ship, playerID) &&
+        isValid: function(battle, playerID) {
+            var ship = battle.getUnitByID(this.unitID).ship;
+            return this.parent(battle, playerID) &&
                 ship.itemsMap.at(this.destination.x,
                     this.destination.y) instanceof sh.items.Console;
         }
@@ -227,10 +232,10 @@ if (typeof exports !== 'undefined') {
                 json: json
             });
         },
-        getActions: function(time, ship) {
+        getActions: function(time, battle) {
             var unit, target, move;
-            unit = ship.getUnitByID(this.unitID);
-            target = ship.getUnitByID(this.targetID);
+            unit = battle.getUnitByID(this.unitID);
+            target = battle.getUnitByID(this.targetID);
             if (!target || !target.isAlive()) {
                 //unit is already dead
                 return [new sh.actions.SetUnitProperty({
@@ -260,9 +265,9 @@ if (typeof exports !== 'undefined') {
             }
             if (!this.goToState ||
                     this.pathOutOfTarget(this.goToState.path, target)) {
-                this.goTo(target, ship);
+                this.goTo(target, battle);
             }
-            move = this.getMoveAction(time, ship);
+            move = this.getMoveAction(time, battle);
             return move ? [move] : [];
         },
         pathOutOfTarget: function(path, target) {
@@ -273,13 +278,14 @@ if (typeof exports !== 'undefined') {
         toString: function() {
             return 'Seek & Destroy';
         },
-        isValid: function(ship, playerID) {
-            var unit = ship.getUnitByID(this.unitID),
-                target = ship.getUnitByID(this.targetID);
-            return this.parent(ship, playerID) &&
+        isValid: function(battle, playerID) {
+            var unit = battle.getUnitByID(this.unitID),
+                target = battle.getUnitByID(this.targetID);
+            return this.parent(battle, playerID) &&
                 target &&
                 target.isAlive() &&
-                unit.isEnemy(target);
+                unit.isEnemy(target) &&
+                unit.ship === target.ship;
         }
     });
 }());
