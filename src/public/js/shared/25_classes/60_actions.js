@@ -36,9 +36,8 @@ if (typeof exports !== 'undefined') {
             throw 'ModelChange timeOffset can\'t be negative';
         }
         this.timeOffset = timeOffset;
-        this.apply = function(ship) {
-            //console.log('Applying change: ' + action.toString());
-            apply(ship);
+        this.apply = function(battle) {
+            apply(battle);
         };
         this.action = action;
         this.updateTime();
@@ -102,8 +101,8 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID);
                 if (unit && unit.isAlive()) {
                     unit.moving = {
                         dest: self.to,
@@ -111,12 +110,11 @@ if (typeof exports !== 'undefined') {
                     };
                     unit.blocking = false;
                     //cancel weapon charging
-                    unit.cancelShipWeaponFire();
-
+                    unit.cancelBattleWeaponFire();
                 }
             });
-            this.addChange(this.duration, function(ship) {
-                var unit = ship.getUnitByID(self.unitID),
+            this.addChange(this.duration, function(battle) {
+                var unit = battle.getUnitByID(self.unitID),
                     prev;
                 if (unit && unit.isAlive()) {
                     prev = {x: unit.x, y: unit.y};
@@ -126,14 +124,14 @@ if (typeof exports !== 'undefined') {
                     unit.dizzy = true;//can't attack if just got there
                     unit.moveLock = null;
                     if (!sh.v.equal(prev, self.to)) {
-                        ship.unitsMap.update();
+                        unit.ship.unitsMap.update();
                     }
                     //cancel weapon charging
                     unit.cancelShipWeaponFire();
                 }
             });
-            this.addChange(this.duration + 100, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+            this.addChange(this.duration + 100, function(battle) {
+                var unit = battle.getUnitByID(self.unitID);
                 if (unit && unit.isAlive()) {
                     unit.dizzy = false;//now it can attack
                 }
@@ -166,13 +164,13 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
-                var attacker = ship.getUnitByID(self.attackerID);
+            this.addChange(0, function(battle) {
+                var attacker = battle.getUnitByID(self.attackerID);
                 attacker.onCooldown = true;
             });
-            this.addChange(self.damageDelay, function(ship) {
-                var attacker = ship.getUnitByID(self.attackerID),
-                    receiver = ship.getUnitByID(self.receiverID);
+            this.addChange(self.damageDelay, function(battle) {
+                var attacker = battle.getUnitByID(self.attackerID),
+                    receiver = battle.getUnitByID(self.receiverID);
                 if (attacker && attacker.isAlive() &&
                         receiver && receiver.isAlive()) {
                     receiver.hp -= self.damage;
@@ -181,8 +179,8 @@ if (typeof exports !== 'undefined') {
                     receiver.distracted = true;
                 }
             });
-            this.addChange(this.duration, function(ship) {
-                var attacker = ship.getUnitByID(self.attackerID);
+            this.addChange(this.duration, function(battle) {
+                var attacker = battle.getUnitByID(self.attackerID);
                 if (attacker) {
                     attacker.onCooldown = false;
                 }
@@ -211,12 +209,13 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [new ModelChange(0,
-                function(ship) {
+                function(battle) {
                     var unit = new sh.units[self.unitType](
                             {ownerID: self.playerID}
                         ),
+                        ship = battle.ships[0],
                         freePos = ship.closestTile(self.x, self.y, function(t) {
-                            return t === sh.tiles.clear;
+                                return t === sh.tiles.clear;
                         });
                     if (freePos) {
                         unit.x = freePos.x;
@@ -243,13 +242,13 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID);
                 unit.onCooldown = true;
-                ship.hp -= self.damage;
+                battle.ships[0].hp -= self.damage;
             });
-            this.addChange(this.cooldown, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+            this.addChange(this.cooldown, function(battle) {
+                var unit = battle.getUnitByID(self.unitID);
                 if (unit) {
                     unit.onCooldown = false;
                 }
@@ -285,8 +284,8 @@ if (typeof exports !== 'undefined') {
             var self = this;
             this.modelChanges = [
                 new ModelChange(0,
-                    function(ship) {
-                        var unit = ship.getUnitByID(self.unitID);
+                    function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
                         unit[self.property] = self.value;
                     }, this)];
         },
@@ -309,8 +308,8 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID);
                 unit.orders.shift();
             });
         }
@@ -329,8 +328,9 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID),
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID),
+                    ship = unit.ship,
                     weapon = ship.getItemByID(self.weaponID);
                 unit.chargingShipWeapon = {
                     weaponID: self.weaponID,
@@ -358,8 +358,9 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(ship) {
-                var unit = ship.getUnitByID(self.unitID);
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID),
+                    ship = unit.ship;
                 ship.enemyHP -= ship.getItemByID(self.weaponID).damage;
                 unit.cancelShipWeaponFire();
             });
