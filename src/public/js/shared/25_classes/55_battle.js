@@ -24,8 +24,10 @@ sh.Battle = sh.Jsonable.extendShared({
             json: json
         });
         this.ships = _.map(json.ships, function(shipJson) {
-            return new sh.Ship({json: shipJson});
-        });
+            var ship = new sh.Ship({json: shipJson});
+            ship.battle = this;
+            return ship;
+        }, this);
         this.players = _.map(json.players, function(playerJson) {
             return new sh.Player(playerJson);
         });
@@ -51,6 +53,16 @@ sh.Battle = sh.Jsonable.extendShared({
         return _.find(this.getUnits(), function(u) {
             return u.id === parseInt(id, 10);
         });
+    },
+    assignUnitID: function(unit) {
+        var units = this.getUnits();
+        if (units.length === 0) {
+            unit.id = 1;
+            return;
+        }
+        unit.id = _.max(units, function(e) {
+            return e.id;
+        }).id + 1;
     },
     extractOrders: function() {
         'use strict';
