@@ -238,11 +238,11 @@ sh.Unit = sh.TileEntity.extendShared({
         'use strict';
         return sh.v.distance(unit, this) <= this.attackRange;
     },
-    cancelShipWeaponFire: function(ship) {
+    cancelShipWeaponFire: function() {
         'use strict';
         var weapon;
         if (this.chargingShipWeapon) {
-            weapon = ship.getItemByID(this.chargingShipWeapon.weaponID);
+            weapon = this.ship.getItemByID(this.chargingShipWeapon.weaponID);
             weapon.chargedBy = null;
             this.chargingShipWeapon = null;
         }
