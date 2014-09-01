@@ -110,7 +110,7 @@ if (typeof exports !== 'undefined') {
                     };
                     unit.blocking = false;
                     //cancel weapon charging
-                    unit.cancelBattleWeaponFire();
+                    unit.cancelShipWeaponFire();
                 }
             });
             this.addChange(this.duration, function(battle) {
