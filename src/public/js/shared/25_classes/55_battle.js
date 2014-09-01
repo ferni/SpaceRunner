@@ -18,6 +18,7 @@ if (typeof exports !== 'undefined') {
 sh.Battle = sh.Jsonable.extendShared({
     ships: [],
     init: function(json) {
+        'use strict';
         this.setJson({
             type: 'Battle',
             properties: ['id', 'turnDuration'],
@@ -34,6 +35,7 @@ sh.Battle = sh.Jsonable.extendShared({
         this.pendingActions = [];
     },
     toJson: function() {
+        'use strict';
         var json = this.parent();
         json.ships = sh.utils.mapToJson(this.ships);
         json.players = sh.utils.mapToJson(this.players);
@@ -43,9 +45,11 @@ sh.Battle = sh.Jsonable.extendShared({
      *@return Array Objects that have the .getActions method.
      */
     getActors: function() {
+        'use strict';
         return this.getUnits();
     },
     getUnits: function() {
+        'use strict';
         return _.flatten(_.pluck(this.ships, 'units'));
     },
     getUnitByID: function(id) {
@@ -55,6 +59,7 @@ sh.Battle = sh.Jsonable.extendShared({
         });
     },
     assignUnitID: function(unit) {
+        'use strict';
         var units = this.getUnits();
         if (units.length === 0) {
             unit.id = 1;
