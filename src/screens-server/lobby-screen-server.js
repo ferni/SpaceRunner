@@ -148,13 +148,7 @@ routes.add('newchallenge', function(req, res, next) {
             battle.nextTurn();
 
             res.json({
-                    battle: new sh.Battle({
-                        id: battle.id,
-                        turnDuration: battle.turnDuration,
-                        ships: [battle.ship.toJson()],
-                        players: [battle.playerLeft.toJson(),
-                            battle.playerRight.toJson()]
-                    }).toJson()
+                    battle: battle.tempSurrogate.toJson()
                 });
         } else {
             next(new Error('No player in session'));

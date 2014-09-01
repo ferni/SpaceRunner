@@ -62,6 +62,12 @@ exports.Battle = Class.extend({
         'use strict';
         this.id = parameters.id;
         this.ship = parameters.ship;
+        this.tempSurrogate = new sh.Battle({
+            id: this.id,
+            turnDuration: this.turnDuration
+        });
+        this.ship.battle = this.tempSurrogate;
+        this.tempSurrogate.ships = [this.ship];
     },
     /**
      * Informs that some player has received the script.
@@ -97,12 +103,13 @@ exports.Battle = Class.extend({
         'use strict';
         var turn = this.currentTurn,
             orders = _.extend(turn.playersOrders[this.playerLeft.id],
-                turn.playersOrders[this.playerRight.id]);
+                turn.playersOrders[this.playerRight.id]),
+            battle = this.tempSurrogate;
         if (resetShip === undefined) {
             resetShip = true;
         }
         console.log('all orders' + JSON.stringify(orders));
-        turn.script = sh.createScript(orders, this.ship, this.turnDuration,
+        turn.script = sh.createScript(orders, battle, this.turnDuration,
             resetShip);
     },
     toJson: function() {
@@ -126,14 +133,15 @@ exports.ChallengeBatte = exports.Battle.extend({
         'use strict';
         var ship = new sh.Ship({json: params.shipJson}),
             Zealot = sh.units.Zealot;
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
         this.parent({id: params.id, ship: ship});
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new Zealot({ownerID: params.player.id}));
         this.playerLeft = params.player;
         this.playerRight = new exports.AIPlayer('Enemy');
+        this.tempSurrogate.players = [this.playerLeft, this.playerRight];
     },
     nextTurn: function() {
         'use strict';
@@ -148,7 +156,8 @@ exports.ChallengeBatte = exports.Battle.extend({
         'use strict';
         var i, clearTiles = [], summonPosition, script,
             ship = this.ship,
-            newActions = [];
+            newActions = [],
+            battle = this.tempSurrogate;
         this.parent(false);
         script = this.currentTurn.script;
         //every 3 turns...
@@ -192,14 +201,14 @@ exports.ChallengeBatte = exports.Battle.extend({
         _.each(newActions, function(a) {
             var actionIndex = _.indexOf(script.actions, a);
             _.each(a.modelChanges, function(mc, index) {
-                mc.apply(ship);
+                mc.apply(battle);
                 mc.actionIndex = actionIndex;
                 mc.index = index;
                 script.registerChange(mc);
             });
         });
 
-        ship.endOfTurnReset(this.turnDuration);
+        battle.endOfTurnReset(this.turnDuration);
     }
 });
 
@@ -220,13 +229,7 @@ exports.BattleSetUp = function(params) {
         return {
             id: this.id,
             battle: this.battle ?
-                new sh.Battle({
-                    id: this.battle.id,
-                    turnDuration: this.battle.turnDuration,
-                    ships: [this.battle.ship.toJson()],
-                    players: [this.battle.playerLeft.toJson(),
-                        this.battle.playerRight.toJson()]
-                }).toJson() : null,
+                this.battle.tempSurrogate : null,
             creator: this.creator ?
                     this.creator.toJson() : {name: '<empty>'},
             challenger: this.challenger ?
@@ -276,6 +279,7 @@ exports.BattleSetUp = function(params) {
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
             battle.playerLeft = this.creator;
             battle.playerRight = this.challenger;
+            battle.tempSurrogate.players = [battle.playerLeft, battle.playerRight];
             battles.push(battle);
             battle.nextTurn();
             this.battle = battle;

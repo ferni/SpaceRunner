@@ -87,7 +87,7 @@ var ScriptPlayer = function(battleScreen) {
                 //same condition as in 40_create-script.js
                 //(queue[0].time <= turnDuration)
                 modelChanges[nextChange].time <= script.turnDuration) {
-            modelChanges[nextChange].apply(gs.ship);
+            modelChanges[nextChange].apply(gs.battle);
             _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
             nextChange++;
         }
@@ -108,12 +108,12 @@ var ScriptPlayer = function(battleScreen) {
             //same condition as in 40_create-script.js
             //(queue[0].time <= turnDuration)
             if (modelChanges[nextChange].time <= script.turnDuration) {
-                modelChanges[nextChange].apply(gs.ship);
+                modelChanges[nextChange].apply(gs.battle);
             }
         }
         _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up
-        gs.ship.endOfTurnReset(battleScreen.turnDuration);
+        gs.battle.endOfTurnReset(battleScreen.turnDuration);
 
         if (script) {
             declareWinner = _.find(script.actions, function(a) {

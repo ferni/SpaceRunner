@@ -131,6 +131,7 @@ var Timeline = function(screen) {
     }
 
     this.update = function() {
+        return;//disable temporarily
         var shipClone, script, actionsByType, i, actions = [],
             turnsCovered = 2,
             newActions;
