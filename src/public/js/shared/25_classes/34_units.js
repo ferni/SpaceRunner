@@ -88,14 +88,14 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return time;
     },
-    getAttackActions: function(turnTime, ship) {
+    getAttackActions: function(turnTime, battle) {
         'use strict';
         var actions = [],
             self = this,
             enemiesInRange,
             enemyToAttack;
         if (!this.onCooldown && !this.moving && !this.dizzy) {//attack ready
-            enemiesInRange = _.filter(ship.units,
+            enemiesInRange = _.filter(this.ship.units,
                 function(u) {
                     return u.isAlive() &&
                         self.isEnemy(u) &&
@@ -121,11 +121,11 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return actions;
     },
-    getOrdersActions: function(turnTime, ship) {
+    getOrdersActions: function(turnTime, battle) {
         'use strict';
         var actions;
         if (this.orders.length > 0) {
-            actions = this.orders[0].getActions(turnTime, ship);
+            actions = this.orders[0].getActions(turnTime, battle);
             //if it's not gonna make it,
             //force arrival to the tile at end of turn
             if (turnTime < 4000) {
@@ -142,14 +142,14 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return [];
     },
-    getDamageShipActions: function(turnTime, ship) {
+    getDamageShipActions: function(turnTime, battle) {
         'use strict';
         if (this.ownerID === -1 && //AI unit (in the future, use ship ownership)
                 !this.moving &&
                 !this.onCooldown && //attack ready
                 !this.dizzy &&
                 !this.inCombat &&
-                ship.itemsMap.at(this.x, this.y) instanceof
+                this.ship.itemsMap.at(this.x, this.y) instanceof
                     sh.items.WeakSpot) {
             return [new sh.actions.DamageShip({
                 time: turnTime,
@@ -164,16 +164,16 @@ sh.Unit = sh.TileEntity.extendShared({
     /**
      * If it's in a console controlling some ship structure.
      * @param {int} turnTime
-     * @param {int} ship
+     * @param {sh.Battle} battle
      */
-    getShipControlActions: function(turnTime, ship) {
+    getShipControlActions: function(turnTime, battle) {
         'use strict';
         if (this.ownerID === -1) {
             //AI units don't control consoles
             //(to be handled by ship ownership in the future)
             return [];
         }
-        var standingOn = ship.itemsMap.at(this.x, this.y),
+        var standingOn = this.ship.itemsMap.at(this.x, this.y),
             controlled;
         if (standingOn instanceof sh.items.Console) {
             controlled = standingOn.getControlled();
@@ -194,11 +194,10 @@ sh.Unit = sh.TileEntity.extendShared({
      * the script creator does that through the modelChanges array found in
      * each action.
      * @param {int} turnTime The current time.
-     * @param {sh.Ship} ship The ship, representing the entire model (should be
-     * Battle in the future.
+     * @param {sh.Battle} battle The battle, representing the entire model
      * @return {Array}
      */
-    getActions: function(turnTime, ship) {
+    getActions: function(turnTime, battle) {
         'use strict';
         var actions = [],
             shipWeapon;
@@ -210,18 +209,18 @@ sh.Unit = sh.TileEntity.extendShared({
             this.blocking = true;
         }
         if (!this.chargingShipWeapon) {
-            actions = actions.concat(this.getAttackActions(turnTime, ship));
+            actions = actions.concat(this.getAttackActions(turnTime, battle));
             if (actions.length === 0) {//damage ship only if it didn't attack
                 actions = actions.concat(this.getDamageShipActions(turnTime,
-                    ship));
+                    battle));
             }
             if (!this.distracted) {
                 actions = actions.concat(
-                    this.getShipControlActions(turnTime, ship)
+                    this.getShipControlActions(turnTime, battle)
                 );
             }
         } else {
-            shipWeapon = ship.getItemByID(this.chargingShipWeapon.weaponID);
+            shipWeapon = this.ship.getItemByID(this.chargingShipWeapon.weaponID);
             if (turnTime >= this.chargingShipWeapon.startingTime +
                     shipWeapon.chargeTime) {
                 actions.push(new sh.actions.FireShipWeapon({
@@ -231,7 +230,7 @@ sh.Unit = sh.TileEntity.extendShared({
                 }));
             }
         }
-        actions = actions.concat(this.getOrdersActions(turnTime, ship));
+        actions = actions.concat(this.getOrdersActions(turnTime, battle));
 
         return actions;
     },
@@ -276,8 +275,8 @@ sh.units = (function() {
                 json: json
             });
         },
-        getAttackActions: function(turnTime, ship) {
-            return _.map(this.parent(turnTime, ship), function(action) {
+        getAttackActions: function(turnTime, battle) {
+            return _.map(this.parent(turnTime, battle), function(action) {
                 action.damageDelay = 300;
                 action.updateModelChanges();
                 return action;
