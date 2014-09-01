@@ -148,6 +148,13 @@ var th = {
     s: function(value) {
         'use strict';
         return value * sh.GRID_SUB;
+    },
+    makeTestBattle: function() {
+        'use strict';
+        var battle = new sh.Battle({turnDuration: 4000});
+        battle.ships = [new sh.Ship({tmxName: 'test'})];
+        battle.ships[0].battle = battle;
+        return battle;
     }
 };
 

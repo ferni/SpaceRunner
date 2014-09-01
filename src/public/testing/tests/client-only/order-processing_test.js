@@ -5,22 +5,22 @@
 * All rights reserved.
 */
 
-/*global module, test, ok, equal, sh, deepEqual, _*/
+/*global module, test, ok, equal, sh, th, deepEqual, _*/
 
 module('orders');
 test('script creation', function() {
     'use strict';
     var order, script,
-        ship = new sh.Ship({tmxName: 'test'}),
-        unit = ship.putUnit({speed: 1}),
+        battle = th.makeTestBattle(),
+        unit = battle.ships[0].putUnit({speed: 1}),
         moveActions;
     unit.ownerID = 1;
     order = new sh.orders.Move({
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
-    ok(order.isValid(ship, 1), 'Order is valid');
-    script = sh.createScript([[order]], ship, 3000, true);
+    ok(order.isValid(battle, 1), 'Order is valid');
+    script = sh.createScript([[order]], battle, 3000, true);
     moveActions = script.byType('Move');
     equal(moveActions.length, 2, 'Script has two Move actions');
     equal(moveActions[0].time, 0, 'First action starts at 0');
@@ -30,23 +30,23 @@ test('script creation', function() {
 test('script creation\'s ship modifications', function() {
     'use strict';
     var order,
-        ship = new sh.Ship({tmxName: 'test'}),
-        unit = ship.putUnit({speed: 1}),
+        battle = th.makeTestBattle(),
+        unit = battle.ships[0].putUnit({speed: 1}),
         prevX = unit.x;
     unit.ownerID = 1;
     order = new sh.orders.Move({
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
-    ok(order.isValid(ship, 1), 'Order is valid');
-    sh.createScript([[order]], ship, 5000, true);
+    ok(order.isValid(battle, 1), 'Order is valid');
+    sh.createScript([[order]], battle, 5000, true);
     equal(unit.x, prevX + 2, 'The unit position has been modified');
 });
 
 test('script creation, carry over actions to next turn', function() {
     'use strict';
-    var ship = new sh.Ship({tmxName: 'test'}),
-        unit = ship.putUnit({speed: 1}),
+    var battle = th.makeTestBattle(),
+        unit = battle.ships[0].putUnit({speed: 1}),
         TestAction = sh.Action.extendShared({
             init: function(json) {
                 this.parent(json);
@@ -59,25 +59,25 @@ test('script creation, carry over actions to next turn', function() {
             },
             updateModelChanges: function() {
                 this.modelChanges = [];
-                this.addChange(0, function(ship) {
-                    if (ship.changedAt0) {
-                        ship.changedAt0++;
+                this.addChange(0, function(battle) {
+                    if (battle.changedAt0) {
+                        battle.changedAt0++;
                     } else {
-                        ship.changedAt0 = 1;
+                        battle.changedAt0 = 1;
                     }
                 });
-                this.addChange(150, function(ship) {
-                    if (ship.changedAt150) {
-                        ship.changedAt150++;
+                this.addChange(150, function(battle) {
+                    if (battle.changedAt150) {
+                        battle.changedAt150++;
                     } else {
-                        ship.changedAt150 = 1;
+                        battle.changedAt150 = 1;
                     }
                 });
-                this.addChange(201, function(ship) {
-                    if (ship.changedAt201) {
-                        ship.changedAt201++;
+                this.addChange(201, function(battle) {
+                    if (battle.changedAt201) {
+                        battle.changedAt201++;
                     } else {
-                        ship.changedAt201 = 1;
+                        battle.changedAt201 = 1;
                     }
                 });
             }
@@ -93,17 +93,17 @@ test('script creation, carry over actions to next turn', function() {
         }
         return [];
     };
-    sh.createScript([[]], ship, 100, true);
-    equal(ship.changedAt0, 1, 'First change went through.');
-    ok(!ship.changedAt150, 'Not the second one.');
-    sh.createScript([[]], ship, 100, true);
-    equal(ship.changedAt0, 1, 'Don\'t run first change again.');
-    equal(ship.changedAt150, 1, 'Second change went through.');
-    ok(!ship.changedAt201, 'Not the third one.');
-    sh.createScript([[]], ship, 100, true);
-    equal(ship.changedAt0, 1, 'Don\'t run first change again.');
-    equal(ship.changedAt150, 1, 'Don\'t run second change again.');
-    equal(ship.changedAt201, 1, 'Third change went through.');
+    sh.createScript([[]], battle, 100, true);
+    equal(battle.changedAt0, 1, 'First change went through.');
+    ok(!battle.changedAt150, 'Not the second one.');
+    sh.createScript([[]], battle, 100, true);
+    equal(battle.changedAt0, 1, 'Don\'t run first change again.');
+    equal(battle.changedAt150, 1, 'Second change went through.');
+    ok(!battle.changedAt201, 'Not the third one.');
+    sh.createScript([[]], battle, 100, true);
+    equal(battle.changedAt0, 1, 'Don\'t run first change again.');
+    equal(battle.changedAt150, 1, 'Don\'t run second change again.');
+    equal(battle.changedAt201, 1, 'Third change went through.');
 });
 
 test('Script.insertAction', function() {
