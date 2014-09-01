@@ -46,7 +46,7 @@ sh.Battle = sh.Jsonable.extendShared({
         return this.getUnits();
     },
     getUnits: function() {
-        return _.flatten(_.pluck(this.ship, 'units'));
+        return _.flatten(_.pluck(this.ships, 'units'));
     },
     getUnitByID: function(id) {
         'use strict';
