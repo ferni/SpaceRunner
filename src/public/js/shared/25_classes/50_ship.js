@@ -348,10 +348,6 @@ sh.Ship = sh.SharedClass.extendShared({
         return tile === sh.tiles.clear || this.hasUnits({x: x, y: y}) ||
             (tile instanceof sh.Item && tile.walkable);
     },
-    clone: function() {
-        'use strict';
-        return new sh.Ship({json: this.toJson()});
-    },
     endOfTurnReset: function(turnDuration) {
         'use strict';
         var self = this,
