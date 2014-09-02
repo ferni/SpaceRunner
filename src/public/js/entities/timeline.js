@@ -130,30 +130,33 @@ var Timeline = function(screen) {
         };
     }
 
+    function cloneBattle(battle) {
+        return new sh.Battle(battle.toJson());
+    }
+
     this.update = function() {
-        return;//disable temporarily
-        var shipClone, script, actionsByType, i, actions = [],
+        var battleClone, script, actionsByType, i, actions = [],
             turnsCovered = 2,
             newActions;
         function cloneAction(action) {
             return new sh.actions[action.type](action.toJson());
         }
 
-        shipClone = gs.ship.clone();
-        shipClone.insertOrders(gs.ship.extractOrders());
+        battleClone = cloneBattle(gs.battle);
+        battleClone.insertOrders(gs.battle.extractOrders());
         if (screen.scriptServer.pendingActionsJson) {
-            shipClone.pendingActions = sh.utils.mapFromJson(
+            battleClone.pendingActions = sh.utils.mapFromJson(
                 screen.scriptServer.pendingActionsJson,
                 sh.actions
             );
         }
         for (i = 0; i < turnsCovered; i++) {
-            script = sh.createScript(shipClone.extractOrders(),
-                shipClone, screen.turnDuration, true);
+            script = sh.createScript(battleClone.extractOrders(),
+                battleClone, screen.turnDuration, true);
             newActions = script.actions;
             if (i !== turnsCovered - 1) { //is not last turn
                 newActions = _.difference(script.actions,
-                    shipClone.pendingActions);
+                    battleClone.pendingActions);
             }
             actions = actions.concat(_.chain(newActions)
                 .map(cloneAction)
@@ -188,5 +191,3 @@ var Timeline = function(screen) {
         });
     };
 };
-
-
