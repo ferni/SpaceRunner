@@ -7,7 +7,7 @@
 
 /*global require, battleSetUps*/
 
-var model = require('../model'),
+var BattleSetUp = require('../models/').BattleSetUp,
     auth = require('../auth'),
     _ = require('underscore')._,
     routes = require('./routes');
@@ -77,7 +77,7 @@ routes.add('create', function(req, res, next) {
     if (!req.body.shipJson) {
         next(new Error('shipJson must be provided'));
     }
-    bsu = new model.BattleSetUp({
+    bsu = new BattleSetUp({
         id: id,
         creator: auth.getPlayer(req),
         shipJson: req.body.shipJson

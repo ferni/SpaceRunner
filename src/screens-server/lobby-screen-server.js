@@ -5,12 +5,12 @@
 * All rights reserved.
 */
 
-/*global require, battleSetUps*/
+/*global require, battleSetUps, battles*/
 
 var _ = require('underscore')._,
     routes = require('./routes/index'),
     sh = require('../public/js/shared'),
-    model = require('../model.js'),
+    ChallengeBattle = require('../models/').ChallengeBattle,
     auth = require('../auth.js');
 
 routes.add('get', function(req, res, next) {
@@ -139,7 +139,7 @@ routes.add('newchallenge', function(req, res, next) {
                 next(new Error('Challenge index ' + challengeIndex +
                     ' out of bounds.'));
             }
-            battle = new model.ChallengeBatte({
+            battle = new ChallengeBattle({
                 id: battles.length,
                 player: player,
                 shipJson: challengeShips[challengeIndex]
@@ -148,8 +148,8 @@ routes.add('newchallenge', function(req, res, next) {
             battle.nextTurn();
 
             res.json({
-                    battle: battle.tempSurrogate.toJson()
-                });
+                battle: battle.tempSurrogate.toJson()
+            });
         } else {
             next(new Error('No player in session'));
         }
