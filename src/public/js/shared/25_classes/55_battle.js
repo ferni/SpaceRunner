@@ -41,6 +41,11 @@ sh.Battle = sh.Jsonable.extendShared({
         json.players = sh.utils.mapToJson(this.players);
         return json;
     },
+    addShip: function(ship) {
+        'use strict';
+        ship.battle = this;
+        this.ships.push(ship);
+    },
     /**
      *@return Array Objects that have the .getActions method.
      */
