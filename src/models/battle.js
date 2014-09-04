@@ -109,15 +109,5 @@ exports.Battle = Class.extend({
         console.log('all orders' + JSON.stringify(orders));
         turn.script = sh.createScript(orders, battle, this.turnDuration,
             resetShip);
-    },
-    toJson: function() {
-        'use strict';
-        return {
-            id: this.id,
-            ship: this.ship.toJson(),
-            playerLeft: this.playerLeft.toJson(),
-            playerRight: this.playerRight.toJson(),
-            turnDuration: this.turnDuration
-        };
     }
 });
