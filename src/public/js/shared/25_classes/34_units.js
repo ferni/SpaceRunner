@@ -128,12 +128,12 @@ sh.Unit = sh.TileEntity.extendShared({
             actions = this.orders[0].getActions(turnTime, battle);
             //if it's not gonna make it,
             //force arrival to the tile at end of turn
-            if (turnTime < 4000) {
+            if (turnTime < battle.turnDuration) {
                 _.chain(actions)
                     .where({type: 'Move'})
                     .each(function(a) {
-                        if (a.duration + turnTime > 4000) {
-                            a.duration = 4000 - turnTime;
+                        if (a.duration + turnTime > battle.turnDuration) {
+                            a.duration = battle.turnDuration - turnTime;
                             a.updateModelChanges();
                         }
                     });
