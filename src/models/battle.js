@@ -13,11 +13,13 @@ var Class = require('./class'),
 
 function BattleTurn(params) {
     'use strict';
+    var self = this;
     this.id = params.id;
     this.battle = params.battle;
     this.playersOrders = {};
-    this.playersOrders[this.battle.playerLeft.id] = {};
-    this.playersOrders[this.battle.playerRight.id] = {};
+    this.battle.tempSurrogate.players.forEach(function(player) {
+        self.playersOrders[player.id] = {};
+    });
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
     this.script = null;
@@ -46,9 +48,6 @@ function BattleTurn(params) {
  * @constructor
  */
 exports.Battle = Class.extend({
-    //The players currently in this battle
-    playerLeft: null,
-    playerRight: null,
     numberOfPlayers: 2,
     turnCount: 0,
     currentTurn: null,
@@ -90,15 +89,18 @@ exports.Battle = Class.extend({
     },
     isPlayerInIt: function(playerID) {
         'use strict';
-        return (this.playerLeft && this.playerLeft.id === playerID) ||
-            (this.playerRight && this.playerRight.id === playerID);
+        return _.any(this.tempSurrogate.players, function(player) {
+            return player.id === playerID;
+        });
     },
     generateScript: function(resetShip) {
         'use strict';
         var turn = this.currentTurn,
-            orders = _.extend(turn.playersOrders[this.playerLeft.id],
-                turn.playersOrders[this.playerRight.id]),
+            orders = {},
             battle = this.tempSurrogate;
+        _.each(turn.playersOrders, function(playerOrders) {
+            orders = _.extend(orders, playerOrders);
+        });
         if (resetShip === undefined) {
             resetShip = true;
         }

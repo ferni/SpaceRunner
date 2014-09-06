@@ -27,18 +27,17 @@ exports.ChallengeBattle = Battle.extend({
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
-        this.playerLeft = params.player;
-        this.playerRight = new AIPlayer('Enemy');
-        this.tempSurrogate.players = [this.playerLeft, this.playerRight];
+        this.tempSurrogate.players = [params.player, new AIPlayer('Enemy')];
     },
     nextTurn: function() {
         'use strict';
+        var aiPlayer = this.tempSurrogate.players[1];
         this.parent();
         //register AI player orders
-        this.currentTurn.addOrders(this.playerRight.getOrders(this.tempSurrogate),
-            this.playerRight.id);
-        this.currentTurn.setPlayerReady(this.playerRight.id);
-        this.registerScriptReceived(this.playerRight.id);
+        this.currentTurn.addOrders(aiPlayer.getOrders(this.tempSurrogate),
+            aiPlayer.id);
+        this.currentTurn.setPlayerReady(aiPlayer.id);
+        this.registerScriptReceived(aiPlayer.id);
     },
     generateScript: function() {
         'use strict';
@@ -65,7 +64,7 @@ exports.ChallengeBattle = Battle.extend({
                     time: script.turnDuration - 1,
                     x: summonPosition.x,
                     y: summonPosition.y,
-                    playerID: this.playerRight.id,
+                    playerID: battle.players[1].id,
                     unitType: i === 2 ? 'MetalSpider' : 'Critter'
                 }));
             }
@@ -74,13 +73,13 @@ exports.ChallengeBattle = Battle.extend({
             //ship is destroyed
             newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 1,
-                playerID: this.playerRight.id
+                playerID: battle.players[1].id
             }));
         } else if (ship.enemyHP <= 0) {
             //enemy is destroyed!
             newActions.push(new sh.actions.DeclareWinner({
                 time: script.turnDuration - 1,
-                playerID: this.playerLeft.id
+                playerID: battle.players[0].id
             }));
         }
 

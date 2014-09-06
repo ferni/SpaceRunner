@@ -77,9 +77,7 @@ exports.BattleSetUp = function(params) {
                 ownerID: this.challenger.id});
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
-            battle.playerLeft = this.creator;
-            battle.playerRight = this.challenger;
-            battle.tempSurrogate.players = [battle.playerLeft, battle.playerRight];
+            battle.tempSurrogate.players = [this.creator, this.challenger];
             battles.push(battle);
             battle.nextTurn();
             this.battle = battle;
