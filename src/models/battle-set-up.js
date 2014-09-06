@@ -9,7 +9,7 @@
 
 var sh = require('../public/js/shared'),
     auth = require('../auth'),
-    BattleServer = require('./battle').BattleServer,
+    BattleServer = require('./battle-server').BattleServer,
     _ = require('underscore')._;
 
 

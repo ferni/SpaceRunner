@@ -7,7 +7,7 @@
 
 /*global require, exports, battles*/
 
-var BattleServer = require('./battle').BattleServer,
+var BattleServer = require('./battle-server').BattleServer,
     AIPlayer = require('./ai-player').AIPlayer,
     sh = require('../public/js/shared'),
     _ = require('underscore')._;
