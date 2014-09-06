@@ -38,6 +38,7 @@ if (typeof exports !== 'undefined') {
             //logic here
             this.turnDuration = json.turnDuration;
             this.actions = sh.utils.mapFromJson(json.actions, sh.actions);
+            _.invoke(this.actions, 'updateModelChanges');
             this.sortedModelChangesIndex = json.sortedModelChangesIndex;
             this.pendingActionsJson = json.pendingActionsJson;
             return this;

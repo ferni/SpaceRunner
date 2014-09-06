@@ -96,7 +96,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['unitID', 'from', 'to', 'duration'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -159,7 +158,6 @@ if (typeof exports !== 'undefined') {
                 throw 'Attack action\'s damage delay can\'t be more than the ' +
                     'duration';
             }
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -204,7 +202,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['x', 'y', 'playerID', 'unitType'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -237,7 +234,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['unitID', 'tile', 'damage', 'cooldown'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -278,7 +274,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['unitID', 'property', 'value'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -303,7 +298,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['unitID'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -323,7 +317,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['unitID', 'weaponID', 'chargeTime'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
@@ -353,7 +346,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['unitID', 'weaponID'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;

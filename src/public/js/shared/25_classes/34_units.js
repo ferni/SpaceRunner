@@ -111,7 +111,6 @@ sh.Unit = sh.TileEntity.extendShared({
             }
             if (enemyToAttack) {
                 actions.push(new sh.actions.Attack({
-                    time: turnTime,
                     attackerID: self.id,
                     receiverID: enemyToAttack.id,
                     damage: self.meleeDamage,
@@ -134,7 +133,6 @@ sh.Unit = sh.TileEntity.extendShared({
                     .each(function(a) {
                         if (a.duration + turnTime > battle.turnDuration) {
                             a.duration = battle.turnDuration - turnTime;
-                            a.updateModelChanges();
                         }
                     });
             }
@@ -152,7 +150,6 @@ sh.Unit = sh.TileEntity.extendShared({
                 this.ship.itemsMap.at(this.x, this.y) instanceof
                     sh.items.WeakSpot) {
             return [new sh.actions.DamageShip({
-                time: turnTime,
                 unitID: this.id,
                 tile: {x: this.x, y: this.y},
                 damage: this.meleeDamage,
@@ -180,7 +177,6 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         if (controlled instanceof sh.items.Weapon && !controlled.chargedBy) {
             return [new sh.actions.BeginShipWeaponCharge({
-                time: turnTime,
                 unitID: this.id,
                 weaponID: controlled.id,
                 chargeTime: controlled.chargeTime
@@ -224,7 +220,6 @@ sh.Unit = sh.TileEntity.extendShared({
             if (turnTime >= this.chargingShipWeapon.startingTime +
                     shipWeapon.chargeTime) {
                 actions.push(new sh.actions.FireShipWeapon({
-                    time: turnTime,
                     unitID: this.id,
                     weaponID: this.chargingShipWeapon.weaponID
                 }));
@@ -278,7 +273,6 @@ sh.units = (function() {
         getAttackActions: function(turnTime, battle) {
             return _.map(this.parent(turnTime, battle), function(action) {
                 action.damageDelay = 300;
-                action.updateModelChanges();
                 return action;
             });
         }

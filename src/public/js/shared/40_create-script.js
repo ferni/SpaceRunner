@@ -37,7 +37,7 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, battle, resetBattle) {
-        var script, queue, changes, time, actors, actor, i,
+        var script, queue, changes, time, actors, actor, actions, i,
             registerActionReturned = {}, turnDuration = battle.turnDuration;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
@@ -45,8 +45,10 @@ if (typeof exports !== 'undefined') {
             insertByTime(queue, item);
         }
 
-        function registerAction(returned) {
+        function registerAction(returned, time) {
             return function(action) {
+                action.time = time;
+                action.updateModelChanges();
                 script.actions.push(action);
                 _.each(action.modelChanges, function(mc, index) {
                     if (mc.time >= 0) {
@@ -73,8 +75,7 @@ if (typeof exports !== 'undefined') {
         queue.push(getVoidModelChange(0));
 
         _.each(battle.pendingActions, function(action) {
-            action.setTime(action.time - turnDuration);
-            registerAction()(action);
+            registerAction({}, action.time - turnDuration)(action);
         });
 
         //simulation loop (the battle gets modified and actions get added
@@ -93,7 +94,7 @@ if (typeof exports !== 'undefined') {
                 for (i = 0; i < actors.length; i++) {
                     actor = actors[i];
                     _.each(actor.getActions(time, battle),
-                        registerAction(registerActionReturned));
+                        registerAction(registerActionReturned, time));
                 }
                 if (registerActionReturned.thereWereImmediateChanges) {
                     insertInQueue(getVoidModelChange(time));

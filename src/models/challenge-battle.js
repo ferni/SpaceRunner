@@ -84,6 +84,7 @@ exports.ChallengeBattle = BattleServer.extend({
         }
 
         //workaround until summon gets converted to teleport
+        _.invoke(newActions, 'updateModelChanges');
         _.each(newActions, script.insertAction, script);
         _.each(newActions, function(a) {
             var actionIndex = _.indexOf(script.actions, a);

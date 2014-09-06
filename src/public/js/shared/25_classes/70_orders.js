@@ -146,7 +146,6 @@ if (typeof exports !== 'undefined') {
                     from = {x: unit.x, y: unit.y};
                     state.pathIndex++;
                     return new sh.actions.Move({
-                        time: time,
                         unitID: unit.id,
                         from: from,
                         to: nextTile,
@@ -189,7 +188,6 @@ if (typeof exports !== 'undefined') {
                 return move ? [move] : [];
             }
             return [new sh.actions.FinishOrder({
-                time: time,
                 unitID: this.unitID
             })];
         },
@@ -239,19 +237,16 @@ if (typeof exports !== 'undefined') {
             if (!target || !target.isAlive()) {
                 //unit is already dead
                 return [new sh.actions.SetUnitProperty({
-                    time: time,
                     unitID: unit.id,
                     property: 'targetID',
                     value: null
                 }),
                     new sh.actions.FinishOrder({
-                        time: time,
                         unitID: unit.id
                     })];
             }
             if (unit.targetID === null || unit.targetID === undefined) {
                 return [new sh.actions.SetUnitProperty({
-                    time: time,
                     unitID: unit.id,
                     property: 'targetID',
                     value: target.id
