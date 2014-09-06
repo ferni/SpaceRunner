@@ -37,7 +37,7 @@ if (typeof exports !== 'undefined') {
      * @return {sh.Script}
      */
     function createScript(orders, battle, resetBattle) {
-        var script, queue, changes, time, actors, actor, actions, i,
+        var script, queue, changes, time, actors, actor, i,
             registerActionReturned = {}, turnDuration = battle.turnDuration;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
