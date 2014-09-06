@@ -102,10 +102,10 @@ var sh = require('../public/js/shared'),
         },
         /**
          * Gets the orders that the player would give for the current turn.
-         * @param {exports.Battle} battle The battle.
+         * @param {sh.Battle} battle The battle.
          */
         getOrders: function(battle) {
-            var ship = battle.ship,
+            var ship = battle.ships[0],
                 grid = new sh.PF.Grid(ship.width, ship.height,
                     ship.getPfMatrix()),
                 gridWithUnits = makeUnitsUnwalkable(ship, grid.clone()),

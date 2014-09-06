@@ -35,7 +35,7 @@ exports.ChallengeBattle = Battle.extend({
         'use strict';
         this.parent();
         //register AI player orders
-        this.currentTurn.addOrders(this.playerRight.getOrders(this),
+        this.currentTurn.addOrders(this.playerRight.getOrders(this.tempSurrogate),
             this.playerRight.id);
         this.currentTurn.setPlayerReady(this.playerRight.id);
         this.registerScriptReceived(this.playerRight.id);
