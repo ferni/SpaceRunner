@@ -82,7 +82,7 @@ routes.add('sendorders', function(req, res, next) {
             unitID = parseInt(unitID, 10);
             _.each(unitOrders, function(order) {
                 if (order.unitID !== unitID ||
-                        !order.isValid(battle.ship, playerID)) {
+                        !order.isValid(battle.tempSurrogate, playerID)) {
                     ordersValid = false;
                     return;
                 }
@@ -137,7 +137,7 @@ routes.add('getscript', function(req, res, next) {
     return authenticate(req, next, function(battle) {
         return res.json({
             script: battle.currentTurn.script.toJson(),
-            resultingShip: battle.ship.toJson()
+            resultingShip: battle.tempSurrogate.ships[0].toJson()
         });
     });
 });

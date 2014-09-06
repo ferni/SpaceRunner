@@ -52,20 +52,17 @@ exports.Battle = Class.extend({
     numberOfPlayers: 2,
     turnCount: 0,
     currentTurn: null,
-
     receivedTheScript: [], //players ids that received the script
     turnDuration: 4000,
     winner: null,
     init: function(parameters) {
         'use strict';
         this.id = parameters.id;
-        this.ship = parameters.ship;
         this.tempSurrogate = new sh.Battle({
             id: this.id,
             turnDuration: this.turnDuration
         });
-        this.ship.battle = this.tempSurrogate;
-        this.tempSurrogate.ships = [this.ship];
+        this.tempSurrogate.addShip(parameters.ship);
     },
     /**
      * Informs that some player has received the script.

@@ -43,9 +43,9 @@ exports.ChallengeBattle = Battle.extend({
     generateScript: function() {
         'use strict';
         var i, clearTiles = [], summonPosition, script,
-            ship = this.ship,
             newActions = [],
-            battle = this.tempSurrogate;
+            battle = this.tempSurrogate,
+            ship = battle.ships[0];
         this.parent(false);
         script = this.currentTurn.script;
         //every 3 turns...
