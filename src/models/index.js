@@ -7,6 +7,6 @@
 
 /*global exports, require*/
 
-exports.Battle = require('./battle').Battle;
+exports.BattleServer = require('./battle').BattleServer;
 exports.ChallengeBattle = require('./challenge-battle').ChallengeBattle;
 exports.BattleSetUp = require('./battle-set-up').BattleSetUp;

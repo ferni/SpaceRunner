@@ -43,11 +43,11 @@ function BattleTurn(params) {
 }
 
 /**
- * A model representing a battle.
- * @param {{id,ship}} parameters
+ * Manages a battle, server-side.
+ * @param {{id:int}} parameters
  * @constructor
  */
-exports.Battle = Class.extend({
+exports.BattleServer = Class.extend({
     numberOfPlayers: 2,
     turnCount: 0,
     currentTurn: null,
@@ -68,7 +68,7 @@ exports.Battle = Class.extend({
      * a new turn is created.
      * @param {int} playerID The player ID.
      * @return {boolean} If the next turn was created or not.
-     * @this exports.Battle
+     * @this exports.BattleServer
      */
     registerScriptReceived: function(playerID) {
         'use strict';

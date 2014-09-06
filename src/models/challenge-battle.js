@@ -7,7 +7,7 @@
 
 /*global require, exports, battles*/
 
-var Battle = require('./battle').Battle,
+var BattleServer = require('./battle').BattleServer,
     AIPlayer = require('./ai-player').AIPlayer,
     sh = require('../public/js/shared'),
     _ = require('underscore')._;
@@ -16,7 +16,7 @@ var Battle = require('./battle').Battle,
  * A battle for the "Challenge" menu option.
  * @type {*}
  */
-exports.ChallengeBattle = Battle.extend({
+exports.ChallengeBattle = BattleServer.extend({
     init: function(params) {
         'use strict';
         var ship = new sh.Ship({json: params.shipJson}),

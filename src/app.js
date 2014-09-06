@@ -85,7 +85,7 @@ app.post('/general/disconnect', general.disconnect);
  */
 GLOBAL.battleSetUps = [];
 /**
- * filled with model.Battle.
+ * filled with model.BattleServer.
  * @type {Array}
  */
 GLOBAL.battles = [];

@@ -9,7 +9,7 @@
 
 var sh = require('../public/js/shared'),
     auth = require('../auth'),
-    Battle = require('./battle').Battle,
+    BattleServer = require('./battle').BattleServer,
     _ = require('underscore')._;
 
 
@@ -65,7 +65,7 @@ exports.BattleSetUp = function(params) {
             battle;
         try {
             ship = new sh.Ship({json: this.shipJson});
-            battle = new Battle({id: battles.length, ship: ship});
+            battle = new BattleServer({id: battles.length, ship: ship});
             ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
             ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
             ship.putUnit({imgIndex: 0, speed: 1.5, ownerID: this.creator.id});

@@ -20,7 +20,7 @@ sh.Battle = sh.Jsonable.extendShared({
     init: function(json) {
         'use strict';
         this.setJson({
-            type: 'Battle',
+            type: 'BattleServer',
             properties: ['id', 'turnDuration'],
             json: json
         });
