@@ -96,7 +96,7 @@ exports.ChallengeBattle = Battle.extend({
             });
         });
 
-        battle.endOfTurnReset(this.turnDuration);
+        battle.endOfTurnReset();
     }
 });
 

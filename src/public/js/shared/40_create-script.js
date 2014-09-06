@@ -33,13 +33,12 @@ if (typeof exports !== 'undefined') {
      * Generates a "script" for the units given all the orders issued.
      * @param {Array} orders
      * @param {sh.Battle} battle
-     * @param {int} turnDuration
      * @param {Boolean} resetBattle Should the battle be cleaned up at the end.
      * @return {sh.Script}
      */
-    function createScript(orders, battle, turnDuration, resetBattle) {
+    function createScript(orders, battle, resetBattle) {
         var script, queue, changes, time, actors, actor, i,
-            registerActionReturned = {};
+            registerActionReturned = {}, turnDuration = battle.turnDuration;
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
         function insertInQueue(item) {
@@ -110,7 +109,7 @@ if (typeof exports !== 'undefined') {
 
         //clean up
         if (resetBattle) {
-            battle.endOfTurnReset(turnDuration);
+            battle.endOfTurnReset();
         }
         return script;
     }

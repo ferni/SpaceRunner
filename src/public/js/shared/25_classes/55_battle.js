@@ -94,8 +94,8 @@ sh.Battle = sh.Jsonable.extendShared({
             unit.orders = sh.utils.mapFromJson(unitOrders, sh.orders);
         });
     },
-    endOfTurnReset: function(turnDuration) {
+    endOfTurnReset: function() {
         'use strict';
-        _.invoke(this.ships, 'endOfTurnReset', turnDuration);
+        _.invoke(this.ships, 'endOfTurnReset', this.turnDuration);
     }
 });

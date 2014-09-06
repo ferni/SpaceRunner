@@ -53,14 +53,13 @@ exports.Battle = Class.extend({
     turnCount: 0,
     currentTurn: null,
     receivedTheScript: [], //players ids that received the script
-    turnDuration: 4000,
     winner: null,
     init: function(parameters) {
         'use strict';
         this.id = parameters.id;
         this.tempSurrogate = new sh.Battle({
             id: this.id,
-            turnDuration: this.turnDuration
+            turnDuration: 4000
         });
         this.tempSurrogate.addShip(parameters.ship);
     },
@@ -104,7 +103,6 @@ exports.Battle = Class.extend({
             resetShip = true;
         }
         console.log('all orders' + JSON.stringify(orders));
-        turn.script = sh.createScript(orders, battle, this.turnDuration,
-            resetShip);
+        turn.script = sh.createScript(orders, battle, resetShip);
     }
 });

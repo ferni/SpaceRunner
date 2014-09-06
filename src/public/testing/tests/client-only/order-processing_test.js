@@ -14,13 +14,14 @@ test('script creation', function() {
         battle = th.makeTestBattle(),
         unit = battle.ships[0].putUnit({speed: 1}),
         moveActions;
+    battle.turnDuration = 3000;
     unit.ownerID = 1;
     order = new sh.orders.Move({
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
     ok(order.isValid(battle, 1), 'Order is valid');
-    script = sh.createScript([[order]], battle, 3000, true);
+    script = sh.createScript([[order]], battle, true);
     moveActions = script.byType('Move');
     equal(moveActions.length, 2, 'Script has two Move actions');
     equal(moveActions[0].time, 0, 'First action starts at 0');
@@ -33,13 +34,14 @@ test('script creation\'s ship modifications', function() {
         battle = th.makeTestBattle(),
         unit = battle.ships[0].putUnit({speed: 1}),
         prevX = unit.x;
+    battle.turnDuration = 5000;
     unit.ownerID = 1;
     order = new sh.orders.Move({
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
     ok(order.isValid(battle, 1), 'Order is valid');
-    sh.createScript([[order]], battle, 5000, true);
+    sh.createScript([[order]], battle, true);
     equal(unit.x, prevX + 2, 'The unit position has been modified');
 });
 
@@ -82,6 +84,7 @@ test('script creation, carry over actions to next turn', function() {
                 });
             }
         });
+    battle.turnDuration = 100,
     unit.ownerID = 1;
     unit.test_firstTime = true;
     unit.getActions = function(turnTime) {
@@ -93,14 +96,14 @@ test('script creation, carry over actions to next turn', function() {
         }
         return [];
     };
-    sh.createScript([[]], battle, 100, true);
+    sh.createScript([[]], battle, true);
     equal(battle.changedAt0, 1, 'First change went through.');
     ok(!battle.changedAt150, 'Not the second one.');
-    sh.createScript([[]], battle, 100, true);
+    sh.createScript([[]], battle, true);
     equal(battle.changedAt0, 1, 'Don\'t run first change again.');
     equal(battle.changedAt150, 1, 'Second change went through.');
     ok(!battle.changedAt201, 'Not the third one.');
-    sh.createScript([[]], battle, 100, true);
+    sh.createScript([[]], battle, true);
     equal(battle.changedAt0, 1, 'Don\'t run first change again.');
     equal(battle.changedAt150, 1, 'Don\'t run second change again.');
     equal(battle.changedAt201, 1, 'Third change went through.');

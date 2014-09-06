@@ -113,7 +113,7 @@ var ScriptPlayer = function(battleScreen) {
         }
         _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up
-        gs.battle.endOfTurnReset(battleScreen.turnDuration);
+        gs.battle.endOfTurnReset();
 
         if (script) {
             declareWinner = _.find(script.actions, function(a) {
