@@ -65,7 +65,7 @@ exports.ChallengeBattle = BattleServer.extend({
                     time: script.turnDuration - 1,
                     x: summonPosition.x,
                     y: summonPosition.y,
-                    playerID: battle.ships[1].id,
+                    playerID: battle.ships[1].owner.id,
                     unitType: i === 2 ? 'MetalSpider' : 'Critter'
                 }));
             }
