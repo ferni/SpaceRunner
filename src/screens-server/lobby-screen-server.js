@@ -29,7 +29,7 @@ routes.add('newchallenge', function(req, res, next) {
     'use strict';
     try {
         var player = auth.getPlayer(req),
-            battle,
+            battleServer,
             challengeShips,
             challengeIndex = req.body.challengeIndex;
         if (player) {
@@ -139,16 +139,16 @@ routes.add('newchallenge', function(req, res, next) {
                 next(new Error('Challenge index ' + challengeIndex +
                     ' out of bounds.'));
             }
-            battle = new ChallengeBattle({
+            battleServer = new ChallengeBattle({
                 id: battles.length,
                 player: player,
                 shipJson: challengeShips[challengeIndex]
             });
-            battles.push(battle);
-            battle.nextTurn();
+            battles.push(battleServer);
+            battleServer.nextTurn();
 
             res.json({
-                battle: battle.tempSurrogate.toJson()
+                battle: battleServer.tempSurrogate.toJson()
             });
         } else {
             next(new Error('No player in session'));
