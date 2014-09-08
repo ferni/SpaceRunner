@@ -18,7 +18,7 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-
+    var maxLoopsAtSameTime = 500;//to prevent endless loops.
     function insertByTime(array, item) {
         var insertionIndex = _.sortedIndex(array, item, 'time');
         array.splice(insertionIndex, 0, item);
@@ -38,7 +38,8 @@ if (typeof exports !== 'undefined') {
      */
     function createScript(orders, battle, resetBattle) {
         var script, queue, changes, time, actors, actor, i,
-            registerActionReturned = {}, turnDuration = battle.turnDuration;
+            registerActionReturned = {}, turnDuration = battle.turnDuration,
+            changesAtSameTime = [];
         script = new sh.Script({turnDuration: turnDuration});
         queue = [];
         function insertInQueue(item) {
@@ -59,7 +60,7 @@ if (typeof exports !== 'undefined') {
                             //apply immediate changes
                             mc.apply(battle);
                             script.registerChange(mc);
-                            returned.thereWereImmediateChanges = true;
+                            returned.immediateChanges.push(action.toString());
                         } else {
                             insertInQueue(mc);
                         }
@@ -89,17 +90,27 @@ if (typeof exports !== 'undefined') {
 
             if (time < turnDuration) {
                 //actions can't start at end of turn
-                registerActionReturned.thereWereImmediateChanges = false;
+                registerActionReturned.immediateChanges = [];
                 actors = battle.getActors();
                 for (i = 0; i < actors.length; i++) {
                     actor = actors[i];
                     _.each(actor.getActions(time, battle),
                         registerAction(registerActionReturned, time));
                 }
-                if (registerActionReturned.thereWereImmediateChanges) {
+                if (registerActionReturned.immediateChanges.length > 0) {
                     //If any actor returned any action with immediate model
                     //changes, the loop enters again at the same time.
+                    changesAtSameTime.push(registerActionReturned.immediateChanges);
+                    if (changesAtSameTime.length >= maxLoopsAtSameTime) {
+                        throw 'Too much model changes at the same time (' +
+                            time + 'ms). Changes stack: ' + changesAtSameTime
+                            .slice(changesAtSameTime.length - 11,
+                                changesAtSameTime.length - 1).toString() +
+                            ' ...';
+                    }
                     insertInQueue(getVoidModelChange(time));
+                } else {
+                    changesAtSameTime = [];
                 }
             }
         }
