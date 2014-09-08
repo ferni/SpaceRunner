@@ -114,7 +114,7 @@ screens.register('battle', ConnectedScreen.extend({
                 screen.scriptServer = script;
                 screen.scriptPlayer.loadScript(script);
                 screen.shipVM.update();
-                screen.resultingShip = data.resultingShip;
+                screen.resultingModel = data.resultingModel;
                 screen.resume();
                 screen.stopFetching();
                 $.post('/battle/scriptreceived', {id: screen.id}, function() {
@@ -276,13 +276,14 @@ screens.register('battle', ConnectedScreen.extend({
     },
     compareModelWithServer: function() {
         'use strict';
-        var clientString = JSON.stringify(gs.ship.toJson()),
-            serverString = JSON.stringify(this.resultingShip);
+        var clientString = JSON.stringify(gs.battle.toJson()),
+            serverString = JSON.stringify(this.resultingModel);
         if (clientString === serverString) {
-            console.log('Client ship correctly matches the server ship.');
+            console.log('Client battle model correctly matches the server' +
+                ' battle model.');
         } else {
-            console.error('Client ship is different than the server ship' +
-                ' (left: client, right: server): ' +
+            console.error('Client battle model is different than the server' +
+                ' battle model (left: client, right: server): ' +
                 this.getModelDifferenceUrl(clientString, serverString));
         }
     },
@@ -293,7 +294,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.readyButton.enable();
         this.scriptPlayer.onPause();
         this.shipVM.update();
-        if (this.resultingShip) {
+        if (this.resultingModel) {
             this.compareModelWithServer();
         }
         this.timeline.update();
