@@ -24,12 +24,12 @@ exports.BattleSetUp = function(params) {
     this.creator = params.creator;
     this.shipJson = params.shipJson;
     this.challenger = null; //player that joins
-    this.battle = null;
+    this.battleServer = null;
     this.toJson = function() {
         return {
             id: this.id,
-            battle: this.battle ?
-                    this.battle.tempSurrogate.toJson() : null,
+            battle: this.battleServer ?
+                    this.battleServer.tempSurrogate.toJson() : null,
             creator: this.creator ?
                     this.creator.toJson() : {name: '<empty>'},
             challenger: this.challenger ?
@@ -62,10 +62,10 @@ exports.BattleSetUp = function(params) {
     this.createBattle = function(done) {
         var err = null,
             ship,
-            battle;
+            battleServer;
         try {
             ship = new sh.Ship({json: this.shipJson});
-            battle = new BattleServer({id: battles.length, ship: ship});
+            battleServer = new BattleServer({id: battles.length, ship: ship});
             ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
             ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
             ship.putUnit({imgIndex: 0, speed: 1.5, ownerID: this.creator.id});
@@ -77,10 +77,10 @@ exports.BattleSetUp = function(params) {
                 ownerID: this.challenger.id});
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
-            battle.tempSurrogate.players = [this.creator, this.challenger];
-            battles.push(battle);
-            battle.nextTurn();
-            this.battle = battle;
+            battleServer.tempSurrogate.players = [this.creator, this.challenger];
+            battles.push(battleServer);
+            battleServer.nextTurn();
+            this.battleServer = battleServer;
         } catch (e) {
             err = new Error(e);
         }
