@@ -97,8 +97,10 @@ var sh = require('../public/js/shared'),
      */
     AIPlayer = sh.Player.extendShared({
         init: function(name) {
-            this.id = -1;
-            this.name = name;
+            this.parent({
+                id: -1,
+                name: name
+            });
         },
         /**
          * Gets the orders that the player would give for the current turn.
