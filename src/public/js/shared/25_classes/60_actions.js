@@ -360,8 +360,9 @@ if (typeof exports !== 'undefined') {
             this.modelChanges = [];
             this.addChange(0, function(battle) {
                 var unit = battle.getUnitByID(self.unitID),
-                    ship = unit.ship;
-                ship.enemyHP -= ship.getItemByID(self.weaponID).damage;
+                    shooterShip = unit.ship,
+                    damagedShip = battle.ships[1];
+                damagedShip.hp -= shooterShip.getItemByID(self.weaponID).damage;
                 unit.cancelShipWeaponFire();
             });
         }

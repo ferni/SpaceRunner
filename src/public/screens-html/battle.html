@@ -4,7 +4,7 @@
     <div id="top-hud">
         <span id="turn-info">Turn #<span id="turn-number">0</span></span>
         <span id="hp">[Own: <span data-bind="text:shipVM().hp"></span>]</span>
-        <span id="enemyHP">[Enemy: <span data-bind="text:shipVM().enemyHP"></span>]</span>
+        <span id="enemyHP">[Enemy: <span data-bind="text:enemyHP()"></span>]</span>
     </div>
     <div id="left-hud">
         <!-- ko if:selectedUnit() -->

@@ -27,11 +27,12 @@ exports.ChallengeBattle = BattleServer.extend({
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
-        this.tempSurrogate.players = [params.player, new AIPlayer('Enemy')];
+        this.tempSurrogate.ships[0].owner = params.player;
+        this.tempSurrogate.ships[1].owner = new AIPlayer('Enemy');
     },
     nextTurn: function() {
         'use strict';
-        var aiPlayer = this.tempSurrogate.players[1];
+        var aiPlayer = this.tempSurrogate.ships[1].owner;
         this.parent();
         //register AI player orders
         this.currentTurn.addOrders(aiPlayer.getOrders(this.tempSurrogate),
@@ -64,7 +65,7 @@ exports.ChallengeBattle = BattleServer.extend({
                     time: script.turnDuration - 1,
                     x: summonPosition.x,
                     y: summonPosition.y,
-                    playerID: battle.players[1].id,
+                    playerID: battle.ships[1].id,
                     unitType: i === 2 ? 'MetalSpider' : 'Critter'
                 }));
             }

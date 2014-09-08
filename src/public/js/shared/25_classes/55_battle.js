@@ -24,18 +24,17 @@ sh.Battle = sh.Jsonable.extendShared({
             if (battle.winner !== undefined) {
                 return [];//winner already declared
             }
-            var ship = battle.ships[0];
-            if (ship.hp <= 0) {
-                //ship is destroyed
-                return [new sh.actions.DeclareWinner({
-                    playerID: battle.players[1].id
-                })];
-            }
-            if (ship.enemyHP <= 0) {
-                //enemy is destroyed!
-                return [new sh.actions.DeclareWinner({
-                    playerID: battle.players[0].id
-                })];
+            var shipsByStatus = _.groupBy(battle.ships, function(ship) {
+                return ship.hp <= 0 ? 'destroyed' : 'alive';
+            });
+
+            if (shipsByStatus.destroyed) {
+                if (shipsByStatus.alive) {
+                    return [new sh.actions.DeclareWinner({
+                        playerID: shipsByStatus.alive[0].owner.id
+                    })];
+                }
+                //all ships destroyed... (draw?)
             }
             return [];
         }
@@ -68,6 +67,10 @@ sh.Battle = sh.Jsonable.extendShared({
         'use strict';
         ship.battle = this;
         this.ships.push(ship);
+    },
+    getPlayers: function() {
+        'use strict';
+        return _.pluck(this.ships, 'owner');
     },
     /**
      *@return Array Objects that have the .getActions method.

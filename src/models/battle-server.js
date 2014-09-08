@@ -17,7 +17,7 @@ function BattleTurn(params) {
     this.id = params.id;
     this.battle = params.battle;
     this.playersOrders = {};
-    this.battle.tempSurrogate.players.forEach(function(player) {
+    this.battle.tempSurrogate.getPlayers().forEach(function(player) {
         self.playersOrders[player.id] = {};
     });
     //all the players ids that have submitted the orders
@@ -55,12 +55,15 @@ exports.BattleServer = Class.extend({
     winner: null,
     init: function(parameters) {
         'use strict';
+        var enemyShip = new sh.Ship({tmxName: 'humanoid_cruiser'});
+        enemyShip.hp = 300;
         this.id = parameters.id;
         this.tempSurrogate = new sh.Battle({
             id: this.id,
             turnDuration: 4000
         });
         this.tempSurrogate.addShip(parameters.ship);
+        this.tempSurrogate.addShip(enemyShip);
     },
     /**
      * Informs that some player has received the script.
@@ -89,7 +92,7 @@ exports.BattleServer = Class.extend({
     },
     isPlayerInIt: function(playerID) {
         'use strict';
-        return _.any(this.tempSurrogate.players, function(player) {
+        return _.any(this.tempSurrogate.getPlayers(), function(player) {
             return player.id === playerID;
         });
     },

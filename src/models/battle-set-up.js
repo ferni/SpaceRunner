@@ -77,7 +77,8 @@ exports.BattleSetUp = function(params) {
                 ownerID: this.challenger.id});
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
             ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
-            battleServer.tempSurrogate.players = [this.creator, this.challenger];
+            battleServer.tempSurrogate.ships[0].owner = this.creator;
+            battleServer.tempSurrogate.ships[1].owner = this.challenger;
             battles.push(battleServer);
             battleServer.nextTurn();
             this.battleServer = battleServer;

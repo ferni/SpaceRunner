@@ -41,19 +41,10 @@ screens.register('battle', ConnectedScreen.extend({
             return btn;
         }());
 
-        //Knockout bindings
-        function ViewModel() {
-            this.shipVM = function() {
-                return screen.shipVM;
-            };
-            this.selectedUnit = ko.observable(null);
-            this.timeline = null;//set on onReset
-        }
-        this.htmlVM = new ViewModel();
         if (this.isReset) {
-            ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+            this.onResetAndLoaded();
         }
-        $('#time-line').jScrollPane();
+        this.htmlLoaded = true;
     },
     /**
      *
@@ -90,9 +81,8 @@ screens.register('battle', ConnectedScreen.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
-        this.htmlVM.timeline = this.timeline;
-        if (this.htmlVM) {
-            ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+        if (this.htmlLoaded) {
+            this.onResetAndLoaded();
         }
     },
     onDestroy: function() {
@@ -102,6 +92,22 @@ screens.register('battle', ConnectedScreen.extend({
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
+    },
+    onResetAndLoaded: function() {
+        'use strict';
+        var screen = this;
+        //Knockout bindings
+        function ViewModel() {
+            this.shipVM = function() {
+                return screen.shipVM;
+            };
+            this.enemyHP = ko.observable(gs.battle.ships[1].hp);
+            this.selectedUnit = ko.observable(null);
+            this.timeline = screen.timeline;
+        }
+        this.htmlVM = new ViewModel();
+        ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
+        $('#time-line').jScrollPane();
     },
     onData: function(data) {
         'use strict';
@@ -133,7 +139,7 @@ screens.register('battle', ConnectedScreen.extend({
             this.elapsed = elapsed;
             this.shipVM.update();
             this.scriptPlayer.update(elapsed);
-
+            this.htmlVM.enemyHP(gs.battle.ships[1].hp);
             //update counter
             $('#elapsed').html(elapsed);
             if (elapsed >= this.turnDuration) {

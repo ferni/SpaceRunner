@@ -25,8 +25,6 @@ sh.Ship = sh.SharedClass.extendShared({
     hullMap: {},
     itemsMap: {},
     hp: 600,
-    //temporary until the root model is the battle instead of the ship:
-    enemyHP: 2000,
     init: function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.json) {
@@ -294,7 +292,8 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         return {
             'tmxName': this.tmxName,
-            'owner': this.owner.toJson(),
+            'hp': this.hp,
+            'owner': this.owner ? this.owner.toJson() : null,
             'buildings': sh.utils.mapToJson(this.built),
             'units': sh.utils.mapToJson(this.units),
             'GRID_SUB': sh.GRID_SUB
@@ -304,6 +303,9 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         var ship = this,
             jsonGridSub;
+        if (json.hp) {
+            this.hp = parseInt(json.hp, 10);
+        }
         this.owner = new sh.Player(json.owner);
         if (json.GRID_SUB !== undefined) {
             jsonGridSub = parseInt(json.GRID_SUB, 10);
