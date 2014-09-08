@@ -97,6 +97,8 @@ if (typeof exports !== 'undefined') {
                         registerAction(registerActionReturned, time));
                 }
                 if (registerActionReturned.thereWereImmediateChanges) {
+                    //If any actor returned any action with immediate model
+                    //changes, the loop enters again at the same time.
                     insertInQueue(getVoidModelChange(time));
                 }
             }
