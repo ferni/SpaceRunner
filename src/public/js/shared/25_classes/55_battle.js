@@ -18,6 +18,7 @@ if (typeof exports !== 'undefined') {
 sh.Battle = sh.Jsonable.extendShared({
     ships: [],
     arbiter: {//actor that declares a winner
+        type: 'Arbiter',
         getActions: function(turnTime, battle) {
             'use strict';
             if (battle.winner !== undefined) {
