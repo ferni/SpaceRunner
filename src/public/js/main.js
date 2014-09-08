@@ -328,8 +328,9 @@ var jsApp = {
                 gs.player = new sh.Player(data.player);
                 if (data.battleID !== undefined) {
                     //player was in a battle, resume it
-                    server.getBattle(data.battleID, function(battle) {
-                        me.state.change('battle', battle);
+                    server.getBattle(data.battleID, function(battleJson) {
+                        me.state.change('battle', new sh.Battle(battleJson),
+                            battleJson.orders);
                         self.loadReady = true;
                         self.onAppLoaded();
                     });

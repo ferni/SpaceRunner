@@ -59,7 +59,7 @@ routes.add('get', function(req, res, next) {
 routes.add('getmodel', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle, playerID) {
-        var battleJson = battle.toJson();
+        var battleJson = battle.tempSurrogate.toJson();
         if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[playerID];
         }
