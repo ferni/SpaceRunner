@@ -102,7 +102,6 @@ var ScriptPlayer = function(battleScreen) {
     };
 
     this.onPause = function() {
-        var declareWinner;
         //finish applying remaining model changes
         for (nextChange; nextChange < modelChanges.length; nextChange++) {
             //same condition as in 40_create-script.js
@@ -115,18 +114,13 @@ var ScriptPlayer = function(battleScreen) {
         //clean up
         gs.battle.endOfTurnReset();
 
-        if (script) {
-            declareWinner = _.find(script.actions, function(a) {
-                return a instanceof sh.actions.DeclareWinner;
-            });
-            if (declareWinner) {
-                if (declareWinner.playerID === gs.player.id) {
-                    alert('Victory!');
-                } else {
-                    alert('Defeat.');
-                }
-                location.reload();
+        if (gs.battle.winner !== undefined) {
+            if (gs.battle.winner === gs.player.id) {
+                alert('Victory!');
+            } else {
+                alert('Defeat.');
             }
+            location.reload();
         }
     };
 

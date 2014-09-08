@@ -17,6 +17,28 @@ if (typeof exports !== 'undefined') {
 
 sh.Battle = sh.Jsonable.extendShared({
     ships: [],
+    arbiter: {//actor that declares a winner
+        getActions: function(turnTime, battle) {
+            'use strict';
+            if (battle.winner !== undefined) {
+                return [];//winner already declared
+            }
+            var ship = battle.ships[0];
+            if (ship.hp <= 0) {
+                //ship is destroyed
+                return [new sh.actions.DeclareWinner({
+                    playerID: battle.players[1].id
+                })];
+            }
+            if (ship.enemyHP <= 0) {
+                //enemy is destroyed!
+                return [new sh.actions.DeclareWinner({
+                    playerID: battle.players[0].id
+                })];
+            }
+            return [];
+        }
+    },
     init: function(json) {
         'use strict';
         this.setJson({
@@ -51,7 +73,9 @@ sh.Battle = sh.Jsonable.extendShared({
      */
     getActors: function() {
         'use strict';
-        return this.getUnits();
+        var actors = this.getUnits();
+        actors.push(this.arbiter);
+        return actors;
     },
     getUnits: function() {
         'use strict';

@@ -212,7 +212,7 @@ if (typeof exports !== 'undefined') {
                         ),
                         ship = battle.ships[0],
                         freePos = ship.closestTile(self.x, self.y, function(t) {
-                                return t === sh.tiles.clear;
+                            return t === sh.tiles.clear;
                         });
                     if (freePos) {
                         unit.x = freePos.x;
@@ -262,6 +262,14 @@ if (typeof exports !== 'undefined') {
                 type: 'DeclareWinner',
                 properties: ['playerID'],
                 json: json
+            });
+            this.updateModelChanges();
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [];
+            this.addChange(0, function(battle) {
+                battle.winner = self.playerID;
             });
         }
     });

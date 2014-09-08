@@ -69,19 +69,6 @@ exports.ChallengeBattle = BattleServer.extend({
                 }));
             }
         }
-        if (ship.hp <= 0) {
-            //ship is destroyed
-            newActions.push(new sh.actions.DeclareWinner({
-                time: script.turnDuration - 1,
-                playerID: battle.players[1].id
-            }));
-        } else if (ship.enemyHP <= 0) {
-            //enemy is destroyed!
-            newActions.push(new sh.actions.DeclareWinner({
-                time: script.turnDuration - 1,
-                playerID: battle.players[0].id
-            }));
-        }
 
         //workaround until summon gets converted to teleport
         _.invoke(newActions, 'updateModelChanges');
