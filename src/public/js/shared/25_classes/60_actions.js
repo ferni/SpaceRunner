@@ -284,12 +284,11 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [
-                new ModelChange(0,
-                    function(battle) {
-                        var unit = battle.getUnitByID(self.unitID);
-                        unit[self.property] = self.value;
-                    }, this)];
+            this.modelChanges = [];
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID);
+                unit[self.property] = self.value;
+            });
         },
         toString: function() {
             return this.time + 'ms: SetUnitProperty (' + this.unitID + '): ' +
