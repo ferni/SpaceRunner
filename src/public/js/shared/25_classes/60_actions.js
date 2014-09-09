@@ -263,7 +263,6 @@ if (typeof exports !== 'undefined') {
                 properties: ['playerID'],
                 json: json
             });
-            this.updateModelChanges();
         },
         updateModelChanges: function() {
             var self = this;
