@@ -366,4 +366,25 @@ if (typeof exports !== 'undefined') {
             });
         }
     });
+
+    sh.actions.Teleport = sh.Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.setJson({
+                type: 'Teleport',
+                properties: ['unitID', 'shipDestinationID'],
+                json: json
+            });
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.modelChanges = [];
+            this.addChange(0, function(battle) {
+                var unit = battle.getUnitByID(self.unitID),
+                    dest = battle.getShipByID(self.shipDestinationID);
+                unit.ship.removeUnit(unit);
+                dest.addUnit(unit);
+            });
+        }
+    });
 }());
