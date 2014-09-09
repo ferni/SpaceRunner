@@ -27,15 +27,17 @@ if (typeof exports !== 'undefined') {
      * @param {int} timeOffset The time in ms in which this change occurs,
      * relative to the action's time.
      * @param {Function} apply The function that would change stuff around.
-     * @constructor
      * @param {Action} action The action that originated the model change.
+     * @param {Action} label The model change label. Useful to have to animate.
+     * @constructor
      */
-    ModelChange = function(timeOffset, apply, action) {
-        this.type = 'change';
+    ModelChange = function(timeOffset, apply, action, label) {
+        this.type = 'ModelChange[' + action.type + ':' + label + ']';
         if (timeOffset < 0) {
             throw 'ModelChange timeOffset can\'t be negative';
         }
         this.timeOffset = timeOffset;
+        this.label = label;
         this.apply = function(battle) {
             apply(battle);
         };
@@ -74,8 +76,16 @@ if (typeof exports !== 'undefined') {
             this.time = time;
             _.invoke(this.modelChanges, 'updateTime');
         },
-        addChange: function(timeOffset, callback) {
-            this.modelChanges.push(new ModelChange(timeOffset, callback, this));
+        /**
+         * Set the action's model changes.
+         * @param changeArray [{{offset:int, label:string, changer:Function}}]
+         */
+        setChanges: function(changeArray) {
+            this.modelChanges = [];
+            _.each(changeArray, function(c) {
+                this.modelChanges.push(new ModelChange(c.offset,
+                    c.changer, this, c.label));
+            }, this);
         },
         toString: function() {
             return this.time + 'ms: ' + this.type;
@@ -99,42 +109,55 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID);
-                if (unit && unit.isAlive()) {
-                    unit.moving = {
-                        dest: self.to,
-                        arrivalTime: self.time + self.duration
-                    };
-                    unit.blocking = false;
-                    //cancel weapon charging
-                    unit.cancelShipWeaponFire();
-                }
-            });
-            this.addChange(this.duration, function(battle) {
-                var unit = battle.getUnitByID(self.unitID),
-                    prev;
-                if (unit && unit.isAlive()) {
-                    prev = {x: unit.x, y: unit.y};
-                    unit.y = self.to.y;
-                    unit.x = self.to.x;
-                    unit.moving = null;
-                    unit.dizzy = true;//can't attack if just got there
-                    unit.moveLock = null;
-                    if (!sh.v.equal(prev, self.to)) {
-                        unit.ship.unitsMap.update();
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        if (unit && unit.isAlive()) {
+                            unit.moving = {
+                                dest: self.to,
+                                arrivalTime: self.time + self.duration
+                            };
+                            unit.blocking = false;
+                            //cancel weapon charging
+                            unit.cancelShipWeaponFire();
+                        }
                     }
-                    //cancel weapon charging
-                    unit.cancelShipWeaponFire();
+                },
+                {
+                    offset: self.duration,
+                    label: 'arrive',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID),
+                            prev;
+                        if (unit && unit.isAlive()) {
+                            prev = {x: unit.x, y: unit.y};
+                            unit.y = self.to.y;
+                            unit.x = self.to.x;
+                            unit.moving = null;
+                            unit.dizzy = true;//can't attack if just got there
+                            unit.moveLock = null;
+                            if (!sh.v.equal(prev, self.to)) {
+                                unit.ship.unitsMap.update();
+                            }
+                            //cancel weapon charging
+                            unit.cancelShipWeaponFire();
+                        }
+                    }
+                },
+                {
+                    offset: self.duration + 100,
+                    label: 'undizzy',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        if (unit && unit.isAlive()) {
+                            unit.dizzy = false;//now it can attack
+                        }
+                    }
                 }
-            });
-            this.addChange(this.duration + 100, function(battle) {
-                var unit = battle.getUnitByID(self.unitID);
-                if (unit && unit.isAlive()) {
-                    unit.dizzy = false;//now it can attack
-                }
-            });
+            ]);
         },
         toString: function() {
             return this.time + 'ms: Move ' + this.unitID + ' to ' +
@@ -161,28 +184,41 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var attacker = battle.getUnitByID(self.attackerID);
-                attacker.onCooldown = true;
-            });
-            this.addChange(self.damageDelay, function(battle) {
-                var attacker = battle.getUnitByID(self.attackerID),
-                    receiver = battle.getUnitByID(self.receiverID);
-                if (attacker && attacker.isAlive() &&
-                        receiver && receiver.isAlive()) {
-                    receiver.hp -= self.damage;
-                    //cancel weapon charging
-                    receiver.cancelShipWeaponFire();
-                    receiver.distracted = true;
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var attacker = battle.getUnitByID(self.attackerID);
+                        attacker.onCooldown = true;
+                    }
+                },
+                {
+                    offset: self.damageDelay,
+                    label: 'hit',
+                    changer: function(battle) {
+                        var attacker = battle.getUnitByID(self.attackerID),
+                            receiver = battle.getUnitByID(self.receiverID);
+                        if (attacker && attacker.isAlive() &&
+                                receiver && receiver.isAlive()) {
+                            receiver.hp -= self.damage;
+                            //cancel weapon charging
+                            receiver.cancelShipWeaponFire();
+                            receiver.distracted = true;
+                        }
+                    }
+                },
+                {
+                    offset: self.duration,
+                    label: 'cooldown complete',
+                    changer: function(battle) {
+                        var attacker = battle.getUnitByID(self.attackerID);
+                        if (attacker) {
+                            attacker.onCooldown = false;
+                        }
+                    }
                 }
-            });
-            this.addChange(this.duration, function(battle) {
-                var attacker = battle.getUnitByID(self.attackerID);
-                if (attacker) {
-                    attacker.onCooldown = false;
-                }
-            });
+            ]);
         },
         toString: function() {
             return this.time + 'ms: Attack ' + this.attackerID + ' -> ' +
@@ -205,21 +241,27 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [new ModelChange(0,
-                function(battle) {
-                    var unit = new sh.units[self.unitType](
-                            {ownerID: self.playerID}
-                        ),
-                        ship = battle.ships[0],
-                        freePos = ship.closestTile(self.x, self.y, function(t) {
-                            return t === sh.tiles.clear;
-                        });
-                    if (freePos) {
-                        unit.x = freePos.x;
-                        unit.y = freePos.y;
-                        ship.addUnit(unit);
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = new sh.units[self.unitType](
+                                {ownerID: self.playerID}
+                            ),
+                            ship = battle.ships[0],
+                            freePos = ship.closestTile(self.x, self.y,
+                                function(t) {
+                                    return t === sh.tiles.clear;
+                                });
+                        if (freePos) {
+                            unit.x = freePos.x;
+                            unit.y = freePos.y;
+                            ship.addUnit(unit);
+                        }
                     }
-                }, this)];
+                }
+            ]);
         },
         toString: function() {
             return this.time + 'ms: Summon ' + this.unitType;
@@ -237,18 +279,27 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID);
-                unit.onCooldown = true;
-                battle.ships[0].hp -= self.damage;
-            });
-            this.addChange(this.cooldown, function(battle) {
-                var unit = battle.getUnitByID(self.unitID);
-                if (unit) {
-                    unit.onCooldown = false;
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        unit.onCooldown = true;
+                        battle.ships[0].hp -= self.damage;
+                    }
+                },
+                {
+                    offset: self.cooldown,
+                    label: 'cooldown complete',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        if (unit) {
+                            unit.onCooldown = false;
+                        }
+                    }
                 }
-            });
+            ]);
         },
         toString: function() {
             return this.time + 'ms: DamageShip, damage: ' + this.damage;
@@ -266,10 +317,15 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                battle.winner = self.playerID;
-            });
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        battle.winner = self.playerID;
+                    }
+                }
+            ]);
         }
     });
 
@@ -284,11 +340,16 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID);
-                unit[self.property] = self.value;
-            });
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        unit[self.property] = self.value;
+                    }
+                }
+            ]);
         },
         toString: function() {
             return this.time + 'ms: SetUnitProperty (' + this.unitID + '): ' +
@@ -307,11 +368,16 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID);
-                unit.orders.shift();
-            });
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        unit.orders.shift();
+                    }
+                }
+            ]);
         }
     });
 
@@ -326,21 +392,31 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID),
-                    ship = unit.ship,
-                    weapon = ship.getItemByID(self.weaponID);
-                unit.chargingShipWeapon = {
-                    weaponID: self.weaponID,
-                    startingTime: self.time
-                };
-                weapon.chargedBy = unit;
-            });
-            this.addChange(self.chargeTime, function(ship) {
-                //empty function to trigger getActions from
-                //unit responsible for firing
-            });
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID),
+                            ship = unit.ship,
+                            weapon = ship.getItemByID(self.weaponID);
+                        unit.chargingShipWeapon = {
+                            weaponID: self.weaponID,
+                            startingTime: self.time
+                        };
+                        weapon.chargedBy = unit;
+                    }
+                },
+                {
+                    offset: self.chargeTime,
+                    label: 'end',
+                    changer: function(battle) {
+                        //empty function: this change is here
+                        //to trigger a getActions call from the
+                        //unit responsible for firing.
+                    }
+                }
+            ]);
         }
     });
 
@@ -356,13 +432,19 @@ if (typeof exports !== 'undefined') {
         updateModelChanges: function() {
             var self = this;
             this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID),
-                    shooterShip = unit.ship,
-                    damagedShip = battle.ships[1];
-                damagedShip.hp -= shooterShip.getItemByID(self.weaponID).damage;
-                unit.cancelShipWeaponFire();
-            });
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID),
+                            shooterShip = unit.ship,
+                            damagedShip = battle.ships[1];
+                        damagedShip.hp -= shooterShip.getItemByID(self.weaponID).damage;
+                        unit.cancelShipWeaponFire();
+                    }
+                }
+            ]);
         }
     });
 
@@ -377,13 +459,18 @@ if (typeof exports !== 'undefined') {
         },
         updateModelChanges: function() {
             var self = this;
-            this.modelChanges = [];
-            this.addChange(0, function(battle) {
-                var unit = battle.getUnitByID(self.unitID),
-                    dest = battle.getShipByID(self.shipDestinationID);
-                unit.ship.removeUnit(unit);
-                dest.addUnit(unit);
-            });
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID),
+                            dest = battle.getShipByID(self.shipDestinationID);
+                        unit.ship.removeUnit(unit);
+                        dest.addUnit(unit);
+                    }
+                }
+            ])
         }
     });
 }());
