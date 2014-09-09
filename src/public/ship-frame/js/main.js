@@ -240,21 +240,6 @@ var g_resources = [{
     src: 'data/img/render/charging-weapon-icon.png'
 }];
 
-var prebuilt = {
-    humanoid: '{"tmxName":"Humanoid_Cruiser","buildings":[' +
-        '{"type":"Power","x":15,"y":11,"r":false},' +
-        '{"type":"Engine","x":11,"y":9,"r":false},' +
-        '{"type":"Engine","x":11,"y":13,"r":false},' +
-        '{"type":"Weapon","x":22,"y":9,"r":false},' +
-        '{"type":"Weapon","x":22,"y":13,"r":false},' +
-        '{"type":"Component","x":19,"y":11,"r":false},' +
-        '{"type":"Console","x":11,"y":11,"r":false},' +
-        '{"type":"Console","x":11,"y":12,"r":false},' +
-        '{"type":"Console","x":21,"y":9,"r":false},' +
-        '{"type":"Console","x":21,"y":14,"r":false}],' +
-        '"units":[]}'
-};
-
 var hullMaps = {},
     gs,
     FIRST_SCREEN;
@@ -300,18 +285,9 @@ var jsApp = {
         'use strict';
         // set screens-html
         var self = this;
-        window.FIRST_SCREEN = 'lobby';
         window.gs = new GameState();
 
-        //set development modes
-        if (utils.getParameterByName('auto') === '1') {
-            gs.modes.auto = true;
-        }
-        if (utils.getParameterByName('useprebuilt') === '1') {
-            gs.modes.useprebuilt = true;
-        }
         this.generateHullMaps();
-        chatClient.start();
 
         //prepare dom
         $('#jsapp').bind('contextmenu', function() {
@@ -319,28 +295,16 @@ var jsApp = {
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
             .on('selectstart', false);//disable selection
-        $(window).bind('beforeunload', function() {
-            server.disconnect();
-        });
 
-        screens.loadHtmls(function() {
-            server.init(function(data) {
-                gs.player = new sh.Player(data.player);
-                if (data.battleID !== undefined) {
-                    //player was in a battle, resume it
-                    server.getBattle(data.battleID, function(battleJson) {
-                        me.state.change('battle', new sh.Battle(battleJson),
-                            battleJson.orders);
-                        self.loadReady = true;
-                        self.onAppLoaded();
-                    });
-                } else {
-                    me.state.change(FIRST_SCREEN);
-                    self.loadReady = true;
-                    self.onAppLoaded();
-                }
-            });
-        });
+        function handleParentMessage(event) {
+            if (event.data.type === 'start battle') {
+                gs.player = new sh.Player(event.data.player);
+                me.state.change('battle', new sh.Battle(event.data.battleJson));
+                self.loadReady = true;
+                self.onAppLoaded();
+            }
+        }
+        window.addEventListener("message", handleParentMessage, false);
     },
     /*
     useful for testing
