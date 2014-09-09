@@ -69,6 +69,10 @@ sh.Battle = sh.Jsonable.extendShared({
         ship.id = this.ships.length + 1;
         this.ships.push(ship);
     },
+    getShipByID: function(id) {
+        'use strict';
+        return _.findWhere(this.ships, {id: id});
+    },
     getPlayers: function() {
         'use strict';
         return _.pluck(this.ships, 'owner');
@@ -88,9 +92,8 @@ sh.Battle = sh.Jsonable.extendShared({
     },
     getUnitByID: function(id) {
         'use strict';
-        return _.find(this.getUnits(), function(u) {
-            return u.id === parseInt(id, 10);
-        });
+        id = parseInt(id, 10);
+        return _.findWhere(this.getUnits(), {id: id});
     },
     assignUnitID: function(unit) {
         'use strict';
