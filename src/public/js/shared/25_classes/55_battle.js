@@ -66,6 +66,7 @@ sh.Battle = sh.Jsonable.extendShared({
     addShip: function(ship) {
         'use strict';
         ship.battle = this;
+        ship.id = this.ships.length + 1;
         this.ships.push(ship);
     },
     getPlayers: function() {

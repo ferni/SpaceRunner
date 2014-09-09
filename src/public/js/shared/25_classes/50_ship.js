@@ -21,6 +21,7 @@ if (typeof exports !== 'undefined') {
  * @type {*}
  */
 sh.Ship = sh.SharedClass.extendShared({
+    id: null,
     owner: null,
     hullMap: {},
     itemsMap: {},
@@ -292,6 +293,7 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         return {
             'tmxName': this.tmxName,
+            'id': this.id,
             'hp': this.hp,
             'owner': this.owner ? this.owner.toJson() : null,
             'buildings': sh.utils.mapToJson(this.built),
@@ -303,7 +305,10 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         var ship = this,
             jsonGridSub;
-        if (json.hp) {
+        if (json.id !== undefined) {
+            this.id = parseInt(json.id, 10);
+        }
+        if (json.hp !== undefined) {
             this.hp = parseInt(json.hp, 10);
         }
         this.owner = new sh.Player(json.owner);
