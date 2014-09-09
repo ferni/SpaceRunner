@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Space Ship Building</title>
+        <meta name="description" content="Space Ship homepage" />
+        <meta name="keywords" content="melonJS, HTML5, javascript, game, Engine, framework" />
+        <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+
+        <script type="text/javascript" src="../js/vendor/pathfinding-browser.js"></script>
+        <script type="text/javascript" src="../js/vendor/underscore.js"></script>
+
+        <!-- These files are used by the sever as well -->
+        <script type="text/javascript" src="../js/shared/00_init.js"></script>
+        <script type="text/javascript" src="../js/shared/10_general-stuff.js"></script>
+        <script type="text/javascript" src="../js/shared/12_utils.js"></script>
+        <script type="text/javascript" src="../js/shared/20_placement-rules.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/10_shared-class.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/20_jsonable.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/25_player.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/30_tile-entity.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/32_items.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/34_units.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/40_map.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/50_ship.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/55_battle.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/60_actions.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/70_orders.js"></script>
+        <script type="text/javascript" src="../js/shared/25_classes/80_script.js"></script>
+        <script type="text/javascript" src="../js/shared/40_create-script.js"></script>
+        <script type="text/javascript" src="../js/shared/65_make.js"></script>
+        <script type="text/javascript" src="../js/shared/index.js"></script>
+
+        <script type="text/javascript" src="../js/vendor/melonJS-0.9.5.js"></script>
+
+        <script type="text/javascript" src="../js/melonjs-plugins.js"></script>
+        <script type="text/javascript" src="../js/global-helpers/utils.js"></script>
+        <script type="text/javascript" src="../js/global-helpers/hull-map-generator.js"></script>
+        <script type="text/javascript" src="../js/entities/tile-entity-vm.js" ></script>
+        <script type="text/javascript" src="../js/entities/item-vms.js" ></script>
+        <script type="text/javascript" src="../js/entities/ui.js"></script>
+        <script type="text/javascript" src="../js/entities/unit-vms.js" ></script>
+        <script type="text/javascript" src="../js/entities/order-vms.js" ></script>
+        <script type="text/javascript" src="js/script-player.js" ></script>
+        <script type="text/javascript" src="../js/entities/ship-vm.js" ></script>
+        <script type="text/javascript" src="../js/global-helpers/make.js"></script>
+        <script type="text/javascript" src="../js/global-helpers/server.js"></script>
+        <script type="text/javascript" src="../js/global-helpers/draw.js"></script>
+        <script type="text/javascript" src="../js/global-helpers/screens.js"></script>
+        <script type="text/javascript" src="../js/screens/base/game-screen.js"></script>
+        <script type="text/javascript" src="../js/screens/base/connected-screen.js"></script>
+        <script type="text/javascript" src="js/battle-screen.js"></script>
+        <script type="text/javascript" src="../js/game-state.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript">
+            //bootstrap :)
+            window.onReady(function() {
+                jsApp.onload();
+            });
+        </script>
+    </head>
+
+    <body>
+        <div id="game">
+            <div id="jsapp"></div>
+        </div>
+    </body>
+</html>
