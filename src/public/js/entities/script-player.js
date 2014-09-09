@@ -15,72 +15,71 @@
  */
 var ScriptPlayer = function(battleScreen) {
     'use strict';
-    var script, next,
+    var script,
         nextChange,
         modelChanges = [],
-        v = sh.v; //vector math
-
-    function playMoveAction(action) {
-        var unitVM = battleScreen.shipVM.getUnitVMByID(
-            action.unitID
-        ),
-            tilePx = v.mul(action.to, TILE_SIZE),
-            toPx = v.add(tilePx, {x: 8, y: 8});//center
-        unitVM.tweenTo(toPx, action.duration);
-    }
-
-    function playAttackAction(action) {
-        var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
-        battleScreen.shipVM
-            .getUnitVMByID(action.attackerID)
-            .playAttack(receiverVM.pos);
-    }
-
-    function playDamageShipAction(action) {
-        var red = new ui.RedColorEntity(action.tile.x, action.tile.y),
-            tween;
-        me.game.add(red, ui.layers.colorOverlay);
-        me.game.sort();
-        tween = new me.Tween(red).to({alpha: 0}, 200).onComplete(function() {
-            me.game.remove(red);
-        });
-        tween.start();
-    }
-
-    function playFireShipWeaponAction(action) {
-        battleScreen.shipVM.getVM(
-            gs.ship.getItemByID(action.weaponID)
-        ).playFire();
-    }
-
-    function playAction(action) {
-        switch (action.type) {
-        case 'Move':
-            playMoveAction(action);
-            break;
-        case 'Attack':
-            playAttackAction(action);
-            break;
-        case 'DamageShip':
-            playDamageShipAction(action);
-            break;
-        case 'FireShipWeapon':
-            playFireShipWeaponAction(action);
-            break;
-        }
-    }
+        v = sh.v, //vector math
+        actionPlayers;
 
     this.loadScript = function(s) {
         script = s;
-        next = 0;
         nextChange = 0;
         modelChanges = script.getSortedModelChanges();
     };
 
+    actionPlayers = {
+        'Move': {
+            'start': function(action) {
+                var unitVM = battleScreen.shipVM.getUnitVMByID(
+                        action.unitID
+                    ),
+                    tilePx = v.mul(action.to, TILE_SIZE),
+                    toPx = v.add(tilePx, {x: 8, y: 8});//center
+                unitVM.tweenTo(toPx, action.duration);
+            }
+        },
+        'Attack': {
+            'start': function(action) {
+                var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+                battleScreen.shipVM
+                    .getUnitVMByID(action.attackerID)
+                    .playAttack(receiverVM.pos);
+            }
+        },
+        'DamageShip' : {
+            'start': function(action) {
+                var red = new ui.RedColorEntity(action.tile.x, action.tile.y),
+                    tween;
+                me.game.add(red, ui.layers.colorOverlay);
+                me.game.sort();
+                tween = new me.Tween(red).to({alpha: 0}, 200).onComplete(function() {
+                    me.game.remove(red);
+                });
+                tween.start();
+            }
+        },
+        'FireShipWeapon': {
+            'start': function(action) {
+                battleScreen.shipVM.getVM(
+                    gs.ship.getItemByID(action.weaponID)
+                ).playFire();
+            }
+        }
+    };
+
+    function playModelChange(modelChange) {
+        var action = modelChange.action,
+            play,
+            playerGroup = actionPlayers[action.type];
+        if (playerGroup) {
+            play = playerGroup[modelChange.label];
+            if (play) {
+                play(action);
+            }
+        }
+    }
 
     this.update = function(elapsed) {
-        var actions = script.actions;
-
         //apply model changes to ship
         if (nextChange < modelChanges.length &&
                 elapsed >= modelChanges[nextChange].time &&
@@ -88,16 +87,9 @@ var ScriptPlayer = function(battleScreen) {
                 //(queue[0].time <= turnDuration)
                 modelChanges[nextChange].time <= script.turnDuration) {
             modelChanges[nextChange].apply(gs.battle);
+            playModelChange(modelChanges[nextChange]);
             _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
             nextChange++;
-        }
-
-        //play actions
-        if (next < actions.length && elapsed >= actions[next].time) {
-            if (script.isWithinTurn(actions[next])) {
-                playAction(actions[next], elapsed);
-            }
-            next++;
         }
     };
 
