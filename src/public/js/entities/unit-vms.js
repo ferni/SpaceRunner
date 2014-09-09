@@ -107,7 +107,6 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         if (changed.hp) {
             this.updateHealthBar();
-            this.playDamage(changed.hp.previous);
             if (!this.m.isAlive()) {
                 this.setCurrentAnimation('dead');
                 this.alpha = 0.4;
@@ -234,12 +233,12 @@ var UnitVM = TileEntityVM.extend({
     /**
      * Shows a hit on the unit and the amount dealt as a floating number
      * above the unit.
-     * @param {int} previousHP
+     * @param {int} amount
      */
-    playDamage: function(previousHP) {
+    playDamage: function(amount) {
         'use strict';
         me.game.add(new ui.StarHit(this), ui.layers.effects);
-        me.game.add(new ui.FloatingNumber(this.pos, this.m.hp - previousHP),
+        me.game.add(new ui.FloatingNumber(this.pos, -amount),
             ui.layers.effects);
         me.game.sort();
     },

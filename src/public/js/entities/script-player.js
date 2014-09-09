@@ -44,6 +44,10 @@ var ScriptPlayer = function(battleScreen) {
                 battleScreen.shipVM
                     .getUnitVMByID(action.attackerID)
                     .playAttack(receiverVM.pos);
+            },
+            'hit': function(action) {
+                var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+                receiverVM.playDamage(action.damage);
             }
         },
         'DamageShip' : {
