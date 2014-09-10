@@ -24,13 +24,11 @@ screens.register('battle', me.ScreenObject.extend({
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
         gs.ship = battle.ships[0];
-        this.stopFetching();
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
         this.scriptPlayer = new ScriptPlayer(this);
-        this.timeline = new Timeline(this);
         me.input.bindKey(me.input.KEY.ESC, 'escape');
         me.input.bindKey(me.input.KEY.D, 'delete');
         me.input.registerMouseEvent('mouseup', me.game.viewport,
@@ -84,7 +82,6 @@ screens.register('battle', me.ScreenObject.extend({
             this.scriptPlayer.update(elapsed);
             this.htmlVM.enemyHP(gs.battle.ships[1].hp);
             //update counter
-            $('#elapsed').html(elapsed);
             if (elapsed >= this.turnDuration) {
                 this.pause();
             }
@@ -238,15 +235,11 @@ screens.register('battle', me.ScreenObject.extend({
     },
     pause: function() {
         'use strict';
-        $('#paused-indicator, #ready-button').show();
-        $('#elapsed').hide();
-        this.readyButton.enable();
         this.scriptPlayer.onPause();
         this.shipVM.update();
         if (this.resultingModel) {
             this.compareModelWithServer();
         }
-        this.timeline.update();
         me.game.sort();
         me.game.repaint();
 
@@ -263,8 +256,6 @@ screens.register('battle', me.ScreenObject.extend({
     },
     resume: function() {
         'use strict';
-        $('#paused-indicator, #ready-button').hide();
-        $('#elapsed').show();
         //reset time
         this.turnBeginTime = me.timer.getTime();
         _.invoke(this.shipVM.unitVMs, 'deselect');
