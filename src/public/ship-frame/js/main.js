@@ -241,8 +241,7 @@ var g_resources = [{
 }];
 
 var hullMaps = {},
-    gs,
-    FIRST_SCREEN;
+    gs;
 
 // jsApp
 var jsApp = {
@@ -309,10 +308,6 @@ var jsApp = {
     /*
     useful for testing
     */
-    onScreenReset: function() {
-        'use strict';
-        return 0;
-    },
     onAppLoaded: function() {
         'use strict';
         return 0;
