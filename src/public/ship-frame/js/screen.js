@@ -5,8 +5,8 @@
 * All rights reserved.
 */
 
-/*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
+/*global me, screens, gs, sh, ShipVM,
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko*/
 
 screens.register('battle', me.ScreenObject.extend({
     currentTurnID: null,
