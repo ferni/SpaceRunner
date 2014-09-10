@@ -116,6 +116,7 @@ screens.register('battle', ConnectedScreen.extend({
         $('#turn-number').html(this.currentTurnID);
         if (this.paused && data.scriptReady) {
             $.post('/battle/getscript', {id: screen.id}, function(data) {
+                //send script to ships through postMessage
                 var script = new sh.Script().fromJson(data.script);
                 screen.scriptServer = script;
                 screen.scriptPlayer.loadScript(script);
@@ -169,104 +170,6 @@ screens.register('battle', ConnectedScreen.extend({
                 utils.setCursor('crosshair');
             }
             _.invoke(this.previewOrders, 'draw', ctx);
-        }
-    },
-    mouseDown: function(e) {
-        'use strict';
-        var which = e.which - 1; //workaround for melonJS mismatch
-        if (!this.paused) {
-            return;
-        }
-        if (which === me.input.mouse.LEFT && !this.dragBox) {
-            this.mouseDownPos = utils.getMousePx();
-        }
-
-    },
-    mouseUp: function(e) {
-        'use strict';
-        var mouse = utils.getMouse(),
-            which = e.which - 1, //workaround for melonJS mismatch
-            draggedOriginalPos,
-            self = this;
-        if (!this.paused) {
-            return;
-        }
-        if (which === me.input.mouse.LEFT) {
-            if (this.dragBox) {
-                this.releaseDragBox();
-            } else if (this.dragging) {//an order
-                if (!sh.v.equal(this.dragging.m.destination, mouse)) {
-                    draggedOriginalPos = this.dragging.m.destination;
-                    this.dragging.m.destination = {x: mouse.x, y: mouse.y};
-                    if (this.dragging.m.isValid(gs.ship, gs.player.id)) {
-                        this.dragging.unitVM.orders.valueHasMutated();
-                    } else {
-                        this.dragging.m.destination = draggedOriginalPos;
-                    }
-                    this.dragging.updatePos();
-                }
-                this.dragging = null;
-            } else {
-                _.each(this.previewOrders, function(orderVM, unitID) {
-                    var unit = self.shipVM.getUnitVMByID(unitID);
-                    unit.insertOrder(orderVM.m);
-                });
-            }
-            this.previewOrders = {};
-            this.mouseDownPos = null;
-        }
-    },
-    mouseMove: function() {
-        'use strict';
-        var mouse = utils.getMouse(),
-            mousePx = utils.lastMousePx;
-        if (this.dragging) {
-            this.dragging.setX(mouse.x).setY(mouse.y);
-            return;
-        }
-        if (this.dragBox) {
-            this.dragBox.updateFromMouse(mousePx);
-        } else if (this.mouseDownPos &&
-                (this.mouseDownPos.x - mousePx.x > 5 ||
-                mousePx.x - this.mouseDownPos.x > 5 ||
-                this.mouseDownPos.y - mousePx.y > 5 ||
-                mousePx.y - this.mouseDownPos.y > 5)) {
-            //mouse exceeded 5 pixel threshold, start drag box.
-            this.startDragBox(this.mouseDownPos);
-            this.dragBox.updateFromMouse(mousePx);
-        } else {
-            if (sh.v.equal(mouse, this.prevMouse)) {
-                return;
-            }
-            this.updatePreviewOrders(mouse);
-        }
-        this.prevMouse = mouse;
-    },
-    updatePreviewOrders: function(mouse) {
-        'use strict';
-        var unitsToGiveOrders,
-            self = this;
-        this.previewOrders = {};
-        if (!_.any(gs.ship.getPlayerUnits(gs.player.id),
-                function(u) {
-                    return sh.v.equal(u, mouse);//no ally at mouse pos
-                })) {
-            unitsToGiveOrders = _.filter(this.shipVM.selected(),
-                function(u) {
-                    //can't place order in same spot as another order
-                    return !_.any(u.orderVMs, function(o) {
-                        return sh.v.equal(o.getMarkerTile(), mouse);
-                    }) &&
-                        (u.orders().length === 0 ||
-                            _.last(u.orderVMs).selected());
-                });
-            _.each(unitsToGiveOrders, function(u) {
-                var order = gs.ship.getValidOrderForPos(u.m, mouse);
-                if (order) {
-                    self.previewOrders[u.m.id] = make.vm(order);
-                    self.previewOrders[u.m.id].convertToPreview();
-                }
-            });
         }
     },
     getModelDifferenceUrl: function(aJsonString, bJsonString) {
@@ -362,35 +265,6 @@ screens.register('battle', ConnectedScreen.extend({
         } else {
             this.htmlVM.selectedUnit(null);
         }
-    },
-    startDragBox: function(pos) {
-        'use strict';
-        this.dragBox = new ui.DragBox(pos);
-    },
-    releaseDragBox: function() {
-        'use strict';
-        var self = this;
-        if (this.dragBox) {
-            this.deselectUnits();
-            _.each(this.shipVM.unitVMs, function(u) {
-                var pos, unitRect;
-                if (u.isMine()) {
-                    pos = new me.Vector2d(
-                        u.m.x * TILE_SIZE,
-                        u.m.y * TILE_SIZE
-                    );
-                    unitRect = new me.Rect(pos, TILE_SIZE, TILE_SIZE);
-                    if (self.dragBox.overlaps(unitRect)) {
-                        u.select();
-                    }
-                }
-            });
-            this.dragBox = null;
-        } else {
-            console.warn('Tried to release dragBox but it was already' +
-                ' released.');
-        }
-        utils.setCursor('default');
     },
     at: function(x, y) {
         'use strict';
