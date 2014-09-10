@@ -8,50 +8,17 @@
 /*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
 ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
 
-screens.register('battle', ConnectedScreen.extend({
+screens.register('battle', me.ScreenObject.extend({
     currentTurnID: null,
     scriptPlayer: null,
     scriptServer: [],
     mouseDownPos: null,
     /**
-     * Gets executed before onReset.
-     */
-    onHtmlLoaded: function() {
-        'use strict';
-        var screen = this;
-        this.readyButton = (function() {
-            var btn = {},
-                $ready = $('#ready-button');
-            btn.enabled = true;
-            $ready.click(function() {
-                if (btn.enabled) {
-                    screen.onReady();
-                }
-            });
-            btn.enable = function() {
-                btn.enabled = true;
-                $ready.removeClass('disabled')
-                    .html('Ready');
-            };
-            btn.disable = function() {
-                btn.enabled = false;
-                $ready.addClass('disabled')
-                    .html('Awaiting players...');
-            };
-            return btn;
-        }());
-
-        if (this.isReset) {
-            this.onResetAndLoaded();
-        }
-        this.htmlLoaded = true;
-    },
-    /**
      *
      * @param battle sh.Battle
      * @param orders Object
      */
-    onReset: function(battle, orders) {
+    onResetEvent: function(battle, orders) {
         'use strict';
         this.parent({id: battle.id});
         this.turnDuration = battle.turnDuration;
@@ -81,11 +48,9 @@ screens.register('battle', ConnectedScreen.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
-        if (this.htmlLoaded) {
-            this.onResetAndLoaded();
-        }
+
     },
-    onDestroy: function() {
+    onDestroyEvent: function() {
         'use strict';
         me.input.unbindKey(me.input.KEY.ESC);
         me.input.unbindKey(me.input.KEY.D);
@@ -93,27 +58,11 @@ screens.register('battle', ConnectedScreen.extend({
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
     },
-    onResetAndLoaded: function() {
-        'use strict';
-        var screen = this;
-        //Knockout bindings
-        function ViewModel() {
-            this.shipVM = function() {
-                return screen.shipVM;
-            };
-            this.enemyHP = ko.observable(gs.battle.ships[1].hp);
-            this.selectedUnit = ko.observable(null);
-            this.timeline = screen.timeline;
-        }
-        this.htmlVM = new ViewModel();
-        ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
-        $('#time-line').jScrollPane();
-    },
     onData: function(data) {
         'use strict';
+        //TODO: receive the data (the script) through postMessage
         var screen = this;
         this.currentTurnID = data.currentTurnID;
-        $('#turn-number').html(this.currentTurnID);
         if (this.paused && data.scriptReady) {
             $.post('/battle/getscript', {id: screen.id}, function(data) {
                 var script = new sh.Script().fromJson(data.script);
@@ -122,12 +71,6 @@ screens.register('battle', ConnectedScreen.extend({
                 screen.shipVM.update();
                 screen.resultingModel = data.resultingModel;
                 screen.resume();
-                screen.stopFetching();
-                $.post('/battle/scriptreceived', {id: screen.id}, function() {
-                    //(informs the server that the script has been received)
-                }).fail(function() {
-                    console.error('Error pinging server.');
-                });
             });
         }
     },
