@@ -6,7 +6,7 @@
 */
 
 /*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE,
-sh, _, me, ko, gs, $, ui*/
+sh, _, me, gs, $, ui*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -44,25 +44,29 @@ var UnitVM = TileEntityVM.extend({
         this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
         this.updateHealthBar();
         this.orderVMs = [];
-        this.orders = ko.observableArray(unitModel.orders);
-        this.orders.subscribe(function(newValue) {
+        this.orders = function(newValue) {
             var ordersObject = {};
-            this.m.orders = newValue;
-            ordersObject[this.m.id] = newValue;
-            $.post('/battle/sendorders',
-                {id: self.screen.id,//battle id
-                    orders: new sh.OrderPackage(ordersObject).toJson()},
-                function() {
-                    console.log('Orders successfully submitted');
-                }, 'json')
-                .fail(function() {
-                    console.error('Server error when submitting orders.');
-                });
-            if (!this.updateOrderVMs()) {
-                _.invoke(this.orderVMs, 'updatePath');
+            if (newValue) {
+                self.m.orders = newValue;
+                ordersObject[self.m.id] = newValue;
+                //TODO: send orders to parent
+                $.post('/battle/sendorders',
+                    {id: self.screen.id,//battle id
+                        orders: new sh.OrderPackage(ordersObject).toJson()},
+                    function () {
+                        console.log('Orders successfully submitted');
+                    }, 'json')
+                    .fail(function () {
+                        console.error('Server error when submitting orders.');
+                    });
+                if (!self.updateOrderVMs()) {
+                    _.invoke(self.orderVMs, 'updatePath');
+                }
+                //TODO: send event update timeline
+                //self.screen.timeline.update();
             }
-            self.screen.timeline.update();
-        }, this);
+            return self.m.orders;
+        };
         this.isSelectable = this.isMine();
         this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy',
             'chargingShipWeapon']);
