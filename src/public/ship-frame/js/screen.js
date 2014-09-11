@@ -81,7 +81,6 @@ screens.register('battle', me.ScreenObject.extend({
             this.elapsed = elapsed;
             this.shipVM.update();
             this.scriptPlayer.update(elapsed);
-            this.htmlVM.enemyHP(gs.battle.ships[1].hp);
             //update counter
             if (elapsed >= this.turnDuration) {
                 this.pause();
@@ -286,17 +285,6 @@ screens.register('battle', me.ScreenObject.extend({
         _.chain(gs.selected)
             .where({name: 'unit'})
             .invoke('deselect');
-    },
-    updateUnitHud: function() {
-        'use strict';
-        var selected = _.where(gs.selected, {name: 'unit'});
-        if (selected.length === 1) {
-            if (this.htmlVM.selectedUnit() !== selected[0]) {
-                this.htmlVM.selectedUnit(selected[0]);
-            }
-        } else {
-            this.htmlVM.selectedUnit(null);
-        }
     },
     startDragBox: function(pos) {
         'use strict';
