@@ -64,8 +64,9 @@ var ScriptPlayer = function(battleScreen) {
         },
         'FireShipWeapon': {
             'start': function(action) {
+                var unit = gs.battle.getUnitByID(action.unitID);
                 battleScreen.shipVM.getVM(
-                    gs.ship.getItemByID(action.weaponID)
+                    unit.ship.getItemByID(action.weaponID)
                 ).playFire();
             }
         }

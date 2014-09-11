@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
+/*global me, screens, ConnectedScreen, gs, sh, ShipFrame, ScriptPrediction,
 ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
 
 screens.register('battle', ConnectedScreen.extend({
@@ -56,12 +56,17 @@ screens.register('battle', ConnectedScreen.extend({
         this.parent({id: battle.id});
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
-        gs.ship = battle.ships[0];
         this.stopFetching();
         console.log('Battle id is ' + this.id);
-        this.shipVM = new ShipVM(gs.ship);
-        this.shipVM.showInScreen();
-        this.shipVM.update();
+        function frameEventHandler(e) {
+
+        }
+        this.shipFrames = [
+            new ShipFrame(battle, battle.ships[0].id, frameEventHandler),
+            new ShipFrame(battle, battle.ships[1].id, frameEventHandler)
+        ];
+        this.shipFrames[0].init(100, 50, 500, 500);
+        this.shipFrames[1].init(600, 50, 500, 500);
         this.scriptPlayer = new ScriptPlayer(this);
         this.timeline = new Timeline(this);
         me.input.bindKey(me.input.KEY.ESC, 'escape');
@@ -119,8 +124,7 @@ screens.register('battle', ConnectedScreen.extend({
                 //send script to ships through postMessage
                 var script = new sh.Script().fromJson(data.script);
                 screen.scriptServer = script;
-                screen.scriptPlayer.loadScript(script);
-                screen.shipVM.update();
+                _.invoke(screen.shipFrames, 'runScript', script);
                 screen.resultingModel = data.resultingModel;
                 screen.resume();
                 screen.stopFetching();
@@ -138,8 +142,6 @@ screens.register('battle', ConnectedScreen.extend({
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
             this.elapsed = elapsed;
-            this.shipVM.update();
-            this.scriptPlayer.update(elapsed);
             this.htmlVM.enemyHP(gs.battle.ships[1].hp);
             //update counter
             $('#elapsed').html(elapsed);
@@ -202,7 +204,6 @@ screens.register('battle', ConnectedScreen.extend({
         $('#elapsed').hide();
         this.readyButton.enable();
         this.scriptPlayer.onPause();
-        this.shipVM.update();
         if (this.resultingModel) {
             this.compareModelWithServer();
         }
@@ -211,7 +212,7 @@ screens.register('battle', ConnectedScreen.extend({
         me.game.repaint();
 
         _.each(me.game.getEntityByName('order'), function(oVM) {
-            if (oVM.m.isValid(gs.ship, gs.player.id)) {
+            if (oVM.m.isValid(gs.battle, gs.player.id)) {
                 oVM.updatePos();
             } else {
                 oVM.remove();
@@ -227,7 +228,6 @@ screens.register('battle', ConnectedScreen.extend({
         $('#elapsed').show();
         //reset time
         this.turnBeginTime = me.timer.getTime();
-        _.invoke(this.shipVM.unitVMs, 'deselect');
         this.paused = false;
     },
     //When a player clicks "Ready"
@@ -265,9 +265,5 @@ screens.register('battle', ConnectedScreen.extend({
         } else {
             this.htmlVM.selectedUnit(null);
         }
-    },
-    at: function(x, y) {
-        'use strict';
-        return gs.ship.at(x, y);
     }
 }));

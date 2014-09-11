@@ -125,7 +125,7 @@ var UnitVM = TileEntityVM.extend({
         if (changed.chargingShipWeapon) {
             if (this.m.chargingShipWeapon) {
                 this.chargingShipWeapon = {
-                    weapon: gs.ship
+                    weapon: this.m.ship
                         .getItemByID(this.m.chargingShipWeapon.weaponID),
                     icon: new ui.ChargingWeaponIcon(this)
                 };

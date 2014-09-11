@@ -100,8 +100,8 @@ var Timeline = function(screen) {
     }
 
     function placeAttackMarker(attackAction) {
-        var attacker = gs.ship.getUnitByID(attackAction.attackerID),
-            receiver = gs.ship.getUnitByID(attackAction.receiverID);
+        var attacker = gs.battle.getUnitByID(attackAction.attackerID),
+            receiver = gs.battle.getUnitByID(attackAction.receiverID);
         if (attacker && receiver) {
             markersTemp.push(new Marker(attackAction.time +
                 attackAction.damageDelay, '#ED6F00', attacker.type +
@@ -117,7 +117,8 @@ var Timeline = function(screen) {
     }
 
     function placeFireShipWeaponMarker(fswAction) {
-        var damage = gs.ship.getItemByID(fswAction.weaponID).damage;
+        var unit = gs.battle.getUnitByID(fswAction.unitID),
+            damage = unit.ship.getItemByID(fswAction.weaponID).damage;
         markersTemp.push(new Marker(fswAction.time, 'blue',
             'Enemy ship receives ' +
             damage + ' dmg'));

@@ -15,10 +15,10 @@ var ShipFrame = (function() {
      * @param shipID int The ship ID.
      * @constructor
      */
-    function ShipFrame(battle, shipID) {
+    function ShipFrame(battle, shipID, eventHandler) {
         this.battle = battle;
         this.shipID = shipID;
-        this.eventHandler = function(e) {};
+        this.eventHandler = eventHandler;
 
     }
 
