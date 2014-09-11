@@ -22,29 +22,6 @@ var orderVMs = (function() {
             this.parent(pos.x, pos.y, {image: 'markers',
                 spritewidth: TILE_SIZE, spriteheight: TILE_SIZE,
                 name: 'order'});
-
-            //Timeline item stuff
-            this.timeInfo = ko.observable({});//start, end
-            this.isBeyondNextTurn = ko.computed(function() {
-                return this.timeInfo().start === undefined;
-            }, this);
-            this.itemHeight = ko.computed(function() {
-                var duration = this.timeInfo().end - this.timeInfo().start,
-                    height;
-                if (duration) {
-                    height = duration / 10 * this.screen.timeline.zoomLevel();
-                    height -= 6; //accounting for padding
-                    height -= 2; //accounting for border
-                    height -= 2; //some space for next order
-                    return height + 'px';
-                }
-            }, this);
-            this.willCompleteThisTurn = ko.computed(function() {
-                return this.timeInfo().end <= this.screen.turnDuration;
-            }, this);
-            this.itemColorObs = ko.computed(function() {
-                return this.willCompleteThisTurn() ? this.itemColor : 'dimgray';
-            }, this);
         },
         getMarkerTile: function() {
             throw 'getMarkerTile not implemented in ' + this.m.type + ' order.';
