@@ -18,7 +18,6 @@ var ShipVM = function(shipModel) {
     this.unitVMs = [];
 
     this.m = shipModel;
-    this.hp = ko.observable(shipModel.hp);
     this.showInScreen = function() {
         me.levelDirector.loadLevel(this.m.tmxName);
     };
@@ -39,7 +38,6 @@ var ShipVM = function(shipModel) {
         if (somethingChanged) {
             me.game.sort();
         }
-        this.hp(this.m.hp);
         return somethingChanged;
     };
     this.updateItems = function() {
