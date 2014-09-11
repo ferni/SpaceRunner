@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-/*global HTMLIFrameElement, $ */
+/*global HTMLIFrameElement, $, gs */
 
 var ShipFrame = (function() {
     'use strict';
@@ -33,7 +33,7 @@ var ShipFrame = (function() {
         init: function(x, y, width, height) {
             //create iframe, pass the model and bind with onEvent
             var self = this,
-                iframe = $('<iframe href="ship-frame" width="' + width +
+                iframe = $('<iframe src="ship-frame" width="' + width +
                     '" height="' + height + '"/>')
                     .css({position: 'absolute', top: y, left: x})[0];
             $('#screensUi').append(iframe);
@@ -45,6 +45,7 @@ var ShipFrame = (function() {
             }, false);
 
             sendData({
+                playerJson: gs.player.toJson(),
                 battleJson: self.battle.toJson(),
                 shipID: self.shipID
             }, iframe);

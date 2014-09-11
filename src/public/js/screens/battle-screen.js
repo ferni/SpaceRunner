@@ -6,11 +6,10 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipFrame, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
+$, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
-    scriptPlayer: null,
     scriptServer: [],
     mouseDownPos: null,
     /**
@@ -67,16 +66,7 @@ screens.register('battle', ConnectedScreen.extend({
         ];
         this.shipFrames[0].init(100, 50, 500, 500);
         this.shipFrames[1].init(600, 50, 500, 500);
-        this.scriptPlayer = new ScriptPlayer(this);
         this.timeline = new Timeline(this);
-        me.input.bindKey(me.input.KEY.ESC, 'escape');
-        me.input.bindKey(me.input.KEY.D, 'delete');
-        me.input.registerMouseEvent('mouseup', me.game.viewport,
-            this.mouseUp.bind(this));
-        me.input.registerMouseEvent('mousedown', me.game.viewport,
-            this.mouseDown.bind(this));
-        me.input.registerMouseEvent('mousemove', me.game.viewport,
-            this.mouseMove.bind(this));
 
         this.pause();
 
@@ -92,19 +82,14 @@ screens.register('battle', ConnectedScreen.extend({
     },
     onDestroy: function() {
         'use strict';
-        me.input.unbindKey(me.input.KEY.ESC);
-        me.input.unbindKey(me.input.KEY.D);
-        me.input.releaseMouseEvent('mouseup', me.game.viewport);
-        me.input.releaseMouseEvent('mousedown', me.game.viewport);
-        me.input.releaseMouseEvent('mousemove', me.game.viewport);
     },
     onResetAndLoaded: function() {
         'use strict';
         var screen = this;
         //Knockout bindings
         function ViewModel() {
-            this.shipVM = function() {
-                return screen.shipVM;
+            this.ship = function() {
+                return gs.battle.ships[0];
             };
             this.enemyHP = ko.observable(gs.battle.ships[1].hp);
             this.selectedUnit = ko.observable(null);
@@ -203,7 +188,6 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        this.scriptPlayer.onPause();
         if (this.resultingModel) {
             this.compareModelWithServer();
         }

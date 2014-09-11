@@ -16,14 +16,15 @@ screens.register('battle', me.ScreenObject.extend({
     /**
      *
      * @param battle sh.Battle
+     * @param shipID int
      * @param orders Object
      */
-    onResetEvent: function(battle, orders) {
+    onResetEvent: function(battle, shipID, orders) {
         'use strict';
         this.parent({id: battle.id});
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
-        gs.ship = battle.ships[0];
+        gs.ship = _.findWhere(battle.ships, {id: shipID});
         console.log('Battle id is ' + this.id);
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
@@ -138,7 +139,7 @@ screens.register('battle', me.ScreenObject.extend({
                 if (!sh.v.equal(this.dragging.m.destination, mouse)) {
                     draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
-                    if (this.dragging.m.isValid(gs.ship, gs.player.id)) {
+                    if (this.dragging.m.isValid(gs.battle, gs.player.id)) {
                         this.dragging.unitVM.orders.valueHasMutated();
                     } else {
                         this.dragging.m.destination = draggedOriginalPos;
