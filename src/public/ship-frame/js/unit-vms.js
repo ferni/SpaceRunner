@@ -263,12 +263,11 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         console.log('Selected unit ' + this.m.id + ' - pos: ' +
             sh.v.str(this.m) + ', GUID: ' + this.GUID);
-        me.state.current().updateUnitHud();
+        //TODO: send selected event?
         _.invoke(this.orderVMs, 'show');
     },
     onDeselected: function() {
         'use strict';
-        me.state.current().updateUnitHud();
         _.invoke(this.orderVMs, 'hide');
     },
     occupies: function(tile) {
