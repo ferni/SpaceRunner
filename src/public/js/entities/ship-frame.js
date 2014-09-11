@@ -13,13 +13,12 @@ var ShipFrame = (function() {
      *
      * @param battle sh.Battle A battle.
      * @param shipID int The ship ID.
-     * @param onEvent Function Callback for emitted events.
      * @constructor
      */
-    function ShipFrame(battle, shipID, onEvent) {
+    function ShipFrame(battle, shipID) {
         this.battle = battle;
         this.shipID = shipID;
-        this.onEvent = onEvent;
+        this.eventHandler = function(e) {};
 
     }
 
@@ -41,7 +40,7 @@ var ShipFrame = (function() {
             //listen to messages from the iframe
             window.addEventListener('message', function(event) {
                 if (event.source === iframe.contentWindow) {
-                    self.onEvent(event.data);
+                    self.eventHandler(event.data);
                 }
             }, false);
 
