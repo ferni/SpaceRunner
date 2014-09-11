@@ -305,6 +305,7 @@ var jsApp = {
             }
         }
         window.addEventListener("message", handleParentMessage, false);
+        parent.postMessage({eventName: 'ready'}, '*');
 
     },
     /*

@@ -40,15 +40,18 @@ var ShipFrame = (function() {
             //listen to messages from the iframe
             window.addEventListener('message', function(event) {
                 if (event.source === iframe.contentWindow) {
-                    self.eventHandler(event.data);
+                    if (event.data.eventName === 'ready') {
+                        sendData({
+                            type: 'start battle',
+                            playerJson: gs.player.toJson(),
+                            battleJson: self.battle.toJson(),
+                            shipID: self.shipID
+                        }, iframe);
+                    } else {
+                        self.eventHandler(event.data);
+                    }
                 }
             }, false);
-
-            sendData({
-                playerJson: gs.player.toJson(),
-                battleJson: self.battle.toJson(),
-                shipID: self.shipID
-            }, iframe);
             this.iframe = iframe;
         },
         runScript: function(script) {
