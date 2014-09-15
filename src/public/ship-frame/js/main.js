@@ -287,14 +287,7 @@ var jsApp = {
         window.gs = new GameState();
 
         this.generateHullMaps();
-/*
-        //prepare dom
-        $('#jsapp').bind('contextmenu', function() {
-            return false;//disable context menu
-        }).attr('unselectable', 'on')
-            .css('user-select', 'none')
-            .on('selectstart', false);//disable selection
-*/
+
         function handleParentMessage(event) {
             if (event.data.type === 'start battle') {
                 gs.player = new sh.Player(event.data.playerJson);
