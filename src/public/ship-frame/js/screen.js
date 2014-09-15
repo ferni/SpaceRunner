@@ -139,7 +139,9 @@ screens.register('battle', me.ScreenObject.extend({
                     draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
                     if (this.dragging.m.isValid(gs.battle, gs.player.id)) {
-                        this.dragging.unitVM.orders.valueHasMutated();
+                        this.dragging.unitVM.orders(
+                            this.dragging.unitVM.m.orders
+                        );
                     } else {
                         this.dragging.m.destination = draggedOriginalPos;
                     }
