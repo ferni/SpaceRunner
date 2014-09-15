@@ -13,6 +13,10 @@ screens.register('battle', me.ScreenObject.extend({
     scriptPlayer: null,
     scriptServer: [],
     mouseDownPos: null,
+    init: function() {
+        'use strict';
+        this.parent(true);
+    },
     /**
      *
      * @param battle sh.Battle
@@ -21,7 +25,7 @@ screens.register('battle', me.ScreenObject.extend({
      */
     onResetEvent: function(battle, shipID, orders) {
         'use strict';
-        this.parent({id: battle.id});
+        this.id = battle.id;
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
         gs.ship = _.findWhere(battle.ships, {id: shipID});
@@ -57,21 +61,11 @@ screens.register('battle', me.ScreenObject.extend({
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
     },
-    onData: function(data) {
+    runScript: function(script) {
         'use strict';
-        //TODO: receive the data (the script) through postMessage
-        var screen = this;
-        this.currentTurnID = data.currentTurnID;
-        if (this.paused && data.scriptReady) {
-            $.post('/battle/getscript', {id: screen.id}, function(data) {
-                var script = new sh.Script().fromJson(data.script);
-                screen.scriptServer = script;
-                screen.scriptPlayer.loadScript(script);
-                screen.shipVM.update();
-                screen.resultingModel = data.resultingModel;
-                screen.resume();
-            });
-        }
+        this.scriptPlayer.loadScript(script);
+        this.shipVM.update();
+        this.resume();
     },
     update: function() {
         'use strict';
@@ -99,6 +93,7 @@ screens.register('battle', me.ScreenObject.extend({
                 this.previewOrders = {};
             }
         }
+        return true;
     },
     draw: function(ctx) {
         'use strict';

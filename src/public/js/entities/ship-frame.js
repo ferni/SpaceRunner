@@ -54,9 +54,9 @@ var ShipFrame = (function() {
             }, false);
             this.iframe = iframe;
         },
-        runScript: function(script) {
+        runScript: function(scriptJson) {
             //pass the script to iframe
-            sendData(script.toJson(), this.iframe);
+            sendData(scriptJson, this.iframe);
         }
     };
     return ShipFrame;

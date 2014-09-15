@@ -120,9 +120,8 @@ screens.register('battle', ConnectedScreen.extend({
         if (this.paused && data.scriptReady) {
             $.post('/battle/getscript', {id: screen.id}, function(data) {
                 //send script to ships through postMessage
-                var script = new sh.Script().fromJson(data.script);
-                screen.scriptServer = script;
-                _.invoke(screen.shipFrames, 'runScript', script);
+                screen.scriptServer = new sh.Script().fromJson(data.script);
+                _.invoke(screen.shipFrames, 'runScript', data.script);
                 screen.resultingModel = data.resultingModel;
                 screen.resume();
                 screen.stopFetching();
