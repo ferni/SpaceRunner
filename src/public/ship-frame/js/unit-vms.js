@@ -49,21 +49,15 @@ var UnitVM = TileEntityVM.extend({
             if (newValue) {
                 self.m.orders = newValue;
                 ordersObject[self.m.id] = newValue;
-                //TODO: send orders to parent
-                $.post('/battle/sendorders',
-                    {id: self.screen.id,//battle id
-                        orders: new sh.OrderPackage(ordersObject).toJson()},
-                    function () {
-                        console.log('Orders successfully submitted');
-                    }, 'json')
-                    .fail(function () {
-                        console.error('Server error when submitting orders.');
-                    });
+                parent.postMessage({
+                    eventName: 'new orders',
+                    orderPackageJson: new sh.OrderPackage(ordersObject)
+                        .toJson()
+                }, '*');
+
                 if (!self.updateOrderVMs()) {
                     _.invoke(self.orderVMs, 'updatePath');
                 }
-                //TODO: send event update timeline
-                //self.screen.timeline.update();
             }
             return self.m.orders;
         };

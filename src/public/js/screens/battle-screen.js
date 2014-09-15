@@ -52,13 +52,25 @@ screens.register('battle', ConnectedScreen.extend({
      */
     onReset: function(battle, orders) {
         'use strict';
+        var self = this;
         this.parent({id: battle.id});
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         function frameEventHandler(e) {
-
+            if (e.eventName === 'new orders') {
+                $.post('/battle/sendorders',
+                    {id: self.screen.id,//battle id
+                        orders: e.orderPackageJson},
+                    function () {
+                        console.log('Orders successfully submitted');
+                    }, 'json')
+                    .fail(function () {
+                        console.error('Server error when submitting orders.');
+                    });
+                self.timeline.update();
+            }
         }
         this.shipFrames = [
             new ShipFrame(battle, battle.ships[0].id, frameEventHandler),
