@@ -45,6 +45,7 @@ if (typeof exports !== 'undefined') {
         },
         toJson: function() {
             return {
+                type: 'Script',
                 turnDuration: this.turnDuration,
                 actions: sh.utils.mapToJson(this.actions),
                 sortedModelChangesIndex: this.sortedModelChangesIndex,
