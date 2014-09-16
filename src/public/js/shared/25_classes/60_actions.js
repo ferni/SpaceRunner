@@ -273,7 +273,7 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.setJson({
                 type: 'DamageShip',
-                properties: ['unitID', 'tile', 'damage', 'cooldown'],
+                properties: ['shipID', 'unitID', 'tile', 'damage', 'cooldown'],
                 json: json
             });
         },

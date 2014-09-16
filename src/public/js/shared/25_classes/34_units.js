@@ -150,6 +150,7 @@ sh.Unit = sh.TileEntity.extendShared({
                 this.ship.itemsMap.at(this.x, this.y) instanceof
                     sh.items.WeakSpot) {
             return [new sh.actions.DamageShip({
+                shipID: this.ship.id,
                 unitID: this.id,
                 tile: {x: this.x, y: this.y},
                 damage: this.meleeDamage,
