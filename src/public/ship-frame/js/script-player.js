@@ -30,30 +30,46 @@ var ScriptPlayer = function(battleScreen) {
     actionPlayers = {
         'Move': {
             'start': function(action) {
-                var unitVM = battleScreen.shipVM.getUnitVMByID(
-                        action.unitID
-                    ),
-                    tilePx = v.mul(action.to, TILE_SIZE),
-                    toPx = v.add(tilePx, {x: 8, y: 8});//center
+                var unitVM, tilePx, toPx;
+                unitVM = battleScreen.shipVM.getUnitVMByID(
+                    action.unitID
+                );
+                if (!unitVM) {
+                    //unit was not in this ship
+                    return;
+                }
+                tilePx = v.mul(action.to, TILE_SIZE);
+                toPx = v.add(tilePx, {x: 8, y: 8});//center
                 unitVM.tweenTo(toPx, action.duration);
             }
         },
         'Attack': {
             'start': function(action) {
                 var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+                if (!receiverVM) {
+                    //unit was not in this ship
+                    return;
+                }
                 battleScreen.shipVM
                     .getUnitVMByID(action.attackerID)
                     .playAttack(receiverVM.pos);
             },
             'hit': function(action) {
                 var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+                if (!receiverVM) {
+                    //unit was not in this ship
+                    return;
+                }
                 receiverVM.playDamage(action.damage);
             }
         },
         'DamageShip' : {
             'start': function(action) {
-                var red = new ui.RedColorEntity(action.tile.x, action.tile.y),
-                    tween;
+                var red, tween;
+                if (action.shipID !== gs.ship.id) {
+                    return;
+                }
+                red = new ui.RedColorEntity(action.tile.x, action.tile.y);
                 me.game.add(red, ui.layers.colorOverlay);
                 me.game.sort();
                 tween = new me.Tween(red).to({alpha: 0}, 200).onComplete(function() {
@@ -65,6 +81,9 @@ var ScriptPlayer = function(battleScreen) {
         'FireShipWeapon': {
             'start': function(action) {
                 var unit = gs.battle.getUnitByID(action.unitID);
+                if (unit.ship !== gs.ship) {
+                    return;
+                }
                 battleScreen.shipVM.getVM(
                     unit.ship.getItemByID(action.weaponID)
                 ).playFire();
