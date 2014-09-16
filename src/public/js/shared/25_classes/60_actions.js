@@ -470,7 +470,7 @@ if (typeof exports !== 'undefined') {
                         dest.addUnit(unit);
                     }
                 }
-            ])
+            ]);
         }
     });
 }());
