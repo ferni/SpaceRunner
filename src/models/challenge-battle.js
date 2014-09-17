@@ -20,15 +20,20 @@ exports.ChallengeBattle = BattleServer.extend({
     init: function(params) {
         'use strict';
         var ship = new sh.Ship({json: params.shipJson}),
-            Zealot = sh.units.Zealot;
+            Zealot = sh.units.Zealot,
+            enemyShip;
         this.parent({id: params.id, ship: ship});
+        ship.owner = params.player;
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
         ship.putUnit(new Zealot({ownerID: params.player.id}));
-        this.tempSurrogate.ships[0].owner = params.player;
-        this.tempSurrogate.ships[1].owner = new AIPlayer('Enemy');
+
+        enemyShip = this.tempSurrogate.ships[1];
+        enemyShip.owner = new AIPlayer('Enemy');
+        enemyShip.putUnit(new Zealot({ownerID: params.player.id}));
+        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
     },
     nextTurn: function() {
         'use strict';
