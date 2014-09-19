@@ -55,7 +55,20 @@ exports.BattleServer = Class.extend({
     winner: null,
     init: function(parameters) {
         'use strict';
-        var enemyShip = new sh.Ship({tmxName: 'humanoid_cruiser'});
+        var enemyShip = new sh.Ship({json: JSON.parse(
+                '{"tmxName":"Humanoid_Cruiser","buildings":[' +
+                    '{"type":"Power","x":15,"y":11,"r":false},' +
+                    '{"type":"Engine","x":11,"y":9,"r":false},' +
+                    '{"type":"Engine","x":11,"y":13,"r":false},' +
+                    '{"type":"Weapon","x":22,"y":9,"r":false},' +
+                    '{"type":"Weapon","x":22,"y":13,"r":false},' +
+                    '{"type":"Component","x":19,"y":11,"r":false},' +
+                    '{"type":"Console","x":11,"y":11,"r":false},' +
+                    '{"type":"Console","x":11,"y":12,"r":false},' +
+                    '{"type":"Console","x":21,"y":9,"r":false},' +
+                    '{"type":"Console","x":21,"y":14,"r":false}],' +
+                    '"units":[]}'
+            )});
         enemyShip.hp = 300;
         this.id = parameters.id;
         this.tempSurrogate = new sh.Battle({
