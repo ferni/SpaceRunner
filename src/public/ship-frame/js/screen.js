@@ -89,7 +89,7 @@ screens.register('battle', me.ScreenObject.extend({
                     });
             }
             if (me.input.isKeyPressed('escape')) {
-                _.invoke(gs.selected, 'deselect');
+                _.invoke(gs.selected.slice(0), 'deselect');
                 this.previewOrders = {};
             }
         }
