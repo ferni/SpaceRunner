@@ -220,7 +220,7 @@ screens.register('battle', me.ScreenObject.extend({
     compareModelWithServer: function() {
         'use strict';
         var clientString = JSON.stringify(gs.battle.toJson()),
-            serverString = JSON.stringify(this.resultingModel);
+            serverString = JSON.stringify(this.resultingServerModel);
         if (clientString === serverString) {
             console.log('Client battle model correctly matches the server' +
                 ' battle model.');
@@ -234,7 +234,7 @@ screens.register('battle', me.ScreenObject.extend({
         'use strict';
         this.scriptPlayer.onPause();
         this.shipVM.update();
-        if (this.resultingModel) {
+        if (this.resultingServerModel) {
             this.compareModelWithServer();
         }
         me.game.sort();

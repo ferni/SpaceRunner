@@ -137,7 +137,7 @@ routes.add('getscript', function(req, res, next) {
     return authenticate(req, next, function(battle) {
         return res.json({
             script: battle.currentTurn.script.toJson(),
-            resultingModel: battle.tempSurrogate.toJson()
+            resultingServerModel: battle.tempSurrogate.toJson()
         });
     });
 });
