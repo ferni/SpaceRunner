@@ -1,75 +1,79 @@
 <div id="battle-screen">
-    <img src="/data/img/render/pause-icon.png" id="paused-indicator" title="Paused" />
-    <span id="elapsed"></span>
-    <div id="top-hud">
-        <span id="turn-info">Turn #<span id="turn-number">0</span></span>
-        <span id="hp">[Own: <span data-bind="text:ship().hp"></span>]</span>
-        <span id="enemyHP">[Enemy: <span data-bind="text:enemyHP()"></span>]</span>
-    </div>
-    <div id="left-hud">
-        <!-- ko if:selectedUnit() -->
-        <div id="unit-portrait" data-bind="with: selectedUnit">
-            <h3 data-bind="text:m.type"></h3>
-            <span>HP: <span data-bind="text:m.hp"></span></span>
-            <span>Damage: <span data-bind="text:m.meleeDamage"></span></span>
+    <div id="ui">
+        <img src="/data/img/render/pause-icon.png" id="paused-indicator" title="Paused" />
+        <span id="elapsed"></span>
+        <div id="top-hud">
+            <span id="turn-info">Turn #<span id="turn-number">0</span></span>
+            <span id="hp">[Own: <span data-bind="text:ship().hp"></span>]</span>
+            <span id="enemyHP">[Enemy: <span data-bind="text:enemyHP()"></span>]</span>
         </div>
-        <!-- /ko -->
-        <div id="zoom">
-            <div id="zoom-info">
-                <label id="zoom-label">Zoom</label>
-                <label id="zoom-level" data-bind="text:timeline.zoomLevel() + 'x'"></label>
-            </div>
-            <div id="zoom-slider"></div>
-        </div>
-        <div id="time-line" data-bind="timeline:timeline">
-            <div id="time-ruler" data-bind="with:timeline">
-                <div id="numbers">
-                    <div data-bind="foreach: turns">
-                        <hr class="separator" data-bind="style:{top:top()}"/>
-                        <h3 data-bind="text:separatorLabel"></h3>
-                        <!-- ko foreach:segments -->
-                        <div class="time-segment" data-bind="style:{height:height(), lineHeight:height()}">
-                            <label data-bind="text:$index() + 1"></label>
-                        </div>
-                        <!-- /ko -->
-                    </div>
-                    <div id="markers" data-bind="foreach:markers">
-                        <div class="marker" data-bind="style:{backgroundColor:color,
-                            top:top()}"></div>
-                    </div>
-                    <table id="marker-labels-container" cellpadding="0" cellspacing="0" border="0">
-                        <tr>
-                            <td>
-                                <img id="balloon-pointer" src="data/img/render/balloon-pointer.png"
-                                        height="10px"/>
-                            </td>
-                            <td valign="middle">
-                                <div id="marker-labels"></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
+        <div id="left-hud">
             <!-- ko if:selectedUnit() -->
-            <div data-bind="with:selectedUnit">
-                <ol id="unit-orders" data-bind="foreach: orders, sortableList: orders">
-                    <!-- ko if:$parent.getOrderVM($data) -->
-                        <!-- ko with:$parent.getOrderVM($data) -->
-                            <!-- ko ifnot:isBeyondNextTurn() -->
-                            <li data-bind="style:{height:itemHeight(),
-                                backgroundColor: itemColorObs()}">
-                                <span data-bind="text:m.toString()"></span>
-                                <button class="delete-button" data-bind="click:remove">x</button>
-                            </li>
-                            <!-- /ko -->
-                        <!-- /ko -->
-                    <!-- /ko -->
-                </ol>
+            <div id="unit-portrait" data-bind="with: selectedUnit">
+                <h3 data-bind="text:m.type"></h3>
+                <span>HP: <span data-bind="text:m.hp"></span></span>
+                <span>Damage: <span data-bind="text:m.meleeDamage"></span></span>
             </div>
             <!-- /ko -->
+            <div id="zoom">
+                <div id="zoom-info">
+                    <label id="zoom-label">Zoom</label>
+                    <label id="zoom-level" data-bind="text:timeline.zoomLevel() + 'x'"></label>
+                </div>
+                <div id="zoom-slider"></div>
+            </div>
+            <div id="time-line" data-bind="timeline:timeline">
+                <div id="time-ruler" data-bind="with:timeline">
+                    <div id="numbers">
+                        <div data-bind="foreach: turns">
+                            <hr class="separator" data-bind="style:{top:top()}"/>
+                            <h3 data-bind="text:separatorLabel"></h3>
+                            <!-- ko foreach:segments -->
+                            <div class="time-segment" data-bind="style:{height:height(), lineHeight:height()}">
+                                <label data-bind="text:$index() + 1"></label>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                        <div id="markers" data-bind="foreach:markers">
+                            <div class="marker" data-bind="style:{backgroundColor:color,
+                                top:top()}"></div>
+                        </div>
+                        <table id="marker-labels-container" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>
+                                    <img id="balloon-pointer" src="data/img/render/balloon-pointer.png"
+                                            height="10px"/>
+                                </td>
+                                <td valign="middle">
+                                    <div id="marker-labels"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ko if:selectedUnit() -->
+                <div data-bind="with:selectedUnit">
+                    <ol id="unit-orders" data-bind="foreach: orders, sortableList: orders">
+                        <!-- ko if:$parent.getOrderVM($data) -->
+                            <!-- ko with:$parent.getOrderVM($data) -->
+                                <!-- ko ifnot:isBeyondNextTurn() -->
+                                <li data-bind="style:{height:itemHeight(),
+                                    backgroundColor: itemColorObs()}">
+                                    <span data-bind="text:m.toString()"></span>
+                                    <button class="delete-button" data-bind="click:remove">x</button>
+                                </li>
+                                <!-- /ko -->
+                            <!-- /ko -->
+                        <!-- /ko -->
+                    </ol>
+                </div>
+                <!-- /ko -->
+            </div>
+            <hr id="mouse-marker"/>
         </div>
-        <hr id="mouse-marker"/>
+        <button id="ready-button" class="button">Ready</button>
     </div>
-    <button id="ready-button" class="button">Ready</button>
+    <div id="frames">
+    </div>
 </div>

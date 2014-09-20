@@ -289,3 +289,12 @@ body.dragging, body.dragging * {
     color: white;
 }
 
+#battle-screen #ui {
+    z-index: 50;
+}
+
+#battle-screen #frames {
+    z-index: 20;
+    margin-left: 200px;
+    margin-top: 80px;
+}

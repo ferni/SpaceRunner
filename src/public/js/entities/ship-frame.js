@@ -35,8 +35,8 @@ var ShipFrame = (function() {
             var self = this,
                 iframe = $('<iframe src="ship-frame" width="' + width +
                     '" height="' + height + '"/>')
-                    .css({position: 'absolute', top: y, left: x})[0];
-            $('#screensUi').append(iframe);
+                    .css({display: 'inline'})[0];
+            $('#frames').append(iframe);
             //listen to messages from the iframe
             window.addEventListener('message', function(event) {
                 if (event.source === iframe.contentWindow) {
