@@ -13,6 +13,7 @@ var ShipFrame = (function() {
      *
      * @param battle sh.Battle A battle.
      * @param shipID int The ship ID.
+     * @param eventHandler Function Handler to catch messages from the iframe.
      * @constructor
      */
     function ShipFrame(battle, shipID, eventHandler) {
