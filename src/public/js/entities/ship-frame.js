@@ -12,13 +12,13 @@ var ShipFrame = (function() {
     /**
      *
      * @param battle sh.Battle A battle.
-     * @param shipID int The ship ID.
+     * @param ship sh.Ship The relevant ship in the battle.
      * @param eventHandler Function Handler to catch messages from the iframe.
      * @constructor
      */
-    function ShipFrame(battle, shipID, eventHandler) {
+    function ShipFrame(battle, ship, eventHandler) {
         this.battle = battle;
-        this.shipID = shipID;
+        this.ship = ship;
         this.eventHandler = eventHandler;
 
     }
@@ -46,7 +46,7 @@ var ShipFrame = (function() {
                             type: 'start battle',
                             playerJson: gs.player.toJson(),
                             battleJson: self.battle.toJson(),
-                            shipID: self.shipID
+                            shipID: self.ship.id
                         }, iframe);
                     } else {
                         self.eventHandler(event.data);

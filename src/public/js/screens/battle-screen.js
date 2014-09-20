@@ -74,8 +74,8 @@ screens.register('battle', ConnectedScreen.extend({
             }
         }
         this.shipFrames = [
-            new ShipFrame(battle, battle.ships[0].id, frameEventHandler),
-            new ShipFrame(battle, battle.ships[1].id, frameEventHandler)
+            new ShipFrame(battle, battle.ships[0], frameEventHandler),
+            new ShipFrame(battle, battle.ships[1], frameEventHandler)
         ];
         this.shipFrames[0].init(600, 600);
         this.shipFrames[1].init(600, 600);
