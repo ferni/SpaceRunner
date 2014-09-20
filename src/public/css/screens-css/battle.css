@@ -120,6 +120,7 @@
     left: -1px;/*accounting for parent border*/
     bottom: 5px;
     width: 222px;
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Force the scroll bar to the left hand side of the div */
