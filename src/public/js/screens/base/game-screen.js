@@ -82,6 +82,7 @@ var GameScreen = me.ScreenObject.extend({
             throw 'Could not find preloaded html for ' + this.name;
         }
         $('#screensUi').html(screens.storedHtmls[this.name]);
+        $('#jsapp canvas').css({width: '0px', height: '0px'});
     },
     clearHtml: function() {
         'use strict';
