@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-/*global HTMLIFrameElement, $, gs */
+/*global HTMLIFrameElement, $, gs, TILE_SIZE */
 
 var ShipFrame = (function() {
     'use strict';
@@ -32,9 +32,11 @@ var ShipFrame = (function() {
          * Appear on screen
          */
         init: function(width, height) {
-            //create iframe, pass the model and bind with onEvent
+            //create an iframe, pass the model and bind with onEvent
             var self = this,
-                iframe = $('<iframe src="ship-frame" width="' + width +
+                url = 'ship-frame/?width=' + (self.ship.width * TILE_SIZE) +
+                    '&height=' + (self.ship.height * TILE_SIZE),
+                iframe = $('<iframe src="' + url + '" width="' + width +
                     '" height="' + height + '"/>')
                     .css({display: 'inline'})[0];
             $('#frames').append(iframe);
