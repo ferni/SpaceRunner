@@ -2,10 +2,6 @@
     margin: 2px;
 }
 
-#battle-screen body{
-    font-family: Verdana,serif;
-}
-
 #battle-screen #ready-button{
     border: 3px solid white;
     position: fixed;
