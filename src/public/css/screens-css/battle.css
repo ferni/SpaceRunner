@@ -295,6 +295,11 @@ body.dragging, body.dragging * {
 
 #battle-screen #frames {
     z-index: 20;
-    margin-left: 200px;
+    margin-left: 250px;
     margin-top: 80px;
+    width: 1250px;
+}
+
+#battle-screen #frames iframe{
+    margin-right: 10px;
 }

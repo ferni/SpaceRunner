@@ -77,8 +77,8 @@ screens.register('battle', ConnectedScreen.extend({
             new ShipFrame(battle, battle.ships[0].id, frameEventHandler),
             new ShipFrame(battle, battle.ships[1].id, frameEventHandler)
         ];
-        this.shipFrames[0].init(500, 500);
-        this.shipFrames[1].init(500, 500);
+        this.shipFrames[0].init(600, 600);
+        this.shipFrames[1].init(600, 600);
         this.timeline = new Timeline(this);
 
         this.pause();
