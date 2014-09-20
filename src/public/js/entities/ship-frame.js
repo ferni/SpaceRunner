@@ -30,7 +30,7 @@ var ShipFrame = (function() {
         /**
          * Appear on screen
          */
-        init: function(x, y, width, height) {
+        init: function(width, height) {
             //create iframe, pass the model and bind with onEvent
             var self = this,
                 iframe = $('<iframe src="ship-frame" width="' + width +
