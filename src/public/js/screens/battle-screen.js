@@ -71,6 +71,10 @@ screens.register('battle', ConnectedScreen.extend({
                         console.error('Server error when submitting orders.');
                     });
                 self.timeline.update();
+            } else if (e.eventName === 'finished playing') {
+                if (self.resultingServerModel) {
+                    self.compareModelWithServer(e.battleJson);
+                }
             }
         }
         this.shipFrames = [
@@ -182,9 +186,9 @@ screens.register('battle', ConnectedScreen.extend({
         return 'http://tlrobinson.net/projects/javascript-fun/jsondiff/#' +
             encodeURIComponent(JSON.stringify(hashObject));
     },
-    compareModelWithServer: function() {
+    compareModelWithServer: function(battleJson) {
         'use strict';
-        var clientString = JSON.stringify(gs.battle.toJson()),
+        var clientString = JSON.stringify(battleJson),
             serverString = JSON.stringify(this.resultingServerModel);
         if (clientString === serverString) {
             console.log('Client battle model correctly matches the server' +
@@ -200,9 +204,6 @@ screens.register('battle', ConnectedScreen.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
-        if (this.resultingServerModel) {
-            this.compareModelWithServer();
-        }
         this.timeline.update();
         me.game.sort();
         me.game.repaint();

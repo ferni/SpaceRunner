@@ -217,26 +217,14 @@ screens.register('battle', me.ScreenObject.extend({
         return 'http://tlrobinson.net/projects/javascript-fun/jsondiff/#' +
             encodeURIComponent(JSON.stringify(hashObject));
     },
-    compareModelWithServer: function() {
-        'use strict';
-        var clientString = JSON.stringify(gs.battle.toJson()),
-            serverString = JSON.stringify(this.resultingServerModel);
-        if (clientString === serverString) {
-            console.log('Client battle model correctly matches the server' +
-                ' battle model.');
-        } else {
-            console.error('Client battle model is different than the server' +
-                ' battle model (left: client, right: server): ' +
-                this.getModelDifferenceUrl(clientString, serverString));
-        }
-    },
     pause: function() {
         'use strict';
         this.scriptPlayer.onPause();
         this.shipVM.update();
-        if (this.resultingServerModel) {
-            this.compareModelWithServer();
-        }
+        parent.postMessage({
+            eventName: 'finished playing',
+            battleJson: gs.battle.toJson()
+        }, '*');
         me.game.sort();
         me.game.repaint();
 
