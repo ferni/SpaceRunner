@@ -120,7 +120,9 @@ var orderVMs = (function() {
             this.alpha = 0.4;
         },
         remove: function() {
-            this.unitVM.orders.remove(this.m);
+            var unitOrders = this.unitVM.m.orders;
+            utils.removeFromArray(this.m, unitOrders);
+            this.unitVM.orders(unitOrders);
         }
     });
 
