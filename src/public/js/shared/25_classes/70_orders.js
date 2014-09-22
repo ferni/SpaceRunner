@@ -22,6 +22,26 @@ if (typeof exports !== 'undefined') {
             dontCrossCorners: true
         });
 
+    sh.OrderCollection = sh.SharedClass.extendShared({
+        init: function() {
+            this.orders = {};
+        },
+        /**
+         * Adds a unit's orders to the collection.
+         * @param orderArray Array Array of sh.Order.
+         * @param unitID {int|String} The unit id to which the orders belong.
+         */
+        addUnitOrders: function(orderArray, unitID) {
+            unitID = parseInt(unitID, 10);
+            if (_.any(orderArray, function(order) {
+                    return order.unitID !== unitID;
+                })) {
+                throw 'There are orders that don\'t belong to the unit';
+            }
+            this.orders[unitID] = orderArray;
+        }
+    });
+
     sh.OrderPackage = sh.SharedClass.extendShared({
         orders: {},
         init: function(orders) {

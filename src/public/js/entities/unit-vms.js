@@ -46,12 +46,13 @@ var UnitVM = TileEntityVM.extend({
         this.orderVMs = [];
         this.orders = ko.observableArray(unitModel.orders);
         this.orders.subscribe(function(newValue) {
-            var ordersObject = {};
             this.m.orders = newValue;
-            ordersObject[this.m.id] = newValue;
-            $.post('/battle/sendorders',
-                {id: self.screen.id,//battle id
-                    orders: new sh.OrderPackage(ordersObject).toJson()},
+            $.post('/battle/sendunitorders',
+                {
+                    id: self.screen.id,//battle id
+                    ordersJson: sh.utils.mapToJson(newValue),
+                    unitID: self.m.id
+                },
                 function() {
                     console.log('Orders successfully submitted');
                 }, 'json')
