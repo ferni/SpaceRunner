@@ -97,14 +97,14 @@ exports.BattleServer = Class.extend({
     generateScript: function(resetShip) {
         'use strict';
         var turn = this.currentTurn,
-            orders = new sh.OrderCollection(),
+            orderCollection = new sh.OrderCollection(),
             battle = this.tempSurrogate;
         _.each(turn.playersOrders, function(playerOrders) {
-            orders.addCollection(playerOrders);
+            orderCollection.addCollection(playerOrders);
         });
         if (resetShip === undefined) {
             resetShip = true;
         }
-        turn.script = sh.createScript(orders, battle, resetShip);
+        turn.script = sh.createScript(orderCollection, battle, resetShip);
     }
 });
