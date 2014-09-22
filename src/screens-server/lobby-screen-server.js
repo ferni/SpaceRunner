@@ -154,6 +154,6 @@ routes.add('newchallenge', function(req, res, next) {
             next(new Error('No player in session'));
         }
     } catch (e) {
-        next(e);
+        next(new Error(e.toString()));
     }
 });
