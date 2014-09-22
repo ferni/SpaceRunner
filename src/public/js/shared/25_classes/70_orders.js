@@ -39,6 +39,19 @@ if (typeof exports !== 'undefined') {
                 throw 'There are orders that don\'t belong to the unit';
             }
             this.orders[unitID] = orderArray;
+        },
+        /**
+         *
+         * @param orderCollection {sh.OrderCollection} Another collection.
+         */
+        addCollection: function(orderCollection) {
+            _.each(orderCollection.orders, function(unitOrders, unitID) {
+                if (this.orders.hasOwnProperty(unitID)) {
+                    throw 'The collection already had orders for unit ' +
+                        unitID;
+                }
+                this.addUnitOrders(unitOrders, unitID);
+            }, this);
         }
     });
 
