@@ -53,42 +53,7 @@ if (typeof exports !== 'undefined') {
                 this.addUnitOrders(unitOrders, unitID);
             }, this);
         }
-    });
-
-    sh.OrderPackage = sh.SharedClass.extendShared({
-        orders: {},
-        init: function(orders) {
-            this.orders = orders;
-        },
-        toJson: function() {
-            var ordersJson = {};
-            _.each(this.orders, function(unitsOrders, unitID) {
-                ordersJson[unitID] = sh.utils.mapToJson(unitsOrders);
-                if (ordersJson[unitID].length === 0) {
-                    ordersJson[unitID] = 'empty';
-                }
-            });
-            return {
-                type: 'OrderPackage',
-                orders: ordersJson
-            };
-        },
-        fromJson: function(json) {
-            var self = this;
-            if (json.type !== 'OrderPackage') {
-                throw 'OrderPackage json is of invalid type';
-            }
-            this.orders = {};
-            _.each(json.orders, function(unitsOrders, unitID) {
-                if (unitsOrders === 'empty') {
-                    self.orders[unitID] = [];
-                    return;
-                }
-                self.orders[unitID] = sh.utils.mapFromJson(unitsOrders,
-                    sh.orders);
-            });
-            return this;
-        }
+        //TODO: unit tests.
     });
 
     sh.Order = sh.Jsonable.extendShared({
