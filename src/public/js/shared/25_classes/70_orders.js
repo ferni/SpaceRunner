@@ -52,8 +52,19 @@ if (typeof exports !== 'undefined') {
                 }
                 this.addUnitOrders(unitOrders, unitID);
             }, this);
+        },
+        clone: function() {
+            var oc = new sh.OrderCollection();
+            _.each(this.orders, function(unitOrders, unitID) {
+                var clonedOrders = sh.utils.mapFromJson(
+                    sh.utils.mapToJson(unitOrders),
+                    sh.orders
+                );
+                oc.addUnitOrders(clonedOrders, unitID);
+            }, this);
+            return oc;
         }
-        //TODO: unit tests.
+        //TODO: unit tests
     });
 
     sh.Order = sh.Jsonable.extendShared({

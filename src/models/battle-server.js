@@ -105,6 +105,6 @@ exports.BattleServer = Class.extend({
         if (resetShip === undefined) {
             resetShip = true;
         }
-        turn.script = sh.createScript(orders.orders, battle, resetShip);
+        turn.script = sh.createScript(orders, battle, resetShip);
     }
 });

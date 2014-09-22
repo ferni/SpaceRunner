@@ -106,24 +106,32 @@ sh.Battle = sh.Jsonable.extendShared({
             return e.id;
         }).id + 1;
     },
+    /**
+     * Gets the orders from all the units as an sh.OrderCollection
+     * @returns {sh.OrderCollection}
+     */
     extractOrders: function() {
         'use strict';
-        var orders = {};
+        var orders = new sh.OrderCollection();
         _.each(this.getUnits(), function(u) {
-            orders[u.id] = sh.utils.mapToJson(u.orders);
+            orders.addUnitOrders(u.orders, u.id);
         });
         return orders;
     },
-    insertOrders: function(orders) {
+    /**
+     * Distribute the orders among the units.
+     * @param orderCollection {sh.OrderCollection}
+     */
+    insertOrders: function(orderCollection) {
         'use strict';
         var self = this;
-        _.each(orders, function(unitOrders) {
+        _.each(orderCollection.orders, function(unitOrders, unitID) {
             var unit;
             if (unitOrders.length <= 0) {
                 return;
             }
-            unit = self.getUnitByID(unitOrders[0].unitID);
-            unit.orders = sh.utils.mapFromJson(unitOrders, sh.orders);
+            unit = self.getUnitByID(unitID);
+            unit.orders = unitOrders;
         });
     },
     endOfTurnReset: function() {
