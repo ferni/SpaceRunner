@@ -64,28 +64,41 @@ test('script creation, carry over actions to next turn', function() {
                 this.updateModelChanges();
             },
             updateModelChanges: function() {
-                this.modelChanges = [];
-                this.addChange(0, function(battle) {
-                    if (battle.changedAt0) {
-                        battle.changedAt0++;
-                    } else {
-                        battle.changedAt0 = 1;
+                this.setChanges([
+                    {
+                        offset: 0,
+                        label: '0',
+                        changer: function(battle) {
+                            if (battle.changedAt0) {
+                                battle.changedAt0++;
+                            } else {
+                                battle.changedAt0 = 1;
+                            }
+                        }
+                    },
+                    {
+                        offset: 150,
+                        label: '150',
+                        changer: function(battle) {
+                            if (battle.changedAt150) {
+                                battle.changedAt150++;
+                            } else {
+                                battle.changedAt150 = 1;
+                            }
+                        }
+                    },
+                    {
+                        offset: 201,
+                        label: '201',
+                        changer: function(battle) {
+                            if (battle.changedAt201) {
+                                battle.changedAt201++;
+                            } else {
+                                battle.changedAt201 = 1;
+                            }
+                        }
                     }
-                });
-                this.addChange(150, function(battle) {
-                    if (battle.changedAt150) {
-                        battle.changedAt150++;
-                    } else {
-                        battle.changedAt150 = 1;
-                    }
-                });
-                this.addChange(201, function(battle) {
-                    if (battle.changedAt201) {
-                        battle.changedAt201++;
-                    } else {
-                        battle.changedAt201 = 1;
-                    }
-                });
+                ]);
             }
         });
     battle.turnDuration = 100,
