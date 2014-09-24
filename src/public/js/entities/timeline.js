@@ -153,7 +153,7 @@ var Timeline = function(screen) {
             );
         }
         for (i = 0; i < turnsCovered; i++) {
-            script = sh.createScript(battleClone.extractOrders(),
+            script = sh.createScript(battleClone.extractOrders().clone(),
                 battleClone, true);
             newActions = script.actions;
             if (i !== turnsCovered - 1) { //is not last turn

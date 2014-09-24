@@ -6,7 +6,7 @@
 */
 
 /*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE,
-sh, _, me, gs, $, ui*/
+sh, _, me, ko, gs, $, ui*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -51,8 +51,8 @@ var UnitVM = TileEntityVM.extend({
                 ordersObject[self.m.id] = newValue;
                 parent.postMessage({
                     eventName: 'new orders',
-                    orderPackageJson: new sh.OrderPackage(ordersObject)
-                        .toJson()
+                    ordersJson: sh.utils.mapToJson(newValue),
+                    unitID: self.m.id
                 }, '*');
 
                 if (!self.updateOrderVMs()) {
@@ -123,7 +123,7 @@ var UnitVM = TileEntityVM.extend({
         if (changed.chargingShipWeapon) {
             if (this.m.chargingShipWeapon) {
                 this.chargingShipWeapon = {
-                    weapon: this.m.ship
+                    weapon: gs.ship
                         .getItemByID(this.m.chargingShipWeapon.weaponID),
                     icon: new ui.ChargingWeaponIcon(this)
                 };
@@ -257,11 +257,12 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         console.log('Selected unit ' + this.m.id + ' - pos: ' +
             sh.v.str(this.m) + ', GUID: ' + this.GUID);
-        //TODO: send selected event?
+        me.state.current().updateUnitHud();
         _.invoke(this.orderVMs, 'show');
     },
     onDeselected: function() {
         'use strict';
+        me.state.current().updateUnitHud();
         _.invoke(this.orderVMs, 'hide');
     },
     occupies: function(tile) {

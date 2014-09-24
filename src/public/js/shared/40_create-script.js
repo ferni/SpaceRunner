@@ -31,12 +31,12 @@ if (typeof exports !== 'undefined') {
 
     /**
      * Generates a "script" for the units given all the orders issued.
-     * @param {Array} orders
+     * @param {sh.OrderCollection} orderCollection
      * @param {sh.Battle} battle
      * @param {Boolean} resetBattle Should the battle be cleaned up at the end.
      * @return {sh.Script}
      */
-    function createScript(orders, battle, resetBattle) {
+    function createScript(orderCollection, battle, resetBattle) {
         var script, queue, changes, time, actors, actor, i,
             registerActionReturned = {}, turnDuration = battle.turnDuration,
             changesAtSameTime = [];
@@ -70,7 +70,7 @@ if (typeof exports !== 'undefined') {
         }
 
         //set the orders to the units
-        battle.insertOrders(orders);
+        battle.insertOrders(orderCollection);
 
         //null change to kick-start the process
         queue.push(getVoidModelChange(0));

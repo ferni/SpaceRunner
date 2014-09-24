@@ -18,19 +18,17 @@ function BattleTurn(params) {
     this.battle = params.battle;
     this.playersOrders = {};
     this.battle.tempSurrogate.getPlayers().forEach(function(player) {
-        self.playersOrders[player.id] = {};
+        self.playersOrders[player.id] = new sh.OrderCollection();
     });
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
     this.script = null;
-    this.addOrders = function(orders, playerID) {
+    this.addOrders = function(orders, unitID, playerID) {
         var self = this;
         if (!this.battle.isPlayerInIt(playerID)) {
             throw 'Player ' + playerID + ' is not in the battle.';
         }
-        _.each(orders, function(unitOrders, unitID) {
-            self.playersOrders[playerID][unitID] = unitOrders;
-        });
+        self.playersOrders[playerID].addUnitOrders(orders, unitID);
     };
     this.isPlayerReady = function(playerID) {
         return _.any(this.playersSubmitted, function(id) {
@@ -112,15 +110,14 @@ exports.BattleServer = Class.extend({
     generateScript: function(resetShip) {
         'use strict';
         var turn = this.currentTurn,
-            orders = {},
+            orderCollection = new sh.OrderCollection(),
             battle = this.tempSurrogate;
         _.each(turn.playersOrders, function(playerOrders) {
-            orders = _.extend(orders, playerOrders);
+            orderCollection.addCollection(playerOrders);
         });
         if (resetShip === undefined) {
             resetShip = true;
         }
-        console.log('all orders' + JSON.stringify(orders));
-        turn.script = sh.createScript(orders, battle, resetShip);
+        turn.script = sh.createScript(orderCollection, battle, resetShip);
     }
 });

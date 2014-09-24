@@ -67,39 +67,21 @@ routes.add('getmodel', function(req, res, next) {
     });
 });
 
-routes.add('sendorders', function(req, res, next) {
+routes.add('sendunitorders', function(req, res, next) {
     'use strict';
-    var orders = req.body.orders,
-        verifiedOrdersCount = 0;
     return authenticate(req, next, function(battle, playerID) {
-        var turn, ordersValid = true;
-        if (orders) {
-            orders = new sh.OrderPackage().fromJson(orders).orders;
-        } else {
-            orders = {};
-        }
-        _.each(orders, function(unitOrders, unitID) {
-            unitID = parseInt(unitID, 10);
-            _.each(unitOrders, function(order) {
-                if (order.unitID !== unitID ||
-                        !order.isValid(battle.tempSurrogate, playerID)) {
-                    ordersValid = false;
-                    return;
-                }
-                verifiedOrdersCount++;
+        var orders = sh.utils.mapFromJson(req.body.ordersJson, sh.orders),
+            unitID = parseInt(req.body.unitID, 10),
+            turn = battle.currentTurn,
+            ordersValid = _.all(orders, function (order) {
+                return order.isValid(battle.tempSurrogate, playerID);
             });
-        });
-
         if (!ordersValid) {
             chat.log('ERROR: An order was invalid.');
             next(new Error('An order submitted is invalid'));
             return;
         }
-
-        turn = battle.currentTurn;
-        turn.addOrders(orders, playerID);
-        //verifiedOrdersCount is available for logging, but it might tip the
-        //other player with how many orders this player issued.
+        turn.addOrders(orders, unitID, playerID);
         chat.log('SUCCESS: The orders issued by ' +
             auth.playerByID(playerID).name +
             ' have been validated by the server');
@@ -145,16 +127,20 @@ routes.add('getscript', function(req, res, next) {
 routes.add('scriptreceived', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle, playerID) {
-        var nextTurnCreated = battle.registerScriptReceived(playerID),
-            index;
-        if (nextTurnCreated) {
-            if (battle.winner !== null) {
-                index = _.indexOf(battles, battle);
-                battles.splice(index, 1);
-            } else {
-                chat.log('All players received the script, created next turn.');
+        try {
+            var nextTurnCreated = battle.registerScriptReceived(playerID),
+                index;
+            if (nextTurnCreated) {
+                if (battle.winner !== null) {
+                    index = _.indexOf(battles, battle);
+                    battles.splice(index, 1);
+                } else {
+                    chat.log('All players received the script, created next turn.');
+                }
             }
+            return res.json({ok: true});
+        } catch (e) {
+            next(new Error(e.toString()));
         }
-        return res.json({ok: true});
     });
 });

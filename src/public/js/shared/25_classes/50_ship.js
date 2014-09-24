@@ -374,26 +374,6 @@ sh.Ship = sh.SharedClass.extendShared({
         }
         this.unitsMap.update();
     },
-    extractOrders: function() {
-        'use strict';
-        var orders = {};
-        _.each(this.units, function(u) {
-            orders[u.id] = sh.utils.mapToJson(u.orders);
-        });
-        return orders;
-    },
-    insertOrders: function(orders) {
-        'use strict';
-        var self = this;
-        _.each(orders, function(unitOrders) {
-            var unit;
-            if (unitOrders.length <= 0) {
-                return;
-            }
-            unit = self.getUnitByID(unitOrders[0].unitID);
-            unit.orders = sh.utils.mapFromJson(unitOrders, sh.orders);
-        });
-    },
     getValidOrderForPos: function(unit, pos) {
         'use strict';
         var stuff = this.map.at(pos.x, pos.y),

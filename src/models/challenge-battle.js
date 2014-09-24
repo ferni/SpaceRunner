@@ -37,11 +37,16 @@ exports.ChallengeBattle = BattleServer.extend({
     },
     nextTurn: function() {
         'use strict';
-        var aiPlayer = this.tempSurrogate.ships[1].owner;
+        var self = this,
+            aiPlayer = this.tempSurrogate.ships[1].owner,
+            aiOrders;
         this.parent();
         //register AI player orders
-        this.currentTurn.addOrders(aiPlayer.getOrders(this.tempSurrogate),
-            aiPlayer.id);
+        aiOrders = aiPlayer.getOrders(this.tempSurrogate);
+        _.each(aiOrders, function(orders, unitID) {
+            self.currentTurn.addOrders(orders, unitID, aiPlayer.id);
+        });
+
         this.currentTurn.setPlayerReady(aiPlayer.id);
         this.registerScriptReceived(aiPlayer.id);
     },

@@ -22,40 +22,49 @@ if (typeof exports !== 'undefined') {
             dontCrossCorners: true
         });
 
-    sh.OrderPackage = sh.SharedClass.extendShared({
-        orders: {},
-        init: function(orders) {
-            this.orders = orders;
-        },
-        toJson: function() {
-            var ordersJson = {};
-            _.each(this.orders, function(unitsOrders, unitID) {
-                ordersJson[unitID] = sh.utils.mapToJson(unitsOrders);
-                if (ordersJson[unitID].length === 0) {
-                    ordersJson[unitID] = 'empty';
-                }
-            });
-            return {
-                type: 'OrderPackage',
-                orders: ordersJson
-            };
-        },
-        fromJson: function(json) {
-            var self = this;
-            if (json.type !== 'OrderPackage') {
-                throw 'OrderPackage json is of invalid type';
-            }
+    sh.OrderCollection = sh.SharedClass.extendShared({
+        init: function() {
             this.orders = {};
-            _.each(json.orders, function(unitsOrders, unitID) {
-                if (unitsOrders === 'empty') {
-                    self.orders[unitID] = [];
-                    return;
+        },
+        /**
+         * Adds a unit's orders to the collection.
+         * @param orderArray Array Array of sh.Order.
+         * @param unitID {int|String} The unit id to which the orders belong.
+         */
+        addUnitOrders: function(orderArray, unitID) {
+            unitID = parseInt(unitID, 10);
+            if (_.any(orderArray, function(order) {
+                    return order.unitID !== unitID;
+                })) {
+                throw 'There are orders that don\'t belong to the unit';
+            }
+            this.orders[unitID] = orderArray;
+        },
+        /**
+         *
+         * @param orderCollection {sh.OrderCollection} Another collection.
+         */
+        addCollection: function(orderCollection) {
+            _.each(orderCollection.orders, function(unitOrders, unitID) {
+                if (this.orders.hasOwnProperty(unitID)) {
+                    throw 'The collection already had orders for unit ' +
+                        unitID;
                 }
-                self.orders[unitID] = sh.utils.mapFromJson(unitsOrders,
-                    sh.orders);
-            });
-            return this;
+                this.addUnitOrders(unitOrders, unitID);
+            }, this);
+        },
+        clone: function() {
+            var oc = new sh.OrderCollection();
+            _.each(this.orders, function(unitOrders, unitID) {
+                var clonedOrders = sh.utils.mapFromJson(
+                    sh.utils.mapToJson(unitOrders),
+                    sh.orders
+                );
+                oc.addUnitOrders(clonedOrders, unitID);
+            }, this);
+            return oc;
         }
+        //TODO: unit tests
     });
 
     sh.Order = sh.Jsonable.extendShared({
