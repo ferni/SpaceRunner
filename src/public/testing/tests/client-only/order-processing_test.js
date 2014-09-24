@@ -162,3 +162,43 @@ test('Script.insertAction', function() {
     equal(script.actions[0].unitID, 2);
     equal(script.actions[1], actionForInsertion);
 });
+
+test('OrderPackage serialization', function() {
+    'use strict';
+    var orders, orderPackage, json, reconstructed;
+    orders = {
+        '1': [new sh.orders.Move({
+            unitID: 1,
+            destination: {x: 1, y: 2}
+        }),
+            new sh.orders.Move({
+                unitID: 1,
+                destination: {x: 2, y: 2}
+            })
+        ],
+        '2': [new sh.orders.Move({
+            unitID: 2,
+            destination: {x: 7, y: 7}
+        })]
+    };
+    orderPackage = new sh.OrderCollection();
+    orderPackage.addUnitOrders(orders['1'], 1);
+    orderPackage.addUnitOrders(orders['2'], 2);
+    json = orderPackage.toJson();
+    reconstructed = new sh.OrderCollection(json);
+    ok(JSON.stringify(json), 'JSON stringify does not throw error.');
+    equal(reconstructed.orders[1].length, 2, '2 orders for Unit 1');
+    equal(reconstructed.orders[2].length, 1, '1 order for Unit 2');
+    ok(reconstructed.orders['1'][0] instanceof sh.Order,
+        '1st order instance of sh.Order');
+    deepEqual(reconstructed.orders['1'][0].destination, {x: 1, y: 2},
+        '1st order correct destination');
+    ok(reconstructed.orders['1'][1] instanceof sh.Order,
+        '2nd order instance of sh.Order');
+    deepEqual(reconstructed.orders['1'][1].destination, {x: 2, y: 2},
+        '2nd order correct destination');
+    ok(reconstructed.orders['2'][0] instanceof sh.Order,
+        '3rd order instance of sh.Order');
+    deepEqual(reconstructed.orders['2'][0].destination, {x: 7, y: 7},
+        '3rd order correct destination');
+});

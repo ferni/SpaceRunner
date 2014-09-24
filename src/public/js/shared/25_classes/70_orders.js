@@ -23,8 +23,14 @@ if (typeof exports !== 'undefined') {
         });
 
     sh.OrderCollection = sh.SharedClass.extendShared({
-        init: function() {
+        init: function(json) {
             this.orders = {};
+            if (json) {
+                _.each(json, function(unitOrdersJson, unitID) {
+                    this.orders[unitID] = sh.utils.mapFromJson(unitOrdersJson,
+                        sh.orders);
+                }, this);
+            }
         },
         /**
          * Adds a unit's orders to the collection.
@@ -63,6 +69,13 @@ if (typeof exports !== 'undefined') {
                 oc.addUnitOrders(clonedOrders, unitID);
             }, this);
             return oc;
+        },
+        toJson: function() {
+            var json = {};
+            _.each(this.orders, function(unitOrders, unitID) {
+                json[unitID] = sh.utils.mapToJson(unitOrders);
+            });
+            return json;
         }
         //TODO: unit tests
     });
