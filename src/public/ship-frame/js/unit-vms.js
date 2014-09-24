@@ -6,7 +6,7 @@
 */
 
 /*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE,
-sh, _, me, ko, gs, $, ui*/
+sh, _, me, gs, $, ui*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -123,7 +123,7 @@ var UnitVM = TileEntityVM.extend({
         if (changed.chargingShipWeapon) {
             if (this.m.chargingShipWeapon) {
                 this.chargingShipWeapon = {
-                    weapon: gs.ship
+                    weapon: this.m.ship
                         .getItemByID(this.m.chargingShipWeapon.weaponID),
                     icon: new ui.ChargingWeaponIcon(this)
                 };
@@ -257,12 +257,11 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         console.log('Selected unit ' + this.m.id + ' - pos: ' +
             sh.v.str(this.m) + ', GUID: ' + this.GUID);
-        me.state.current().updateUnitHud();
+        //TODO: send selected event?
         _.invoke(this.orderVMs, 'show');
     },
     onDeselected: function() {
         'use strict';
-        me.state.current().updateUnitHud();
         _.invoke(this.orderVMs, 'hide');
     },
     occupies: function(tile) {

@@ -60,9 +60,10 @@ screens.register('battle', ConnectedScreen.extend({
         console.log('Battle id is ' + this.id);
         function frameEventHandler(e) {
             if (e.eventName === 'new orders') {
-                $.post('/battle/sendorders', {
+                $.post('/battle/sendunitorders', {
                     id: battle.id,
-                    orders: e.orderPackageJson
+                    ordersJson: e.ordersJson,
+                    unitID: e.unitID
                 },
                     function () {
                         console.log('Orders successfully submitted');
