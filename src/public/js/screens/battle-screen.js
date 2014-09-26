@@ -6,7 +6,7 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipFrame, ScriptPrediction,
-$, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
+$, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline, KeyManager*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
@@ -109,12 +109,17 @@ screens.register('battle', ConnectedScreen.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
+        this.keys = new KeyManager(this);
+        this.keys.bind(me.input.KEY.ESC, function() {
+            console.log('PAGE ESC');
+        });
         if (this.htmlLoaded) {
             this.onResetAndLoaded();
         }
     },
     onDestroy: function() {
         'use strict';
+        this.keys.unbindAll();
     },
     onResetAndLoaded: function() {
         'use strict';
@@ -166,18 +171,7 @@ screens.register('battle', ConnectedScreen.extend({
                 this.pause();
             }
         } else {
-            if (me.input.isKeyPressed('delete')) {
-                _.chain(gs.selected)
-                    .where({name: 'order'})
-                    .each(function(orderVM) {
-                        orderVM.deselect();
-                        orderVM.remove();
-                    });
-            }
-            if (me.input.isKeyPressed('escape')) {
-                _.invoke(gs.selected, 'deselect');
-                this.previewOrders = {};
-            }
+            this.keys.processBindings();
         }
     },
     draw: function(ctx) {
