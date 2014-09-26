@@ -7,11 +7,11 @@
 
 /*global _, gs, me, utils, sh, ko*/
 
-var OrderVM =  Object.extend({
+var OrderVMTimeline =  Object.extend({
     isPreview: false,
-    init: function(order) {
+    init: function(order, timeline, battle) {
         'use strict';
-        //Timeline item stuff
+        this.m = order;
         this.timeInfo = ko.observable({});//start, end
         this.isBeyondNextTurn = ko.computed(function() {
             return this.timeInfo().start === undefined;
@@ -20,7 +20,7 @@ var OrderVM =  Object.extend({
             var duration = this.timeInfo().end - this.timeInfo().start,
                 height;
             if (duration) {
-                height = duration / 10 * this.screen.timeline.zoomLevel();
+                height = duration / 10 * timeline.zoomLevel();
                 height -= 6; //accounting for padding
                 height -= 2; //accounting for border
                 height -= 2; //some space for next order
@@ -28,7 +28,7 @@ var OrderVM =  Object.extend({
             }
         }, this);
         this.willCompleteThisTurn = ko.computed(function() {
-            return this.timeInfo().end <= this.screen.turnDuration;
+            return this.timeInfo().end <= battle.turnDuration;
         }, this);
         this.itemColorObs = ko.computed(function() {
             return this.willCompleteThisTurn() ? this.itemColor : 'dimgray';

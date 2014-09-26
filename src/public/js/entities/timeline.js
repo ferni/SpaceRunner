@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global ko, _, gs, sh, $, utils*/
+/*global ko, _, gs, sh, $, utils, OrderVMTimeline*/
 
 var Timeline = function(screen, startingBattle) {
     'use strict';
@@ -17,7 +17,8 @@ var Timeline = function(screen, startingBattle) {
                 return ((100 * timeline.zoomLevel()) - 2) + 'px';
                 //(-2 for border)
             });
-        };
+        },
+        orderVMsByUnit = {};
     function seg() {
         return new Segment(self);
     }
@@ -40,9 +41,9 @@ var Timeline = function(screen, startingBattle) {
 
     function updateOrderVMsDuration(finishOrderActions) {
         //hack for unit with one order that never finishes, part 1
-        _.each(screen.shipVM.unitVMs, function(unitVM) {
-            if (unitVM.orderVMs.length === 1) {
-                unitVM.orderVMs[0].timeInfo({});
+        _.each(orderVMsByUnit, function(orderVMs) {
+            if (orderVMs.length === 1) {
+                orderVMs[0].timeInfo({});
             }
         });
         //end of hack part 1
@@ -50,19 +51,19 @@ var Timeline = function(screen, startingBattle) {
         _.chain(finishOrderActions)
             .groupBy('unitID')
             .each(function(finishOrderActions, unitID) {
-                var unitVM = screen.shipVM.getUnitVMByID(unitID),
+                var orderVMs = orderVMsByUnit[unitID],
                     prevTime = 0,
                     lastIndex = 0;
                 _.each(finishOrderActions, function(finish, index) {
-                    unitVM.orderVMs[index].timeInfo({
+                    orderVMs[index].timeInfo({
                         start: prevTime,
                         end: finish.time
                     });
                     prevTime = finish.time;
                     lastIndex = index;
                 });
-                if (unitVM.orderVMs[lastIndex + 1]) {
-                    unitVM.orderVMs[lastIndex + 1].timeInfo({
+                if (orderVMs[lastIndex + 1]) {
+                    orderVMs[lastIndex + 1].timeInfo({
                         start: prevTime,
                         end: 8200//beyond next turn
                     });
@@ -70,10 +71,10 @@ var Timeline = function(screen, startingBattle) {
             });
 
         //hack for unit with one order that never finishes, part 2
-        _.each(screen.shipVM.unitVMs, function(unitVM) {
-            if (unitVM.orderVMs.length === 1 &&
-                    unitVM.orderVMs[0].timeInfo().start === undefined) {
-                unitVM.orderVMs[0].timeInfo({
+        _.each(orderVMsByUnit, function(orderVMs) {
+            if (orderVMs.length === 1 &&
+                    orderVMs[0].timeInfo().start === undefined) {
+                orderVMs[0].timeInfo({
                     start: 0,
                     end: 8200
                 });
@@ -131,6 +132,15 @@ var Timeline = function(screen, startingBattle) {
         };
     }
 
+    function updateOrderVMs(battle) {
+        _.each(battle.getUnits(), function(unit) {
+            var orderVMs = orderVMsByUnit[unit.id] = [];
+            _.each(screen.currentOrders.orders[unit.id], function(order) {
+                orderVMs.push(new OrderVMTimeline(order, self, battle));
+            });
+        });
+    }
+
     this.update = function() {
         var battleClone, script, actionsByType, i, actions = [],
             turnsCovered = 2,
@@ -170,7 +180,8 @@ var Timeline = function(screen, startingBattle) {
 
 
         actionsByType = _.groupBy(actions, 'type');
-        //updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
+        updateOrderVMs(this.battle);
+        updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
         //Markers
         clearMarkers();
         _.each(actionsByType.Attack, placeAttackMarker);
