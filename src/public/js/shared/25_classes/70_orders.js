@@ -60,15 +60,7 @@ if (typeof exports !== 'undefined') {
             }, this);
         },
         clone: function() {
-            var oc = new sh.OrderCollection();
-            _.each(this.orders, function(unitOrders, unitID) {
-                var clonedOrders = sh.utils.mapFromJson(
-                    sh.utils.mapToJson(unitOrders),
-                    sh.orders
-                );
-                oc.addUnitOrders(clonedOrders, unitID);
-            }, this);
-            return oc;
+            return new sh.OrderCollection(this.toJson());
         },
         toJson: function() {
             var json = {};
@@ -77,7 +69,6 @@ if (typeof exports !== 'undefined') {
             });
             return json;
         }
-        //TODO: unit tests
     });
 
     sh.Order = sh.Jsonable.extendShared({
