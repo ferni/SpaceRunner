@@ -7,7 +7,7 @@
 
 /*global ko, _, gs, sh, $, utils*/
 
-var Timeline = function(screen) {
+var Timeline = function(screen, startingBattle) {
     'use strict';
     var self = this,
         markerProximityThreshold = 5,//pixels
@@ -100,8 +100,8 @@ var Timeline = function(screen) {
     }
 
     function placeAttackMarker(attackAction) {
-        var attacker = gs.battle.getUnitByID(attackAction.attackerID),
-            receiver = gs.battle.getUnitByID(attackAction.receiverID);
+        var attacker = self.battle.getUnitByID(attackAction.attackerID),
+            receiver = self.battle.getUnitByID(attackAction.receiverID);
         if (attacker && receiver) {
             markersTemp.push(new Marker(attackAction.time +
                 attackAction.damageDelay, '#ED6F00', attacker.type +
@@ -117,7 +117,7 @@ var Timeline = function(screen) {
     }
 
     function placeFireShipWeaponMarker(fswAction) {
-        var unit = gs.battle.getUnitByID(fswAction.unitID),
+        var unit = self.battle.getUnitByID(fswAction.unitID),
             damage = unit.ship.getItemByID(fswAction.weaponID).damage;
         markersTemp.push(new Marker(fswAction.time, 'blue',
             'Enemy ship receives ' +
@@ -136,13 +136,16 @@ var Timeline = function(screen) {
             turnsCovered = 2,
             newActions;
         if (!screen.resultingServerModel) {//first pause
-            return;
+            this.battle = startingBattle;
+            battleClone = new sh.Battle(startingBattle.toJson());
+        } else {
+            this.battle = new sh.Battle(screen.resultingServerModel);
+            battleClone = new sh.Battle(screen.resultingServerModel);
         }
         function cloneAction(action) {
             return new sh.actions[action.type](action.toJson());
         }
 
-        battleClone = new sh.Battle(screen.resultingServerModel);
         battleClone.insertOrders(screen.currentOrders);
         if (screen.scriptServer.pendingActionsJson) {
             battleClone.pendingActions = sh.utils.mapFromJson(
@@ -167,7 +170,7 @@ var Timeline = function(screen) {
 
 
         actionsByType = _.groupBy(actions, 'type');
-        updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
+        //updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
         //Markers
         clearMarkers();
         _.each(actionsByType.Attack, placeAttackMarker);

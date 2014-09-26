@@ -53,6 +53,7 @@ screens.register('battle', ConnectedScreen.extend({
      */
     onReset: function(battle, orders) {
         'use strict';
+        //TODO: que venga battleJson para el timeline
         var self = this,
             framesFinished = 0;
         this.parent({id: battle.id});
@@ -98,7 +99,7 @@ screens.register('battle', ConnectedScreen.extend({
         ];
         this.shipFrames[0].init(600, 600);
         this.shipFrames[1].init(600, 600);
-        this.timeline = new Timeline(this);
+        this.timeline = new Timeline(this, battle);
 
         this.pause();
 
