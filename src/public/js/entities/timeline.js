@@ -131,21 +131,19 @@ var Timeline = function(screen) {
         };
     }
 
-    function cloneBattle(battle) {
-        return new sh.Battle(battle.toJson());
-    }
-
     this.update = function() {
-        return;
         var battleClone, script, actionsByType, i, actions = [],
             turnsCovered = 2,
             newActions;
+        if (!screen.resultingServerModel) {//first pause
+            return;
+        }
         function cloneAction(action) {
             return new sh.actions[action.type](action.toJson());
         }
 
-        battleClone = cloneBattle(gs.battle);
-        battleClone.insertOrders(gs.battle.extractOrders());
+        battleClone = new sh.Battle(screen.resultingServerModel);
+        battleClone.insertOrders(screen.currentOrders);
         if (screen.scriptServer.pendingActionsJson) {
             battleClone.pendingActions = sh.utils.mapFromJson(
                 screen.scriptServer.pendingActionsJson,

@@ -12,6 +12,7 @@ screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
     scriptServer: [],
     mouseDownPos: null,
+    currentOrders: new sh.OrderCollection(),
     /**
      * Gets executed before onReset.
      */
@@ -52,7 +53,8 @@ screens.register('battle', ConnectedScreen.extend({
      */
     onReset: function(battle, orders) {
         'use strict';
-        var self = this;
+        var self = this,
+            framesFinished = 0;
         this.parent({id: battle.id});
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
@@ -71,10 +73,22 @@ screens.register('battle', ConnectedScreen.extend({
                     .fail(function () {
                         console.error('Server error when submitting orders.');
                     });
+                self.currentOrders.addUnitOrders(
+                    sh.utils.mapFromJson(e.ordersJson, sh.orders),
+                    e.unitID
+                );
                 self.timeline.update();
             } else if (e.eventName === 'finished playing') {
-                if (self.resultingServerModel) {
+                if (self.resultingServerModel) {//not first pause
                     self.compareModelWithServer(e.battleJson);
+                }
+                framesFinished++;
+                if (framesFinished >= self.shipFrames.length) {
+                    framesFinished = 0;
+                    self.currentOrders = new sh.OrderCollection(
+                        e.orderCollectionJson
+                    );
+                    self.pause();
                 }
             }
         }
@@ -208,14 +222,6 @@ screens.register('battle', ConnectedScreen.extend({
         this.timeline.update();
         me.game.sort();
         me.game.repaint();
-
-        _.each(me.game.getEntityByName('order'), function(oVM) {
-            if (oVM.m.isValid(gs.battle, gs.player.id)) {
-                oVM.updatePos();
-            } else {
-                oVM.remove();
-            }
-        });
         this.elapsed = 0;
         console.log('--- TURN ' + this.currentTurnID + ' ---');
         this.paused = true;
