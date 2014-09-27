@@ -93,14 +93,6 @@ var UnitVM = TileEntityVM.extend({
         }
         return false;
     },
-    getOrderVM: function(orderModel) {
-        'use strict';
-        try {
-            return utils.getVM(orderModel, this.m.orders, this.orderVMs);
-        } catch (e) {
-            return null;
-        }
-    },
     onModelChanged: function(changed) {
         'use strict';
         if (changed.hp) {
@@ -257,7 +249,8 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         console.log('Selected unit ' + this.m.id + ' - pos: ' +
             sh.v.str(this.m) + ', GUID: ' + this.GUID);
-        //TODO: send selected event?
+        parent.postMessage({eventName: 'unit selected', unitID: this.m.id},
+            '*');
         _.invoke(this.orderVMs, 'show');
     },
     onDeselected: function() {

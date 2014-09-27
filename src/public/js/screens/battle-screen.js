@@ -90,8 +90,11 @@ screens.register('battle', ConnectedScreen.extend({
                     self.currentOrders = new sh.OrderCollection(
                         e.orderCollectionJson
                     );
+                    gs.battle = new sh.Battle(e.battleJson);
                     self.pause();
                 }
+            } else if (e.eventName === 'unit selected') {
+                self.htmlVM.selectedUnit(gs.battle.getUnitByID(e.unitID));
             }
         }
         this.shipFrames = [
