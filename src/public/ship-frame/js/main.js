@@ -301,7 +301,7 @@ var jsApp = {
                 me.state.current().runScript(new sh.Script().fromJson(event.data));
             }
         }
-        window.addEventListener("message", handleParentMessage, false);
+        window.addEventListener('message', handleParentMessage, false);
         parent.postMessage({eventName: 'ready'}, '*');
 
     },
