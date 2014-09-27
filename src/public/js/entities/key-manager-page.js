@@ -1,9 +1,27 @@
 /*global me, _*/
 
-var KeyManager = function(screen) {
+var KeyManagerPage = function(frames) {
     'use strict';
-    //todo: use screen.shipFrames
     var bindings = [];
+
+    function notifyFrames(key) {
+        _.invoke(frames, 'keyPressed', key);
+    }
+
+    function keyPressHandler(key) {
+        _.chain(bindings)
+            .where({key: key})
+            .invoke('handler');
+        notifyFrames(key);
+    }
+    _.each(frames, function(frame) {
+        frame.eventHandlers.push(function(e) {
+            if (e.type === 'key pressed') {
+                keyPressHandler(e.key);
+            }
+        });
+    });
+
     return {
         bind: function(key, handler) {
             me.input.bindKey(key, key, true);
@@ -18,6 +36,7 @@ var KeyManager = function(screen) {
             _.each(bindings, function(b) {
                 if (me.input.isKeyPressed(b.key)) {
                     b.handler();
+                    notifyFrames(b.key);
                 }
             });
         }

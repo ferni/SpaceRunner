@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, screens, gs, sh, ShipVM,
+/*global me, screens, gs, sh, ShipVM, KeyManagerFrame,
 ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko*/
 
 screens.register('battle', me.ScreenObject.extend({
@@ -25,6 +25,7 @@ screens.register('battle', me.ScreenObject.extend({
      */
     onResetEvent: function(battle, shipID, orders) {
         'use strict';
+        var self = this;
         this.id = battle.id;
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
@@ -34,8 +35,21 @@ screens.register('battle', me.ScreenObject.extend({
         this.shipVM.showInScreen();
         this.shipVM.update();
         this.scriptPlayer = new ScriptPlayer(this);
-        me.input.bindKey(me.input.KEY.ESC, 'escape');
-        me.input.bindKey(me.input.KEY.D, 'delete');
+        this.keys = new KeyManagerFrame();
+        this.keys.bind(me.input.KEY.ESC, function() {
+            console.log('FRAME ESC');
+            _.invoke(gs.selected.slice(0), 'deselect');
+            self.previewOrders = {};
+        });
+        this.keys.bind(me.input.KEY.D, function() {
+            console.log('FRAME DELETE');
+            _.chain(gs.selected)
+                .where({name: 'order'})
+                .each(function(orderVM) {
+                    orderVM.deselect();
+                    orderVM.remove();
+                });
+        });
         me.input.registerMouseEvent('mouseup', me.game.viewport,
             this.mouseUp.bind(this));
         me.input.registerMouseEvent('mousedown', me.game.viewport,
@@ -55,8 +69,7 @@ screens.register('battle', me.ScreenObject.extend({
     },
     onDestroyEvent: function() {
         'use strict';
-        me.input.unbindKey(me.input.KEY.ESC);
-        me.input.unbindKey(me.input.KEY.D);
+        this.keys.unbindAll();
         me.input.releaseMouseEvent('mouseup', me.game.viewport);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
         me.input.releaseMouseEvent('mousemove', me.game.viewport);
@@ -80,18 +93,7 @@ screens.register('battle', me.ScreenObject.extend({
                 this.pause();
             }
         } else {
-            if (me.input.isKeyPressed('delete')) {
-                _.chain(gs.selected)
-                    .where({name: 'order'})
-                    .each(function(orderVM) {
-                        orderVM.deselect();
-                        orderVM.remove();
-                    });
-            }
-            if (me.input.isKeyPressed('escape')) {
-                _.invoke(gs.selected.slice(0), 'deselect');
-                this.previewOrders = {};
-            }
+            this.keys.processBindings();
         }
         return true;
     },

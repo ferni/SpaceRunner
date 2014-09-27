@@ -6,7 +6,8 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipFrame, ScriptPrediction,
-$, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline, KeyManager*/
+$, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline,
+KeyManagerPage*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
@@ -99,6 +100,10 @@ screens.register('battle', ConnectedScreen.extend({
         ];
         this.shipFrames[0].init(600, 600);
         this.shipFrames[1].init(600, 600);
+        this.keys = new KeyManagerPage(this.shipFrames);
+        this.keys.bind(me.input.KEY.ESC, function() {
+            console.log('PAGE ESC');
+        });
         this.timeline = new Timeline(this, battle);
 
         this.pause();
@@ -109,10 +114,6 @@ screens.register('battle', ConnectedScreen.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
-        this.keys = new KeyManager(this);
-        this.keys.bind(me.input.KEY.ESC, function() {
-            console.log('PAGE ESC');
-        });
         if (this.htmlLoaded) {
             this.onResetAndLoaded();
         }

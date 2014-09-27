@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-/*global HTMLIFrameElement, $, gs, TILE_SIZE */
+/*global HTMLIFrameElement, $, gs, TILE_SIZE, _*/
 
 var ShipFrame = (function() {
     'use strict';
@@ -19,8 +19,7 @@ var ShipFrame = (function() {
     function ShipFrame(battle, ship, eventHandler) {
         this.battle = battle;
         this.ship = ship;
-        this.eventHandler = eventHandler;
-
+        this.eventHandlers = [eventHandler];
     }
 
     function sendData(data, iframe) {
@@ -51,7 +50,9 @@ var ShipFrame = (function() {
                             shipID: self.ship.id
                         }, iframe);
                     } else {
-                        self.eventHandler(event.data);
+                        _.each(self.eventHandlers, function(handler) {
+                            handler(event.data);
+                        });
                     }
                 }
             }, false);
@@ -60,6 +61,9 @@ var ShipFrame = (function() {
         runScript: function(scriptJson) {
             //pass the script to iframe
             sendData(scriptJson, this.iframe);
+        },
+        keyPressed: function(key) {
+            sendData({type: 'key pressed', key: key}, this.iframe);
         }
     };
     return ShipFrame;
