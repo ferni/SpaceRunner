@@ -41,11 +41,6 @@ test('getEmptyMatrix', function() {
     equal(matrix[3], undefined);
 });
 
-test('make.item: invalid item', function() {
-    'use strict';
-    equal(make.item('asdf'), null);
-});
-
 test('setCursor', function() {
     'use strict';
     utils.setCursor('move');

@@ -5,13 +5,12 @@
 * All rights reserved.
 */
 
-/*global module, test, sh, make, equal, th*/
+/*global module, test, sh, make, equal, th, itemVMs*/
 
 module('Scaling');
 test('Item sizes', function() {
     'use strict';
     var item = new sh.items.Power({x: 1, y: 1}),
-        itemVM = make.vm(item);
+        itemVM = new itemVMs.Power(item);
     equal(itemVM.size[0], th.s(2));
-
 });

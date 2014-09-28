@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, make, _, sh, utils, ui, ko*/
+/*global me, make, _, sh, utils, ui, ko, ItemVM, itemVMs, UnitVM, unitVMs*/
 
 /**
  * An object in charge of representing a sh.Ship on the screen.
@@ -37,7 +37,22 @@ var ShipVM = function(shipModel) {
         return somethingChanged;
     };
     this.updateItems = function() {
-        return utils.updateVMs(this.m.built, this.itemVMs, ui.layers.items);
+        return utils.updateVMs({
+            models: this.m.built,
+            vms: this.itemVMs,
+            zIndex: ui.layers.items,
+            DefaultConstructor: ItemVM,
+            vmConstructors: itemVMs
+        });
+    };
+    this.updateUnits = function() {
+        return utils.updateVMs({
+            models: this.m.units,
+            vms: this.unitVMs,
+            zIndex: ui.layers.units,
+            DefaultConstructor: UnitVM,
+            vmConstructors: unitVMs
+        });
     };
     this.draw = function(ctx) {
         return ctx;

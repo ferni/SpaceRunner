@@ -6,7 +6,7 @@
 */
 
 /*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE,
-sh, _, me, gs, $, ui*/
+sh, _, me, ko, gs, $, ui, orderVMs*/
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -85,8 +85,14 @@ var UnitVM = TileEntityVM.extend({
     },
     updateOrderVMs: function() {
         'use strict';
-        if (utils.updateVMs(this.m.orders, this.orderVMs,
-                ui.layers.indicators)) {
+        var vmsChanged = utils.updateVMs({
+            models: this.m.orders,
+            vms: this.orderVMs,
+            zIndex: ui.layers.items,
+            DefaultConstructor: orderVMs.Move,
+            vmConstructors: orderVMs
+        });
+        if (vmsChanged) {
             _.invoke(this.orderVMs, 'updatePath');
             me.game.sort();
             return true;

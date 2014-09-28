@@ -6,12 +6,12 @@
 */
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
-me, utils, ui, make, sh, me*/
+me, utils, ui, make, sh, me, itemVMs*/
 
 module('entities/tile-entity-vm.js');
 test('Item.trueSize()', function() {
     'use strict';
-    var door = make.item('Door'),
+    var door = new itemVMs.Door(new sh.items.Door()),
         s = th.s;
     deepEqual(door.size, [s(2), s(1)]);
     deepEqual(door.trueSize(), [s(2), s(1)]);
@@ -24,7 +24,7 @@ test('Item.trueSize()', function() {
 
 test('Item onShip/offShip animations', function() {
     'use strict';
-    var door = make.item('Door');
+    var door = new itemVMs.Door(new sh.items.Door());
     ok(!door.onShip(), 'door is not on ship');
     ok(!door.rotated(), 'door is not rotated');
 
