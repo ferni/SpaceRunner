@@ -152,7 +152,7 @@ var itemVMs = {};
  * Weapon view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.WeaponVM = ItemVM.extend({
+itemVMs.Weapon = ItemVM.extend({
     // init function
     init: function(weaponModel) {
         'use strict';
@@ -202,7 +202,7 @@ itemVMs.WeaponVM = ItemVM.extend({
  * Engine view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.EngineVM = ItemVM.extend({
+itemVMs.Engine = ItemVM.extend({
     // init function
     init: function(EngineModel) {
         'use strict';
@@ -221,7 +221,7 @@ itemVMs.EngineVM = ItemVM.extend({
  * Power view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.PowerVM = ItemVM.extend({
+itemVMs.Power = ItemVM.extend({
     // init function
     init: function(powerModel) {
         'use strict';
@@ -237,7 +237,7 @@ itemVMs.PowerVM = ItemVM.extend({
  * Console view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.ConsoleVM = ItemVM.extend({
+itemVMs.Console = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';
@@ -253,7 +253,7 @@ itemVMs.ConsoleVM = ItemVM.extend({
  * Component view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.ComponentVM = ItemVM.extend({
+itemVMs.Component = ItemVM.extend({
     // init function
     init: function(componentModel) {
         'use strict';
@@ -278,7 +278,7 @@ itemVMs.ComponentVM = ItemVM.extend({
  * Door view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.DoorVM = ItemVM.extend({
+itemVMs.Door = ItemVM.extend({
     // init function
     init: function(doorModel) {
         'use strict';
@@ -315,7 +315,7 @@ itemVMs.DoorVM = ItemVM.extend({
  * Wall view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.WallVM = ItemVM.extend({
+itemVMs.Wall = ItemVM.extend({
     // init function
     init: function(wallModel) {
         'use strict';
@@ -476,7 +476,7 @@ itemVMs.WallVM = ItemVM.extend({
  * WeakSpot view model.
  * @type {void|*|Class|extend|extend|extend}
  */
-itemVMs.WeakSpotVM = ItemVM.extend({
+itemVMs.WeakSpot = ItemVM.extend({
     // init function
     init: function(consoleModel) {
         'use strict';

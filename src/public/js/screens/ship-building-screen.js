@@ -8,7 +8,7 @@
 
 /*global GameScreen, screens, ShipVM, sh, server, make,
 $, Ship, me, utils, jsApp, width, height,
-items, ui, hullMap, _*/
+items, ui, hullMap, _, itemVMs*/
 
 /* Screen where one builds the ship */
 screens.register('ship-building', GameScreen.extend({
@@ -268,8 +268,8 @@ screens.register('ship-building', GameScreen.extend({
         'use strict';
         var type, newItem;
         this.ghostItems = {};//Items to be used when choosing building location
-        for (type in make.itemTypes) {
-            if (make.itemTypes.hasOwnProperty(type)) {
+        for (type in itemVMs) {
+            if (itemVMs.hasOwnProperty(type)) {
                 newItem = make.item(type);
                 this.ghostItems[type] = newItem;
                 newItem.hide();

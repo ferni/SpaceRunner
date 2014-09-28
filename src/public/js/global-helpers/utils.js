@@ -121,16 +121,35 @@ var utils = {
         return gs.player.id !== unit.ownerID;
     },
     /**
+     * Returns a new view model according to the model's type.
+     * @param model
+     * @param DefaultConstructor
+     * @param vmConstructors
+     * @returns {DefaultConstructor}
+     */
+    makeVM: function(model, DefaultConstructor, vmConstructors) {
+        'use strict';
+        if (!vmConstructors) {
+            vmConstructors = {};
+        }
+        if (vmConstructors[model.type]) {
+            return new vmConstructors[model.type](model);
+        }
+        return new DefaultConstructor(model);
+    },
+    /**
      * Adds or removes VMs from MelonJS engine
      * and from the vms array, so it matches the models array.
-     * @param {Array} models
-     * @param {Array} vms
-     * @param {int} zIndex
+     * @param params {{models:Array, vms:Array, zIndex:int,
+      * vmConstructors:Object, DefaultConstructor:Function}}
      * @return {boolean}
      */
-    updateVMs: function(models, vms, zIndex) {
+    updateVMs: function(params) {
         'use strict';
-        var i, v, hasVM, aux, somethingChanged = false;
+        var i, v, hasVM, aux, somethingChanged = false,
+            models = params.models,
+            vms = params.vms,
+            zIndex = params.zIndex;
         for (i = 0; i < models.length; i++) {
             hasVM = false;
             for (v = i; v < vms.length; v++) {
@@ -148,7 +167,8 @@ var utils = {
                 }
             } else {
                 //new vm
-                vms.splice(i, 0, make.vm(models[i]));
+                vms.splice(i, 0, this.makeVM(models[i],
+                    params.DefaultConstructor, params.vmConstructors));
                 me.game.add(vms[i], zIndex);
                 somethingChanged = true;
             }

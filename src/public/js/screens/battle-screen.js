@@ -6,7 +6,8 @@
 */
 
 /*global me, screens, ConnectedScreen, gs, sh, ShipVM, ScriptPrediction,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline*/
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline,
+orderVMs*/
 
 screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
@@ -263,7 +264,8 @@ screens.register('battle', ConnectedScreen.extend({
             _.each(unitsToGiveOrders, function(u) {
                 var order = gs.ship.getValidOrderForPos(u.m, mouse);
                 if (order) {
-                    self.previewOrders[u.m.id] = make.vm(order);
+                    self.previewOrders[u.m.id] = utils.makeVM(order,
+                        orderVMs.Move, orderVMs);
                     self.previewOrders[u.m.id].convertToPreview();
                 }
             });
