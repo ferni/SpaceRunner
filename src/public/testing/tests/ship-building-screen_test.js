@@ -196,7 +196,7 @@ asyncTest('rotate ghost when it could be built rotated', function() {
         screen.ship.buildAt(hX, hY, 'Wall');
         screen.ship.buildAt(hX + s(1), hY, 'Wall');
         screen.mouseLockedOn = null;
-        door = make.itemModel('Door');
+        door = new sh.items.Door();
         ok(door.canBuildAt(hX, hY, screen.ship),
             'door can be built without rotation at horizontal Wall');
 

@@ -69,10 +69,13 @@ sh.Ship = sh.SharedClass.extendShared({
     //this should be called when the user builds something
     buildAt: function(x, y, buildingType) {
         'use strict';
-        var self = this,
-            building = sh.make.itemModel(buildingType),
-            canBuild = building.canBuildAt(x, y, this),
-            canBuildRotated;
+        var self, building, canBuild, canBuildRotated;
+        self = this;
+        if (!sh.items[buildingType]) {
+            throw 'No such item type "' + buildingType + '".';
+        }
+        building = new sh.items[buildingType]({});
+        canBuild = building.canBuildAt(x, y, this);
         if (!canBuild) {
             canBuildRotated = building.canBuildRotated(x, y, this);
             if (canBuildRotated) {
