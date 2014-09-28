@@ -169,13 +169,17 @@ var utils = {
                 //new vm
                 vms.splice(i, 0, this.makeVM(models[i],
                     params.DefaultConstructor, params.vmConstructors));
-                me.game.add(vms[i], zIndex);
+                if (zIndex !== undefined) {
+                    me.game.add(vms[i], zIndex);
+                }
                 somethingChanged = true;
             }
         }
         //remove extra vms
         for (v = models.length; v < vms.length; v++) {
-            me.game.remove(vms[v], true);
+            if (zIndex !== undefined) {
+                me.game.remove(vms[v], true);
+            }
             somethingChanged = true;
         }
         vms.splice(models.length, vms.length - models.length);
