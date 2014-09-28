@@ -8,7 +8,7 @@
 /*global _, gs, me, utils, sh, ko, OrderVMTimeline*/
 
 var UnitVMTimeline =  Object.extend({
-    init: function(unit) {
+    init: function(unit, timeline, battle) {
         'use strict';
         var self = this;
         this.m = unit;
@@ -16,9 +16,12 @@ var UnitVMTimeline =  Object.extend({
         this.orders = ko.observableArray();
         this.orders.subscribe(function(newValue) {
             utils.updateVMs({
-                models: unit.orders,
+                models: newValue,
                 vms: self.orderVMs,
-                DefaultConstructor: OrderVMTimeline
+                makeVM: function(order) {
+                    return new OrderVMTimeline(order, timeline, battle);
+                },
+                addToGame: false
             });
 
             //send new orders to the frames
@@ -27,10 +30,6 @@ var UnitVMTimeline =  Object.extend({
     },
     getOrderVM: function(orderModel) {
         'use strict';
-        try {
-            return utils.getVM(orderModel, this.m.orders, this.orderVMs);
-        } catch (e) {
-            return null;
-        }
+        return utils.getVM(orderModel, this.orders(), this.orderVMs);
     }
 });

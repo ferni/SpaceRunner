@@ -141,16 +141,22 @@ var utils = {
      * Adds or removes VMs from MelonJS engine
      * and from the vms array, so it matches the models array.
      * @param params {{models:Array, vms:Array, zIndex:int, addToGame:bool,
-      * vmConstructors:Object, DefaultConstructor:Function}}
+      * vmConstructors:Object, DefaultConstructor:Function, makeVM: Function}}
      * @return {boolean}
      */
     updateVMs: function(params) {
         'use strict';
         var i, v, hasVM, aux, somethingChanged = false,
+            self = this,
             models = params.models,
             vms = params.vms,
             zIndex = params.zIndex,
-            addToGame = params.addToGame;
+            addToGame = params.addToGame,
+            //can override default function
+            makeVM = params.makeVM || function(model) {
+                return self.makeVM(model, params.DefaultConstructor,
+                    params.vmConstructors);
+            };
         if (zIndex === undefined) {
             zIndex = 100;
         }
@@ -174,8 +180,7 @@ var utils = {
                 }
             } else {
                 //new vm
-                vms.splice(i, 0, this.makeVM(models[i],
-                    params.DefaultConstructor, params.vmConstructors));
+                vms.splice(i, 0, makeVM(models[i]));
                 if (addToGame) {
                     me.game.add(vms[i], zIndex);
                 }

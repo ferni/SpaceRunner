@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global ko, _, gs, sh, $, utils, OrderVMTimeline*/
+/*global ko, _, gs, sh, $, utils, OrderVMTimeline, UnitVMTimeline*/
 
 var Timeline = function(screen, startingBattle) {
     'use strict';
@@ -22,6 +22,19 @@ var Timeline = function(screen, startingBattle) {
     function seg() {
         return new Segment(self);
     }
+    this.featuredUnit = ko.observable(null);
+    this.featuredUnitVM = ko.computed(function() {
+        if (this.featuredUnit()) {
+            return new UnitVMTimeline(this.featuredUnit(), this, this.battle);
+        }
+        return null;
+    }, this);
+    this.orderVMs = ko.computed(function() {
+        if (this.featuredUnit()) {
+            return orderVMsByUnit[this.featuredUnit().id];
+        }
+        return [];
+    }, this);
     this.zoomLevel = ko.observable(1);
     this.turns = [
         {
@@ -140,6 +153,8 @@ var Timeline = function(screen, startingBattle) {
             });
         });
     }
+
+
 
     this.update = function() {
         var battleClone, script, actionsByType, i, actions = [],

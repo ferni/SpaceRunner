@@ -33,5 +33,8 @@ var OrderVMTimeline =  Object.extend({
         this.itemColorObs = ko.computed(function() {
             return this.willCompleteThisTurn() ? this.itemColor : 'dimgray';
         }, this);
+        this.remove = function() {
+            console.warn('OrderVM remove not implemented');
+        };
     }
 });

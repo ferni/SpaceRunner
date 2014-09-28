@@ -63,7 +63,9 @@ screens.register('battle', ConnectedScreen.extend({
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         function frameEventHandler(e) {
+            var unit;
             if (e.eventName === 'new orders') {
+                unit = gs.battle.getUnitByID(e.unitID);
                 $.post('/battle/sendunitorders', {
                     id: battle.id,
                     ordersJson: e.ordersJson,
@@ -79,6 +81,7 @@ screens.register('battle', ConnectedScreen.extend({
                     sh.utils.mapFromJson(e.ordersJson, sh.orders),
                     e.unitID
                 );
+                unit.orders = self.currentOrders.orders[e.unitID];
                 self.timeline.update();
             } else if (e.eventName === 'finished playing') {
                 if (self.resultingServerModel) {//not first pause
@@ -94,7 +97,7 @@ screens.register('battle', ConnectedScreen.extend({
                     self.pause();
                 }
             } else if (e.eventName === 'unit selected') {
-                self.htmlVM.selectedUnit(gs.battle.getUnitByID(e.unitID));
+                self.timeline.featuredUnit(gs.battle.getUnitByID(e.unitID));
             }
         }
         this.shipFrames = [
