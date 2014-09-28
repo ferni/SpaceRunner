@@ -5,12 +5,32 @@
 * All rights reserved.
 */
 
-/*global _, gs, me, utils, sh, ko*/
+/*global _, gs, me, utils, sh, ko, OrderVMTimeline*/
 
 var UnitVMTimeline =  Object.extend({
-    isPreview: false,
-    init: function(order, timeline, battle) {
+    init: function(unit) {
         'use strict';
+        var self = this;
+        this.m = unit;
+        this.orderVMs = [];
+        this.orders = ko.observableArray();
+        this.orders.subscribe(function(newValue) {
+            utils.updateVMs({
+                models: unit.orders,
+                vms: self.orderVMs,
+                DefaultConstructor: OrderVMTimeline
+            });
 
+            //send new orders to the frames
+        });
+        this.orders(unit.orders);
+    },
+    getOrderVM: function(orderModel) {
+        'use strict';
+        try {
+            return utils.getVM(orderModel, this.m.orders, this.orderVMs);
+        } catch (e) {
+            return null;
+        }
     }
 });
