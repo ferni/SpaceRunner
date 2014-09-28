@@ -151,6 +151,9 @@ var utils = {
             vms = params.vms,
             zIndex = params.zIndex,
             addToGame = params.addToGame;
+        if (zIndex === undefined) {
+            zIndex = 100;
+        }
         if (addToGame === undefined) {
             addToGame = true;
         }
