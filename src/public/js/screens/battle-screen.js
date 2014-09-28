@@ -257,16 +257,5 @@ screens.register('battle', ConnectedScreen.extend({
         _.chain(gs.selected)
             .where({name: 'unit'})
             .invoke('deselect');
-    },
-    updateUnitHud: function() {
-        'use strict';
-        var selected = _.where(gs.selected, {name: 'unit'});
-        if (selected.length === 1) {
-            if (this.htmlVM.selectedUnit() !== selected[0]) {
-                this.htmlVM.selectedUnit(selected[0]);
-            }
-        } else {
-            this.htmlVM.selectedUnit(null);
-        }
     }
 }));
