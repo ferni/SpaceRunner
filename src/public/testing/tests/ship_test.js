@@ -7,7 +7,7 @@
 
 /*global module, asyncTest, test, ok, equal, notEqual, deepEqual, start, th,
 strictEqual, me, _, utils, TILE_SIZE, EngineVM, DoorVM,
-FIRST_SCREEN, width, height, make, sh*/
+FIRST_SCREEN, width, height, make, sh, itemVMs*/
 
 module('main.js');
 test('Globals are set', function() {
@@ -39,7 +39,7 @@ asyncTest('add/at/removeAt', function() {
     }, function(screen) {
         var x = th.shipPositions.free.x,
             y = th.shipPositions.free.y,
-            engine = make.item('Engine', [x, y]),
+            engine = new itemVMs.Engine(new sh.items.Engine({x: x, y: y})),
             s = th.s;
         screen.ship.removeAll();
         //(ignores placement rules)

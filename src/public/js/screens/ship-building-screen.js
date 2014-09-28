@@ -260,6 +260,13 @@ screens.register('ship-building', GameScreen.extend({
         this.ship.remove(item, true);
         this.updateRed();
     },
+    makeItem: function(type, settings) {
+        'use strict';
+        var Constructor, model;
+        model = new sh.items[type](settings);
+        Constructor = itemVMs[type];
+        return new Constructor(model);
+    },
     /* User Interface Stuff*/
     chosen: null, //the chosen object from the panel (an Item)
     mouseLockedOn: null, //who the mouse actions pertain to.
@@ -270,7 +277,7 @@ screens.register('ship-building', GameScreen.extend({
         this.ghostItems = {};//Items to be used when choosing building location
         for (type in itemVMs) {
             if (itemVMs.hasOwnProperty(type)) {
-                newItem = make.item(type);
+                newItem = this.makeItem(type, {x: 0, y: 0});
                 this.ghostItems[type] = newItem;
                 newItem.hide();
                 me.game.add(newItem, ui.layers.indicators);
@@ -409,7 +416,7 @@ screens.register('ship-building', GameScreen.extend({
     //draws arbitrary stuff
     drawItem: function(x, y, type) {
         'use strict';
-        var item = make.item(type, [x, y, {}]);
+        var item = this.makeItem(type, {x: x, y: y});
         item.alpha = 0.8;
         this.drawingScreen.push(item);
         me.game.repaint();
