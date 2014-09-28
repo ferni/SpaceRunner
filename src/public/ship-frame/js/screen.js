@@ -6,7 +6,8 @@
 */
 
 /*global me, screens, gs, sh, ShipVM, KeyManagerFrame,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko*/
+ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko,
+orderVMs*/
 
 screens.register('battle', me.ScreenObject.extend({
     currentTurnID: null,
@@ -202,7 +203,8 @@ screens.register('battle', me.ScreenObject.extend({
             _.each(unitsToGiveOrders, function(u) {
                 var order = gs.ship.getValidOrderForPos(u.m, mouse);
                 if (order) {
-                    self.previewOrders[u.m.id] = make.vm(order);
+                    self.previewOrders[u.m.id] = utils.makeVM(order,
+                        orderVMs.Move, orderVMs);
                     self.previewOrders[u.m.id].convertToPreview();
                 }
             });

@@ -45,15 +45,6 @@ var ShipVM = function(shipModel) {
             vmConstructors: itemVMs
         });
     };
-    this.updateUnits = function() {
-        return utils.updateVMs({
-            models: this.m.units,
-            vms: this.unitVMs,
-            zIndex: ui.layers.units,
-            DefaultConstructor: UnitVM,
-            vmConstructors: unitVMs
-        });
-    };
     this.draw = function(ctx) {
         return ctx;
     };
