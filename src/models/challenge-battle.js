@@ -20,28 +20,28 @@ exports.ChallengeBattle = BattleServer.extend({
     init: function(params) {
         'use strict';
         var ship = new sh.Ship({json: params.shipJson}),
-            Zealot = sh.units.Zealot,
+            u = sh.units,
             enemyShip;
         this.parent({id: params.id, ship: ship});
         ship.owner = params.player;
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
-        ship.putUnit(new Zealot({ownerID: params.player.id}));
+        ship.putUnit(new u.Zealot());
+        ship.putUnit(new u.Zealot());
+        ship.putUnit(new u.Zealot());
+        ship.putUnit(new u.Zealot());
+        ship.putUnit(new u.Zealot());
 
         enemyShip = this.tempSurrogate.ships[1];
         enemyShip.owner = new AIPlayer('Enemy');
-        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.Critter({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.MetalSpider({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.MetalSpider({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.MetalSpider({ownerID: enemyShip.owner.id}));
-        enemyShip.putUnit(new sh.units.MetalSpider({ownerID: enemyShip.owner.id}));
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.MetalSpider());
     },
     nextTurn: function() {
         'use strict';

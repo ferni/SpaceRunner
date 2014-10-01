@@ -96,10 +96,10 @@ sh.Ship = sh.SharedClass.extendShared({
         return null; //building failed
     },
     //finds a clear spot and creates a new unit there
-    putUnit: function(settings) {
+    putUnit: function(unit) {
         'use strict';
         //find empty spot
-        var empty = null, ship = this, unit;
+        var empty = null, ship = this;
         empty = this.closestTile(Math.floor(ship.width / 2),
             Math.floor(ship.height / 2),
             function(tile) {
@@ -114,15 +114,10 @@ sh.Ship = sh.SharedClass.extendShared({
                     empty = {x: x, y: y};
                 }
             });
-        if (settings instanceof sh.Unit) {
-            unit = settings;
-            unit.x = empty.x;
-            unit.y = empty.y;
-        } else {
-            settings.x = empty.x;
-            settings.y = empty.y;
-            unit = new sh.Unit(settings);
-
+        unit.x = empty.x;
+        unit.y = empty.y;
+        if (unit.ownerID === undefined) {
+            unit.ownerID = this.owner.id;
         }
         this.addUnit(unit);
         return unit;

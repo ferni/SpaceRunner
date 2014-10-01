@@ -62,21 +62,21 @@ exports.BattleSetUp = function(params) {
     this.createBattle = function(done) {
         var err = null,
             ship,
-            battleServer;
+            battleServer,
+            U = sh.Unit,
+            creID = this.creator.id,
+            challID = this.challenger.id;
         try {
             ship = new sh.Ship({json: this.shipJson});
             battleServer = new BattleServer({id: battles.length, ship: ship});
-            ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
-            ship.putUnit({imgIndex: 6, speed: 2, ownerID: this.creator.id});
-            ship.putUnit({imgIndex: 0, speed: 1.5, ownerID: this.creator.id});
-            ship.putUnit({imgIndex: 0, speed: 1.5, ownerID: this.creator.id});
-
-            ship.putUnit({imgIndex: 7, speed: 1.5,
-                ownerID: this.challenger.id});
-            ship.putUnit({imgIndex: 7, speed: 1.5,
-                ownerID: this.challenger.id});
-            ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
-            ship.putUnit({imgIndex: 12, speed: 2, ownerID: this.challenger.id});
+            ship.putUnit(new U({imgIndex: 6, speed: 2, ownerID: creID}));
+            ship.putUnit(new U({imgIndex: 6, speed: 2, ownerID: creID}));
+            ship.putUnit(new U({imgIndex: 0, speed: 1.5, ownerID: creID}));
+            ship.putUnit(new U({imgIndex: 0, speed: 1.5, ownerID: creID}));
+            ship.putUnit(new U({imgIndex: 7, speed: 1.5, ownerID: challID}));
+            ship.putUnit(new U({imgIndex: 7, speed: 1.5, ownerID: challID}));
+            ship.putUnit(new U({imgIndex: 12, speed: 2, ownerID: challID}));
+            ship.putUnit(new U({imgIndex: 12, speed: 2, ownerID: challID}));
             battleServer.tempSurrogate.ships[0].owner = this.creator;
             battleServer.tempSurrogate.ships[1].owner = this.challenger;
             battles.push(battleServer);
