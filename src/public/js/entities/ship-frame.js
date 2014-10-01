@@ -22,10 +22,6 @@ var ShipFrame = (function() {
         this.eventHandlers = [eventHandler];
     }
 
-    function sendData(data, iframe) {
-        iframe.contentWindow.postMessage(data, '*');
-    }
-
     ShipFrame.prototype = {
         /**
          * Appear on screen
@@ -43,12 +39,12 @@ var ShipFrame = (function() {
             window.addEventListener('message', function(event) {
                 if (event.source === iframe.contentWindow) {
                     if (event.data.eventName === 'ready') {
-                        sendData({
+                        self.sendData({
                             type: 'start battle',
                             playerJson: gs.player.toJson(),
                             battleJson: self.battle.toJson(),
                             shipID: self.ship.id
-                        }, iframe);
+                        });
                     } else {
                         _.each(self.eventHandlers, function(handler) {
                             handler(event.data);
@@ -60,10 +56,13 @@ var ShipFrame = (function() {
         },
         runScript: function(scriptJson) {
             //pass the script to iframe
-            sendData(scriptJson, this.iframe);
+            this.sendData(scriptJson);
         },
         keyPressed: function(key) {
-            sendData({type: 'key pressed', key: key}, this.iframe);
+            this.sendData({type: 'key pressed', key: key});
+        },
+        sendData: function(data) {
+            this.iframe.contentWindow.postMessage(data, '*');
         }
     };
     return ShipFrame;
