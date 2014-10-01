@@ -59,7 +59,7 @@ routes.add('get', function(req, res, next) {
 routes.add('getmodel', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle, playerID) {
-        var battleJson = battle.tempSurrogate.toJson();
+        var battleJson = battle.battleModel.toJson();
         if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[playerID];
         }
@@ -74,7 +74,7 @@ routes.add('sendunitorders', function(req, res, next) {
             unitID = parseInt(req.body.unitID, 10),
             turn = battle.currentTurn,
             ordersValid = _.all(orders, function (order) {
-                return order.isValid(battle.tempSurrogate, playerID);
+                return order.isValid(battle.battleModel, playerID);
             });
         if (!ordersValid) {
             chat.log('ERROR: An order was invalid.');
@@ -119,7 +119,7 @@ routes.add('getscript', function(req, res, next) {
     return authenticate(req, next, function(battle) {
         return res.json({
             script: battle.currentTurn.script.toJson(),
-            resultingServerModel: battle.tempSurrogate.toJson()
+            resultingServerModel: battle.battleModel.toJson()
         });
     });
 });

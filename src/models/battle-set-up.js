@@ -29,7 +29,7 @@ exports.BattleSetUp = function(params) {
         return {
             id: this.id,
             battle: this.battleServer ?
-                    this.battleServer.tempSurrogate.toJson() : null,
+                    this.battleServer.battleModel.toJson() : null,
             creator: this.creator ?
                     this.creator.toJson() : {name: '<empty>'},
             challenger: this.challenger ?
@@ -77,8 +77,8 @@ exports.BattleSetUp = function(params) {
             ship.putUnit(new U({imgIndex: 7, speed: 1.5, ownerID: challID}));
             ship.putUnit(new U({imgIndex: 12, speed: 2, ownerID: challID}));
             ship.putUnit(new U({imgIndex: 12, speed: 2, ownerID: challID}));
-            battleServer.tempSurrogate.ships[0].owner = this.creator;
-            battleServer.tempSurrogate.ships[1].owner = this.challenger;
+            battleServer.battleModel.ships[0].owner = this.creator;
+            battleServer.battleModel.ships[1].owner = this.challenger;
             battles.push(battleServer);
             battleServer.nextTurn();
             this.battleServer = battleServer;

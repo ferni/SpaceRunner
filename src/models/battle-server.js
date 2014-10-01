@@ -17,14 +17,13 @@ function BattleTurn(params) {
     this.id = params.id;
     this.battle = params.battle;
     this.playersOrders = {};
-    this.battle.tempSurrogate.getPlayers().forEach(function(player) {
+    this.battle.battleModel.getPlayers().forEach(function(player) {
         self.playersOrders[player.id] = new sh.OrderCollection();
     });
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
     this.script = null;
     this.addOrders = function(orders, unitID, playerID) {
-        var self = this;
         if (!this.battle.isPlayerInIt(playerID)) {
             throw 'Player ' + playerID + ' is not in the battle.';
         }
@@ -69,12 +68,12 @@ exports.BattleServer = Class.extend({
             )});
         enemyShip.hp = 300;
         this.id = parameters.id;
-        this.tempSurrogate = new sh.Battle({
+        this.battleModel = new sh.Battle({
             id: this.id,
             turnDuration: 4000
         });
-        this.tempSurrogate.addShip(parameters.ship);
-        this.tempSurrogate.addShip(enemyShip);
+        this.battleModel.addShip(parameters.ship);
+        this.battleModel.addShip(enemyShip);
     },
     /**
      * Informs that some player has received the script.
@@ -103,7 +102,7 @@ exports.BattleServer = Class.extend({
     },
     isPlayerInIt: function(playerID) {
         'use strict';
-        return _.any(this.tempSurrogate.getPlayers(), function(player) {
+        return _.any(this.battleModel.getPlayers(), function(player) {
             return player.id === playerID;
         });
     },
@@ -111,7 +110,7 @@ exports.BattleServer = Class.extend({
         'use strict';
         var turn = this.currentTurn,
             orderCollection = new sh.OrderCollection(),
-            battle = this.tempSurrogate;
+            battle = this.battleModel;
         _.each(turn.playersOrders, function(playerOrders) {
             orderCollection.addCollection(playerOrders);
         });

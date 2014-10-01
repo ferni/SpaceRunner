@@ -148,7 +148,7 @@ routes.add('newchallenge', function(req, res, next) {
             battleServer.nextTurn();
 
             res.json({
-                battle: battleServer.tempSurrogate.toJson()
+                battle: battleServer.battleModel.toJson()
             });
         } else {
             next(new Error('No player in session'));
