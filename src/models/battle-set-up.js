@@ -61,24 +61,28 @@ exports.BattleSetUp = function(params) {
      */
     this.createBattle = function(done) {
         var err = null,
-            ship,
+            ship1,
+            ship2,
             battleServer,
-            U = sh.Unit,
-            creID = this.creator.id,
-            challID = this.challenger.id;
+            U = sh.Unit;
         try {
-            ship = new sh.Ship({json: this.shipJson});
-            battleServer = new BattleServer({id: battles.length, ship: ship});
-            ship.putUnit(new U({imgIndex: 6, speed: 2, ownerID: creID}));
-            ship.putUnit(new U({imgIndex: 6, speed: 2, ownerID: creID}));
-            ship.putUnit(new U({imgIndex: 0, speed: 1.5, ownerID: creID}));
-            ship.putUnit(new U({imgIndex: 0, speed: 1.5, ownerID: creID}));
-            ship.putUnit(new U({imgIndex: 7, speed: 1.5, ownerID: challID}));
-            ship.putUnit(new U({imgIndex: 7, speed: 1.5, ownerID: challID}));
-            ship.putUnit(new U({imgIndex: 12, speed: 2, ownerID: challID}));
-            ship.putUnit(new U({imgIndex: 12, speed: 2, ownerID: challID}));
-            battleServer.battleModel.ships[0].owner = this.creator;
-            battleServer.battleModel.ships[1].owner = this.challenger;
+            battleServer = new BattleServer({
+                id: battles.length,
+                shipJsons: [this.shipJson, this.shipJson]
+            });
+            ship1 = battleServer.battleModel.ships[0];
+            ship1.owner = this.creator;
+            ship1.putUnit(new U({imgIndex: 6, speed: 2}));
+            ship1.putUnit(new U({imgIndex: 6, speed: 2}));
+            ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
+            ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
+
+            ship2 = battleServer.battleModel.ships[1];
+            ship2.owner = this.challenger;
+            ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
+            ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
+            ship2.putUnit(new U({imgIndex: 12, speed: 2}));
+            ship2.putUnit(new U({imgIndex: 12, speed: 2}));
             battles.push(battleServer);
             battleServer.nextTurn();
             this.battleServer = battleServer;

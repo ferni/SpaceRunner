@@ -19,10 +19,11 @@ var BattleServer = require('./battle-server').BattleServer,
 exports.ChallengeBattle = BattleServer.extend({
     init: function(params) {
         'use strict';
-        var ship = new sh.Ship({json: params.shipJson}),
-            u = sh.units,
-            enemyShip;
-        this.parent({id: params.id, ship: ship});
+        var ship, u, enemyShip;
+        this.parent(params);
+        u = sh.units;
+
+        ship = this.battleModel.ships[0];
         ship.owner = params.player;
         ship.putUnit(new u.Zealot());
         ship.putUnit(new u.Zealot());

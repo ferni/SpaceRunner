@@ -52,28 +52,16 @@ exports.BattleServer = Class.extend({
     winner: null,
     init: function(parameters) {
         'use strict';
-        var enemyShip = new sh.Ship({json: JSON.parse(
-                '{"tmxName":"Humanoid_Cruiser","buildings":[' +
-                    '{"type":"Power","x":15,"y":11,"r":false},' +
-                    '{"type":"Engine","x":11,"y":9,"r":false},' +
-                    '{"type":"Engine","x":11,"y":13,"r":false},' +
-                    '{"type":"Weapon","x":22,"y":9,"r":false},' +
-                    '{"type":"Weapon","x":22,"y":13,"r":false},' +
-                    '{"type":"Component","x":19,"y":11,"r":false},' +
-                    '{"type":"Console","x":11,"y":11,"r":false},' +
-                    '{"type":"Console","x":11,"y":12,"r":false},' +
-                    '{"type":"Console","x":21,"y":9,"r":false},' +
-                    '{"type":"Console","x":21,"y":14,"r":false}],' +
-                    '"units":[]}'
-            )});
-        enemyShip.hp = 300;
+        var model;
         this.id = parameters.id;
-        this.battleModel = new sh.Battle({
+        model = new sh.Battle({
             id: this.id,
             turnDuration: 4000
         });
-        this.battleModel.addShip(parameters.ship);
-        this.battleModel.addShip(enemyShip);
+        _.each(parameters.shipJsons, function(json) {
+            model.addShip(new sh.Ship({json: json}));
+        });
+        this.battleModel = model;
     },
     /**
      * Informs that some player has received the script.
