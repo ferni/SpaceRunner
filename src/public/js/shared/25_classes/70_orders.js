@@ -23,15 +23,6 @@ if (typeof exports !== 'undefined') {
         });
 
     sh.OrderCollection = sh.SharedClass.extendShared({
-        init: function(json) {
-            this.orders = {};
-            if (json) {
-                _.each(json, function(unitOrdersJson, unitID) {
-                    this.orders[unitID] = sh.utils.mapFromJson(unitOrdersJson,
-                        sh.orders);
-                }, this);
-            }
-        },
         /**
          * Adds a unit's orders to the collection.
          * @param orderArray Array Array of sh.Order.
@@ -50,7 +41,7 @@ if (typeof exports !== 'undefined') {
          *
          * @param orderCollection {sh.OrderCollection} Another collection.
          */
-        addCollection: function(orderCollection) {
+        merge: function(orderCollection) {
             _.each(orderCollection.orders, function(unitOrders, unitID) {
                 if (this.orders.hasOwnProperty(unitID)) {
                     throw 'The collection already had orders for unit ' +
@@ -58,16 +49,6 @@ if (typeof exports !== 'undefined') {
                 }
                 this.addUnitOrders(unitOrders, unitID);
             }, this);
-        },
-        clone: function() {
-            return new sh.OrderCollection(this.toJson());
-        },
-        toJson: function() {
-            var json = {};
-            _.each(this.orders, function(unitOrders, unitID) {
-                json[unitID] = sh.utils.mapToJson(unitOrders);
-            });
-            return json;
         }
     });
 

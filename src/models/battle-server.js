@@ -100,7 +100,7 @@ exports.BattleServer = Class.extend({
             orderCollection = new sh.OrderCollection(),
             battle = this.battleModel;
         _.each(turn.playersOrders, function(playerOrders) {
-            orderCollection.addCollection(playerOrders);
+            orderCollection.merge(playerOrders);
         });
         if (resetShip === undefined) {
             resetShip = true;
