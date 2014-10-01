@@ -23,32 +23,53 @@ if (typeof exports !== 'undefined') {
         });
 
     sh.OrderCollection = sh.SharedClass.extendShared({
+        init: function() {
+            this.allUnitOrders = {};
+        },
         /**
          * Adds a unit's orders to the collection.
-         * @param orderArray Array Array of sh.Order.
-         * @param unitID {int|String} The unit id to which the orders belong.
+         * @param unitOrders {sh.UnitOrders}
          */
-        addUnitOrders: function(orderArray, unitID) {
-            unitID = parseInt(unitID, 10);
-            if (_.any(orderArray, function(order) {
-                    return order.unitID !== unitID;
-                })) {
-                throw 'There are orders that don\'t belong to the unit';
-            }
-            this.orders[unitID] = orderArray;
+        addUnitOrders: function(unitOrders) {
+            this.allUnitOrders[unitOrders.unitID] = unitOrders;
+        },
+        getUnitOrders: function(unitID) {
+            return this.allUnitOrders[unitID];
         },
         /**
          *
          * @param orderCollection {sh.OrderCollection} Another collection.
          */
         merge: function(orderCollection) {
-            _.each(orderCollection.orders, function(unitOrders, unitID) {
-                if (this.orders.hasOwnProperty(unitID)) {
+            _.each(orderCollection.allUnitOrders, function(orders) {
+                if (this.getUnitOrders(orders.unitID)) {
                     throw 'The collection already had orders for unit ' +
-                        unitID;
+                        orders.unitID;
                 }
-                this.addUnitOrders(unitOrders, unitID);
+                this.addUnitOrders(orders);
             }, this);
+        }
+    });
+
+    sh.UnitOrders = sh.SharedClass.extendShared({
+        type: 'UnitOrders',
+        init: function(json) {
+            this.unitID = parseInt(json.unitID, 10);
+            this.array = sh.utils.mapFromJson(json.array, sh.orders);
+            this.validate(this.unitID);
+        },
+        validate: function(unitID) {
+            if (_.any(this.array, function(order) {
+                    return order.unitID !== unitID;
+                })) {
+                throw 'There are orders that don\'t belong to the unit';
+            }
+        },
+        toJson: function() {
+            return {
+                unitID: this.unitID,
+                array: sh.utils.mapToJson(this.array)
+            };
         }
     });
 
