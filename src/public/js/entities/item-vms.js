@@ -489,3 +489,15 @@ itemVMs.WeakSpot = ItemVM.extend({
         this.alpha = 0.75;
     }
 });
+
+itemVMs.Teleporter = ItemVM.extend({
+    // init function
+    init: function(model) {
+        'use strict';
+        this.type = 'Teleporter';
+        this.size = model.size;
+        this.m = model;
+        this.parent(model.x, model.y, {});
+        this.onShip(model.onShip());
+    }
+});

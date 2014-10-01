@@ -59,6 +59,10 @@ var g_resources = [{
     type: 'image',
     src: 'data/img/render/weakspot.png'
 }, {
+    name: 'teleporter',
+    type: 'image',
+    src: 'data/img/render/teleporter.png'
+}, {
     name: 'metatiles32x32',
     type: 'image',
     src: 'data/img/render/metatiles32x32.png'

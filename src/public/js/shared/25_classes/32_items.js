@@ -360,3 +360,17 @@ sh.items.WeakSpot = sh.Item.extendShared({
         this.walkable = true;
     }
 });
+
+sh.items.Teleporter = sh.Item.extendShared({
+    init: function(json) {
+        'use strict';
+        this.parent(json);
+        this.setJson({
+            type: 'Teleporter',
+            properties: [],
+            json: json
+        });
+        this.setSize(sh.GRID_SUB, sh.GRID_SUB);
+        this.walkable = true;
+    }
+});
