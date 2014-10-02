@@ -12,17 +12,19 @@ test('script creation', function() {
     'use strict';
     var order, script,
         battle = th.makeTestBattle(),
-        unit = battle.ships[0].putUnit({speed: 1}),
+        unit = battle.ships[0].putUnit(new sh.Unit({speed: 1, ownerID: 1})),
         moveActions,
         orderCollection = new sh.OrderCollection();
     battle.turnDuration = 3000;
-    unit.ownerID = 1;
     order = new sh.orders.Move({
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
     ok(order.isValid(battle, 1), 'Order is valid');
-    orderCollection.addUnitOrders([order], unit.id);
+    orderCollection.addUnitOrders(new sh.UnitOrders({
+        unitID: unit.id,
+        array: [order]
+    }));
     script = sh.createScript(orderCollection, battle, true);
     moveActions = script.byType('Move');
     equal(moveActions.length, 2, 'Script has two Move actions');
@@ -34,17 +36,19 @@ test('script creation\'s ship modifications', function() {
     'use strict';
     var order,
         battle = th.makeTestBattle(),
-        unit = battle.ships[0].putUnit({speed: 1}),
+        unit = battle.ships[0].putUnit(new sh.Unit({speed: 1, ownerID: 1})),
         prevX = unit.x,
         orderCollection = new sh.OrderCollection();
     battle.turnDuration = 5000;
-    unit.ownerID = 1;
     order = new sh.orders.Move({
         unitID: unit.id,
         destination: {x: unit.x + 2, y: unit.y}
     });
     ok(order.isValid(battle, 1), 'Order is valid');
-    orderCollection.addUnitOrders([order], unit.id);
+    orderCollection.addUnitOrders(new sh.UnitOrders({
+        array: [order],
+        unitID: unit.id
+    }));
     sh.createScript(orderCollection, battle, true);
     equal(unit.x, prevX + 2, 'The unit position has been modified');
 });
@@ -52,7 +56,7 @@ test('script creation\'s ship modifications', function() {
 test('script creation, carry over actions to next turn', function() {
     'use strict';
     var battle = th.makeTestBattle(),
-        unit = battle.ships[0].putUnit({speed: 1}),
+        unit = battle.ships[0].putUnit(new sh.Unit({speed: 1, ownerID: 1})),
         TestAction = sh.Action.extendShared({
             init: function(json) {
                 this.parent(json);
@@ -163,11 +167,10 @@ test('Script.insertAction', function() {
     equal(script.actions[1], actionForInsertion);
 });
 
-test('OrderPackage serialization', function() {
+test('UnitOrders serialization', function() {
     'use strict';
-    var orders, orderPackage, json, reconstructed;
-    orders = {
-        '1': [new sh.orders.Move({
+    var orders, unitOrders, json, reconstructed;
+    orders = [new sh.orders.Move({
             unitID: 1,
             destination: {x: 1, y: 2}
         }),
@@ -175,30 +178,18 @@ test('OrderPackage serialization', function() {
                 unitID: 1,
                 destination: {x: 2, y: 2}
             })
-        ],
-        '2': [new sh.orders.Move({
-            unitID: 2,
-            destination: {x: 7, y: 7}
-        })]
-    };
-    orderPackage = new sh.OrderCollection();
-    orderPackage.addUnitOrders(orders['1'], 1);
-    orderPackage.addUnitOrders(orders['2'], 2);
-    json = orderPackage.toJson();
-    reconstructed = new sh.OrderCollection(json);
+        ];
+    unitOrders = new sh.UnitOrders({unitID: 1, array: orders});
+    json = unitOrders.toJson();
+    reconstructed = new sh.UnitOrders(json);
     ok(JSON.stringify(json), 'JSON stringify does not throw error.');
-    equal(reconstructed.orders[1].length, 2, '2 orders for Unit 1');
-    equal(reconstructed.orders[2].length, 1, '1 order for Unit 2');
-    ok(reconstructed.orders['1'][0] instanceof sh.Order,
+    equal(reconstructed.array.length, 2, '2 orders for Unit 1');
+    ok(reconstructed.array[0] instanceof sh.Order,
         '1st order instance of sh.Order');
-    deepEqual(reconstructed.orders['1'][0].destination, {x: 1, y: 2},
+    deepEqual(reconstructed.array[0].destination, {x: 1, y: 2},
         '1st order correct destination');
-    ok(reconstructed.orders['1'][1] instanceof sh.Order,
+    ok(reconstructed.array[1] instanceof sh.Order,
         '2nd order instance of sh.Order');
-    deepEqual(reconstructed.orders['1'][1].destination, {x: 2, y: 2},
+    deepEqual(reconstructed.array[1].destination, {x: 2, y: 2},
         '2nd order correct destination');
-    ok(reconstructed.orders['2'][0] instanceof sh.Order,
-        '3rd order instance of sh.Order');
-    deepEqual(reconstructed.orders['2'][0].destination, {x: 7, y: 7},
-        '3rd order correct destination');
 });
