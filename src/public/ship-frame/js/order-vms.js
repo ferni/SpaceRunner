@@ -122,7 +122,7 @@ var orderVMs = (function() {
         remove: function() {
             var unitOrders = this.unitVM.m.orders;
             utils.removeFromArray(this.m, unitOrders);
-            this.unitVM.orders(unitOrders);
+            this.unitVM.updateOrderVMs();
         }
     });
 

@@ -157,6 +157,7 @@ var Timeline = function(screen, startingBattle) {
 
 
     this.update = function() {
+        return;
         var battleClone, script, actionsByType, i, actions = [],
             turnsCovered = 2,
             newActions;

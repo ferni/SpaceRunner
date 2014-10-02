@@ -65,11 +65,9 @@ screens.register('battle', ConnectedScreen.extend({
         function frameEventHandler(e) {
             var unit;
             if (e.eventName === 'new orders') {
-                unit = gs.battle.getUnitByID(e.unitID);
                 $.post('/battle/sendunitorders', {
                     id: battle.id,
-                    ordersJson: e.ordersJson,
-                    unitID: e.unitID
+                    ordersJson: e.ordersJson
                 },
                     function () {
                         console.log('Orders successfully submitted');
@@ -77,11 +75,9 @@ screens.register('battle', ConnectedScreen.extend({
                     .fail(function () {
                         console.error('Server error when submitting orders.');
                     });
-                self.currentOrders.addUnitOrders(
-                    sh.utils.mapFromJson(e.ordersJson, sh.orders),
-                    e.unitID
-                );
-                unit.orders = self.currentOrders.orders[e.unitID];
+                gs.battle.addUnitOrders(new sh.UnitOrders(e.ordersJson));
+                //notify frames
+                _.invoke(self.shipFrames, 'sendData', e.ordersJson);
                 self.timeline.update();
             } else if (e.eventName === 'finished playing') {
                 if (self.resultingServerModel) {//not first pause
@@ -90,10 +86,9 @@ screens.register('battle', ConnectedScreen.extend({
                 framesFinished++;
                 if (framesFinished >= self.shipFrames.length) {
                     framesFinished = 0;
-                    self.currentOrders = new sh.OrderCollection(
-                        e.orderCollectionJson
-                    );
-                    gs.battle = new sh.Battle(e.battleJson);
+                    if (self.resultingServerModel) {
+                        gs.battle = new sh.Battle(self.resultingServerModel);
+                    }
                     self.pause();
                 }
             } else if (e.eventName === 'unit selected') {

@@ -37,6 +37,7 @@ var ShipFrame = (function() {
             $('#frames').append(iframe);
             //listen to messages from the iframe
             window.addEventListener('message', function(event) {
+                console.log("frame -> page: " + event.data.eventName);
                 if (event.source === iframe.contentWindow) {
                     if (event.data.eventName === 'ready') {
                         self.sendData({
@@ -63,6 +64,7 @@ var ShipFrame = (function() {
         },
         sendData: function(data) {
             this.iframe.contentWindow.postMessage(data, '*');
+            console.log('page -> frame: ' + data.type);
         }
     };
     return ShipFrame;

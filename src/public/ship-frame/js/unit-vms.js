@@ -44,23 +44,6 @@ var UnitVM = TileEntityVM.extend({
         this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
         this.updateHealthBar();
         this.orderVMs = [];
-        this.orders = function(newValue) {
-            var ordersObject = {};
-            if (newValue) {
-                self.m.orders = newValue;
-                ordersObject[self.m.id] = newValue;
-                parent.postMessage({
-                    eventName: 'new orders',
-                    ordersJson: sh.utils.mapToJson(newValue),
-                    unitID: self.m.id
-                }, '*');
-
-                if (!self.updateOrderVMs()) {
-                    _.invoke(self.orderVMs, 'updatePath');
-                }
-            }
-            return self.m.orders;
-        };
         this.isSelectable = this.isMine();
         this.setTracked(['x', 'y', 'hp', 'moving', 'inCombat', 'dizzy',
             'chargingShipWeapon']);
@@ -79,7 +62,6 @@ var UnitVM = TileEntityVM.extend({
                 this.faceLeft(true);
             }
         }
-        this.updateOrderVMs();
         this.prevX = this.pos.x;
         return true;
     },
@@ -268,25 +250,6 @@ var UnitVM = TileEntityVM.extend({
         var x = tile.x, y = tile.y;
         return x >= this.m.x && x < this.m.x + this.trueSize(0) &&
             y >= this.m.y && y < this.m.y + this.trueSize(1);
-    },
-    /**
-     * Inserts an order after the last selected
-     * order. All orders following it are discarded.
-     * @param {Object} order
-     */
-    insertOrder: function(order) {
-        'use strict';
-        this.m.orders.splice(this.getInsertOrderIndex());
-        this.m.orders.push(order);
-        this.orders(this.m.orders);//so it updates the server and vms
-        this.updateOrderVMs();
-        _.last(this.orderVMs).select();
-    },
-    getInsertOrderIndex: function() {
-        'use strict';
-        var lastSelected = _.last(_.filter(this.orderVMs,
-            function(o) {return o.selected(); }));
-        return lastSelected ? this.orderVMs.indexOf(lastSelected) + 1 : 0;
     },
     onDestroyEvent: function() {
         'use strict';

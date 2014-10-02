@@ -70,10 +70,9 @@ routes.add('getmodel', function(req, res, next) {
 routes.add('sendunitorders', function(req, res, next) {
     'use strict';
     return authenticate(req, next, function(battle, playerID) {
-        var orders = sh.utils.mapFromJson(req.body.ordersJson, sh.orders),
-            unitID = parseInt(req.body.unitID, 10),
+        var unitOrders = new sh.UnitOrders(req.body.ordersJson),
             turn = battle.currentTurn,
-            ordersValid = _.all(orders, function (order) {
+            ordersValid = _.all(unitOrders.array, function (order) {
                 return order.isValid(battle.battleModel, playerID);
             });
         if (!ordersValid) {
@@ -81,7 +80,7 @@ routes.add('sendunitorders', function(req, res, next) {
             next(new Error('An order submitted is invalid'));
             return;
         }
-        turn.addOrders(orders, unitID, playerID);
+        turn.addOrders(unitOrders, playerID);
         chat.log('SUCCESS: The orders issued by ' +
             auth.playerByID(playerID).name +
             ' have been validated by the server');

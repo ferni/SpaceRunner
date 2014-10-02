@@ -67,6 +67,7 @@ if (typeof exports !== 'undefined') {
         },
         toJson: function() {
             return {
+                type: this.type,
                 unitID: this.unitID,
                 array: sh.utils.mapToJson(this.array)
             };

@@ -32,6 +32,13 @@ screens.register('battle', me.ScreenObject.extend({
         gs.battle = battle;
         gs.ship = _.findWhere(battle.ships, {id: shipID});
         console.log('Battle id is ' + this.id);
+        window.addEventListener('message', function(event) {
+            var data = event.data;
+            if (data.type === 'UnitOrders') {
+                gs.battle.addUnitOrders(new sh.UnitOrders(data));
+                self.shipVM.getUnitVMByID(data.unitID).updateOrderVMs();
+            }
+        }, false);
         this.shipVM = new ShipVM(gs.ship);
         this.shipVM.showInScreen();
         this.shipVM.update();
@@ -133,6 +140,7 @@ screens.register('battle', me.ScreenObject.extend({
             if (this.dragBox) {
                 this.releaseDragBox();
             } else if (this.dragging) {//an order
+                /*
                 if (!sh.v.equal(this.dragging.m.destination, mouse)) {
                     draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
@@ -145,11 +153,20 @@ screens.register('battle', me.ScreenObject.extend({
                     }
                     this.dragging.updatePos();
                 }
+                */
                 this.dragging = null;
             } else {
                 _.each(this.previewOrders, function(orderVM, unitID) {
-                    var unit = self.shipVM.getUnitVMByID(unitID);
-                    unit.insertOrder(orderVM.m);
+                    //var unit = self.shipVM.getUnitVMByID(unitID);
+                    //unit.insertOrder(orderVM.m);
+                    var unitOrders = new sh.UnitOrders({unitID: unitID});
+                    unitOrders.array.push(orderVM.m);
+                    //send to page
+                    //TODO: check that the order is valid
+                    parent.postMessage({
+                        eventName: 'new orders',
+                        ordersJson: unitOrders.toJson()
+                    }, '*');
                 });
             }
             this.previewOrders = {};
@@ -197,7 +214,7 @@ screens.register('battle', me.ScreenObject.extend({
                     return !_.any(u.orderVMs, function(o) {
                         return sh.v.equal(o.getMarkerTile(), mouse);
                     }) &&
-                        (u.orders().length === 0 ||
+                        (u.m.orders.length === 0 ||
                             _.last(u.orderVMs).selected());
                 });
             _.each(unitsToGiveOrders, function(u) {
@@ -227,8 +244,7 @@ screens.register('battle', me.ScreenObject.extend({
         this.shipVM.update();
         parent.postMessage({
             eventName: 'finished playing',
-            battleJson: gs.battle.toJson(),
-            orderCollectionJson: gs.battle.extractOrders().toJson()
+            battleJson: gs.battle.toJson()
         }, '*');
         me.game.sort();
         me.game.repaint();

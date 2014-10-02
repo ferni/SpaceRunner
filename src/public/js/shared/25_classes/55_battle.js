@@ -17,6 +17,7 @@ if (typeof exports !== 'undefined') {
 
 sh.Battle = sh.Jsonable.extendShared({
     ships: [],
+    changeHandlers: [],
     arbiter: {//actor that declares a winner
         type: 'Arbiter',
         getActions: function(turnTime, battle) {
@@ -55,6 +56,14 @@ sh.Battle = sh.Jsonable.extendShared({
             return new sh.Player(playerJson);
         });
         this.pendingActions = [];
+        this.orderCollection = new sh.OrderCollection();
+    },
+    changed: function(unitOrders) {
+        'use strict';
+        //notify
+        this.changeHandlers.forEach(function(handler) {
+            handler(unitOrders);
+        });
     },
     toJson: function() {
         'use strict';
@@ -112,11 +121,7 @@ sh.Battle = sh.Jsonable.extendShared({
      */
     extractOrders: function() {
         'use strict';
-        var orders = new sh.OrderCollection();
-        _.each(this.getUnits(), function(u) {
-            orders.addUnitOrders(u.orders, u.id);
-        });
-        return orders;
+        return this.orderCollection;
     },
     /**
      * Distribute the orders among the units.
@@ -125,14 +130,15 @@ sh.Battle = sh.Jsonable.extendShared({
     insertOrders: function(orderCollection) {
         'use strict';
         var self = this;
-        _.each(orderCollection.orders, function(unitOrders, unitID) {
-            var unit;
-            if (unitOrders.length <= 0) {
-                return;
-            }
-            unit = self.getUnitByID(unitID);
-            unit.orders = unitOrders;
+        _.each(orderCollection.allUnitOrders, function(unitOrders) {
+            self.addUnitOrders(unitOrders);
         });
+    },
+    addUnitOrders: function(unitOrders) {
+        'use strict';
+        this.orderCollection.addUnitOrders(unitOrders);
+        this.getUnitByID(unitOrders.unitID).orders = unitOrders.array;
+        this.changed(unitOrders);
     },
     endOfTurnReset: function() {
         'use strict';

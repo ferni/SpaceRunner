@@ -23,11 +23,11 @@ function BattleTurn(params) {
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
     this.script = null;
-    this.addOrders = function(orders, unitID, playerID) {
+    this.addOrders = function(unitOrders, playerID) {
         if (!this.battle.isPlayerInIt(playerID)) {
             throw 'Player ' + playerID + ' is not in the battle.';
         }
-        self.playersOrders[playerID].addUnitOrders(orders, unitID);
+        self.playersOrders[playerID].addUnitOrders(unitOrders);
     };
     this.isPlayerReady = function(playerID) {
         return _.any(this.playersSubmitted, function(id) {
