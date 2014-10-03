@@ -65,6 +65,12 @@ if (typeof exports !== 'undefined') {
                 throw 'There are orders that don\'t belong to the unit';
             }
         },
+        add: function(order) {
+            if (order.unitID !== this.unitID) {
+                throw 'The order does not belong to the unit';
+            }
+            this.array.push(order);
+        },
         toJson: function() {
             return {
                 type: this.type,

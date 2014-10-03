@@ -23,7 +23,7 @@ var Timeline = function(screen, startingBattle) {
         return new Segment(self);
     }
     this.featuredUnit = ko.observable(null);
-    this.featuredUnitVM = ko.computed(function() {
+    /*this.featuredUnitVM = ko.computed(function() {
         if (this.featuredUnit()) {
             return new UnitVMTimeline(this.featuredUnit(), this, this.battle);
         }
@@ -34,7 +34,7 @@ var Timeline = function(screen, startingBattle) {
             return orderVMsByUnit[this.featuredUnit().id];
         }
         return [];
-    }, this);
+    }, this);*/
     this.zoomLevel = ko.observable(1);
     this.turns = [
         {

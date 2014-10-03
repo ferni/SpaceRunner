@@ -18,7 +18,7 @@ screens.register('battle', me.ScreenObject.extend({
         'use strict';
         this.parent(true);
     },
-    /**
+/**
      *
      * @param battle sh.Battle
      * @param shipID int
@@ -33,10 +33,14 @@ screens.register('battle', me.ScreenObject.extend({
         gs.ship = _.findWhere(battle.ships, {id: shipID});
         console.log('Battle id is ' + this.id);
         window.addEventListener('message', function(event) {
-            var data = event.data;
+            var data = event.data,
+                unitVM;
             if (data.type === 'UnitOrders') {
                 gs.battle.addUnitOrders(new sh.UnitOrders(data));
-                self.shipVM.getUnitVMByID(data.unitID).updateOrderVMs();
+                unitVM = self.shipVM.getUnitVMByID(data.unitID);
+                if (unitVM) {
+                    unitVM.updateOrderVMs();
+                }
             }
         }, false);
         this.shipVM = new ShipVM(gs.ship);
@@ -131,8 +135,7 @@ screens.register('battle', me.ScreenObject.extend({
         'use strict';
         var mouse = utils.getMouse(),
             which = e.which - 1, //workaround for melonJS mismatch
-            draggedOriginalPos,
-            self = this;
+            draggedOriginalPos;
         if (!this.paused) {
             return;
         }
@@ -140,34 +143,21 @@ screens.register('battle', me.ScreenObject.extend({
             if (this.dragBox) {
                 this.releaseDragBox();
             } else if (this.dragging) {//an order
-                /*
                 if (!sh.v.equal(this.dragging.m.destination, mouse)) {
                     draggedOriginalPos = this.dragging.m.destination;
                     this.dragging.m.destination = {x: mouse.x, y: mouse.y};
                     if (this.dragging.m.isValid(gs.battle, gs.player.id)) {
-                        this.dragging.unitVM.orders(
-                            this.dragging.unitVM.m.orders
-                        );
+                        this.sendUnitOrders(this.dragging.unitVM.m);
                     } else {
                         this.dragging.m.destination = draggedOriginalPos;
                     }
                     this.dragging.updatePos();
                 }
-                */
                 this.dragging = null;
             } else {
-                _.each(this.previewOrders, function(orderVM, unitID) {
-                    //var unit = self.shipVM.getUnitVMByID(unitID);
-                    //unit.insertOrder(orderVM.m);
-                    var unitOrders = new sh.UnitOrders({unitID: unitID});
-                    unitOrders.array.push(orderVM.m);
-                    //send to page
-                    //TODO: check that the order is valid
-                    parent.postMessage({
-                        eventName: 'new orders',
-                        ordersJson: unitOrders.toJson()
-                    }, '*');
-                });
+                _.each(this.previewOrders, function(orderVM) {
+                    this.sendUnitOrders(orderVM.unitVM.m, orderVM.m);
+                }, this);
             }
             this.previewOrders = {};
             this.mouseDownPos = null;
@@ -198,6 +188,20 @@ screens.register('battle', me.ScreenObject.extend({
             this.updatePreviewOrders(mouse);
         }
         this.prevMouse = mouse;
+    },
+    sendUnitOrders: function(unit, newOrder) {
+        'use strict';
+        var unitOrders = new sh.UnitOrders({
+            unitID: unit.id,
+            array: unit.orders
+        });
+        if (newOrder && newOrder.isValid(gs.battle, gs.player.id)) {
+            unitOrders.add(newOrder);
+        }
+        parent.postMessage({
+            eventName: 'new orders',
+            ordersJson: unitOrders.toJson()
+        }, '*');
     },
     updatePreviewOrders: function(mouse) {
         'use strict';
