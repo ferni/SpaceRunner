@@ -16,6 +16,7 @@ var UnitVM = TileEntityVM.extend({
         'use strict';
         var self = this;
         this.m = unitModel;
+        this.screen = me.state.current();
         this.size = unitModel.size;
         this.speed = unitModel.speed;
         this.selectionColor = utils.isMine(this.m) ? 'teal' : 'red';
@@ -63,6 +64,9 @@ var UnitVM = TileEntityVM.extend({
             }
         }
         this.prevX = this.pos.x;
+        if (!this.screen.paused) {
+            this.updateOrderVMs();
+        }
         return true;
     },
     updateOrderVMs: function() {
