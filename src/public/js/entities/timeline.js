@@ -23,18 +23,12 @@ var Timeline = function(screen, startingBattle) {
         return new Segment(self);
     }
     this.featuredUnit = ko.observable(null);
-    /*this.featuredUnitVM = ko.computed(function() {
-        if (this.featuredUnit()) {
-            return new UnitVMTimeline(this.featuredUnit(), this, this.battle);
-        }
-        return null;
-    }, this);
     this.orderVMs = ko.computed(function() {
         if (this.featuredUnit()) {
             return orderVMsByUnit[this.featuredUnit().id];
         }
         return [];
-    }, this);*/
+    }, this);
     this.zoomLevel = ko.observable(1);
     this.turns = [
         {
@@ -114,8 +108,8 @@ var Timeline = function(screen, startingBattle) {
     }
 
     function placeAttackMarker(attackAction) {
-        var attacker = self.battle.getUnitByID(attackAction.attackerID),
-            receiver = self.battle.getUnitByID(attackAction.receiverID);
+        var attacker = gs.battle.getUnitByID(attackAction.attackerID),
+            receiver = gs.battle.getUnitByID(attackAction.receiverID);
         if (attacker && receiver) {
             markersTemp.push(new Marker(attackAction.time +
                 attackAction.damageDelay, '#ED6F00', attacker.type +
@@ -131,7 +125,7 @@ var Timeline = function(screen, startingBattle) {
     }
 
     function placeFireShipWeaponMarker(fswAction) {
-        var unit = self.battle.getUnitByID(fswAction.unitID),
+        var unit = gs.battle.getUnitByID(fswAction.unitID),
             damage = unit.ship.getItemByID(fswAction.weaponID).damage;
         markersTemp.push(new Marker(fswAction.time, 'blue',
             'Enemy ship receives ' +
@@ -148,31 +142,23 @@ var Timeline = function(screen, startingBattle) {
     function updateOrderVMs(battle) {
         _.each(battle.getUnits(), function(unit) {
             var orderVMs = orderVMsByUnit[unit.id] = [];
-            _.each(screen.currentOrders.orders[unit.id], function(order) {
-                orderVMs.push(new OrderVMTimeline(order, self, battle));
-            });
+            _.each(battle.orderCollection.getUnitOrders(unit.id),
+                function(order) {
+                    orderVMs.push(new OrderVMTimeline(order, self, battle));
+                });
         });
     }
 
+    function cloneAction(action) {
+        return new sh.actions[action.type](action.toJson());
+    }
 
-
-    this.update = function() {
-        return;
-        var battleClone, script, actionsByType, i, actions = [],
+    function getPredictedActions(battle) {
+        var script, i, newActions,
             turnsCovered = 2,
-            newActions;
-        if (!screen.resultingServerModel) {//first pause
-            this.battle = startingBattle;
-            battleClone = new sh.Battle(startingBattle.toJson());
-        } else {
-            this.battle = new sh.Battle(screen.resultingServerModel);
-            battleClone = new sh.Battle(screen.resultingServerModel);
-        }
-        function cloneAction(action) {
-            return new sh.actions[action.type](action.toJson());
-        }
-
-        battleClone.insertOrders(screen.currentOrders);
+            actions = [],
+            battleClone = new sh.Battle(battle.toJson());
+        battleClone.insertOrders(battle.extractOrders());
         if (screen.scriptServer.pendingActionsJson) {
             battleClone.pendingActions = sh.utils.mapFromJson(
                 screen.scriptServer.pendingActionsJson,
@@ -192,11 +178,12 @@ var Timeline = function(screen, startingBattle) {
                 .map(setRelativeActionTime(i))
                 .value());
         }
+        return actions;
+    }
 
-
-
-        actionsByType = _.groupBy(actions, 'type');
-        updateOrderVMs(this.battle);
+    this.update = function() {
+        var actionsByType = _.groupBy(getPredictedActions(gs.battle), 'type');
+        updateOrderVMs(gs.battle);
         updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
         //Markers
         clearMarkers();

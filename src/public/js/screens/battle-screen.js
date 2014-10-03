@@ -13,7 +13,6 @@ screens.register('battle', ConnectedScreen.extend({
     currentTurnID: null,
     scriptServer: [],
     mouseDownPos: null,
-    currentOrders: new sh.OrderCollection(),
     /**
      * Gets executed before onReset.
      */
@@ -54,7 +53,6 @@ screens.register('battle', ConnectedScreen.extend({
      */
     onReset: function(battle, orders) {
         'use strict';
-        //TODO: que venga battleJson para el timeline
         var self = this,
             framesFinished = 0;
         this.parent({id: battle.id});
