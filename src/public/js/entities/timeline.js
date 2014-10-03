@@ -7,7 +7,7 @@
 
 /*global ko, _, gs, sh, $, utils, OrderVMTimeline, UnitVMTimeline*/
 
-var Timeline = function(screen, startingBattle) {
+var Timeline = function(screen) {
     'use strict';
     var self = this,
         markerProximityThreshold = 5,//pixels
@@ -142,10 +142,12 @@ var Timeline = function(screen, startingBattle) {
     function updateOrderVMs(battle) {
         _.each(battle.getUnits(), function(unit) {
             var orderVMs = orderVMsByUnit[unit.id] = [];
-            _.each(battle.orderCollection.getUnitOrders(unit.id),
-                function(order) {
-                    orderVMs.push(new OrderVMTimeline(order, self, battle));
-                });
+            if (battle.orderCollection.getUnitOrders(unit.id)) {
+                _.each(battle.orderCollection.getUnitOrders(unit.id).array,
+                    function (order) {
+                        orderVMs.push(new OrderVMTimeline(order, self, battle));
+                    });
+            }
         });
     }
 
