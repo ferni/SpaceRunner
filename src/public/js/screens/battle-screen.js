@@ -63,20 +63,7 @@ screens.register('battle', ConnectedScreen.extend({
         function frameEventHandler(e) {
             var unit;
             if (e.eventName === 'new orders') {
-                $.post('/battle/sendunitorders', {
-                    id: battle.id,
-                    ordersJson: e.ordersJson
-                },
-                    function () {
-                        console.log('Orders successfully submitted');
-                    }, 'json')
-                    .fail(function () {
-                        console.error('Server error when submitting orders.');
-                    });
-                gs.battle.addUnitOrders(new sh.UnitOrders(e.ordersJson));
-                //notify frames
-                _.invoke(self.shipFrames, 'sendData', e.ordersJson);
-                self.timeline.update();
+                self.newOrders(e.ordersJson);
             } else if (e.eventName === 'finished playing') {
                 if (self.resultingServerModel) {//not first pause
                     self.compareModelWithServer(e.battleJson);
@@ -184,6 +171,23 @@ screens.register('battle', ConnectedScreen.extend({
             }
             _.invoke(this.previewOrders, 'draw', ctx);
         }
+    },
+    newOrders: function(unitOrdersJson) {
+        'use strict';
+        $.post('/battle/sendunitorders', {
+            id: gs.battle.id,
+            ordersJson: unitOrdersJson
+        },
+            function () {
+                console.log('Orders successfully submitted');
+            }, 'json')
+            .fail(function () {
+                console.error('Server error when submitting orders.');
+            });
+        gs.battle.addUnitOrders(new sh.UnitOrders(unitOrdersJson));
+        //notify frames
+        _.invoke(this.shipFrames, 'sendData', unitOrdersJson);
+        this.timeline.update();
     },
     getModelDifferenceUrl: function(aJsonString, bJsonString) {
         'use strict';
