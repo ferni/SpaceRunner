@@ -46,10 +46,11 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     makeUnitOrders: function() {
         'use strict';
-        return new sh.UnitOrders({
-            unitID: this.id,
-            array: this.orders
+        var unitOrders = new sh.UnitOrders({
+            unitID: this.id
         });
+        unitOrders.array = this.orders;
+        return unitOrders;
     },
     isAlive: function() {
         'use strict';

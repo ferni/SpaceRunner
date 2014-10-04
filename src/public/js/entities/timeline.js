@@ -29,6 +29,10 @@ var Timeline = function(screen) {
         }
         return [];
     }, this);
+    this.removeOrder = function(orderVM) {
+        utils.removeFromArray(orderVM.m, self.featuredUnit().orders);
+        screen.newOrders(self.featuredUnit().makeUnitOrders().toJson());
+    };
     this.zoomLevel = ko.observable(1);
     this.turns = [
         {

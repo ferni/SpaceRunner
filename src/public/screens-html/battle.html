@@ -59,7 +59,7 @@
                     <li data-bind="style:{height:itemHeight(),
                                     backgroundColor: itemColorObs()}">
                         <span data-bind="text:m.toString()"></span>
-                        <button class="delete-button" data-bind="click:remove">x</button>
+                        <button class="delete-button" data-bind="click:$parent.removeOrder">x</button>
                     </li>
                 </ol>
             </div>
