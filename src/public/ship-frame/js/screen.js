@@ -191,10 +191,7 @@ screens.register('battle', me.ScreenObject.extend({
     },
     sendUnitOrders: function(unit, newOrder) {
         'use strict';
-        var unitOrders = new sh.UnitOrders({
-            unitID: unit.id,
-            array: unit.orders
-        });
+        var unitOrders = unit.makeUnitOrders();
         if (newOrder && newOrder.isValid(gs.battle, gs.player.id)) {
             unitOrders.add(newOrder);
         }

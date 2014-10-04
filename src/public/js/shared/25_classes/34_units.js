@@ -44,6 +44,13 @@ sh.Unit = sh.TileEntity.extendShared({
         this.inCombat = false;
         this.orders = [];
     },
+    makeUnitOrders: function() {
+        'use strict';
+        return new sh.UnitOrders({
+            unitID: this.id,
+            array: this.orders
+        });
+    },
     isAlive: function() {
         'use strict';
         return this.hp > 0;
