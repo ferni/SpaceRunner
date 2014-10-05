@@ -48,6 +48,7 @@ var ShipFrame = (function() {
                         });
                     } else {
                         _.each(self.eventHandlers, function(handler) {
+                            event.data.frame = self;
                             handler(event.data);
                         });
                     }
