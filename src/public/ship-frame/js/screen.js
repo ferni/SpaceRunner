@@ -60,6 +60,7 @@ screens.register('battle', me.ScreenObject.extend({
                 .each(function(orderVM) {
                     orderVM.deselect();
                     orderVM.remove();
+                    self.sendUnitOrders(orderVM.unitVM.m);
                 });
         });
         me.input.registerMouseEvent('mouseup', me.game.viewport,
