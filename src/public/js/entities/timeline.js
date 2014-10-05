@@ -191,6 +191,7 @@ var Timeline = function(screen) {
         var actionsByType = _.groupBy(getPredictedActions(gs.battle), 'type');
         updateOrderVMs(gs.battle);
         updateOrderVMsDuration(_.sortBy(actionsByType.FinishOrder, 'time'));
+        this.featuredUnit.valueHasMutated();
         //Markers
         clearMarkers();
         _.each(actionsByType.Attack, placeAttackMarker);
