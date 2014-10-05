@@ -87,6 +87,10 @@ var ScriptPlayer = function(battleScreen) {
                 battleScreen.shipVM.getVM(
                     unit.ship.getItemByID(action.weaponID)
                 ).playFire();
+                parent.postMessage({
+                    eventName: 'ship hp',
+                    hp: gs.battle.ships[1].hp
+                }, '*');
             }
         }
     };

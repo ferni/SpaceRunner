@@ -61,7 +61,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         function frameEventHandler(e) {
-            var unit;
+            var unit, ship;
             if (e.eventName === 'new orders') {
                 self.newOrders(e.ordersJson);
             } else if (e.eventName === 'finished playing') {
@@ -78,11 +78,17 @@ screens.register('battle', ConnectedScreen.extend({
                 }
             } else if (e.eventName === 'unit selected') {
                 self.timeline.featuredUnit(gs.battle.getUnitByID(e.unitID));
+            } else if (e.eventName === 'ship hp') {
+                //TODO: generalize ship damage to any ship
+                self.enemyShip.hp = e.hp;
+                self.htmlVM.enemyShip.valueHasMutated();
             }
         }
+        this.myShip = _.find(battle.ships, utils.isMine);
+        this.enemyShip = _.find(battle.ships, utils.isEnemy);
         this.shipFrames = [
-            new ShipFrame(battle, battle.ships[0], frameEventHandler),
-            new ShipFrame(battle, battle.ships[1], frameEventHandler)
+            new ShipFrame(battle, this.myShip, frameEventHandler),
+            new ShipFrame(battle, this.enemyShip, frameEventHandler)
         ];
         this.shipFrames[0].init(600, 600);
         this.shipFrames[1].init(600, 600);
@@ -113,10 +119,8 @@ screens.register('battle', ConnectedScreen.extend({
         var screen = this;
         //Knockout bindings
         function ViewModel() {
-            this.ship = function() {
-                return gs.battle.ships[0];
-            };
-            this.enemyHP = ko.observable(gs.battle.ships[1].hp);
+            this.myShip = ko.observable(screen.myShip);
+            this.enemyShip = ko.observable(screen.enemyShip);
             this.selectedUnit = ko.observable(null);
             this.timeline = screen.timeline;
         }
@@ -151,7 +155,6 @@ screens.register('battle', ConnectedScreen.extend({
         if (!this.paused) {
             var elapsed = me.timer.getTime() - this.turnBeginTime;
             this.elapsed = elapsed;
-            this.htmlVM.enemyHP(gs.battle.ships[1].hp);
             //update counter
             $('#elapsed').html(elapsed);
             if (elapsed >= this.turnDuration) {

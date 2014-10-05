@@ -4,8 +4,8 @@
         <span id="elapsed"></span>
         <div id="top-hud">
             <span id="turn-info">Turn #<span id="turn-number">0</span></span>
-            <span id="hp">[Own: <span data-bind="text:ship().hp"></span>]</span>
-            <span id="enemyHP">[Enemy: <span data-bind="text:enemyHP()"></span>]</span>
+            <span id="hp">[Own: <span data-bind="text:myShip().hp"></span>]</span>
+            <span id="enemyHP">[Enemy: <span data-bind="text:enemyShip().hp"></span>]</span>
         </div>
         <div id="left-hud">
             <!-- ko if:selectedUnit() -->
