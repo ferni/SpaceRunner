@@ -112,13 +112,17 @@ var utils = {
         }
         return null;
     },
-    isMine: function(unit) {
+    isMine: function(object) {
         'use strict';
-        return gs.player.id === unit.ownerID;
+        var ownerID = object.ownerID;
+        if (ownerID === undefined) {
+            ownerID = object.owner.id;
+        }
+        return gs.player.id === ownerID;
     },
-    isEnemy: function(unit) {
+    isEnemy: function(object) {
         'use strict';
-        return gs.player.id !== unit.ownerID;
+        return !utils.isMine(object);
     },
     /**
      * Returns a new view model according to the model's type.
