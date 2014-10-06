@@ -99,12 +99,26 @@ var sh = require('../public/js/shared'),
         return false;
     }
 
-    function setOrdersInOwnShip(orders, myShip, playerID) {
-        var units = myShip.getPlayerUnits(playerID);
-        _.each(units, function(unit) {
+    function setOrdersInOwnShip(orders, ship, playerID) {
+        var units = _.groupBy(ship.getPlayerUnits(playerID), 'type'),
+            weaponConsoles = _.filter(ship.built, function(item) {
+                return item.type === 'Console' &&
+                    item.getControlled().type === 'Weapon';
+            });
+        _.each(units.MetalSpider, function(unit) {
             addOrderToArray(unit, orders, new sh.orders.Move({
                 unitID: unit.id,
                 destination: {x: unit.x + 2, y: unit.y}
+            }));
+        });
+        _.each(weaponConsoles, function(console, index) {
+            var unit = units.Critter[index];
+            if (!unit || unit.orders.length > 0) {
+                return;
+            }
+            addOrderToArray(unit, orders, new sh.orders.Move({
+                unitID: unit.id,
+                destination: console
             }));
         });
     }
@@ -129,6 +143,8 @@ var sh = require('../public/js/shared'),
                 free.push(t);
             }
         });
+
+        //GO TO THE WEAK SPOT
         _.each(myUnits.Critter, function(unit) {
             if (ship.itemsMap.at(unit.x, unit.y) instanceof
                     sh.items.WeakSpot) {
@@ -154,6 +170,8 @@ var sh = require('../public/js/shared'),
             setOrderForShortestPath(grid.clone(), unit,
                     occupied, orders);
         });
+
+        //SEEK & DESTROY
         _.each(myUnits.MetalSpider, function(unit) {
             setSeekAndDestroyOrderForShortestPath(grid.clone(), unit,
                 enemyUnits, orders);
