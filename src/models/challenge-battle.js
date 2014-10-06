@@ -31,6 +31,7 @@ exports.ChallengeBattle = BattleServer.extend({
         ship.putUnit(new u.Zealot());
         ship.putUnit(new u.Zealot());
 
+
         enemyShip = this.battleModel.ships[1];
         enemyShip.owner = new AIPlayer('Enemy');
         enemyShip.putUnit(new u.Critter());
@@ -43,6 +44,9 @@ exports.ChallengeBattle = BattleServer.extend({
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
+        ship.putUnit(new u.Critter({ownerID: enemyShip.owner.id}));
+        ship.putUnit(new u.Critter({ownerID: enemyShip.owner.id}));
+        ship.putUnit(new u.MetalSpider({ownerID: enemyShip.owner.id}));
     },
     nextTurn: function() {
         'use strict';
@@ -52,8 +56,8 @@ exports.ChallengeBattle = BattleServer.extend({
         this.parent();
         //register AI player orders
         aiOrders = aiPlayer.getOrders(this.battleModel);
-        _.each(aiOrders, function(orders, unitID) {
-            self.currentTurn.addOrders(orders, unitID, aiPlayer.id);
+        _.each(aiOrders.allUnitOrders, function(unitOrders) {
+            self.currentTurn.addOrders(unitOrders, aiPlayer.id);
         });
 
         this.currentTurn.setPlayerReady(aiPlayer.id);

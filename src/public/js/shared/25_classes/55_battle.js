@@ -143,5 +143,17 @@ sh.Battle = sh.Jsonable.extendShared({
     endOfTurnReset: function() {
         'use strict';
         _.invoke(this.ships, 'endOfTurnReset', this.turnDuration);
+    },
+    getPlayerShips: function(player) {
+        'use strict';
+        return _.filter(this.ships, function(ship) {   
+            return ship.owner === player;
+        });
+    },
+    getEnemyShips: function(player) {
+        'use strict';
+        return _.filter(this.ships, function(ship) {   
+            return ship.owner !== player;
+        });
     }
 });
