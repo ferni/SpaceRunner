@@ -65,10 +65,11 @@ var ScriptPlayer = function(battleScreen) {
         },
         'DamageShip' : {
             'start': function(action) {
-                var red, tween;
+                var red, tween, ship;
                 if (action.shipID !== gs.ship.id) {
                     return;
                 }
+                ship = gs.battle.getShipByID(action.shipID);
                 red = new ui.RedColorEntity(action.tile.x, action.tile.y);
                 me.game.add(red, ui.layers.colorOverlay);
                 me.game.sort();
@@ -76,15 +77,21 @@ var ScriptPlayer = function(battleScreen) {
                     me.game.remove(red);
                 });
                 tween.start();
+                parent.postMessage({
+                    eventName: 'ship hp',
+                    targetID: ship.id,
+                    hp: ship.hp
+                }, '*');
             }
         },
         'FireShipWeapon': {
             'start': function(action) {
-                var unit = gs.battle.getUnitByID(action.unitID),
-                    targetShip = gs.battle.getShipByID(action.targetID);
+                var unit, targetShip;
+                unit = gs.battle.getUnitByID(action.unitID);
                 if (unit.ship !== gs.ship) {
                     return;
                 }
+                targetShip = gs.battle.getShipByID(action.targetID);
                 battleScreen.shipVM.getVM(
                     unit.ship.getItemByID(action.weaponID)
                 ).playFire();

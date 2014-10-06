@@ -81,6 +81,7 @@ screens.register('battle', ConnectedScreen.extend({
             } else if (e.eventName === 'ship hp') {
                 ship = gs.battle.getShipByID(e.targetID);
                 ship.hp = e.hp;
+                //refresh dom
                 if (utils.isMine(ship)) {
                     self.htmlVM.myShip(ship);
                 } else {
