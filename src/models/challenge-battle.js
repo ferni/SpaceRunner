@@ -19,7 +19,8 @@ var BattleServer = require('./battle-server').BattleServer,
 exports.ChallengeBattle = BattleServer.extend({
     init: function(params) {
         'use strict';
-        var ship, u, enemyShip;
+        var ship, u, enemyShip,
+            aiPlayer = new AIPlayer('Enemy');
         this.parent(params);
         u = sh.units;
 
@@ -33,7 +34,7 @@ exports.ChallengeBattle = BattleServer.extend({
 
 
         enemyShip = this.battleModel.ships[1];
-        enemyShip.owner = new AIPlayer('Enemy');
+        enemyShip.owner = aiPlayer;
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
@@ -44,9 +45,9 @@ exports.ChallengeBattle = BattleServer.extend({
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
-        ship.putUnit(new u.Critter({ownerID: enemyShip.owner.id}));
-        ship.putUnit(new u.Critter({ownerID: enemyShip.owner.id}));
-        ship.putUnit(new u.MetalSpider({ownerID: enemyShip.owner.id}));
+        ship.putUnit(new u.Critter({ownerID: aiPlayer.id}));
+        ship.putUnit(new u.Critter({ownerID: aiPlayer.id}));
+        ship.putUnit(new u.MetalSpider({ownerID: aiPlayer.id}));
     },
     nextTurn: function() {
         'use strict';
