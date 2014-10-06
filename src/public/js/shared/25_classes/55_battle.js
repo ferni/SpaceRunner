@@ -144,16 +144,16 @@ sh.Battle = sh.Jsonable.extendShared({
         'use strict';
         _.invoke(this.ships, 'endOfTurnReset', this.turnDuration);
     },
-    getPlayerShips: function(player) {
+    getPlayerShips: function(playerID) {
         'use strict';
-        return _.filter(this.ships, function(ship) {   
-            return ship.owner === player;
+        return _.filter(this.ships, function(ship) {
+            return ship.owner.id === playerID;
         });
     },
-    getEnemyShips: function(player) {
+    getEnemyShips: function(playerID) {
         'use strict';
-        return _.filter(this.ships, function(ship) {   
-            return ship.owner !== player;
+        return _.filter(this.ships, function(ship) {
+            return ship.owner.id !== playerID;
         });
     }
 });

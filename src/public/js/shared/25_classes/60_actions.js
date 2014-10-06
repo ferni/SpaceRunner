@@ -425,7 +425,7 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.setJson({
                 type: 'FireShipWeapon',
-                properties: ['unitID', 'weaponID'],
+                properties: ['unitID', 'weaponID', 'targetID'],
                 json: json
             });
         },
@@ -439,7 +439,7 @@ if (typeof exports !== 'undefined') {
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
                             shooterShip = unit.ship,
-                            damagedShip = battle.ships[1];
+                            damagedShip = battle.getShipByID(self.targetID);
                         damagedShip.hp -= shooterShip.getItemByID(self.weaponID).damage;
                         unit.cancelShipWeaponFire();
                     }

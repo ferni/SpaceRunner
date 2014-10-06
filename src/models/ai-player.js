@@ -195,8 +195,8 @@ var sh = require('../public/js/shared'),
          */
         getOrders: function(battle) {
             var orders = new sh.OrderCollection(),
-                myShip = battle.getPlayerShips(this)[0],
-                enemyShip = battle.getEnemyShips(this)[0];
+                myShip = battle.getPlayerShips(this.id)[0],
+                enemyShip = battle.getEnemyShips(this.id)[0];
             setOrdersInOwnShip(orders, myShip, this.id);
             setOrdersInEnemyShip(orders, enemyShip, this.id);
 

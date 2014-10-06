@@ -174,9 +174,7 @@ sh.Unit = sh.TileEntity.extendShared({
      */
     getShipControlActions: function(turnTime, battle) {
         'use strict';
-        if (this.ownerID === -1) {
-            //AI units don't control consoles
-            //(to be handled by ship ownership in the future)
+        if (this.ownerID !== this.ship.owner.id) {
             return [];
         }
         var standingOn = this.ship.itemsMap.at(this.x, this.y),
@@ -230,7 +228,8 @@ sh.Unit = sh.TileEntity.extendShared({
                     shipWeapon.chargeTime) {
                 actions.push(new sh.actions.FireShipWeapon({
                     unitID: this.id,
-                    weaponID: this.chargingShipWeapon.weaponID
+                    weaponID: this.chargingShipWeapon.weaponID,
+                    targetID: battle.getEnemyShips(this.ownerID)[0].id
                 }));
             }
         }

@@ -79,9 +79,13 @@ screens.register('battle', ConnectedScreen.extend({
             } else if (e.eventName === 'unit selected') {
                 self.timeline.featuredUnit(gs.battle.getUnitByID(e.unitID));
             } else if (e.eventName === 'ship hp') {
-                //TODO: generalize ship damage to any ship
-                self.enemyShip.hp = e.hp;
-                self.htmlVM.enemyShip.valueHasMutated();
+                ship = gs.battle.getShipByID(e.targetID);
+                ship.hp = e.hp;
+                if (utils.isMine(ship)) {
+                    self.htmlVM.myShip(ship);
+                } else {
+                    self.htmlVM.enemyShip(ship);
+                }
             }
         }
         this.myShip = _.find(battle.ships, utils.isMine);

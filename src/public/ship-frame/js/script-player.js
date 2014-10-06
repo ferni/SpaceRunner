@@ -80,7 +80,8 @@ var ScriptPlayer = function(battleScreen) {
         },
         'FireShipWeapon': {
             'start': function(action) {
-                var unit = gs.battle.getUnitByID(action.unitID);
+                var unit = gs.battle.getUnitByID(action.unitID),
+                    targetShip = gs.battle.getShipByID(action.targetID);
                 if (unit.ship !== gs.ship) {
                     return;
                 }
@@ -89,7 +90,8 @@ var ScriptPlayer = function(battleScreen) {
                 ).playFire();
                 parent.postMessage({
                     eventName: 'ship hp',
-                    hp: gs.battle.ships[1].hp
+                    targetID: targetShip.id,
+                    hp: targetShip.hp
                 }, '*');
             }
         }
