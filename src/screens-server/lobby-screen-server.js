@@ -44,8 +44,9 @@ routes.add('newchallenge', function(req, res, next) {
                     {type: 'Console', id: 10, x: 14, y: 20, r: false},
                     {type: 'Console', id: 12, x: 24, y: 26, r: false},
                     {type: 'Console', id: 13, x: 24, y: 8, r: false},
-                    {type: 'WeakSpot', id: 14, x: 18, y: 16, r: false}
-                ],
+                    {type: 'WeakSpot', id: 14, x: 18, y: 16, r: false},
+                    {type: 'Teleporter', x: 26, y: 22, r: false},
+                    {type: 'Teleporter', x: 26, y: 12, r: false}],
                 units: [],
                 GRID_SUB: 2
             }, {'tmxName': 'Mechanoid_Cruiser',
@@ -78,7 +79,9 @@ routes.add('newchallenge', function(req, res, next) {
                     {'type': 'WeakSpot', 'x': 15, 'y': 6, 'r': false},
                     {'type': 'WeakSpot', 'x': 15, 'y': 16, 'r': false},
                     {'type': 'WeakSpot', 'x': 19, 'y': 11, 'r': false},
-                    {'type': 'Door', 'x': 18, 'y': 11, 'r': true}],
+                    {'type': 'Door', 'x': 18, 'y': 11, 'r': true},
+                    {'type': 'Teleporter', 'x': 16, 'y': 13, 'r': false},
+                    {'type': 'Teleporter', 'x': 16, 'y': 10, 'r': false}],
                 'units': [],
                 'GRID_SUB': 1},
                 {tmxName: 'Humanoid_Battleship',
@@ -130,22 +133,27 @@ routes.add('newchallenge', function(req, res, next) {
                         {type: 'Console', id: 95, x: 54, y: 20, r: false},
                         {type: 'Console', id: 96, x: 54, y: 26, r: false},
                         {type: 'Console', id: 97, x: 38, y: 36, r: false},
-                        {type: 'Console', id: 98, x: 38, y: 34, r: false}],
+                        {type: 'Console', id: 98, x: 38, y: 34, r: false},
+                        {type: 'Teleporter', x: 40, y: 38, r: false},
+                        {type: 'Teleporter', x: 40, y: 32, r: false},
+                        {type: 'Teleporter', x: 50, y: 48, r: false},
+                        {type: 'Teleporter', x: 50, y: 22, r: false}],
                     units: [],
-                    GRID_SUB: 2}
-                ,
-                    {"tmxName":"Humanoid_Cruiser","buildings":[
-                    {"type":"Power","x":15,"y":11,"r":false},
-                    {"type":"Engine","x":11,"y":9,"r":false},
-                    {"type":"Engine","x":11,"y":13,"r":false},
-                    {"type":"Weapon","x":22,"y":9,"r":false},
-                    {"type":"Weapon","x":22,"y":13,"r":false},
-                    {"type":"Component","x":19,"y":11,"r":false},
-                    {"type":"Console","x":11,"y":11,"r":false},
-                    {"type":"Console","x":11,"y":12,"r":false},
-                    {"type":"Console","x":21,"y":9,"r":false},
-                    {"type":"Console","x":21,"y":14,"r":false}],
-                    "units":[]}];
+                    GRID_SUB: 2},
+                    {'tmxName': 'Humanoid_Cruiser', 'buildings': [
+                    {'type': 'Power', 'x': 15, 'y': 11, 'r': false},
+                    {'type': 'Engine', 'x': 11, 'y': 9, 'r': false},
+                    {'type': 'Engine', 'x': 11, 'y': 13, 'r': false},
+                    {'type': 'Weapon', 'x': 22, 'y': 9, 'r': false},
+                    {'type': 'Weapon', 'x': 22, 'y': 13, 'r': false},
+                    {'type': 'Component', 'x': 19, 'y': 11, 'r': false},
+                    {'type': 'Console', 'x': 11, 'y': 11, 'r': false},
+                    {'type': 'Console', 'x': 11, 'y': 12, 'r': false},
+                    {'type': 'Console', 'x': 21, 'y': 9, 'r': false},
+                    {'type': 'Console', 'x': 21, 'y': 14, 'r': false},
+                    {'type': 'Teleporter', 'x': 15, 'y': 8, 'r': false},
+                    {'type': 'Teleporter', 'x': 15, 'y': 15, 'r': false}],
+                    'units': []}];
             if (challengeIndex < 0 ||
                     challengeIndex >= challengeShips.length) {
                 next(new Error('Challenge index ' + challengeIndex +
