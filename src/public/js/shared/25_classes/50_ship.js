@@ -25,7 +25,7 @@ sh.Ship = sh.SharedClass.extendShared({
     owner: null,
     hullMap: {},
     itemsMap: {},
-    hp: 600,
+    hp: 2000,
     init: function(settings) {
         'use strict';
         if (!settings.tmxName && !settings.json) {
