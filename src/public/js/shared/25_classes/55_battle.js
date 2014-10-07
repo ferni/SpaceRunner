@@ -92,12 +92,19 @@ sh.Battle = sh.Jsonable.extendShared({
     getActors: function() {
         'use strict';
         var actors = this.getUnits();
+        actors = actors.concat(_.filter(this.getItems(), function(item) {
+            return item.getActions !== undefined;
+        }));
         actors.push(this.arbiter);
         return actors;
     },
     getUnits: function() {
         'use strict';
         return _.flatten(_.pluck(this.ships, 'units'));
+    },
+    getItems: function() {
+        'use strict';
+        return _.flatten(_.pluck(this.ships, 'built'));
     },
     getUnitByID: function(id) {
         'use strict';

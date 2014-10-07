@@ -453,7 +453,7 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.setJson({
                 type: 'Teleport',
-                properties: ['unitID', 'shipDestinationID'],
+                properties: ['unitID', 'targetShipID'],
                 json: json
             });
         },
@@ -465,9 +465,11 @@ if (typeof exports !== 'undefined') {
                     label: 'start',
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
-                            dest = battle.getShipByID(self.shipDestinationID);
+                            targetShip = battle.getShipByID(self.targetShipID);
                         unit.ship.removeUnit(unit);
-                        dest.addUnit(unit);
+                        unit.ship.unitsMap.update();
+                        targetShip.putUnit(unit);
+                        targetShip.unitsMap.update();
                     }
                 }
             ]);

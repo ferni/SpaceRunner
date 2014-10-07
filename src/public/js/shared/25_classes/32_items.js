@@ -372,5 +372,30 @@ sh.items.Teleporter = sh.Item.extendShared({
         });
         this.setSize(sh.GRID_SUB, sh.GRID_SUB);
         this.walkable = true;
+    },
+    /**
+     * This method will be called by the script creator every time something
+     * changed. The item's properties should not be changed in this method;
+     * the script creator does that through the modelChanges array found in
+     * each action.
+     * @param {int} turnTime The current time.
+     * @param {sh.Battle} battle The battle, representing the entire model
+     * @return {Array}
+     */
+    getActions: function(turnTime, battle) {
+        'use strict';
+        var self = this,
+            actions = [];
+        this.tiles(function(x, y) {
+            _.each(self.ship.unitsMap.at(x, y), function(unit) {
+                actions.push(new sh.actions.Teleport({
+                    unitID: unit.id,
+                    targetShipID: _.find(battle.ships, function(ship) {
+                        return ship.id !== self.ship.id;
+                    }).id
+                }));
+            });
+        });
+        return actions;
     }
 });
