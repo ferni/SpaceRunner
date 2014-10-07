@@ -262,6 +262,7 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         var index = _.indexOf(this.units, unit);
         this.units.splice(index, 1);
+        this.unitsMap.update();
     },
     //to call whenever buildings change
     buildingsChanged: function() {

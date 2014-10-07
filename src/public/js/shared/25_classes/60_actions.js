@@ -467,9 +467,7 @@ if (typeof exports !== 'undefined') {
                         var unit = battle.getUnitByID(self.unitID),
                             targetShip = battle.getShipByID(self.targetShipID);
                         unit.ship.removeUnit(unit);
-                        unit.ship.unitsMap.update();
                         targetShip.putUnit(unit);
-                        targetShip.unitsMap.update();
                     }
                 }
             ]);
