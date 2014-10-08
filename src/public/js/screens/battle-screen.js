@@ -78,6 +78,7 @@ screens.register('battle', ConnectedScreen.extend({
                 }
             } else if (e.eventName === 'unit selected') {
                 self.timeline.featuredUnit(gs.battle.getUnitByID(e.unitID));
+                self.htmlVM.selectedUnit(gs.battle.getUnitByID(e.unitID));
             } else if (e.eventName === 'ship hp') {
                 ship = gs.battle.getShipByID(e.targetID);
                 ship.hp = e.hp;
