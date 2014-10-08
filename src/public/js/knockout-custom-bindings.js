@@ -87,6 +87,9 @@ ko.bindingHandlers.timeline = {
         jScrollApi = $(element).jScrollPane().data('jsp');
         $('#time-ruler').css('height', '');
 
+        $('#left-hud').resize(function() {
+            jScrollApi.reinitialise();
+        });
         //zoom slider
         sld = new dhtmlxSlider('zoom-slider', 150,
             'arrowgreen', false, 0.25, 3, 1, 0.25);
