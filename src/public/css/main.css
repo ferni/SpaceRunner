@@ -65,7 +65,10 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-
+html, body, #game, #screensUi, #battle-screen {
+    width: 100%;
+    height: 100%;
+}
 
 #game{
     position: relative;
