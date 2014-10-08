@@ -272,7 +272,7 @@ if (typeof exports !== 'undefined') {
             var unit, target, move;
             unit = battle.getUnitByID(this.unitID);
             target = battle.getUnitByID(this.targetID);
-            if (!target || !target.isAlive()) {
+            if (!target || !target.isAlive() || unit.ship !== target.ship) {
                 //unit is already dead
                 return [new sh.actions.SetUnitProperty({
                     unitID: unit.id,
