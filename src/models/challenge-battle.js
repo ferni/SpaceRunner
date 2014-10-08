@@ -19,9 +19,9 @@ var BattleServer = require('./battle-server').BattleServer,
 exports.ChallengeBattle = BattleServer.extend({
     init: function(params) {
         'use strict';
-        var ship, u, enemyShip,
-            aiPlayer = new AIPlayer('Enemy');
+        var ship, u, enemyShip;
         this.parent(params);
+        this.aiPlayer = new AIPlayer('Enemy', this);
         u = sh.units;
 
         ship = this.battleModel.ships[0];
@@ -34,7 +34,10 @@ exports.ChallengeBattle = BattleServer.extend({
 
 
         enemyShip = this.battleModel.ships[1];
-        enemyShip.owner = aiPlayer;
+        enemyShip.owner = this.aiPlayer;
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
@@ -45,24 +48,28 @@ exports.ChallengeBattle = BattleServer.extend({
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
-        ship.putUnit(new u.Critter({ownerID: aiPlayer.id}));
-        ship.putUnit(new u.Critter({ownerID: aiPlayer.id}));
-        ship.putUnit(new u.MetalSpider({ownerID: aiPlayer.id}));
+        enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.MetalSpider());
+        ship.putUnit(new u.Critter({ownerID: this.aiPlayer.id}));
+        ship.putUnit(new u.Critter({ownerID: this.aiPlayer.id}));
+        ship.putUnit(new u.MetalSpider({ownerID: this.aiPlayer.id}));
+        this.aiPlayer.prepareForBattle();
     },
     nextTurn: function() {
         'use strict';
         var self = this,
-            aiPlayer = this.battleModel.ships[1].owner,
             aiOrders;
         this.parent();
         //register AI player orders
-        aiOrders = aiPlayer.getOrders(this.battleModel);
+        aiOrders = this.aiPlayer.getOrders();
         _.each(aiOrders.allUnitOrders, function(unitOrders) {
-            self.currentTurn.addOrders(unitOrders, aiPlayer.id);
+            self.currentTurn.addOrders(unitOrders, self.aiPlayer.id);
         });
 
-        this.currentTurn.setPlayerReady(aiPlayer.id);
-        this.registerScriptReceived(aiPlayer.id);
+        this.currentTurn.setPlayerReady(this.aiPlayer.id);
+        this.registerScriptReceived(this.aiPlayer.id);
     }
 });
 
