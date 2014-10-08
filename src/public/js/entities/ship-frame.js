@@ -31,9 +31,7 @@ var ShipFrame = (function() {
             var self = this,
                 url = 'ship-frame/?width=' + (self.ship.width * TILE_SIZE) +
                     '&height=' + (self.ship.height * TILE_SIZE),
-                iframe = $('<iframe src="' + url + '" width="' + width +
-                    '" height="' + height + '"/>')
-                    .css({display: 'inline'})[0];
+                iframe = $('<iframe src="' + url + '"/>')[0];
             $('#frames').append(iframe);
             //listen to messages from the iframe
             window.addEventListener('message', function(event) {

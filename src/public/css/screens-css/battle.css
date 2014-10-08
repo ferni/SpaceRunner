@@ -304,5 +304,7 @@ body.dragging, body.dragging * {
 }
 
 #battle-screen #frames iframe{
-    margin-right: 10px;
+    height: 98%;
+    width: 50%;
+    border: 0;
 }
