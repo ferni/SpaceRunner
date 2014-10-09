@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global ko, $, _, dhtmlxSlider*/
+/*global ko, $, _, dhtmlxSlider, utils*/
 
 /**
  * Makes a list sortable.
@@ -82,14 +82,10 @@ ko.bindingHandlers.timeline = {
             jScrollApi,
             sld;
 
-        //manually set height for jScrollPane to work properly
-        $('#time-ruler').css('height', timeline.getHeight() + 'px');
         jScrollApi = $(element).jScrollPane().data('jsp');
-        $('#time-ruler').css('height', '');
-
-        $('#left-hud').resize(function() {
+        $(window).resize($.throttle(250, function() {
             jScrollApi.reinitialise();
-        });
+        }));
         //zoom slider
         sld = new dhtmlxSlider('zoom-slider', 150,
             'arrowgreen', false, 0.25, 3, 1, 0.25);

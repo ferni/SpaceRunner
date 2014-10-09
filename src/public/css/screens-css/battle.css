@@ -58,7 +58,7 @@
     position: absolute;
     top: 50px;
     left: 0;
-    bottom: 10px;
+    bottom: 5px;
     width: 230px;
 }
 
@@ -127,6 +127,10 @@
 #battle-screen #time-line .jspVerticalBar
 {
     left: 0;
+}
+
+#time-ruler {
+    height: 100%;
 }
 
 #battle-screen #time-ruler .time-segment
