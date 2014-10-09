@@ -29,6 +29,12 @@ var Timeline = function(screen) {
         }
         return [];
     }, this);
+    this.setOrders = ko.observableArray([]);
+    this.setOrders.subscribe(function(newOrders) {
+        var unitOrders = new sh.UnitOrders({unitID: self.featuredUnit().id});
+        unitOrders.array = newOrders;
+        screen.newOrders(unitOrders.toJson());
+    });
     this.removeOrder = function(orderVM) {
         utils.removeFromArray(orderVM.m, self.featuredUnit().orders);
         screen.newOrders(self.featuredUnit().makeUnitOrders().toJson());

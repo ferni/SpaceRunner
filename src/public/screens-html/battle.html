@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div data-bind="with:timeline">
-                    <ol id="unit-orders" data-bind="foreach: orderVMs">
+                    <ol id="unit-orders" data-bind="foreach: orderVMs, sortableList: setOrders">
                         <li data-bind="style:{height:itemHeight(),
                                         backgroundColor: itemColorObs()}">
                             <span data-bind="text:m.toString()"></span>
