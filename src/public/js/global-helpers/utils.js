@@ -6,7 +6,7 @@
 */
 
 /*global me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE, sh,
-ItemVM, gs, make*/
+ItemVM, gs, $*/
 
 // Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
@@ -217,7 +217,33 @@ var utils = {
         if (index > -1) {
             array.splice(index, 1);
         }
-    }
+    },
+    onResizeEnd: (function() {
+        'use strict';
+        var rtime = new Date(1, 1, 2000, 12, 0, 0),
+            timeout = false,
+            delta = 200,
+            callbacks = [];
+
+        function resizeEnd() {
+            if (new Date() - rtime < delta) {
+                setTimeout(resizeEnd, delta);
+            } else {
+                timeout = false;
+                _.invoke(callbacks, 'call');
+            }
+        }
+        $(window).resize(function() {
+            rtime = new Date();
+            if (timeout === false) {
+                timeout = true;
+                setTimeout(resizeEnd, delta);
+            }
+        });
+        return function(callback) {
+            callbacks.push(callback);
+        };
+    }())
 };
 
 /**
