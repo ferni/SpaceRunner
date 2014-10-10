@@ -210,13 +210,6 @@ var utils = {
         }
         throw 'Did not find the view model for ' + model.type +
             ' in the array. Try calling utils.updateVMs first.';
-    },
-    removeFromArray: function(item, array) {
-        'use strict';
-        var index = array.indexOf(item);
-        if (index > -1) {
-            array.splice(index, 1);
-        }
     }
 };
 

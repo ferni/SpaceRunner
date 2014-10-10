@@ -36,7 +36,7 @@ var Timeline = function(screen) {
         screen.newOrders(unitOrders.toJson());
     });
     this.removeOrder = function(orderVM) {
-        utils.removeFromArray(orderVM.m, self.featuredUnit().orders);
+        sh.utils.removeFromArray(orderVM.m, self.featuredUnit().orders);
         screen.newOrders(self.featuredUnit().makeUnitOrders().toJson());
     };
     this.zoomLevel = ko.observable(1);

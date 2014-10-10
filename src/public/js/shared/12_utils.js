@@ -59,6 +59,13 @@ sh.utils = {
         return _.map(arrayOfJsons, function(json) {
             return new constructorCollection[json.type](json);
         });
+    },
+    removeFromArray: function(item, array) {
+        'use strict';
+        var index = array.indexOf(item);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
     }
 };
 

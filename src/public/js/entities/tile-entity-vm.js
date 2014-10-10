@@ -59,7 +59,7 @@ var TileEntityVM = me.ObjectEntity.extend({
         };
         this.deselect = function() {
             selected = false;
-            utils.removeFromArray(this, gs.selected);
+            sh.utils.removeFromArray(this, gs.selected);
             this.onDeselected();
         };
     },
