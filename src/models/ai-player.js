@@ -132,17 +132,14 @@ var sh = require('../public/js/shared'),
         },
         setOrdersInOwnShip: function (orders) {
             var ship = this.ownShip,
+                grid = new sh.PF.Grid(ship.width, ship.height,
+                    ship.getPfMatrix()),
                 units = _.groupBy(ship.getPlayerUnits(this.id), 'type'),
+                enemyUnits = this.enemyUnits(ship),
                 weaponConsoles = _.filter(ship.built, function(item) {
                     return item.type === 'Console' &&
                         item.getControlled().type === 'Weapon';
                 });
-            _.each(units.MetalSpider, function(unit) {
-                addOrderToArray(unit, orders, new sh.orders.Move({
-                    unitID: unit.id,
-                    destination: {x: unit.x + 2, y: unit.y}
-                }));
-            });
             _.each(weaponConsoles, function(console, index) {
                 var unit = units.Critter[index];
                 if (!unit || unit.orders.length > 0) {
@@ -152,6 +149,11 @@ var sh = require('../public/js/shared'),
                     unitID: unit.id,
                     destination: console
                 }));
+            });
+            //SEEK & DESTROY
+            _.each(units.MetalSpider, function(unit) {
+                setSeekAndDestroyOrderForShortestPath(grid.clone(), unit,
+                    enemyUnits, orders);
             });
         },
         setOrdersInEnemyShip: function (orders) {
