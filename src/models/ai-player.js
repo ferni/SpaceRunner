@@ -17,7 +17,8 @@ var sh = require('../public/js/shared'),
     var pfFinder = new sh.PF.AStarFinder({
             allowDiagonal: true
         }),
-        AIPlayer;
+        AIPlayer,
+        distribute;
 
     function getWeakSpotsTiles(ship) {
         var weakSpots = _.filter(ship.built, function(i) {
@@ -63,6 +64,10 @@ var sh = require('../public/js/shared'),
         return {x: dest[0], y: dest[1]};
     }
 
+    function equalDestination(path, destination) {
+        return sh.v.equal(pathDestination(path), destination);
+    }
+
     function setOrderForShortestPath(grid, unit, destinations, orders) {
         var paths = getPaths(grid.clone(), unit, destinations);
         if (paths.length > 0) {
@@ -81,8 +86,8 @@ var sh = require('../public/js/shared'),
         if (paths.length > 0) {
             addOrderToArray(unit, orders, new sh.orders.SeekAndDestroy({
                 unitID: unit.id,
-                targetID: _.find(targets, function(t) {
-                    return sh.v.equal(pathDestination(getShortest(paths)), t);
+                targetID: _.find(targets, function(target) {
+                    return equalDestination(getShortest(paths), target);
                 }).id
             }));
             return true;
@@ -90,15 +95,73 @@ var sh = require('../public/js/shared'),
         return false;
     }
 
-    /**
-     * Distribute units among destinations so each
-     * destination is targeted by the closest unit
-     * @param units Array
-     * @param destinations Array
-     */
-    function distribute(units, destinations) {
 
-    }
+    distribute = (function() {
+        function getDistance(pathsByUnit, unit, destination) {
+            var relevantPath = _.find(pathsByUnit[unit.id], function(path) {
+                return equalDestination(path, destination);
+            });
+            return relevantPath ? relevantPath.length : Number.MAX_VALUE;
+        }
+
+        /**
+         * Equalizes number of units and destinations by
+         * discarding the farthest away.
+         */
+        function equalize(pathsByUnit, shortestByUnit, units, destinations) {
+            if (units.length > destinations.length) {
+                units = _.sortBy(units, function(unit) {
+                    return shortestByUnit[unit.id].length;
+                });
+                units = _.initial(units, units.length - destinations.length);
+            } else {
+                destinations = _.sortBy(destinations, function(dest) {
+                    return _.min(units, function(unit) {
+                        getDistance(pathsByUnit, unit, dest);
+                    });
+                });
+                destinations = _.initial(destinations, destinations.length - units.length);
+            }
+            return {
+                units: units,
+                destinations: destinations
+            };
+        }
+
+        /**
+         * Distribute units among destinations so each
+         * destination is targeted by the closest unit.
+         * @param shipData Object
+         * @param units Array
+         * @param destinations Array
+         */
+        return function (shipData, units, destinations) {
+            var pathsByUnit = {},
+                shortestByUnit = {},
+                destinationsByUnit = {},
+                stuff;
+            _.each(units, function(unit) {
+                pathsByUnit[unit.id] = getPaths(shipData.gridWithUnits.clone(), unit,
+                    destinations);
+                shortestByUnit[unit.id] = getShortest(pathsByUnit[unit.id]);
+            });
+            if (units.length !== destinations.length) {
+                stuff = equalize(pathsByUnit, shortestByUnit, units, destinations);
+                units = stuff.units;
+                destinations = stuff.destinations;
+            }
+            _.each(units, function (unit) {
+                var fastDest = _.find(destinations, function(destination) {
+                    return equalDestination(shortestByUnit[unit.id], destination);
+                });
+                destinationsByUnit[unit.id] = fastDest || _.min(destinations, function(d) {
+                    getDistance(pathsByUnit, unit, d);
+                });
+                sh.utils.removeFromArray(destinationsByUnit[unit.id], destinations);
+            });
+            return destinationsByUnit;
+        };
+    }());
 
     /**
      * An AI controlled player.
