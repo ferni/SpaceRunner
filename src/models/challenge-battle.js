@@ -47,11 +47,6 @@ exports.ChallengeBattle = BattleServer.extend({
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
         enemyShip.putUnit(new u.MetalSpider());
-        enemyShip.putUnit(new u.MetalSpider());
-        enemyShip.putUnit(new u.MetalSpider());
-        enemyShip.putUnit(new u.MetalSpider());
-        enemyShip.putUnit(new u.MetalSpider());
-        enemyShip.putUnit(new u.MetalSpider());
         ship.putUnit(new u.Critter({ownerID: this.aiPlayer.id}));
         ship.putUnit(new u.Critter({ownerID: this.aiPlayer.id}));
         ship.putUnit(new u.MetalSpider({ownerID: this.aiPlayer.id}));
