@@ -122,8 +122,13 @@ var sh = require('../public/js/shared'),
                 destinationsByUnit = {},
                 minDistanceByUnit,
                 dis2des,
-                destinationsLeft = destinations.length,
-                unitsLeft = units.length;
+                destinationsLeft,
+                unitsLeft;
+            if (!units || !destinations) {
+                return {};
+            }
+            destinationsLeft = destinations.length;
+            unitsLeft = units.length;
             if (destinationsLeft === 0 || unitsLeft === 0) {
                 return {};
             }
@@ -212,17 +217,14 @@ var sh = require('../public/js/shared'),
         },
         setOrdersInOwnShip: function (orders) {
             var s = this.getShipData(this.ownShip),
-                weaponConsoles = _.filter(s.ship.built, function(item) {
+                weaponConsoles = _.filter(s.ship.built, function (item) {
                     return item.type === 'Console' &&
                         item.getControlled().type === 'Weapon';
-                });
-            _.each(weaponConsoles, function(console, index) {
-                var unit = s.allies.Critter[index];
-                if (!unit || unit.orders.length > 0) {
-                    return;
-                }
-                addOrderToCollection(unit.id, orders, new sh.orders.Move({
-                    unitID: unit.id,
+                }),
+                distribution = distribute(s.allies.Critter, weaponConsoles);
+            _.each(distribution, function(console, unitID) {
+                addOrderToCollection(unitID, orders, new sh.orders.Move({
+                    unitID: unitID,
                     destination: console
                 }));
             });
