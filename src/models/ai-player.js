@@ -157,6 +157,12 @@ var sh = require('../public/js/shared'),
         };
     }());
 
+    function getIdle(units, orders) {
+        return _.filter(units, function(u) {
+            return orders.getUnitOrders(u.id) === undefined;
+        });
+    }
+
     /**
      * An AI controlled player.
      * @type {*}
@@ -183,11 +189,11 @@ var sh = require('../public/js/shared'),
                     {x: tel.x, y: tel.y - 1},
                     {x: tel.x + 1, y: tel.y - 1},
                     {x: tel.x - 1, y: tel.y},
-                    {x: tel.x + 1, y: tel.y},
+                    {x: tel.x + 2, y: tel.y},
                     {x: tel.x - 1, y: tel.y + 1},
-                    {x: tel.x + 1, y: tel.y + 1},
-                    {x: tel.x, y: tel.y + 1},
-                    {x: tel.x + 1, y: tel.y + 1}
+                    {x: tel.x + 2, y: tel.y + 1},
+                    {x: tel.x, y: tel.y + 2},
+                    {x: tel.x + 1, y: tel.y + 2}
                 ];
                 data.teleporterTiles[tel.id] = _.filter(outerTiles,
                     function(tile) {
@@ -248,14 +254,23 @@ var sh = require('../public/js/shared'),
         },
         setOrdersInOwnShip: function (orders) {
             var s = this.getShipData(this.ownShip),
-                distribution = distribute(s.allies.Critter, s.weaponConsoles);
-            _.each(distribution, function(console, unitID) {
+                toConsoles = distribute(s.allies.Critter, s.weaponConsoles),
+                toTeleporters;
+            _.each(toConsoles, function(console, unitID) {
                 addOrderToCollection(unitID, orders, new sh.orders.Move({
                     unitID: unitID,
                     destination: console
                 }));
             });
             seekAndDestroy(s.allies.MetalSpider, s.enemies.all, orders);
+            toTeleporters = distribute(getIdle(s.allies.all, orders),
+                s.teleporterTiles[s.teleporters[0].id]);
+            _.each(toTeleporters, function(tile, unitID) {
+                addOrderToCollection(unitID, orders, new sh.orders.Move({
+                    unitID: unitID,
+                    destination: tile
+                }));
+            });
         },
         setOrdersInEnemyShip: function (orders) {
             var s = this.getShipData(this.enemyShip),
