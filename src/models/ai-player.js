@@ -170,8 +170,34 @@ var sh = require('../public/js/shared'),
             this.battleServer = battleServer;
             this.battle = battleServer.battleModel;
         },
+        getStaticShipData: function(ship) {
+            var data = {};
+            data.weaponConsoles = _.filter(ship.built, function (item) {
+                return item.type === 'Console' &&
+                    item.getControlled().type === 'Weapon';
+            });
+            data.teleporters = _.where(ship.built, {type: 'Teleporter'});
+            data.teleporterTiles = {};
+            _.each(data.teleporters, function(tel) {
+                var outerTiles = [
+                    {x: tel.x, y: tel.y - 1},
+                    {x: tel.x + 1, y: tel.y - 1},
+                    {x: tel.x - 1, y: tel.y},
+                    {x: tel.x + 1, y: tel.y},
+                    {x: tel.x - 1, y: tel.y + 1},
+                    {x: tel.x + 1, y: tel.y + 1},
+                    {x: tel.x, y: tel.y + 1},
+                    {x: tel.x + 1, y: tel.y + 1}
+                ];
+                data.teleporterTiles[tel.id] = _.filter(outerTiles,
+                    function(tile) {
+                        return ship.isInside(tile.x, tile.y);
+                    });
+            });
+            return data;
+        },
         getShipData: function(ship) {
-            var data = {},
+            var data = this.staticShipData[ship.id],
                 myUnits,
                 enemies;
 
@@ -205,6 +231,11 @@ var sh = require('../public/js/shared'),
         prepareForBattle: function() {
             this.ownShip = this.battle.getPlayerShips(this.id)[0];
             this.enemyShip = this.battle.getEnemyShips(this.id)[0];
+            this.staticShipData = {};
+            this.staticShipData[this.ownShip.id] =
+                this.getStaticShipData(this.ownShip);
+            this.staticShipData[this.enemyShip.id] =
+                this.getStaticShipData(this.enemyShip);
         },
         /**
          * Gets the orders that the player would give for the current turn.
@@ -217,11 +248,7 @@ var sh = require('../public/js/shared'),
         },
         setOrdersInOwnShip: function (orders) {
             var s = this.getShipData(this.ownShip),
-                weaponConsoles = _.filter(s.ship.built, function (item) {
-                    return item.type === 'Console' &&
-                        item.getControlled().type === 'Weapon';
-                }),
-                distribution = distribute(s.allies.Critter, weaponConsoles);
+                distribution = distribute(s.allies.Critter, s.weaponConsoles);
             _.each(distribution, function(console, unitID) {
                 addOrderToCollection(unitID, orders, new sh.orders.Move({
                     unitID: unitID,
