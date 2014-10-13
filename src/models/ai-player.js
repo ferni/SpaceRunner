@@ -33,8 +33,8 @@ var sh = require('../public/js/shared'),
         return tiles;
     }
 
-    function addOrderToArray(unit, orderArray, order) {
-        var unitOrders = new sh.UnitOrders({unitID: unit.id});
+    function addOrderToCollection(unitID, orderArray, order) {
+        var unitOrders = new sh.UnitOrders({unitID: unitID});
         unitOrders.array = [order];
         orderArray.addUnitOrders(unitOrders);
     }
@@ -64,14 +64,10 @@ var sh = require('../public/js/shared'),
         return {x: dest[0], y: dest[1]};
     }
 
-    function equalDestination(path, destination) {
-        return sh.v.equal(pathDestination(path), destination);
-    }
-
     function setOrderForShortestPath(grid, unit, destinations, orders) {
         var paths = getPaths(grid.clone(), unit, destinations);
         if (paths.length > 0) {
-            addOrderToArray(unit, orders, new sh.orders.Move({
+            addOrderToCollection(unit.id, orders, new sh.orders.Move({
                 unitID: unit.id,
                 destination: pathDestination(getShortest(paths))
             }));
@@ -80,19 +76,14 @@ var sh = require('../public/js/shared'),
         return false;
     }
 
-    function setSeekAndDestroyOrderForShortestPath(grid, unit, targets,
-                                                   orders) {
-        var paths = getPaths(grid.clone(), unit, targets);
-        if (paths.length > 0) {
-            addOrderToArray(unit, orders, new sh.orders.SeekAndDestroy({
-                unitID: unit.id,
-                targetID: _.find(targets, function(target) {
-                    return equalDestination(getShortest(paths), target);
-                }).id
+    function seekAndDestroy(allies, enemies, orders) {
+        var distribution = distribute(allies, enemies);
+        _.each(distribution, function(enemy, unitID) {
+            addOrderToCollection(unitID, orders, new sh.orders.SeekAndDestroy({
+                unitID: unitID,
+                targetID: enemy.id
             }));
-            return true;
-        }
-        return false;
+        });
     }
 
     /**
@@ -130,7 +121,12 @@ var sh = require('../public/js/shared'),
             var distancesByUnit = {},
                 destinationsByUnit = {},
                 minDistanceByUnit,
-                dis2des;
+                dis2des,
+                destinationsLeft = destinations.length,
+                unitsLeft = units.length;
+            if (destinationsLeft === 0 || unitsLeft === 0) {
+                return {};
+            }
             //Get all distances
             _.each(units, function(u) {
                 distancesByUnit[u.id] = [];
@@ -143,11 +139,13 @@ var sh = require('../public/js/shared'),
                 });
             });
             minDistanceByUnit = getMinDistanceByUnit(distancesByUnit);
-            while (_.size(destinationsByUnit) < units.length) {
+            while (destinationsLeft > 0 && unitsLeft > 0) {
                 dis2des = _.min(minDistanceByUnit, 'distance');
                 destinationsByUnit[dis2des.unit.id] = dis2des.destination;
                 delete distancesByUnit[dis2des.unit.id];
+                unitsLeft--;
                 _.each(distancesByUnit, removeDestination(dis2des.destination));
+                destinationsLeft--;
                 minDistanceByUnit = getMinDistanceByUnit(distancesByUnit);
             }
             return destinationsByUnit;
@@ -223,16 +221,12 @@ var sh = require('../public/js/shared'),
                 if (!unit || unit.orders.length > 0) {
                     return;
                 }
-                addOrderToArray(unit, orders, new sh.orders.Move({
+                addOrderToCollection(unit.id, orders, new sh.orders.Move({
                     unitID: unit.id,
                     destination: console
                 }));
             });
-            //SEEK & DESTROY
-            _.each(s.allies.MetalSpider, function(unit) {
-                setSeekAndDestroyOrderForShortestPath(s.grid.clone(), unit,
-                    s.enemies.all, orders);
-            });
+            seekAndDestroy(s.allies.MetalSpider, s.enemies.all, orders);
         },
         setOrdersInEnemyShip: function (orders) {
             var s = this.getShipData(this.enemyShip),
@@ -276,12 +270,7 @@ var sh = require('../public/js/shared'),
                 setOrderForShortestPath(s.grid.clone(), unit,
                         occupied, orders);
             });
-
-            //SEEK & DESTROY
-            _.each(s.allies.MetalSpider, function(unit) {
-                setSeekAndDestroyOrderForShortestPath(s.grid.clone(), unit,
-                    s.enemies.all, orders);
-            });
+            seekAndDestroy(s.allies.MetalSpider, s.enemies.all, orders);
         }
     });
     exports.AIPlayer = AIPlayer;
