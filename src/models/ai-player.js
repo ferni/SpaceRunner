@@ -164,6 +164,51 @@ var sh = require('../public/js/shared'),
         });
     }
 
+    function TeleportManager(ai) {
+        var targetedIndex = 0,
+            teleporters = ai.staticShipData[ai.ownShip.id].teleporters;
+        if (teleporters.length === 0) {
+            return {
+                setOrders: function(shipData, orders) {}
+            };
+        }
+        function isAlly(unit) {
+            return unit.ownerID === ai.id;
+        }
+        return {
+            targetNext: function() {
+                targetedIndex++;
+                if (targetedIndex >= teleporters.length) {
+                    targetedIndex = 0;
+                }
+            },
+            alliesInPerimeter: function(teleporterID, shipData) {
+                var s = shipData,
+                    tiles = s.teleporterTiles[teleporterID],
+                    allies = [];
+                _.each(tiles, function(tile) {
+                    var unitsInTile = s.ship.unitsMap.at(tile.x, tile.y);
+                    if (unitsInTile) {
+                        allies = allies.concat(_.filter(unitsInTile, isAlly));
+                    }
+                });
+                return allies;
+            },
+            setOrders: function(shipData, orders) {
+                var s = shipData,
+                    toTeleporters = distribute(getIdle(s.allies.all, orders),
+                        s.teleporterTiles[teleporters[targetedIndex].id]);
+                _.each(toTeleporters, function(tile, unitID) {
+                    addOrderToCollection(unitID, orders, new sh.orders.Move({
+                        unitID: unitID,
+                        destination: tile
+                    }));
+                });
+                this.targetNext();
+            }
+        };
+    }
+
     /**
      * An AI controlled player.
      * @type {*}
@@ -243,20 +288,7 @@ var sh = require('../public/js/shared'),
                 this.getStaticShipData(this.ownShip);
             this.staticShipData[this.enemyShip.id] =
                 this.getStaticShipData(this.enemyShip);
-            if (this.staticShipData[this.ownShip.id].teleporters.length > 0) {
-                this.targetedTeleporterIndex = 0;
-            }
-        },
-        targetNextTeleporter: function() {
-            this.targetedTeleporterIndex++;
-            if (this.targetedTeleporterIndex >=
-                    this.staticShipData[this.ownShip.id].teleporters.length) {
-                this.targetedTeleporterIndex = 0;
-            }
-        },
-        targetedTeleporterID: function() {
-            return this.staticShipData[this.ownShip.id]
-                .teleporters[this.targetedTeleporterIndex].id;
+            this.teleportManager = new TeleportManager(this);
         },
         /**
          * Gets the orders that the player would give for the current turn.
@@ -269,8 +301,7 @@ var sh = require('../public/js/shared'),
         },
         setOrdersInOwnShip: function (orders) {
             var s = this.getShipData(this.ownShip),
-                toConsoles = distribute(s.allies.Critter, s.weaponConsoles),
-                toTeleporters;
+                toConsoles = distribute(s.allies.Critter, s.weaponConsoles);
             _.each(toConsoles, function(console, unitID) {
                 addOrderToCollection(unitID, orders, new sh.orders.Move({
                     unitID: unitID,
@@ -278,17 +309,7 @@ var sh = require('../public/js/shared'),
                 }));
             });
             seekAndDestroy(s.allies.MetalSpider, s.enemies.all, orders);
-            if (s.teleporters.length > 0) {
-                toTeleporters = distribute(getIdle(s.allies.all, orders),
-                    s.teleporterTiles[this.targetedTeleporterID()]);
-                _.each(toTeleporters, function(tile, unitID) {
-                    addOrderToCollection(unitID, orders, new sh.orders.Move({
-                        unitID: unitID,
-                        destination: tile
-                    }));
-                });
-                this.targetNextTeleporter();
-            }
+            this.teleportManager.setOrders(s, orders);
         },
         setOrdersInEnemyShip: function (orders) {
             var s = this.getShipData(this.enemyShip),
