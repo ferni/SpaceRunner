@@ -303,7 +303,7 @@ body.dragging, body.dragging * {
 #battle-screen #frames {
     z-index: 20;
     position: absolute;
-    left: 250px;
+    left: 110px;
     top: 50px;
     bottom: 0;
     right: 0;
