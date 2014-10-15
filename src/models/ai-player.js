@@ -57,39 +57,6 @@ var sh = require('../public/js/shared'),
         };
     }
 
-
-    function getPaths(grid, from, destinations) {
-        var paths = [];
-        _.each(destinations, function(d) {
-            var path = pfFinder.findPath(from.x, from.y, d.x, d.y,
-                grid.clone());
-            if (path.length > 1) {
-                paths.push(path);
-            }
-        });
-        return paths;
-    }
-
-    function getShortest(arrays) {
-        return _.min(arrays, function(a) {
-            return a.length;
-        });
-    }
-
-    function pathDestination(path) {
-        var dest = _.last(path);
-        return {x: dest[0], y: dest[1]};
-    }
-
-    function setOrderForShortestPath(grid, unit, destinations, orders) {
-        var paths = getPaths(grid.clone(), unit, destinations);
-        if (paths.length > 0) {
-            move(orders)(pathDestination(getShortest(paths)), unit.id);
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Distribute units among destinations so each
      * destination is targeted by the closest unit.
@@ -327,47 +294,9 @@ var sh = require('../public/js/shared'),
             this.teleportManager.setOrders(s, orders);
         },
         setOrdersInEnemyShip: function (orders) {
-            var s = this.getShipData(this.enemyShip),
-                free = [],
-                occupied = [];
-
-            //Get occupied and free tiles in weak spot.
-            _.each(getWeakSpotsTiles(s.ship), function(tile) {
-                if (_.any(s.allies.all, function(unit) {
-                        return unit.x === tile.x && unit.y === tile.y;
-                    })) {
-                    occupied.push(tile);
-                } else {
-                    free.push(tile);
-                }
-            });
-
-            //GO TO THE WEAK SPOT
-            _.each(s.allies.Critter, function(unit) {
-                if (s.ship.itemsMap.at(unit.x, unit.y) instanceof
-                        sh.items.WeakSpot) {
-                    //already at the spot, don't move
-                    return;
-                }
-                //optimal: to free tile avoiding units
-                if (setOrderForShortestPath(s.gridWithUnits.clone(), unit,
-                        free, orders)) {
-                    return;
-                }
-                //2nd optimal: to free tile through units
-                if (setOrderForShortestPath(s.grid.clone(), unit,
-                        free, orders)) {
-                    return;
-                }
-                //3rd optimal: to occupied tile avoiding units
-                if (setOrderForShortestPath(s.gridWithUnits.clone(), unit,
-                        occupied, orders)) {
-                    return;
-                }
-                //4th optimal: to occupied tile through units
-                setOrderForShortestPath(s.grid.clone(), unit,
-                        occupied, orders);
-            });
+            var s = this.getShipData(this.enemyShip);
+            _.each(distribute(s.allies.Critter, getWeakSpotsTiles(s.ship)),
+                move(orders));
             _.each(distribute(s.allies.MetalSpider, s.enemies.all, false),
                 seekAndDestroy(orders));
         }
