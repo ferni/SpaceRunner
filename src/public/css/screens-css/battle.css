@@ -10,7 +10,8 @@
     border: 3px solid white;
     position: absolute;
     top: 5px;
-    left: 350px;
+    font-size: 17pt;
+    left: 450px;
 }
 
 #battle-screen #paused-indicator{
