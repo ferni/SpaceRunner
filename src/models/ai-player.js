@@ -117,7 +117,7 @@ var sh = require('../public/js/shared'),
             return minDistanceByUnit;
         }
 
-        return function(units, destinations) {
+        return function(units, destinations, onePerDestination) {
             var distancesByUnit = {},
                 destinationsByUnit = {},
                 minDistanceByUnit,
@@ -126,6 +126,9 @@ var sh = require('../public/js/shared'),
                 unitsLeft;
             if (!units || !destinations) {
                 return {};
+            }
+            if (onePerDestination === undefined) {
+                onePerDestination = true;
             }
             destinationsLeft = destinations.length;
             unitsLeft = units.length;
@@ -144,13 +147,15 @@ var sh = require('../public/js/shared'),
                 });
             });
             minDistanceByUnit = getMinDistanceByUnit(distancesByUnit);
-            while (destinationsLeft > 0 && unitsLeft > 0) {
+            while (unitsLeft > 0 && (!onePerDestination || destinationsLeft > 0)) {
                 dis2des = _.min(minDistanceByUnit, 'distance');
                 destinationsByUnit[dis2des.unit.id] = dis2des.destination;
                 delete distancesByUnit[dis2des.unit.id];
                 unitsLeft--;
-                _.each(distancesByUnit, removeDestination(dis2des.destination));
-                destinationsLeft--;
+                if (onePerDestination) {
+                    _.each(distancesByUnit, removeDestination(dis2des.destination));
+                    destinationsLeft--;
+                }
                 minDistanceByUnit = getMinDistanceByUnit(distancesByUnit);
             }
             return destinationsByUnit;
@@ -194,7 +199,7 @@ var sh = require('../public/js/shared'),
                 });
                 return allies;
             },
-            setOrders: function(shipData, orders) {
+            gatherOutside: function(shipData, orders) {
                 var s = shipData,
                     toTeleporters = distribute(getIdle(s.allies.all, orders),
                         s.teleporterTiles[teleporters[targetedIndex].id]);
@@ -205,6 +210,27 @@ var sh = require('../public/js/shared'),
                     }));
                 });
                 this.targetNext();
+            },
+            teleport: function(shipData, orders) {
+                var self = this,
+                    s = shipData,
+                    toTeleport;
+                _.each(s.teleporters, function(tel) {
+                    var allies = self.alliesInPerimeter(tel.id, s);
+                    if (allies.length >= 3) {
+                        toTeleport = distribute(allies, tel.getTiles(), false);
+                        _.each(toTeleport, function(tile, unitID) {
+                            addOrderToCollection(unitID, orders, new sh.orders.Move({
+                                unitID: unitID,
+                                destination: tile
+                            }));
+                        });
+                    }
+                });
+            },
+            setOrders: function(shipData, orders) {
+                this.teleport(shipData, orders);
+                this.gatherOutside(shipData, orders);
             }
         };
     }
