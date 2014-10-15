@@ -105,7 +105,7 @@ ko.bindingHandlers.timeline = {
             var pixelTime = e.clientY - 125 + jScrollApi.getContentPositionY(),
                 time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
-            $mouseMarker.css('top', (e.clientY - 118) + 'px');
+            $mouseMarker.css('top', (e.clientY - 68) + 'px');
             markers = timeline.getMarkersNear(pixelTime);
             $markerLabels.html('');
             if (markers.length > 0) {
