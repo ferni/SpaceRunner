@@ -87,8 +87,8 @@ ko.bindingHandlers.timeline = {
             jScrollApi.reinitialise();
         }, 250, {leading: false}));
         //zoom slider
-        sld = new dhtmlxSlider('zoom-slider', 150,
-            'arrowgreen', false, 0.25, 3, 1, 0.25);
+        sld = new dhtmlxSlider('zoom-slider', 75,
+            'arrowgreen', false, 0.25, 2, 1, 0.25);
         sld.setImagePath('data/img/render/slider/');
         $('#zoom-slider').append(sld);
         sld.setOnChangeHandler(function(value) {
@@ -105,7 +105,7 @@ ko.bindingHandlers.timeline = {
             var pixelTime = e.clientY - 125 + jScrollApi.getContentPositionY(),
                 time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
-            $mouseMarker.css('top', (e.clientY - 18) + 'px');
+            $mouseMarker.css('top', (e.clientY - 118) + 'px');
             markers = timeline.getMarkersNear(pixelTime);
             $markerLabels.html('');
             if (markers.length > 0) {

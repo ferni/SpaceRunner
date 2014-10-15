@@ -94,7 +94,7 @@
 }
 
 #battle-screen #zoom-info {
-    width: 47px;
+    width: 20px;
     float: left;
     padding: 1px;
     text-align: center;
@@ -103,16 +103,6 @@
 
 #battle-screen #zoom-slider {
     margin-top: 2px;
-}
-
-#battle-screen #zoom #zoom-level,
-#battle-screen #zoom:hover #zoom-label{
-    display: none;
-}
-
-#battle-screen #zoom:hover #zoom-level,
-#battle-screen #zoom #zoom-label{
-    display: block;
 }
 
 #battle-screen #time-line {
