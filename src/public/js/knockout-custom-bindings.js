@@ -110,7 +110,8 @@ ko.bindingHandlers.timeline = {
             $markerLabels.html('');
             if (markers.length > 0) {
                 $markerLabelsCont.css('top', ((markers[0].time / 10 *
-                    timeline.zoomLevel()) - 99) + 'px');
+                    timeline.zoomLevel()) - 99 + 74 - //74: timeline top
+                    jScrollApi.getContentPositionY()) + 'px');
                     //-99 because it has 200 height (for centering)
                 _.each(markers, function(m) {
                     $markerLabels.append('<div class="marker-label" ' +

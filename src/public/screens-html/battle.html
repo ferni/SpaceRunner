@@ -37,17 +37,6 @@
                             <div class="marker" data-bind="style:{backgroundColor:color,
                                 top:top()}"></div>
                         </div>
-                        <table id="marker-labels-container" cellpadding="0" cellspacing="0" border="0">
-                            <tr>
-                                <td>
-                                    <img id="balloon-pointer" src="data/img/render/balloon-pointer.png"
-                                            height="10px"/>
-                                </td>
-                                <td valign="middle">
-                                    <div id="marker-labels"></div>
-                                </td>
-                            </tr>
-                        </table>
                     </div>
                 </div>
                 <div data-bind="with:timeline">
@@ -61,6 +50,17 @@
                 </div>
             </div>
             <hr id="mouse-marker"/>
+            <table id="marker-labels-container" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+                        <img id="balloon-pointer" src="data/img/render/balloon-pointer.png"
+                             height="10px"/>
+                    </td>
+                    <td valign="middle">
+                        <div id="marker-labels"></div>
+                    </td>
+                </tr>
+            </table>
         </div>
         <button id="ready-button" class="button">Ready</button>
     </div>
