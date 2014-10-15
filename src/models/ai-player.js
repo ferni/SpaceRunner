@@ -39,6 +39,23 @@ var sh = require('../public/js/shared'),
         orderArray.addUnitOrders(unitOrders);
     }
 
+    function seekAndDestroy(orders) {
+        return function(target, unitID) {
+            addOrderToCollection(unitID, orders, new sh.orders.SeekAndDestroy({
+                unitID: unitID,
+                targetID: target.id
+            }));
+        };
+    }
+
+    function move(orders) {
+        return function(destination, unitID) {
+            addOrderToCollection(unitID, orders, new sh.orders.Move({
+                unitID: unitID,
+                destination: destination
+            }));
+        };
+    }
 
 
     function getPaths(grid, from, destinations) {
@@ -67,23 +84,10 @@ var sh = require('../public/js/shared'),
     function setOrderForShortestPath(grid, unit, destinations, orders) {
         var paths = getPaths(grid.clone(), unit, destinations);
         if (paths.length > 0) {
-            addOrderToCollection(unit.id, orders, new sh.orders.Move({
-                unitID: unit.id,
-                destination: pathDestination(getShortest(paths))
-            }));
+            move(orders)(pathDestination(getShortest(paths)), unit.id);
             return true;
         }
         return false;
-    }
-
-    function seekAndDestroy(allies, enemies, orders) {
-        var distribution = distribute(allies, enemies);
-        _.each(distribution, function(enemy, unitID) {
-            addOrderToCollection(unitID, orders, new sh.orders.SeekAndDestroy({
-                unitID: unitID,
-                targetID: enemy.id
-            }));
-        });
     }
 
     /**
@@ -203,28 +207,17 @@ var sh = require('../public/js/shared'),
                 var s = shipData,
                     toTeleporters = distribute(getIdle(s.allies.all, orders),
                         s.teleporterTiles[teleporters[targetedIndex].id]);
-                _.each(toTeleporters, function(tile, unitID) {
-                    addOrderToCollection(unitID, orders, new sh.orders.Move({
-                        unitID: unitID,
-                        destination: tile
-                    }));
-                });
+                _.each(toTeleporters, move(orders));
                 this.targetNext();
             },
             teleport: function(shipData, orders) {
                 var self = this,
-                    s = shipData,
-                    toTeleport;
+                    s = shipData;
                 _.each(s.teleporters, function(tel) {
                     var allies = self.alliesInPerimeter(tel.id, s);
                     if (allies.length >= 3) {
-                        toTeleport = distribute(allies, tel.getTiles(), false);
-                        _.each(toTeleport, function(tile, unitID) {
-                            addOrderToCollection(unitID, orders, new sh.orders.Move({
-                                unitID: unitID,
-                                destination: tile
-                            }));
-                        });
+                        _.each(distribute(allies, tel.getTiles(), false),
+                            move(orders));
                     }
                 });
             },
@@ -326,15 +319,11 @@ var sh = require('../public/js/shared'),
             return orders;
         },
         setOrdersInOwnShip: function (orders) {
-            var s = this.getShipData(this.ownShip),
-                toConsoles = distribute(s.allies.Critter, s.weaponConsoles);
-            _.each(toConsoles, function(console, unitID) {
-                addOrderToCollection(unitID, orders, new sh.orders.Move({
-                    unitID: unitID,
-                    destination: console
-                }));
-            });
-            seekAndDestroy(s.allies.MetalSpider, s.enemies.all, orders);
+            var s = this.getShipData(this.ownShip);
+            _.each(distribute(s.allies.Critter, s.weaponConsoles),
+                move(orders));
+            _.each(distribute(s.allies.MetalSpider, s.enemies.all, false),
+                seekAndDestroy(orders));
             this.teleportManager.setOrders(s, orders);
         },
         setOrdersInEnemyShip: function (orders) {
@@ -379,7 +368,8 @@ var sh = require('../public/js/shared'),
                 setOrderForShortestPath(s.grid.clone(), unit,
                         occupied, orders);
             });
-            seekAndDestroy(s.allies.MetalSpider, s.enemies.all, orders);
+            _.each(distribute(s.allies.MetalSpider, s.enemies.all, false),
+                seekAndDestroy(orders));
         }
     });
     exports.AIPlayer = AIPlayer;
