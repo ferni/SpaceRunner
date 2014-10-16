@@ -141,6 +141,12 @@ sh.Battle = sh.Jsonable.extendShared({
     endOfTurnReset: function() {
         'use strict';
         _.invoke(this.ships, 'endOfTurnReset', this.turnDuration);
+        //remove orders from dead units
+        _.each(this.orderCollection.allUnitOrders, function(unitOrders) {
+            if (!this.getUnitByID(unitOrders.unitID)) {
+                delete this.orderCollection.allUnitOrders[unitOrders.unitID];
+            }
+        }, this);
     },
     getPlayerShips: function(playerID) {
         'use strict';
