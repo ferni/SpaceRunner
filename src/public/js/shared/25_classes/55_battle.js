@@ -17,7 +17,6 @@ if (typeof exports !== 'undefined') {
 
 sh.Battle = sh.Jsonable.extendShared({
     ships: [],
-    changeHandlers: [],
     arbiter: {//actor that declares a winner
         type: 'Arbiter',
         getActions: function(turnTime, battle) {
@@ -57,13 +56,6 @@ sh.Battle = sh.Jsonable.extendShared({
         });
         this.pendingActions = [];
         this.orderCollection = new sh.OrderCollection();
-    },
-    changed: function(unitOrders) {
-        'use strict';
-        //notify
-        this.changeHandlers.forEach(function(handler) {
-            handler(unitOrders);
-        });
     },
     toJson: function() {
         'use strict';
@@ -145,7 +137,6 @@ sh.Battle = sh.Jsonable.extendShared({
         'use strict';
         this.orderCollection.addUnitOrders(unitOrders);
         this.getUnitByID(unitOrders.unitID).orders = unitOrders.array;
-        this.changed(unitOrders);
     },
     endOfTurnReset: function() {
         'use strict';
