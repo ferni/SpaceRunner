@@ -132,7 +132,7 @@ if (typeof exports !== 'undefined') {
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
                             prev;
-                        if (unit && unit.isAlive()) {
+                        if (unit && unit.isAlive() && !unit.teleported) {
                             prev = {x: unit.x, y: unit.y};
                             unit.y = self.to.y;
                             unit.x = self.to.x;
@@ -375,6 +375,7 @@ if (typeof exports !== 'undefined') {
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID);
                         unit.orders.shift();
+                        battle.addUnitOrders(unit.makeUnitOrders());
                     }
                 }
             ]);
@@ -466,8 +467,11 @@ if (typeof exports !== 'undefined') {
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
                             targetShip = battle.getShipByID(self.targetShipID);
+                        unit.orders = [];
+                        battle.addUnitOrders(unit.makeUnitOrders());
                         unit.ship.removeUnit(unit);
                         targetShip.putUnit(unit);
+                        unit.teleported = true;
                     }
                 }
             ]);

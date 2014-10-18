@@ -369,6 +369,7 @@ sh.Ship = sh.SharedClass.extendShared({
                     unit.chargingShipWeapon.startingTime -= turnDuration;
                 }
                 unit.distracted = false;
+                unit.teleported = false;
             }
         }
         this.unitsMap.update();
