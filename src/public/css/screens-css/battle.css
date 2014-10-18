@@ -124,6 +124,10 @@
     height: 100%;
 }
 
+#battle-screen #numbers {
+    width: 20px;
+}
+
 #battle-screen #time-ruler .time-segment
 {
     position: relative;
