@@ -183,6 +183,7 @@
     height: 200px;
     left: 42px;
     right: 0;
+    top: -200px;
 }
 
 #battle-screen #balloon-pointer {
