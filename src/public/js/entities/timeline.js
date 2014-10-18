@@ -24,8 +24,15 @@ var Timeline = function(screen) {
     }
     this.featuredUnit = ko.observable(null);
     this.orderVMs = ko.computed(function() {
+        var orderVMs;
         if (this.featuredUnit()) {
-            return orderVMsByUnit[this.featuredUnit().id];
+            orderVMs = orderVMsByUnit[this.featuredUnit().id];
+            if (orderVMs.length === 1) {
+                $('#unit-orders').sortable('disable');
+            } else {
+                $('#unit-orders').sortable('enable');
+            }
+            return orderVMs;
         }
         return [];
     }, this);
