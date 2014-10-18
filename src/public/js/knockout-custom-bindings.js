@@ -88,10 +88,11 @@ ko.bindingHandlers.timeline = {
         });
         sld.init();
 
-        $('#numbers').hover(function() {
+        $('#numbers, #mouse-marker').hover(function() {
             $mouseMarker.show();
         }, function() {
             $mouseMarker.hide();
+            $markerLabelsCont.hide();
         }).mousemove(function(e) {
             var pixelTime = e.clientY - 125 + jScrollApi.getContentPositionY(),
                 time = pixelTime * 10 / timeline.zoomLevel(),
