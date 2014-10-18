@@ -73,6 +73,7 @@ screens.register('battle', ConnectedScreen.extend({
                     framesFinished = 0;
                     if (self.resultingServerModel) {
                         gs.battle = new sh.Battle(self.resultingServerModel);
+                        gs.battle.insertOrders(new sh.OrderCollection(e.ordersJson));
                     }
                     self.pause();
                 }

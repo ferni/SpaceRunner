@@ -246,7 +246,8 @@ screens.register('battle', me.ScreenObject.extend({
         this.shipVM.update();
         parent.postMessage({
             eventName: 'finished playing',
-            battleJson: gs.battle.toJson()
+            battleJson: gs.battle.toJson(),
+            ordersJson: gs.battle.extractOrders().toJson()
         }, '*');
         me.game.sort();
         me.game.repaint();
