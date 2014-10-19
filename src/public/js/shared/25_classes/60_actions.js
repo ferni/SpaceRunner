@@ -284,9 +284,10 @@ if (typeof exports !== 'undefined') {
                     offset: 0,
                     label: 'start',
                     changer: function(battle) {
-                        var unit = battle.getUnitByID(self.unitID);
+                        var unit = battle.getUnitByID(self.unitID),
+                            ship = battle.getShipByID(self.shipID);
                         unit.onCooldown = true;
-                        battle.ships[0].hp -= self.damage;
+                        ship.hp -= self.damage;
                     }
                 },
                 {

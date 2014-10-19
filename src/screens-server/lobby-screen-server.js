@@ -141,7 +141,8 @@ routes.add('newchallenge', function(req, res, next) {
                     units: [],
                     GRID_SUB: 2},
                     {'tmxName': 'Humanoid_Cruiser', 'buildings': [
-                    {'type': 'Power', 'x': 15, 'y': 11, 'r': false},
+                    {type: 'WeakSpot', x: 12, y: 11, r: false},
+                    {'type': 'Power', 'x': 17, 'y': 11, 'r': false},
                     {'type': 'Engine', 'x': 11, 'y': 9, 'r': false},
                     {'type': 'Engine', 'x': 11, 'y': 13, 'r': false},
                     {'type': 'Weapon', 'x': 22, 'y': 9, 'r': false},

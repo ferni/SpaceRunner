@@ -150,7 +150,7 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     getDamageShipActions: function(turnTime, battle) {
         'use strict';
-        if (this.ownerID === -1 && //AI unit (in the future, use ship ownership)
+        if (this.ownerID !== this.ship.owner.id &&
                 !this.moving &&
                 !this.onCooldown && //attack ready
                 !this.dizzy &&
