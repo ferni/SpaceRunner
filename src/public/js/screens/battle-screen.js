@@ -76,14 +76,16 @@ screens.register('battle', ConnectedScreen.extend({
                         gs.battle.insertOrders(new sh.OrderCollection(e.ordersJson));
                         if (gs.battle.winner !== undefined) {
                             if (gs.battle.winner === gs.player.id) {
-                                alert('Victory!');
+                                self.showEndSign('Victory!');
                             } else {
-                                alert('Defeat.');
+                                self.showEndSign('Defeat.');
                             }
-                            location.reload();
+                        } else {
+                            self.pause();
                         }
+                    } else {
+                        self.pause();
                     }
-                    self.pause();
                 }
             } else if (e.eventName === 'unit selected') {
                 self.timeline.featuredUnit(gs.battle.getUnitByID(e.unitID));
@@ -275,5 +277,11 @@ screens.register('battle', ConnectedScreen.extend({
         _.chain(gs.selected)
             .where({name: 'unit'})
             .invoke('deselect');
+    },
+    showEndSign: function(message) {
+        'use strict';
+        $('#end-sign')
+            .append('<h1>' + message + '</h1>')
+            .show();
     }
 }));
