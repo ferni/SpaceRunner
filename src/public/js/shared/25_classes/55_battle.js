@@ -43,7 +43,7 @@ sh.Battle = sh.Jsonable.extendShared({
         'use strict';
         this.setJson({
             type: 'Battle',
-            properties: ['id', 'turnDuration'],
+            properties: ['id', 'turnDuration', 'winner'],
             json: json
         });
         this.ships = _.map(json.ships, function(shipJson) {

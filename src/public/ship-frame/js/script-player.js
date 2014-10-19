@@ -142,15 +142,6 @@ var ScriptPlayer = function(battleScreen) {
         _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
         //clean up
         gs.battle.endOfTurnReset();
-
-        if (gs.battle.winner !== undefined) {
-            if (gs.battle.winner === gs.player.id) {
-                alert('Victory!');
-            } else {
-                alert('Defeat.');
-            }
-            location.reload();
-        }
     };
 
 };

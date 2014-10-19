@@ -74,6 +74,14 @@ screens.register('battle', ConnectedScreen.extend({
                     if (self.resultingServerModel) {
                         gs.battle = new sh.Battle(self.resultingServerModel);
                         gs.battle.insertOrders(new sh.OrderCollection(e.ordersJson));
+                        if (gs.battle.winner !== undefined) {
+                            if (gs.battle.winner === gs.player.id) {
+                                alert('Victory!');
+                            } else {
+                                alert('Defeat.');
+                            }
+                            location.reload();
+                        }
                     }
                     self.pause();
                 }
