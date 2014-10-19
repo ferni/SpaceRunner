@@ -26,7 +26,8 @@ sh.Battle = sh.Jsonable.extendShared({
             }
             var shipsByStatus = _.groupBy(battle.ships, function(ship) {
                 return ship.hp <= 0 ? 'destroyed' : 'alive';
-            });
+            }),
+                unitsByPlayer;
 
             if (shipsByStatus.destroyed) {
                 if (shipsByStatus.alive) {
@@ -36,6 +37,18 @@ sh.Battle = sh.Jsonable.extendShared({
                 }
                 //all ships destroyed... (draw?)
             }
+
+            //Lose when player has no units left.
+            unitsByPlayer = _.chain(battle.getUnits())
+                .filter(function(u) {return u.isAlive(); })
+                .groupBy('ownerID').value();
+
+            if (_.size(unitsByPlayer) === 1) {
+                return [new sh.actions.DeclareWinner({
+                    playerID: parseInt(_.keys(unitsByPlayer)[0], 10)
+                })];
+            }
+
             return [];
         }
     },
