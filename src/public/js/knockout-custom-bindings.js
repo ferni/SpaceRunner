@@ -72,8 +72,11 @@ ko.bindingHandlers.timeline = {
             timeline = valueAccessor(),
             jScrollApi,
             sld;
-
         jScrollApi = $(element).jScrollPane().data('jsp');
+        $('#time-line').find('.jspPane').css({
+            marginLeft: '20px',
+            width: '90px'
+        });
         $(window).resize(_.throttle(function() {
             jScrollApi.reinitialise();
         }, 250, {leading: false}));
