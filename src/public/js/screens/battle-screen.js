@@ -281,7 +281,7 @@ screens.register('battle', ConnectedScreen.extend({
     showEndSign: function(message) {
         'use strict';
         $('#end-sign')
-            .append('<h1>' + message + '</h1>')
+            .append('<a href="/">' + message + '</a>')
             .show();
     }
 }));

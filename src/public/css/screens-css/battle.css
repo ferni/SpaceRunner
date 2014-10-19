@@ -331,13 +331,18 @@ body.dragging, body.dragging * {
     background-color: rgba(0, 0, 0, 0.6);
 }
 
-#battle-screen #end-sign h1{
+#battle-screen #end-sign a{
     font-size: 60px;
-    color: white;
+    color: rgb(76, 191, 255);
     background-color: black;
     text-align: center;
     position: absolute;
     width: 100%;
-    top: 35%;
+    top: 40%;
     padding: 15px;
+    text-decoration: none;
+}
+
+#battle-screen #end-sign a:hover {
+    color: rgb(163, 236, 255);
 }
