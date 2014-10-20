@@ -74,7 +74,7 @@ var UnitVM = TileEntityVM.extend({
         var vmsChanged = utils.updateVMs({
             models: this.m.orders,
             vms: this.orderVMs,
-            zIndex: ui.layers.items,
+            zIndex: ui.layers.indicators,
             DefaultConstructor: orderVMs.Move,
             vmConstructors: orderVMs
         });
