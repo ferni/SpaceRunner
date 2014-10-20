@@ -39,8 +39,10 @@ var orderVMs = (function() {
         },
         updatePos: function() {
             var tile = this.getMarkerTile();
-            this.setX(tile.x);
-            this.setY(tile.y);
+            if (tile !== undefined) {
+                this.setX(tile.x);
+                this.setY(tile.y);
+            }
         },
         setX: function(x) {
             var posChanged = x !== this.x,
