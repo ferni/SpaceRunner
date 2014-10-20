@@ -137,7 +137,8 @@ screens.register('ship-building', GameScreen.extend({
             }
 
         });
-        $('#jsapp canvas').css({width: '', height: ''});
+        $('#jsapp').find('canvas').css({width: '', height: ''});
+        $('#screensUi').css('height', 0);
     },
     mouseDbClick: function() {
         'use strict';
