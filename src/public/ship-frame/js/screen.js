@@ -101,10 +101,6 @@ screens.register('battle', me.ScreenObject.extend({
             this.elapsed = elapsed;
             this.shipVM.update();
             this.scriptPlayer.update(elapsed);
-            //update counter
-            if (elapsed >= this.turnDuration) {
-                this.pause();
-            }
         } else {
             this.keys.processBindings();
         }
@@ -242,7 +238,6 @@ screens.register('battle', me.ScreenObject.extend({
     },
     pause: function() {
         'use strict';
-        this.scriptPlayer.onPause();
         this.shipVM.update();
         parent.postMessage({
             eventName: 'finished playing',

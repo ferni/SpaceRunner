@@ -127,21 +127,10 @@ var ScriptPlayer = function(battleScreen) {
             playModelChange(modelChanges[nextChange]);
             _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
             nextChange++;
+        } else if (nextChange >= modelChanges.length) {
+            gs.battle.endOfTurnReset();
+            battleScreen.pause();
         }
-    };
-
-    this.onPause = function() {
-        //finish applying remaining model changes
-        for (nextChange; nextChange < modelChanges.length; nextChange++) {
-            //same condition as in 40_create-script.js
-            //(queue[0].time <= turnDuration)
-            if (modelChanges[nextChange].time <= script.turnDuration) {
-                modelChanges[nextChange].apply(gs.battle);
-            }
-        }
-        _.invoke(battleScreen.shipVM.unitVMs, 'notifyModelChange');
-        //clean up
-        gs.battle.endOfTurnReset();
     };
 
 };
