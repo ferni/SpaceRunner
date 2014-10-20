@@ -128,10 +128,14 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return actions;
     },
+    inTeleporter: function() {
+        'use strict';
+        return this.ship.itemsMap.at(this.x, this.y) instanceof sh.items.Teleporter;
+    },
     getOrdersActions: function(turnTime, battle) {
         'use strict';
         var actions;
-        if (this.orders.length > 0) {
+        if (this.orders.length > 0 && !this.inTeleporter()) {
             actions = this.orders[0].getActions(turnTime, battle);
             //if it's not gonna make it,
             //force arrival to the tile at end of turn
