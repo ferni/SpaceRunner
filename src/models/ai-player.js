@@ -281,7 +281,7 @@ var sh = require('../public/js/shared'),
         },
         setOrdersInOwnShip: function (orders) {
             var s = this.getShipData(this.ownShip);
-            _.each(distribute(s.allies.Critter, s.weaponConsoles),
+            _.each(distribute(s.allies.MetalSpider, s.weaponConsoles),
                 move(orders));
             _.each(distribute(s.allies.MetalSpider, s.enemies.all, false),
                 seekAndDestroy(orders));
