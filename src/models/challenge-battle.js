@@ -31,6 +31,7 @@ exports.ChallengeBattle = BattleServer.extend({
         ship.putUnit(new u.Zealot());
         ship.putUnit(new u.Zealot());
         ship.putUnit(new u.Zealot());
+        ship.putUnit(new u.Zealot());
 
 
         enemyShip = this.battleModel.ships[1];
@@ -47,6 +48,9 @@ exports.ChallengeBattle = BattleServer.extend({
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.MetalSpider());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
+        enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
         enemyShip.putUnit(new u.Critter());
