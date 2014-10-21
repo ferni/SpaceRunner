@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, me, sh, TILE_SIZE*/
+/*global TileEntityVM, me, sh, TILE_SIZE, _*/
 
 var ui = (function() {
     'use strict';
@@ -24,6 +24,43 @@ var ui = (function() {
         }
     });
 
+    /**
+     * Makes the object fade a little. (Use on objects' update to
+     * make it fade until it disappears).
+     * @param {*} object The object to fade.
+     * @param {{duration:int, step:float}} settings
+     */
+    function fade(object, settings) {
+        settings = _.defaults(settings || {}, {duration: 30, step: 0.03});
+        if (object.fadeCountdown === undefined) {
+            object.fadeCountdown = settings.duration;
+        }
+        object.alpha -= settings.step;
+        object.fadeCountdown--;
+        if (object.fadeCountdown === 0) {
+            me.game.remove(object);
+        }
+    }
+
+    ui.ShipDamageOverlay = me.ObjectEntity.extend({
+        init: function() {
+            //the pivot doesn't move
+            this.parent(0, 0, {image: 'nothing'});
+            this.alpha = 0.5;
+        },
+        draw: function(ctx) {
+            this.parent(ctx);
+            ctx.save();
+            ctx.fillStyle = 'red';
+            ctx.globalAlpha = this.alpha;
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.restore();
+        },
+        update: function() {
+            this.parent();
+            fade(this, {duration: 10});
+        }
+    });
     /**
      * A drag-box to select units.
      * @type {*}
@@ -64,22 +101,6 @@ var ui = (function() {
             }
         }
     });
-
-    /**
-     * Makes the object fade a little. (Use on objects' update to
-     * make it fade until it disappears).
-     * @param {*} object The object to fade.
-     */
-    function fade(object) {
-        if (object.fadeCountdown === undefined) {
-            object.fadeCountdown = 30;
-        }
-        object.alpha -= 0.03;
-        object.fadeCountdown--;
-        if (object.fadeCountdown === 0) {
-            me.game.remove(object);
-        }
-    }
 
     /**
      * A little star that shows up when a melee hit occurs.

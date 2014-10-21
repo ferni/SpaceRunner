@@ -439,11 +439,18 @@ if (typeof exports !== 'undefined') {
                     offset: 0,
                     label: 'start',
                     changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID);
+                        unit.cancelShipWeaponFire();
+                    }
+                },
+                {
+                    offset: 800,
+                    label: 'hit',
+                    changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
                             shooterShip = unit.ship,
                             damagedShip = battle.getShipByID(self.targetID);
                         damagedShip.hp -= shooterShip.getItemByID(self.weaponID).damage;
-                        unit.cancelShipWeaponFire();
                     }
                 }
             ]);

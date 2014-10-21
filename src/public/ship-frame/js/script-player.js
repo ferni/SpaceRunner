@@ -86,21 +86,30 @@ var ScriptPlayer = function(battleScreen) {
         },
         'FireShipWeapon': {
             'start': function(action) {
-                var unit, targetShip;
+                var unit;
                 unit = gs.battle.getUnitByID(action.unitID);
                 if (unit.ship !== gs.ship) {
                     return;
                 }
-                targetShip = gs.battle.getShipByID(action.targetID);
                 battleScreen.shipVM.getVM(
                     unit.ship.getItemByID(action.weaponID)
                 ).playFire();
+
+            },
+            'hit': function(action) {
+                var targetShip = gs.battle.getShipByID(action.targetID);
+                if (targetShip !== gs.ship) {
+                    return;
+                }
+                me.game.add(new ui.ShipDamageOverlay(), ui.layers.effects);
+                me.game.sort();
                 parent.postMessage({
                     eventName: 'ship hp',
                     targetID: targetShip.id,
                     hp: targetShip.hp
                 }, '*');
             }
+
         }
     };
 
