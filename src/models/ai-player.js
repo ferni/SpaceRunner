@@ -141,8 +141,7 @@ var sh = require('../public/js/shared'),
     }
 
     function TeleportManager(ai) {
-        var targetedIndex = 0,
-            teleporters = ai.staticShipData[ai.ownShip.id].teleporters;
+        var teleporters = ai.staticShipData[ai.ownShip.id].teleporters;
         if (teleporters.length === 0) {
             return {
                 setOrders: function(shipData, orders) {}
@@ -152,12 +151,6 @@ var sh = require('../public/js/shared'),
             return unit.ownerID === ai.id;
         }
         return {
-            targetNext: function() {
-                targetedIndex++;
-                if (targetedIndex >= teleporters.length) {
-                    targetedIndex = 0;
-                }
-            },
             alliesInPerimeter: function(teleporterID, shipData) {
                 var s = shipData,
                     tiles = s.teleporterTiles[teleporterID],
@@ -173,19 +166,16 @@ var sh = require('../public/js/shared'),
             gatherOutside: function(shipData, orders) {
                 var s = shipData,
                     toTeleporters = distribute(getIdle(s.allies.all, orders),
-                        s.teleporterTiles[teleporters[targetedIndex].id]);
+                        _.flatten(_.values(s.teleporterTiles)));
                 _.each(toTeleporters, move(orders));
-                this.targetNext();
             },
             teleport: function(shipData, orders) {
                 var self = this,
                     s = shipData;
                 _.each(s.teleporters, function(tel) {
                     var allies = self.alliesInPerimeter(tel.id, s);
-                    if (allies.length >= 3) {
-                        _.each(distribute(allies, tel.getTiles(), false),
-                            move(orders));
-                    }
+                    _.each(distribute(allies, tel.getTiles(), false),
+                        move(orders));
                 });
             },
             setOrders: function(shipData, orders) {
@@ -218,14 +208,18 @@ var sh = require('../public/js/shared'),
             data.teleporterTiles = {};
             _.each(data.teleporters, function(tel) {
                 var outerTiles = [
+                    {x: tel.x - 1, y: tel.y - 1},
                     {x: tel.x, y: tel.y - 1},
                     {x: tel.x + 1, y: tel.y - 1},
+                    {x: tel.x + 2, y: tel.y - 1},
                     {x: tel.x - 1, y: tel.y},
                     {x: tel.x + 2, y: tel.y},
                     {x: tel.x - 1, y: tel.y + 1},
                     {x: tel.x + 2, y: tel.y + 1},
                     {x: tel.x, y: tel.y + 2},
-                    {x: tel.x + 1, y: tel.y + 2}
+                    {x: tel.x - 1, y: tel.y + 2},
+                    {x: tel.x + 1, y: tel.y + 2},
+                    {x: tel.x + 2, y: tel.y + 2}
                 ];
                 data.teleporterTiles[tel.id] = _.filter(outerTiles,
                     function(tile) {
