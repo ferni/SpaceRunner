@@ -96,12 +96,17 @@ sh.Ship = sh.SharedClass.extendShared({
         return null; //building failed
     },
     //finds a clear spot and creates a new unit there
-    putUnit: function(unit) {
+    putUnit: function(unit, position) {
         'use strict';
         //find empty spot
         var empty = null, ship = this;
-        empty = this.closestTile(Math.floor(ship.width / 2),
-            Math.floor(ship.height / 2),
+        if (!position) {
+            position = {//center of the ship
+                x: Math.floor(ship.width / 2),
+                y: Math.floor(ship.height / 2)
+            };
+        }
+        empty = this.closestTile(position.x, position.y,
             function(tile) {
                 return tile === sh.tiles.clear;
             });
