@@ -392,7 +392,8 @@ sh.items.Teleporter = sh.Item.extendShared({
                     unitID: unit.id,
                     targetShipID: _.find(battle.ships, function(ship) {
                         return ship.id !== self.ship.id;
-                    }).id
+                    }).id,
+                    teleporterID: self.id
                 }));
             });
         });

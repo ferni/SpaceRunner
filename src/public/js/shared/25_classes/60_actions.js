@@ -462,7 +462,7 @@ if (typeof exports !== 'undefined') {
             this.parent(json);
             this.setJson({
                 type: 'Teleport',
-                properties: ['unitID', 'targetShipID'],
+                properties: ['unitID', 'targetShipID', 'teleporterID'],
                 json: json
             });
         },
@@ -479,7 +479,7 @@ if (typeof exports !== 'undefined') {
                         battle.addUnitOrders(unit.makeUnitOrders());
                         unit.ship.removeUnit(unit);
                         targetShip.putUnit(unit);
-                        unit.teleported = true;
+                        unit.teleported = {teleporterID: self.teleporterID};
                     }
                 }
             ]);
