@@ -226,48 +226,6 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    /**
-     * Makes a unit appear on board.
-     * @type {*}
-     */
-    sh.actions.Summon = sh.Action.extendShared({
-        init: function(json) {
-            this.parent(json);
-            this.setJson({
-                type: 'Summon',
-                properties: ['x', 'y', 'playerID', 'unitType'],
-                json: json
-            });
-        },
-        updateModelChanges: function() {
-            var self = this;
-            this.setChanges([
-                {
-                    offset: 0,
-                    label: 'start',
-                    changer: function(battle) {
-                        var unit = new sh.units[self.unitType](
-                                {ownerID: self.playerID}
-                            ),
-                            ship = battle.ships[0],
-                            freePos = ship.closestTile(self.x, self.y,
-                                function(t) {
-                                    return t === sh.tiles.clear;
-                                });
-                        if (freePos) {
-                            unit.x = freePos.x;
-                            unit.y = freePos.y;
-                            ship.addUnit(unit);
-                        }
-                    }
-                }
-            ]);
-        },
-        toString: function() {
-            return this.time + 'ms: Summon ' + this.unitType;
-        }
-    });
-
     sh.actions.DamageShip = sh.Action.extendShared({
         init: function(json) {
             this.parent(json);
@@ -474,12 +432,50 @@ if (typeof exports !== 'undefined') {
                     label: 'start',
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
+                            sourceShipID = unit.ship.id,
                             targetShip = battle.getShipByID(self.targetShipID);
                         unit.orders = [];
                         battle.addUnitOrders(unit.makeUnitOrders());
                         unit.ship.removeUnit(unit);
                         targetShip.putUnit(unit);
-                        unit.teleported = {teleporterID: self.teleporterID};
+                        unit.teleported = true;
+                        unit.teleportSource = {
+                            teleporterID: self.teleporterID,
+                            shipID: sourceShipID
+                        };
+                    }
+                }
+            ]);
+        }
+    });
+
+    sh.actions.Recall = sh.Action.extendShared({
+        init: function(json) {
+            this.parent(json);
+            this.setJson({
+                type: 'Recall',
+                properties: ['unitID'],
+                json: json
+            });
+        },
+        updateModelChanges: function() {
+            var self = this;
+            this.setChanges([
+                {
+                    offset: 0,
+                    label: 'start',
+                    changer: function(battle) {
+                        var unit = battle.getUnitByID(self.unitID),
+                            sourceShip = battle
+                                .getShipByID(unit.teleportSource.sourceShipID),
+                            teleporter = sourceShip
+                                .getItemByID(unit.teleportSource.teleporterID);
+                        unit.orders = [];
+                        battle.addUnitOrders(unit.makeUnitOrders());
+                        unit.ship.removeUnit(unit);
+                        sourceShip.putUnit(unit, teleporter);
+                        unit.teleported = true;
+                        unit.teleportSource = null;
                     }
                 }
             ]);
