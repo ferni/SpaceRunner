@@ -325,6 +325,11 @@ if (typeof exports !== 'undefined') {
     sh.orders.Recall = sh.Order.extendShared({
         init: function (json) {
             this.parent(json);
+            this.setJson({
+                type: 'Recall',
+                properties: [],
+                json: json
+            });
         },
         getActions: function(time, battle) {
             return [new sh.actions.Recall({

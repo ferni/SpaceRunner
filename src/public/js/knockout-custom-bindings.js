@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global ko, $, _, dhtmlxSlider, utils*/
+/*global ko, $, _, dhtmlxSlider, utils, me*/
 
 /**
  * Makes a list sortable.
@@ -55,6 +55,19 @@ ko.bindingHandlers.sortableList = {
                 });
             }
         });
+    },
+    update: function() {
+        'use strict';
+        var screen = me.state.current(),
+            $recallButton;
+        $('#recall-button').remove();
+        if (screen.canSelectedUnitRecall()) {
+            $recallButton = $('<button id="recall-button">Recall</button>');
+            $('#unit-orders').append($recallButton);
+            $recallButton.click(function() {
+                screen.recallUnit();
+            });
+        }
     }
 };
 

@@ -37,7 +37,7 @@ sh.Unit = sh.TileEntity.extendShared({
             type: 'Unit',
             properties: ['imgIndex', 'speed', 'maxHP', 'meleeDamage',
                 'attackCooldown', 'attackRange', 'imageFacesRight', 'ownerID',
-                'chargingShipWeapon'],
+                'chargingShipWeapon', 'teleportSource'],
             json: json
         });
         this.hp = this.maxHP;

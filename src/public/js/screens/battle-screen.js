@@ -209,6 +209,27 @@ screens.register('battle', ConnectedScreen.extend({
         _.invoke(this.shipFrames, 'sendData', unitOrdersJson);
         this.timeline.update();
     },
+    canSelectedUnitRecall: function() {
+        'use strict';
+        var unit, recallOrder;
+        unit = this.htmlVM.selectedUnit();
+        if (!unit) {
+            return false;
+        }
+        recallOrder = new sh.orders.Recall({
+            unitID: unit.id
+        });
+        return recallOrder.isValid(gs.battle, gs.player.id);
+    },
+    recallUnit: function() {
+        'use strict';
+        var unit = this.htmlVM.selectedUnit(),
+            recallOrder = new sh.orders.Recall({
+                unitID: unit.id
+            });
+        unit.orders.push(recallOrder);
+        this.newOrders(unit.makeUnitOrders().toJson());
+    },
     getModelDifferenceUrl: function(aJsonString, bJsonString) {
         'use strict';
         var hashObject = {
