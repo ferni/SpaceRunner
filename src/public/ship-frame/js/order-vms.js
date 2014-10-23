@@ -185,16 +185,5 @@ var orderVMs = (function() {
             }
         }
     });
-
-    orderVMs.Recall = OrderVM.extend({
-        lightColor: '#00AA00',//for the path lines
-        itemColor: '#008000', //for the timeline
-        init: function(order) {
-            this.parent(order);
-        },
-        getMarkerTile: function() {
-            return {x: -100, y: 100};
-        }
-    });
     return orderVMs;
 }());

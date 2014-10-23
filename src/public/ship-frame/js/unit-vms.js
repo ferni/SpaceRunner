@@ -72,7 +72,9 @@ var UnitVM = TileEntityVM.extend({
     updateOrderVMs: function() {
         'use strict';
         var vmsChanged = utils.updateVMs({
-            models: this.m.orders,
+            models: _.filter(this.m.orders, function(o) {
+                return o instanceof sh.orders.GoTo;
+            }),
             vms: this.orderVMs,
             zIndex: ui.layers.indicators,
             DefaultConstructor: orderVMs.Move,
