@@ -467,7 +467,7 @@ if (typeof exports !== 'undefined') {
                     changer: function(battle) {
                         var unit = battle.getUnitByID(self.unitID),
                             sourceShip = battle
-                                .getShipByID(unit.teleportSource.sourceShipID),
+                                .getShipByID(unit.teleportSource.shipID),
                             teleporter = sourceShip
                                 .getItemByID(unit.teleportSource.teleporterID);
                         unit.orders = [];

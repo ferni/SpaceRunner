@@ -321,4 +321,23 @@ if (typeof exports !== 'undefined') {
                 unit.ship === target.ship;
         }
     });
+
+    sh.orders.Recall = sh.Order.extendShared({
+        init: function (json) {
+            this.parent(json);
+        },
+        getActions: function(time, battle) {
+            return [new sh.actions.Recall({
+                unitID: this.unitID
+            }),
+                new sh.actions.FinishOrder({
+                    unitID: this.unitID
+                })];
+        },
+        isValid: function(battle, playerID) {
+            var unit = battle.getUnitByID(this.unitID);
+            return this.parent(battle, playerID) &&
+                unit.teleportSource;
+        }
+    });
 }());
