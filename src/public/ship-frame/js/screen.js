@@ -212,7 +212,7 @@ screens.register('battle', me.ScreenObject.extend({
                     return !_.any(u.orderVMs, function(o) {
                         return sh.v.equal(o.getMarkerTile(), mouse);
                     }) &&
-                        (u.m.orders.length === 0 ||
+                        (u.orderVMs.length === 0 ||
                             _.last(u.orderVMs).selected());
                 });
             _.each(unitsToGiveOrders, function(u) {
