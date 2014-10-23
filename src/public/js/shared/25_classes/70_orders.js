@@ -339,6 +339,9 @@ if (typeof exports !== 'undefined') {
                     unitID: this.unitID
                 })];
         },
+        toString: function() {
+            return 'Recall';
+        },
         isValid: function(battle, playerID) {
             var unit = battle.getUnitByID(this.unitID);
             return this.parent(battle, playerID) &&
