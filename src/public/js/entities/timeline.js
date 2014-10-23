@@ -23,6 +23,21 @@ var Timeline = function(screen) {
         return new Segment(self);
     }
     this.featuredUnit = ko.observable(null);
+
+    function updateRecallButton(orders) {
+        var $recallButton;
+        $('#recall-button').remove();
+        if (screen.canSelectedUnitRecall()) {
+            if (!_.findWhere(orders, {type: 'Recall'})) {
+                $recallButton = $('<button id="recall-button">Recall</button>');
+                $('#unit-orders').append($recallButton);
+                $recallButton.click(function() {
+                    screen.recallUnit();
+                });
+            }
+        }
+    }
+
     this.orderVMs = ko.computed(function() {
         var orderVMs;
         if (this.featuredUnit()) {
@@ -32,6 +47,7 @@ var Timeline = function(screen) {
             } else {
                 $('#unit-orders').sortable('enable');
             }
+            updateRecallButton(_.pluck(orderVMs, 'm'));
             return orderVMs;
         }
         return [];
