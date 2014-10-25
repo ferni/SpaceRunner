@@ -18,7 +18,7 @@ ko.bindingHandlers.sortableList = {
             adjustment;
         $(element).sortable({
             // animation on drop
-            onDrop: function(item, targetContainer, _super) {
+            onDrop: function(item) {//(item, targetContainer, _super)
                 var clonedItem = $('<li class="cloned"/>').css({height: 0});
                 item.before(clonedItem);
                 clonedItem.animate({'height': item.height()});
@@ -98,7 +98,7 @@ ko.bindingHandlers.timeline = {
             $markerLabelsCont.hide();
         }).mousemove(function(e) {
             var pixelTime = e.clientY - 125 + jScrollApi.getContentPositionY(),
-                time = pixelTime * 10 / timeline.zoomLevel(),
+                //time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
             $mouseMarker.css('top', (e.clientY - 68) + 'px');
             markers = timeline.getMarkersNear(pixelTime);

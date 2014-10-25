@@ -26,6 +26,7 @@ if (typeof exports !== 'undefined') {
 
     function getVoidModelChange(time) {
         return new sh.ModelChange(0, function() {
+            return null;//for jslint
         }, {time: time});
     }
 

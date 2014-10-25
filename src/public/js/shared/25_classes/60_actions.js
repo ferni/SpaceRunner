@@ -18,7 +18,7 @@ if (typeof exports !== 'undefined') {
 
 (function() {
     'use strict';
-    var Action, ModelChange;
+    var ModelChange;
 
     /**
      * A point in time in the Script in which a change in the model happens.
@@ -370,10 +370,11 @@ if (typeof exports !== 'undefined') {
                 {
                     offset: self.chargeTime,
                     label: 'end',
-                    changer: function(battle) {
+                    changer: function() {//(battle)
                         //empty function: this change is here
                         //to trigger a getActions call from the
                         //unit responsible for firing.
+                        return null;//for jsLint
                     }
                 }
             ]);

@@ -26,7 +26,7 @@ var ShipFrame = (function() {
         /**
          * Appear on screen
          */
-        init: function(width, height) {
+        init: function() {
             //create an iframe, pass the model and bind with onEvent
             var self = this,
                 url = 'ship-frame/?width=' + (self.ship.width * TILE_SIZE) +

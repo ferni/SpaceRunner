@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, utils, th, jsApp, FIRST_SCREEN, sh, TILE_SIZE*/
+/*global me, utils, jsApp, FIRST_SCREEN, sh, TILE_SIZE*/
 
 var th = {
     shipPositions: {
@@ -34,7 +34,9 @@ var th = {
             return;
         }
         jsApp.onAppLoaded = function() {
-            jsApp.onAppLoaded = function() { };
+            jsApp.onAppLoaded = function() {
+                return null;//for jsLint
+            };
             callback();
         };
     },
@@ -42,7 +44,9 @@ var th = {
         'use strict';
         me.state.change(me.state.GAMEOVER);
         jsApp.onAppLoaded = function() {
-            jsApp.onAppLoaded = function() { };
+            jsApp.onAppLoaded = function() {
+                return null;//for jsLint
+            };
             th.onState(FIRST_SCREEN, callback);
         };
         jsApp.loaded();
@@ -59,7 +63,9 @@ var th = {
     loadScreen: function(changeState, onReady) {
         'use strict';
         jsApp.onScreenReset = function() {
-            jsApp.onScreenReset = function() { };
+            jsApp.onScreenReset = function() {
+                return null;//for jsLint
+            };
             onReady(me.state.current());
         };
         changeState();

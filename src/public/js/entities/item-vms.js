@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, ItemVM, PF, hullMap, utils, width, height,
+/*global me, _, pr, PF, hullMap, utils, width, height,
 TileEntityVM, sh, draw*/
 
 /**
@@ -124,9 +124,11 @@ var ItemVM = TileEntityVM.extend({
     },
     whenOnShip: function() {
         'use strict';
+        return '';//for jsLint
     },
     whenOffShip: function() {
         'use strict';
+        return '';//for jsLint
     },
     toJson: function() {
         'use strict';

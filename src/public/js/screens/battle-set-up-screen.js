@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, screens, ConnectedScreen, ko, gs, $*/
+/*global me, screens, ConnectedScreen, ko, gs, $, sh*/
 
 screens.register('battle-set-up', ConnectedScreen.extend({
 
@@ -40,8 +40,9 @@ screens.register('battle-set-up', ConnectedScreen.extend({
             //both players present
             if (screen.bothPlayersPresent()) {
                 $.post(screen.name + '/start', {id: this.id()},
-                    function(data) {
+                    function() {
                         //nothing (battle starts in updateVM )
+                        return null;//for jslint
                     }, 'json');
             } else {
                 alert('More players are required to start.');

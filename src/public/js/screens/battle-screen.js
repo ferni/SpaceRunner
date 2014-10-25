@@ -61,7 +61,7 @@ screens.register('battle', ConnectedScreen.extend({
         this.stopFetching();
         console.log('Battle id is ' + this.id);
         function frameEventHandler(e) {
-            var unit, ship;
+            var ship;
             if (e.eventName === 'new orders') {
                 self.newOrders(e.ordersJson);
             } else if (e.eventName === 'finished playing') {
@@ -107,8 +107,8 @@ screens.register('battle', ConnectedScreen.extend({
             new ShipFrame(battle, this.myShip, frameEventHandler),
             new ShipFrame(battle, this.enemyShip, frameEventHandler)
         ];
-        this.shipFrames[0].init(600, 600);
-        this.shipFrames[1].init(600, 600);
+        this.shipFrames[0].init();
+        this.shipFrames[1].init();
         this.keys = new KeyManagerPage(this.shipFrames);
         this.keys.bind(me.input.KEY.ESC, function() {
             console.log('PAGE ESC');
@@ -160,6 +160,7 @@ screens.register('battle', ConnectedScreen.extend({
                 screen.stopFetching();
                 $.post('/battle/scriptreceived', {id: screen.id}, function() {
                     //(informs the server that the script has been received)
+                    return null;//for jslint
                 }).fail(function() {
                     console.error('Error pinging server.');
                 });

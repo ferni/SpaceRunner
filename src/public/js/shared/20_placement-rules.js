@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global _, require, exports, module*/
+/*global require, exports, module*/
 
 var sh = require('./12_utils'), _ = sh._;
 if (typeof exports !== 'undefined') {

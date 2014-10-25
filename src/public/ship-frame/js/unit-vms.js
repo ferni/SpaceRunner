@@ -14,7 +14,6 @@ var UnitVM = TileEntityVM.extend({
     cannonTile: [-0.25, -0.25],//image offset
     init: function(unitModel) {
         'use strict';
-        var self = this;
         this.m = unitModel;
         this.screen = me.state.current();
         this.size = unitModel.size;
@@ -213,6 +212,7 @@ var UnitVM = TileEntityVM.extend({
     },
     playAttack: function() {
         'use strict';
+        return null;//for jsLint
     },
     /**
      * Shows a hit on the unit and the amount dealt as a floating number

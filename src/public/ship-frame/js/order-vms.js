@@ -61,26 +61,26 @@ var orderVMs = (function() {
             return returns;
         },
         onPosChanged: function() {
-            var orderVMs,
+            var vms,
                 nextOrder;
             this.updatePath();
-            orderVMs = this.unitVM.orderVMs;
-            nextOrder = orderVMs[_.indexOf(orderVMs, this) + 1];
+            vms = this.unitVM.orderVMs;
+            nextOrder = vms[_.indexOf(vms, this) + 1];
             if (nextOrder) {
                 nextOrder.updatePath();
             }
         },
         updatePath: function() {
-            var from, index, orderVMs = this.unitVM.orderVMs;
-            if (orderVMs[0] === this) {
+            var from, index, vms = this.unitVM.orderVMs;
+            if (vms[0] === this) {
                 from = this.unitVM.m;
             } else {
-                index = _.indexOf(orderVMs, this);
+                index = _.indexOf(vms, this);
                 if (index !== -1) {
-                    from = orderVMs[index - 1];
+                    from = vms[index - 1];
                 } else {
-                    from = orderVMs.length === 0 ? this.unitVM.m :
-                            _.last(orderVMs);
+                    from = vms.length === 0 ? this.unitVM.m :
+                            _.last(vms);
                 }
             }
             this.path = this.m.getPath(from, this, gs.ship);

@@ -13,7 +13,9 @@ if (!(window.console && console.log)) {
     (function() {
         'use strict';
         var noop, methods, length, console;
-        noop = function() {};
+        noop = function() {
+            return null;
+        };
         methods = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml',
             'error', 'exception', 'group', 'groupCollapsed', 'groupEnd',
             'info', 'log', 'markTimeline', 'profile', 'profileEnd',

@@ -331,7 +331,7 @@ if (typeof exports !== 'undefined') {
                 json: json
             });
         },
-        getActions: function(time, battle) {
+        getActions: function() {//(turnTime, battle)
             return [new sh.actions.Recall({
                 unitID: this.unitID
             }),

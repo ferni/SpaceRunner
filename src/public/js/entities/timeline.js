@@ -174,7 +174,9 @@ var Timeline = function(screen) {
 
     function updateOrderVMs(battle) {
         _.each(battle.getUnits(), function(unit) {
-            var orderVMs = orderVMsByUnit[unit.id] = [];
+            var orderVMs;
+            orderVMsByUnit[unit.id] = [];
+            orderVMs = orderVMsByUnit[unit.id];
             if (battle.orderCollection.getUnitOrders(unit.id)) {
                 _.each(battle.orderCollection.getUnitOrders(unit.id).array,
                     function (order) {

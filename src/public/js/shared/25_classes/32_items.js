@@ -42,7 +42,7 @@ sh.Item = sh.TileEntity.extendShared({
         return this.placementRule
             .compliesAt(x, y, ship.map);
     },
-    canBuildRotated: function(x, y, ship) {
+    canBuildRotated: function() {//(x, y, ship)
         'use strict';
         //default placement rule
         return false;
@@ -71,6 +71,7 @@ sh.Item = sh.TileEntity.extendShared({
     onBuilt: function() {
         'use strict';
         //abstract method
+        return null;//for jsLint
     },
     onShip: function(ship) {
         'use strict';

@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, hullMap, pr, TILE_SIZE, gs*/
+/*global me, _, utils, hullMap, pr, TILE_SIZE, gs, sh*/
 
 /* An object that has tile position (x and y),
  and row length and col length through "size"
@@ -111,6 +111,7 @@ var TileEntityVM = me.ObjectEntity.extend({
     },
     onMouseDown: function() {
         'use strict';
+        return '';//for jsLint
     },
     onMouseUp: function() {
         'use strict';
@@ -120,6 +121,7 @@ var TileEntityVM = me.ObjectEntity.extend({
     },
     onMouseEnter: function() {
         'use strict';
+        return '';//for jsLint
     },
     onMouseLeave: function() {
         'use strict';
@@ -129,9 +131,11 @@ var TileEntityVM = me.ObjectEntity.extend({
     },
     onSelected: function() {
         'use strict';
+        return '';//for jsLint
     },
     onDeselected: function() {
         'use strict';
+        return '';//for jsLint
     },
     setX: function(x) { //sets the column at which it is located
         'use strict';

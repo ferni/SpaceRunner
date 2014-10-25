@@ -105,7 +105,7 @@ test('script creation, carry over actions to next turn', function() {
                 ]);
             }
         });
-    battle.turnDuration = 100,
+    battle.turnDuration = 100;
     unit.ownerID = 1;
     unit.test_firstTime = true;
     unit.getActions = function(turnTime) {

@@ -14,10 +14,7 @@ var sh = require('../public/js/shared'),
 //AI player stuff
 (function(exports) {
     'use strict';
-    var pfFinder = new sh.PF.AStarFinder({
-            allowDiagonal: true
-        }),
-        AIPlayer,
+    var AIPlayer,
         distribute;
 
     function getWeakSpotsTiles(ship) {
@@ -144,7 +141,9 @@ var sh = require('../public/js/shared'),
         var teleporters = ai.staticShipData[ai.ownShip.id].teleporters;
         if (teleporters.length === 0) {
             return {
-                setOrders: function(shipData, orders) {}
+                setOrders: function() {
+                    return 0;//for jsLint
+                }
             };
         }
         function isAlly(unit) {

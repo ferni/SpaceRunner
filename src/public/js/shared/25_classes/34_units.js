@@ -96,7 +96,7 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return time;
     },
-    getAttackActions: function(turnTime, battle) {
+    getAttackActions: function() {//(turnTime, battle)
         'use strict';
         var actions = [],
             self = this,
@@ -152,7 +152,7 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         return [];
     },
-    getDamageShipActions: function(turnTime, battle) {
+    getDamageShipActions: function() {//(turnTime, battle)
         'use strict';
         if (this.ownerID !== this.ship.owner.id &&
                 !this.moving &&
@@ -173,10 +173,8 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     /**
      * If it's in a console controlling some ship structure.
-     * @param {int} turnTime
-     * @param {sh.Battle} battle
      */
-    getShipControlActions: function(turnTime, battle) {
+    getShipControlActions: function() {//(turnTime, battle)
         'use strict';
         if (this.ownerID !== this.ship.owner.id) {
             return [];

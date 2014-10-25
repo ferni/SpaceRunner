@@ -5,9 +5,8 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, $, items, RedColorEntity, hullMap,
-html, ShipSelectScreen, ShipBuildingScreen, BattleScreen,
-sh, hullMaps, hullMapGenerator, GameState, gs, chatClient, server, screens*/
+/*global me, _, utils, $, sh, hullMapGenerator, GameState, gs,
+chatClient, server, screens, gameResources*/
 
 //sugar
 var TILE_SIZE = 32 / sh.GRID_SUB, HALF_TILE = 16 / sh.GRID_SUB;
