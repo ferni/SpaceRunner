@@ -40,7 +40,8 @@ screens.register('battle', ConnectedScreen.extend({
             };
             return btn;
         }());
-
+        $('html, body, #game, #screensUi, #battle-screen')
+            .css({width: '100%', height: '100%'});
         if (this.isReset) {
             this.onResetAndLoaded();
         }
