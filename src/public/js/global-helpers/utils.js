@@ -147,7 +147,8 @@ var utils = {
      * Adds or removes VMs from MelonJS engine
      * and from the vms array, so it matches the models array.
      * @param {{models:Array, vms:Array, zIndex:int, addToGame:bool,
-     * vmConstructors:Object, DefaultConstructor:Function, makeVM: Function}} params
+     * vmConstructors:Object, DefaultConstructor:Function,
+     * makeVM: Function}} params
      * @return {boolean}
      */
     updateVMs: function(params) {

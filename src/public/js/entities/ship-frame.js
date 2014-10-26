@@ -11,9 +11,9 @@ var ShipFrame = (function() {
     'use strict';
     /**
      *
-     * @param battle {sh.Battle} A battle.
-     * @param ship {sh.Ship} The relevant ship in the battle.
-     * @param eventHandler {Function} Handler to catch messages from the iframe.
+     * @param {sh.Battle} battle A battle.
+     * @param {sh.Ship} ship The relevant ship in the battle.
+     * @param {Function} eventHandler Handler to catch messages from the iframe.
      * @constructor
      */
     function ShipFrame(battle, ship, eventHandler) {
