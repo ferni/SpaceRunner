@@ -20,9 +20,9 @@ screens.register('battle', me.ScreenObject.extend({
     },
 /**
      *
-     * @param battle sh.Battle
-     * @param shipID int
-     * @param orders Object
+     * @param {sh.Battle} battle
+     * @param {int} shipID
+     * @param {Object} orders
      */
     onResetEvent: function(battle, shipID, orders) {
         'use strict';

@@ -128,10 +128,10 @@ var utils = {
     },
     /**
      * Returns a new view model according to the model's type.
-     * @param model
-     * @param DefaultConstructor
-     * @param vmConstructors
-     * @returns {DefaultConstructor}
+     * @param {Object} model
+     * @param {Function} DefaultConstructor
+     * @param {Object} vmConstructors
+     * @return {Object}
      */
     makeVM: function(model, DefaultConstructor, vmConstructors) {
         'use strict';
@@ -146,21 +146,20 @@ var utils = {
     /**
      * Adds or removes VMs from MelonJS engine
      * and from the vms array, so it matches the models array.
-     * @param params {{models:Array, vms:Array, zIndex:int, addToGame:bool,
-      * vmConstructors:Object, DefaultConstructor:Function, makeVM: Function}}
+     * @param {{models:Array, vms:Array, zIndex:int, addToGame:bool,
+     * vmConstructors:Object, DefaultConstructor:Function, makeVM: Function}} params
      * @return {boolean}
      */
     updateVMs: function(params) {
         'use strict';
         var i, v, hasVM, aux, somethingChanged = false,
-            self = this,
             models = params.models,
             vms = params.vms,
             zIndex = params.zIndex,
             addToGame = params.addToGame,
             //can override default function
             makeVM = params.makeVM || function(model) {
-                return self.makeVM(model, params.DefaultConstructor,
+                return utils.makeVM(model, params.DefaultConstructor,
                     params.vmConstructors);
             };
         if (zIndex === undefined) {

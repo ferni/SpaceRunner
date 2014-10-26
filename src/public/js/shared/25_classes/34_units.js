@@ -130,7 +130,8 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     inTeleporter: function() {
         'use strict';
-        return this.ship.itemsMap.at(this.x, this.y) instanceof sh.items.Teleporter;
+        return this.ship.itemsMap.at(this.x, this.y) instanceof
+            sh.items.Teleporter;
     },
     getOrdersActions: function(turnTime, battle) {
         'use strict';
@@ -225,7 +226,9 @@ sh.Unit = sh.TileEntity.extendShared({
                 );
             }
         } else {
-            shipWeapon = this.ship.getItemByID(this.chargingShipWeapon.weaponID);
+            shipWeapon = this.ship.getItemByID(
+                this.chargingShipWeapon.weaponID
+            );
             if (turnTime >= this.chargingShipWeapon.startingTime +
                     shipWeapon.chargeTime) {
                 actions.push(new sh.actions.FireShipWeapon({

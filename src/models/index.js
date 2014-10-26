@@ -7,6 +7,20 @@
 
 /*global exports, require*/
 
+/**
+ * Manages the battle from the server side.
+ * @type {exports.BattleServer|*}
+ */
 exports.BattleServer = require('./battle-server').BattleServer;
+
+/**
+ * Inherits from BattleServer
+ * @type {*}
+ */
 exports.ChallengeBattle = require('./challenge-battle').ChallengeBattle;
+
+/**
+ * Sets up a multiplayer battle.
+ * @type {BattleSetUp}
+ */
 exports.BattleSetUp = require('./battle-set-up').BattleSetUp;

@@ -115,13 +115,15 @@ var sh = require('../public/js/shared'),
                 });
             });
             minDistanceByUnit = getMinDistanceByUnit(distancesByUnit);
-            while (unitsLeft > 0 && (!onePerDestination || destinationsLeft > 0)) {
+            while (unitsLeft > 0 &&
+                    (!onePerDestination || destinationsLeft > 0)) {
                 dis2des = _.min(minDistanceByUnit, 'distance');
                 destinationsByUnit[dis2des.unit.id] = dis2des.destination;
                 delete distancesByUnit[dis2des.unit.id];
                 unitsLeft--;
                 if (onePerDestination) {
-                    _.each(distancesByUnit, removeDestination(dis2des.destination));
+                    _.each(distancesByUnit,
+                        removeDestination(dis2des.destination));
                     destinationsLeft--;
                 }
                 minDistanceByUnit = getMinDistanceByUnit(distancesByUnit);
@@ -199,7 +201,7 @@ var sh = require('../public/js/shared'),
         },
         getStaticShipData: function(ship) {
             var data = {};
-            data.weaponConsoles = _.filter(ship.built, function (item) {
+            data.weaponConsoles = _.filter(ship.built, function(item) {
                 return item.type === 'Console' &&
                     item.getControlled().type === 'Weapon';
             });
@@ -278,7 +280,7 @@ var sh = require('../public/js/shared'),
             this.setOrdersInEnemyShip(orders);
             return orders;
         },
-        setOrdersInOwnShip: function (orders) {
+        setOrdersInOwnShip: function(orders) {
             var s = this.getShipData(this.ownShip);
             _.each(distribute(s.allies.MetalSpider, s.weaponConsoles),
                 move(orders));
@@ -286,7 +288,7 @@ var sh = require('../public/js/shared'),
                 seekAndDestroy(orders));
             this.teleportManager.setOrders(s, orders);
         },
-        setOrdersInEnemyShip: function (orders) {
+        setOrdersInEnemyShip: function(orders) {
             var s = this.getShipData(this.enemyShip);
             _.each(distribute(s.allies.Critter, getWeakSpotsTiles(s.ship)),
                 move(orders));

@@ -492,6 +492,10 @@ itemVMs.WeakSpot = ItemVM.extend({
     }
 });
 
+/**
+ * Teleporter view model.
+ * @type {void|*|Class|extend|extend|extend}
+ */
 itemVMs.Teleporter = ItemVM.extend({
     // init function
     init: function(model) {

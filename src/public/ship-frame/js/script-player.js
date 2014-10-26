@@ -45,7 +45,9 @@ var ScriptPlayer = function(battleScreen) {
         },
         'Attack': {
             'start': function(action) {
-                var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+                var receiverVM = battleScreen.shipVM.getUnitVMByID(
+                    action.receiverID
+                );
                 if (!receiverVM) {
                     //unit was not in this ship
                     return;
@@ -55,7 +57,9 @@ var ScriptPlayer = function(battleScreen) {
                     .playAttack(receiverVM.pos);
             },
             'hit': function(action) {
-                var receiverVM = battleScreen.shipVM.getUnitVMByID(action.receiverID);
+                var receiverVM = battleScreen.shipVM.getUnitVMByID(
+                    action.receiverID
+                );
                 if (!receiverVM) {
                     //unit was not in this ship
                     return;
@@ -73,9 +77,10 @@ var ScriptPlayer = function(battleScreen) {
                 red = new ui.RedColorEntity(action.tile.x, action.tile.y);
                 me.game.add(red, ui.layers.colorOverlay);
                 me.game.sort();
-                tween = new me.Tween(red).to({alpha: 0}, 200).onComplete(function() {
-                    me.game.remove(red);
-                });
+                tween = new me.Tween(red).to({alpha: 0}, 200)
+                    .onComplete(function() {
+                        me.game.remove(red);
+                    });
                 tween.start();
                 parent.postMessage({
                     eventName: 'ship hp',

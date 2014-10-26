@@ -66,7 +66,8 @@ jsApp = {
                 self.loadReady = true;
                 self.onAppLoaded();
             } else if (event.data.type === 'Script') {
-                me.state.current().runScript(new sh.Script().fromJson(event.data));
+                me.state.current().runScript(new sh.Script()
+                    .fromJson(event.data));
             }
         }
         window.addEventListener('message', handleParentMessage, false);

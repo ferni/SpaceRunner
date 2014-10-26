@@ -33,7 +33,8 @@ exports.configureRoutes = function(app, screenNames) {
         '(POST):');
     for (i = screenNames.length - 1; i >= 0; i--) {
         routes = [];
-        require('../' + screenNames[i] + '-screen-server');//here it loads the routes
+        //load the routes
+        require('../' + screenNames[i] + '-screen-server');
         //configure routes for that screen through app
         for (r = routes.length - 1; r >= 0; r--) {
             url = '/' + screenNames[i] + '/' + routes[r].url;

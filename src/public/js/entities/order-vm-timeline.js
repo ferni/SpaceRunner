@@ -7,7 +7,7 @@
 
 /*global _, gs, me, utils, sh, ko*/
 
-var OrderVMTimeline =  Object.extend({
+var OrderVMTimeline = Object.extend({
     isPreview: false,
     init: function(order, timeline, battle) {
         'use strict';

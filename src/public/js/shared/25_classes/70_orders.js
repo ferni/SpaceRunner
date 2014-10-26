@@ -34,7 +34,7 @@ if (typeof exports !== 'undefined') {
         },
         /**
          * Adds a unit's orders to the collection.
-         * @param unitOrders {sh.UnitOrders}
+         * @param {sh.UnitOrders} unitOrders
          */
         addUnitOrders: function(unitOrders) {
             this.allUnitOrders[unitOrders.unitID] = unitOrders;
@@ -44,7 +44,7 @@ if (typeof exports !== 'undefined') {
         },
         /**
          *
-         * @param orderCollection {sh.OrderCollection} Another collection.
+         * @param {sh.OrderCollection} orderCollection Another collection.
          */
         merge: function(orderCollection) {
             _.each(orderCollection.allUnitOrders, function(orders) {
@@ -323,7 +323,7 @@ if (typeof exports !== 'undefined') {
     });
 
     sh.orders.Recall = sh.Order.extendShared({
-        init: function (json) {
+        init: function(json) {
             this.parent(json);
             this.setJson({
                 type: 'Recall',

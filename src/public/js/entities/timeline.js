@@ -12,13 +12,15 @@ var Timeline = function(screen) {
     var self = this,
         markerProximityThreshold = 5,//pixels
         markersTemp = [],
-        Segment = function(timeline) {
-            this.height = ko.computed(function() {
-                return ((100 * timeline.zoomLevel()) - 2) + 'px';
-                //(-2 for border)
-            });
-        },
         orderVMsByUnit = {};
+
+    function Segment(timeline) {
+        this.height = ko.computed(function() {
+            return ((100 * timeline.zoomLevel()) - 2) + 'px';
+            //(-2 for border)
+        });
+    }
+
     function seg() {
         return new Segment(self);
     }
@@ -179,7 +181,7 @@ var Timeline = function(screen) {
             orderVMs = orderVMsByUnit[unit.id];
             if (battle.orderCollection.getUnitOrders(unit.id)) {
                 _.each(battle.orderCollection.getUnitOrders(unit.id).array,
-                    function (order) {
+                    function(order) {
                         orderVMs.push(new OrderVMTimeline(order, self, battle));
                     });
             }

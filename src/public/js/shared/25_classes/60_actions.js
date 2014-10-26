@@ -78,7 +78,8 @@ if (typeof exports !== 'undefined') {
         },
         /**
          * Set the action's model changes.
-         * @param changeArray [{{offset:int, label:string, changer:Function}}]
+         * @param {Array.<{offset:int, label:string, changer:Function}>} changeArray
+         * an array of changes.
          */
         setChanges: function(changeArray) {
             this.modelChanges = [];
@@ -409,7 +410,8 @@ if (typeof exports !== 'undefined') {
                         var unit = battle.getUnitByID(self.unitID),
                             shooterShip = unit.ship,
                             damagedShip = battle.getShipByID(self.targetID);
-                        damagedShip.hp -= shooterShip.getItemByID(self.weaponID).damage;
+                        damagedShip.hp -= shooterShip
+                            .getItemByID(self.weaponID).damage;
                     }
                 }
             ]);

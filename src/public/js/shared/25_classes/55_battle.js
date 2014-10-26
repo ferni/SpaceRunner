@@ -15,6 +15,9 @@ if (typeof exports !== 'undefined') {
     sh = module.exports = sh;
 }
 
+/**
+ * A battle.
+ */
 sh.Battle = sh.Jsonable.extendShared({
     ships: [],
     arbiter: {//actor that declares a winner
@@ -129,7 +132,7 @@ sh.Battle = sh.Jsonable.extendShared({
     },
     /**
      * Gets the orders from all the units as an sh.OrderCollection
-     * @returns {sh.OrderCollection}
+     * @return {sh.OrderCollection}
      */
     extractOrders: function() {
         'use strict';
@@ -137,7 +140,7 @@ sh.Battle = sh.Jsonable.extendShared({
     },
     /**
      * Distribute the orders among the units.
-     * @param orderCollection {sh.OrderCollection}
+     * @param {sh.OrderCollection} orderCollection
      */
     insertOrders: function(orderCollection) {
         'use strict';

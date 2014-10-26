@@ -362,6 +362,10 @@ sh.items.WeakSpot = sh.Item.extendShared({
     }
 });
 
+/**
+ * Teleports units that are standing on it.
+ * @type {*}
+ */
 sh.items.Teleporter = sh.Item.extendShared({
     init: function(json) {
         'use strict';

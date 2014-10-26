@@ -11,9 +11,9 @@ var ShipFrame = (function() {
     'use strict';
     /**
      *
-     * @param battle sh.Battle A battle.
-     * @param ship sh.Ship The relevant ship in the battle.
-     * @param eventHandler Function Handler to catch messages from the iframe.
+     * @param battle {sh.Battle} A battle.
+     * @param ship {sh.Ship} The relevant ship in the battle.
+     * @param eventHandler {Function} Handler to catch messages from the iframe.
      * @constructor
      */
     function ShipFrame(battle, ship, eventHandler) {
@@ -35,7 +35,7 @@ var ShipFrame = (function() {
             $('#frames').append(iframe);
             //listen to messages from the iframe
             window.addEventListener('message', function(event) {
-                console.log("frame -> page: " + event.data.eventName);
+                console.log('frame -> page: ' + event.data.eventName);
                 if (event.source === iframe.contentWindow) {
                     if (event.data.eventName === 'ready') {
                         self.sendData({

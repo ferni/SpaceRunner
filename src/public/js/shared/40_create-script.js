@@ -101,7 +101,9 @@ if (typeof exports !== 'undefined') {
                 if (registerActionReturned.immediateChanges.length > 0) {
                     //If any actor returned any action with immediate model
                     //changes, the loop enters again at the same time.
-                    changesAtSameTime.push(registerActionReturned.immediateChanges);
+                    changesAtSameTime.push(
+                        registerActionReturned.immediateChanges
+                    );
                     if (changesAtSameTime.length >= maxLoopsAtSameTime) {
                         throw 'Too much model changes at the same time (' +
                             time + 'ms). Changes stack: ' + changesAtSameTime

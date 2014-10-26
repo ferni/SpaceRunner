@@ -72,7 +72,7 @@ routes.add('sendunitorders', function(req, res, next) {
     return authenticate(req, next, function(battle, playerID) {
         var unitOrders = new sh.UnitOrders(req.body.ordersJson),
             turn = battle.currentTurn,
-            ordersValid = _.all(unitOrders.array, function (order) {
+            ordersValid = _.all(unitOrders.array, function(order) {
                 return order.isValid(battle.battleModel, playerID);
             });
         if (!ordersValid) {
@@ -134,7 +134,8 @@ routes.add('scriptreceived', function(req, res, next) {
                     index = _.indexOf(battles, battle);
                     battles.splice(index, 1);
                 } else {
-                    chat.log('All players received the script, created next turn.');
+                    chat.log('All players received the script,' +
+                        ' created next turn.');
                 }
             }
             return res.json({ok: true});

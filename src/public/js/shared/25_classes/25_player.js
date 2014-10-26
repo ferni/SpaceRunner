@@ -19,7 +19,7 @@ if (typeof exports !== 'undefined') {
 (function() {
     'use strict';
     sh.Player = sh.Jsonable.extendShared({
-        init: function (json) {
+        init: function(json) {
             this.setJson({
                 type: 'Player',
                 properties: ['id', 'name'],

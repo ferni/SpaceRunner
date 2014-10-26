@@ -48,8 +48,8 @@ screens.register('battle', ConnectedScreen.extend({
     },
     /**
      *
-     * @param battle sh.Battle
-     * @param orders Object
+     * @param {sh.Battle} battle
+     * @param {Object} orders
      */
     onReset: function(battle, orders) {
         'use strict';
@@ -73,7 +73,9 @@ screens.register('battle', ConnectedScreen.extend({
                     framesFinished = 0;
                     if (self.resultingServerModel) {
                         gs.battle = new sh.Battle(self.resultingServerModel);
-                        gs.battle.insertOrders(new sh.OrderCollection(e.ordersJson));
+                        gs.battle.insertOrders(
+                            new sh.OrderCollection(e.ordersJson)
+                        );
                         if (gs.battle.winner !== undefined) {
                             if (gs.battle.winner === gs.player.id) {
                                 self.showEndSign('Victory!');
@@ -199,10 +201,10 @@ screens.register('battle', ConnectedScreen.extend({
             id: gs.battle.id,
             ordersJson: unitOrdersJson
         },
-            function () {
+            function() {
                 console.log('Orders successfully submitted');
             }, 'json')
-            .fail(function () {
+            .fail(function() {
                 console.error('Server error when submitting orders.');
             });
         gs.battle.addUnitOrders(new sh.UnitOrders(unitOrdersJson));
