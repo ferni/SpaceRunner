@@ -160,7 +160,7 @@ var th = {
         var battle = new sh.Battle({turnDuration: 4000});
         battle.ships = [new sh.Ship({tmxName: 'test'})];
         battle.ships[0].battle = battle;
-        battle.ships[0].ownerID = 1;
+        battle.ships[0].owner = new sh.Player({id: 1, name: 'Test Player'});
         return battle;
     }
 };
