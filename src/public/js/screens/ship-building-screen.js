@@ -6,9 +6,8 @@
 */
 
 
-/*global GameScreen, screens, ShipVM, sh, server, make,
-$, Ship, me, utils, jsApp, width, height,
-items, ui, hullMap, _, itemVMs*/
+/*global GameScreen, screens, ShipVM, sh, server,
+$, me, utils, items, ui, hullMap, _, itemVMs*/
 
 /* Screen where one builds the ship */
 screens.register('ship-building', GameScreen.extend({
