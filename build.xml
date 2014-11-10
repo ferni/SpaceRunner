@@ -1,5 +1,5 @@
 <project name="SpaceRunner" default="run">
-    <property name="node-version" value="0.8.22"/>
+    <property name="node-version" value="0.10.33"/>
     <property name="node-dir" value="node-v${node-version}-linux-x86"/>
     <property name="redis-version" value="2.6.10"/>
     <property name="redis-dir" value="redis-${redis-version}"/>
