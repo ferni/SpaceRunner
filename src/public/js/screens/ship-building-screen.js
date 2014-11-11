@@ -7,7 +7,7 @@
 
 
 /*global GameScreen, screens, ShipVM, sh, server,
-$, me, utils, items, ui, hullMap, _, itemVMs*/
+$, me, utils, items, ui, hullMap, _, itemVMs, FileReader*/
 
 /* Screen where one builds the ship */
 screens.register('ship-building', GameScreen.extend({
@@ -114,16 +114,30 @@ screens.register('ship-building', GameScreen.extend({
         });
         //Load
         $('#file_load').click(function() {
-            var name = prompt('Enter the ship name you wish to load.');
-            $.post('/load', {name: name}, function(response) {
-                if (response) {
-                    me.state.change('ship-building', {json: response});
-                } else {
-                    alert('Error: Could not load ship.');
+            var input, file, fr;
+            if (typeof window.FileReader !== 'function') {
+                alert("The file API isn't supported on this browser yet.");
+                return;
+            }
+            input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.onchange = function() {
+                function receivedText(e) {
+                    var jsonString = e.target.result;
+                    me.state.change('ship-building',
+                        {json: JSON.parse(jsonString)});
                 }
-            }, 'json');
+                if (!input.files[0]) {
+                    alert("No files selected");
+                } else {
+                    file = input.files[0];
+                    fr = new FileReader();
+                    fr.onload = receivedText;
+                    fr.readAsText(file);
+                }
+            };
+            input.click();
         });
-
         $('.battle-button').click(function() {
             if (!loadingNextScreen) {
                 server.createBattle(screen.ship, function(settings) {
