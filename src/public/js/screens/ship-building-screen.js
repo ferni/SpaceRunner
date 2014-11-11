@@ -102,18 +102,15 @@ screens.register('ship-building', GameScreen.extend({
         });
 
 
+
         //Save
         $('#file_save').click(function() {
-            var shipData = screen.ship.toJson(),
-                name = prompt('Enter the ship name.');
-            $.post('/save', {name: name, buildings: shipData},
-                function(response) {
-                    if (response) {
-                        alert('saved');
-                    } else {
-                        alert('Error: Could not save ship.');
-                    }
-                }, 'json');
+            var shipJson = screen.ship.toJson(),
+                pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify(shipJson)));
+            pom.setAttribute('download', screen.ship.tmxName + '.json');
+            pom.click();
         });
         //Load
         $('#file_load').click(function() {
