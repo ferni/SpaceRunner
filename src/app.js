@@ -12,6 +12,7 @@
  */
 
 var express = require('express'),
+    exphbs  = require('express-handlebars'),
     routes = require('./routes'),
     ship = require('./routes/ship'),
     screens = require('./screens-server'),
@@ -33,12 +34,12 @@ app.use(express.session({
         'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
     store: store
 }));
-
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.configure(function() {
     'use strict';
     app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
+    app.set('view engine', 'handlebars');
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
@@ -64,7 +65,10 @@ app.configure('development', function() {
 });
 
 
-//app.get('/', routes.index);
+app.get('/', function (req, res) {
+    'use strict';
+    res.render('home');
+});
 
 app.post('/save', ship.save);
 app.post('/load', ship.load);
