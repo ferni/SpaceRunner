@@ -7,7 +7,7 @@
 
 
 /*global GameScreen, screens, ShipVM, sh, server,
-$, me, utils, items, ui, hullMap, _, itemVMs, FileReader*/
+$, me, utils, items, ui, hullMap, _, itemVMs*/
 
 /* Screen where one builds the ship */
 screens.register('ship-building', GameScreen.extend({
@@ -102,42 +102,31 @@ screens.register('ship-building', GameScreen.extend({
         });
 
 
-
         //Save
         $('#file_save').click(function() {
-            var shipJson = screen.ship.toJson(),
-                pom = document.createElement('a');
-            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' +
-                encodeURIComponent(JSON.stringify(shipJson)));
-            pom.setAttribute('download', screen.ship.tmxName + '.json');
-            pom.click();
+            var shipData = screen.ship.toJson(),
+                name = prompt('Enter the ship name.');
+            $.post('/save', {name: name, buildings: shipData},
+                function(response) {
+                    if (response) {
+                        alert('saved');
+                    } else {
+                        alert('Error: Could not save ship.');
+                    }
+                }, 'json');
         });
         //Load
         $('#file_load').click(function() {
-            var input, file, fr;
-            if (typeof window.FileReader !== 'function') {
-                alert("The file API isn't supported on this browser yet.");
-                return;
-            }
-            input = document.createElement('input');
-            input.setAttribute('type', 'file');
-            input.onchange = function() {
-                function receivedText(e) {
-                    var jsonString = e.target.result;
-                    me.state.change('ship-building',
-                        {json: JSON.parse(jsonString)});
-                }
-                if (!input.files[0]) {
-                    alert("No files selected");
+            var name = prompt('Enter the ship name you wish to load.');
+            $.post('/load', {name: name}, function(response) {
+                if (response) {
+                    me.state.change('ship-building', {json: response});
                 } else {
-                    file = input.files[0];
-                    fr = new FileReader();
-                    fr.onload = receivedText;
-                    fr.readAsText(file);
+                    alert('Error: Could not load ship.');
                 }
-            };
-            input.click();
+            }, 'json');
         });
+
         $('.battle-button').click(function() {
             if (!loadingNextScreen) {
                 server.createBattle(screen.ship, function(settings) {
