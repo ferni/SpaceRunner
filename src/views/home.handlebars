@@ -1,23 +1,2 @@
-<div id="game">
-    <div id="jsapp"></div>
-    <div id="screensUi"></div>
-</div>
-<div id="chat-client" data-bind="css:{disabled:!enabled()}">
-    <div data-bind="if: enabled">
-        <button type="button" data-bind="click:disable">Disable Chat</button>
-        <div id="lines" data-bind="foreach: lines">
-            <p>
-                <span class="sender" data-bind="text: sender"></span>:
-                <span class="message" data-bind="text: message"></span>
-            </p>
-        </div>
-        <form data-bind="submit:send">
-            <input type="text" data-bind="value: input"/>
-            <button type="submit">Send</button>
-        </form>
-    </div>
-    <div data-bind="ifnot: enabled">
-        <button type="button" data-bind="click:enable">Enable Chat</button>
-    </div>
-
-</div>
+<input type="text"/>
+<input type="submit" value="Login as guest"/>

@@ -67,7 +67,9 @@ app.configure('development', function() {
 
 app.get('/', function (req, res) {
     'use strict';
-    res.render('home');
+    res.render('home', {
+        layout: 'plain'
+    });
 });
 
 app.post('/save', ship.save);
