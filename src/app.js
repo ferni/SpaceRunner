@@ -34,7 +34,7 @@ app.use(express.session({
         'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
     store: store
 }));
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({defaultLayout: 'plain'}));
 app.configure(function() {
     'use strict';
     app.set('port', process.env.PORT || 3000);
@@ -67,9 +67,12 @@ app.configure('development', function() {
 
 app.get('/', function (req, res) {
     'use strict';
-    res.render('home', {
-        layout: 'plain'
-    });
+    res.render('home');
+});
+
+app.get('/battle', function (req, res) {
+    'use strict';
+    res.render('battle');
 });
 
 app.post('/save', ship.save);
