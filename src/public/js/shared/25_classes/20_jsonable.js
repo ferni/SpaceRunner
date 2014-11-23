@@ -19,9 +19,6 @@ if (typeof exports !== 'undefined') {
 
 (function(sh) {
     'use strict';
-    //SHARED ENTITIES
-    sh.TestSharedEntity = sh.SharedClass.extendShared({});
-
     sh.Jsonable = sh.SharedClass.extendShared({
         _properties: [],
         /**
