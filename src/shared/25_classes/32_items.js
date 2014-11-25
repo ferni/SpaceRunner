@@ -9,7 +9,11 @@
 
 var sh = module.exports,
     TileEntity = require('./30_tile-entity').TileEntity,
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    pr = require('../20_placement-rules').pr,
+    gen = require('../10_general-stuff'),
+    GRID_SUB = gen.GRID_SUB,
+    tiles = gen.tiles;
 /**
  * Represents a component from the ship (Engine, Weapon, etc).
  * @type {*}
@@ -88,7 +92,7 @@ sh.Item = TileEntity.extendShared({
     },
     onSizeChanged: function() {
         'use strict';
-        this.placementRule = sh.pr.make.spaceRule(sh.tiles.clear,
+        this.placementRule = pr.make.spaceRule(tiles.clear,
             this.size[0], this.size[1]);
     }
 });
@@ -114,11 +118,11 @@ sh.items.Weapon = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
+        this.setSize(2 * GRID_SUB, 2 * GRID_SUB);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return sh.pr.weapon.compliesAt(x, y, ship.map);
+        return pr.weapon.compliesAt(x, y, ship.map);
     }
 });
 
@@ -135,11 +139,11 @@ sh.items.Engine = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
+        this.setSize(2 * GRID_SUB, 2 * GRID_SUB);
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return sh.pr.Engine.compliesAt(x, y, ship.map);
+        return pr.Engine.compliesAt(x, y, ship.map);
     }
 });
 
@@ -156,7 +160,7 @@ sh.items.Power = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
+        this.setSize(2 * GRID_SUB, 2 * GRID_SUB);
     }
 });
 
@@ -174,12 +178,12 @@ sh.items.Console = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(sh.GRID_SUB, sh.GRID_SUB);
+        this.setSize(GRID_SUB, GRID_SUB);
         this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return sh.pr.console.compliesAt(x, y, ship.map);
+        return pr.console.compliesAt(x, y, ship.map);
     },
     /**
      * Get the item that is controlled by this console.
@@ -192,10 +196,10 @@ sh.items.Console = sh.Item.extendShared({
             return this.controlled;
         }
         //assign controlled (the item being controlled by this console)
-        for (y = this.y + sh.GRID_SUB; y >= this.y - sh.GRID_SUB;
-                y -= sh.GRID_SUB) {
-            for (x = this.x - sh.GRID_SUB; x <= this.x + sh.GRID_SUB;
-                    x += sh.GRID_SUB) {
+        for (y = this.y + GRID_SUB; y >= this.y - GRID_SUB;
+                y -= GRID_SUB) {
+            for (x = this.x - GRID_SUB; x <= this.x + GRID_SUB;
+                    x += GRID_SUB) {
                 atTile = this.ship.itemsMap.at(x, y);
                 if (atTile.type === 'Weapon' || atTile.type === 'Engine' ||
                         atTile.type === 'Power') {
@@ -220,7 +224,7 @@ sh.items.Component = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
+        this.setSize(2 * GRID_SUB, 2 * GRID_SUB);
     }
 });
 
@@ -237,16 +241,16 @@ sh.items.Door = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(2 * sh.GRID_SUB, sh.GRID_SUB);
+        this.setSize(2 * GRID_SUB, GRID_SUB);
         this.walkable = true;
     },
     canBuildAt: function(x, y, ship) {
         'use strict';
-        return sh.pr.door.compliesAt(x, y, ship.map);
+        return pr.door.compliesAt(x, y, ship.map);
     },
     canBuildRotated: function(x, y, ship) {
         'use strict';
-        return sh.pr.doorRotated.compliesAt(x, y, ship.map);
+        return pr.doorRotated.compliesAt(x, y, ship.map);
     }
 });
 
@@ -263,7 +267,7 @@ sh.items.Wall = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(sh.GRID_SUB, sh.GRID_SUB);
+        this.setSize(GRID_SUB, GRID_SUB);
         this.connected = {
             top: false,
             left: true,
@@ -279,10 +283,10 @@ sh.items.Wall = sh.Item.extendShared({
     onBuilt: function() {
         'use strict';
 
-        var top = this.ship.at(this.x, this.y - sh.GRID_SUB),
-            left = this.ship.at(this.x - sh.GRID_SUB, this.y),
-            bot = this.ship.at(this.x, this.y + sh.GRID_SUB),
-            right = this.ship.at(this.x + sh.GRID_SUB, this.y);
+        var top = this.ship.at(this.x, this.y - GRID_SUB),
+            left = this.ship.at(this.x - GRID_SUB, this.y),
+            bot = this.ship.at(this.x, this.y + GRID_SUB),
+            right = this.ship.at(this.x + GRID_SUB, this.y);
         this.updateConnections(top, left, bot, right);
     },
     updateConnections: function(top, left, bot, right) {
@@ -301,28 +305,28 @@ sh.items.Wall = sh.Item.extendShared({
             top.connected.bottom = true;
             this.connected.top = true;
         } else if (top instanceof it.Door && top.rotated() &&
-                top.y === y - 2 * sh.GRID_SUB) {
+                top.y === y - 2 * GRID_SUB) {
             this.connected.top = true;
         }
         if (left instanceof it.Wall) {
             left.connected.right = true;
             this.connected.left = true;
         } else if (left instanceof it.Door && !left.rotated() &&
-                left.x === x - 2 * sh.GRID_SUB) {
+                left.x === x - 2 * GRID_SUB) {
             this.connected.left = true;
         }
         if (bot instanceof it.Wall) {
             bot.connected.top = true;
             this.connected.bottom = true;
         } else if (bot instanceof it.Door && bot.rotated() &&
-                bot.y === y + sh.GRID_SUB) {
+                bot.y === y + GRID_SUB) {
             this.connected.bottom = true;
         }
         if (right instanceof it.Wall) {
             right.connected.left = true;
             this.connected.right = true;
         } else if (right instanceof it.Door && !right.rotated() &&
-                right.x === x + sh.GRID_SUB) {
+                right.x === x + GRID_SUB) {
             this.connected.right = true;
         }
     },
@@ -351,7 +355,7 @@ sh.items.WeakSpot = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(2 * sh.GRID_SUB, 2 * sh.GRID_SUB);
+        this.setSize(2 * GRID_SUB, 2 * GRID_SUB);
         this.walkable = true;
     }
 });
@@ -369,7 +373,7 @@ sh.items.Teleporter = sh.Item.extendShared({
             properties: [],
             json: json
         });
-        this.setSize(sh.GRID_SUB, sh.GRID_SUB);
+        this.setSize(GRID_SUB, GRID_SUB);
         this.walkable = true;
     },
     /**
@@ -384,10 +388,11 @@ sh.items.Teleporter = sh.Item.extendShared({
     getActions: function(turnTime, battle) {
         'use strict';
         var self = this,
-            actions = [];
+            actions = [],
+            Teleport = require('./60_actions').actions.Teleport;
         this.tiles(function(x, y) {
             _.each(self.ship.unitsMap.at(x, y), function(unit) {
-                actions.push(new sh.actions.Teleport({
+                actions.push(new Teleport({
                     unitID: unit.id,
                     targetShipID: _.find(battle.ships, function(ship) {
                         return ship.id !== self.ship.id;
