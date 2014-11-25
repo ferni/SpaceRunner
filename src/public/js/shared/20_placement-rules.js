@@ -7,14 +7,13 @@
 
 /*global require, exports, module*/
 
-var sh = require('./12_utils'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * NodeJS exports
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    Map = require('./25_classes/40_map').Map,
+    items = require('./25_classes/32_items').items,
+    gen = require('./10_general-stuff'),
+    tiles = gen.tiles,
+    GRID_SUB = gen.GRID_SUB;
 
 /**
  * Library for facilitating configuring the rules for placement for the items.
@@ -41,7 +40,7 @@ sh.pr = {
             };
         }
         this.compliesAt = function(x, y, map) {
-            if (!(map instanceof sh.Map)) {
+            if (!(map instanceof Map)) {
                 throw 'map should be an instance of sh.Map';
             }
             return sh.pr.utils.checkAny(map, this.tileCondition, this.inAny, {
@@ -154,13 +153,13 @@ sh.pr = {
 (function() {
     'use strict';
     function s(value) {
-        return value * sh.GRID_SUB;
+        return value * GRID_SUB;
     }
     var pr = sh.pr,
-        space1x1 = pr.make.spaceRule(sh.tiles.clear, s(1), s(1)),
-        space2x1 = pr.make.spaceRule(sh.tiles.clear, s(2), s(1)),
-        space1x2 = pr.make.spaceRule(sh.tiles.clear, s(1), s(2)),
-        space2x2 = pr.make.spaceRule(sh.tiles.clear, s(2), s(2));
+        space1x1 = pr.make.spaceRule(tiles.clear, s(1), s(1)),
+        space2x1 = pr.make.spaceRule(tiles.clear, s(2), s(1)),
+        space1x2 = pr.make.spaceRule(tiles.clear, s(1), s(2)),
+        space2x2 = pr.make.spaceRule(tiles.clear, s(2), s(2));
 
     function and(ruleA, ruleB) {
         return {
@@ -182,7 +181,7 @@ sh.pr = {
     //SPECIAL PLACEMENT RULES FOR ITEMS
 
     pr.weapon = and(space2x2, new sh.pr.PlacementRule({
-        tile: sh.tiles.front,
+        tile: tiles.front,
         inAny: [{
             x: s(2),
             y: s(0)
@@ -193,7 +192,7 @@ sh.pr = {
     }));
 
     pr.Engine = and(space2x2, new sh.pr.PlacementRule({
-        tile: sh.tiles.back,
+        tile: tiles.back,
         inAll: [{
             x: s(-1),
             y: s(0)
@@ -209,21 +208,21 @@ sh.pr = {
     }, s(1), s(1)));
 
     pr.door = or(pr.make.spaceRule(function(tile) {
-        return tile instanceof sh.items.Wall && tile.isHorizontal();
+        return tile instanceof items.Wall && tile.isHorizontal();
     }, s(2), s(1)),
         //or...
         and(space2x1,
             //and...
             new pr.PlacementRule({tileCondition: function(tile) {
-                return tile instanceof sh.items.Wall;
+                return tile instanceof items.Wall;
             }, inAll: [{x: s(-1), y: s(0)}, {x: s(2), y: s(0)}]}))
         );
 
     pr.doorRotated = or(pr.make.spaceRule(function(tile) {
-        return tile instanceof sh.items.Wall && tile.isVertical();
+        return tile instanceof items.Wall && tile.isVertical();
     }, s(1), s(2)),
         and(space1x2,
             new pr.PlacementRule({tileCondition: function(tile) {
-                return tile instanceof sh.items.Wall;
+                return tile instanceof items.Wall;
             }, inAll: [{x: s(0), y: s(-1)}, {x: s(0), y: s(2)}]})));
 }());
