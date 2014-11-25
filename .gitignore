@@ -1,5 +1,6 @@
 build
 tools
+src/public/js/bundles
 
 # Vim .gitignore
 .*.s[a-w][a-z]
