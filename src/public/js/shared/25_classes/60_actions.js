@@ -7,14 +7,10 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('../25_classes/55_battle'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * NodeJS exports
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    Jsonable = require('./20_jsonable').Jsonable,
+    v = require('../10_general-stuff').v;
 
 (function() {
     'use strict';
@@ -58,7 +54,7 @@ if (typeof exports !== 'undefined') {
      * is that some unit loses health.
      * @type {*|extendShared}
      */
-    sh.Action = sh.Jsonable.extendShared({
+    sh.Action = Jsonable.extendShared({
         time: 0,//ms
         modelChanges: [],
         init: function(json) {
@@ -140,7 +136,7 @@ if (typeof exports !== 'undefined') {
                             unit.moving = null;
                             unit.dizzy = true;//can't attack if just got there
                             unit.moveLock = null;
-                            if (!sh.v.equal(prev, self.to)) {
+                            if (!v.equal(prev, self.to)) {
                                 unit.ship.unitsMap.update();
                             }
                             //cancel weapon charging
@@ -162,7 +158,7 @@ if (typeof exports !== 'undefined') {
         },
         toString: function() {
             return this.time + 'ms: Move ' + this.unitID + ' to ' +
-                sh.v.str(this.to);
+                v.str(this.to);
         }
     });
 

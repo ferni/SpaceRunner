@@ -7,19 +7,13 @@
 
 /*global require, exports, module*/
 
-var sh = require('../25_classes/10_shared-class'), _ = sh._,
-    PF = sh.PF;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    SharedClass = require('./10_shared-class').SharedClass,
+    _ = require('underscore')._;
 
-(function(sh) {
+(function() {
     'use strict';
-    sh.Jsonable = sh.SharedClass.extendShared({
+    sh.Jsonable = SharedClass.extendShared({
         _properties: [],
         /**
          * Sets the properties found in the json param to the object.
@@ -27,7 +21,7 @@ if (typeof exports !== 'undefined') {
          * of the object.
          * @param {{type:string, properties:Array, json:Object}} settings
          */
-        setJson: function(settings) {
+        setJson: function (settings) {
             var type = settings.type,
                 properties = settings.properties,
                 json = settings.json;
@@ -36,7 +30,7 @@ if (typeof exports !== 'undefined') {
             }
             this.type = type;
             this._properties = this._properties.concat(properties);
-            _.each(properties, function(p) {
+            _.each(properties, function (p) {
                 if (json[p] === undefined) {
                     return;
                 }
@@ -46,7 +40,7 @@ if (typeof exports !== 'undefined') {
                 //TODO: remove when socket.io is implemented (if it doesn't
                 // have this problem)
                 if (json._numbers && _.isString(json[p]) &&
-                    _.contains(json._numbers, p)) {
+                        _.contains(json._numbers, p)) {
                     this[p] = parseFloat(json[p]);
                 } else {
                     this[p] = json[p];
@@ -55,12 +49,12 @@ if (typeof exports !== 'undefined') {
 
             }, this);
         },
-        toJson: function() {
+        toJson: function () {
             var json = {
                 _numbers: [],
                 type: this.type
             };
-            _.each(this._properties, function(p) {
+            _.each(this._properties, function (p) {
                 json[p] = this[p];
                 if (_.isNumber(this[p])) {
                     json._numbers.push(p);
@@ -69,4 +63,4 @@ if (typeof exports !== 'undefined') {
             return json;
         }
     });
-}(sh));
+}());

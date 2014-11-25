@@ -7,14 +7,7 @@
 
 /*global require, exports, module, xyz*/
 
-var sh = require('../20_placement-rules'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports;
 
 (function() {
     'use strict';

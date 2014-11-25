@@ -7,20 +7,16 @@
 
 /*global me, require, exports, module*/
 
-var sh = require('../25_classes/34_units'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    SharedClass = require('./10_shared-class').SharedClass,
+    utils = require('../12_utils').utils;
 
 /**
  * An Array2d.
  * @type {*}
  */
-sh.Map = sh.SharedClass.extendShared({
+sh.Map = SharedClass.extendShared({
     init: function(raw) {
         'use strict';
         //check consistent width
@@ -111,7 +107,7 @@ sh.Map = sh.SharedClass.extendShared({
 sh.EntityMap = sh.Map.extendShared({
     init: function(width, height, entityArray) {
         'use strict';
-        this.parent(sh.utils.getEmptyMatrix(width, height, 0));
+        this.parent(utils.getEmptyMatrix(width, height, 0));
         this.changed = true;
         this.entities = entityArray;
         this.update();
@@ -136,7 +132,7 @@ sh.EntityMap = sh.Map.extendShared({
 sh.EntityMap3d = sh.Map.extendShared({
     init: function(width, height, entityArray) {
         'use strict';
-        this.parent(sh.utils.getEmptyMatrix(width, height, 0));
+        this.parent(utils.getEmptyMatrix(width, height, 0));
         this.changed = true;
         this.entities = entityArray;
         this.update();

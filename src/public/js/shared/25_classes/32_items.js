@@ -7,15 +7,9 @@
 
 /*global me, require, exports, module*/
 
-var sh = require('../25_classes/30_tile-entity'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * NodeJS exports
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
-
+var sh = module.exports,
+    TileEntity = require('./30_tile-entity').TileEntity,
+    _ = require('underscore')._;
 /**
  * Represents a component from the ship (Engine, Weapon, etc).
  * @type {*}
