@@ -7,7 +7,7 @@
 
 /*global require, exports*/
 
-var sh = require('../public/js/shared'),
+var sh = require('../shared'),
     _ = require('underscore')._;
 
 

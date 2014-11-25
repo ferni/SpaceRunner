@@ -13,7 +13,7 @@ var sh = module.exports,
     Ship = require('./50_ship').Ship,
     Player = require('./25_player').Player,
     OrderCollection = require('./70_orders').OrderCollection,
-    utils = require('./utils').utils;
+    utils = require('../12_utils').utils;
 
 /**
  * A battle.

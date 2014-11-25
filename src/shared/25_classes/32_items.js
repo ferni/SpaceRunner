@@ -14,7 +14,7 @@ var sh = module.exports,
  * Represents a component from the ship (Engine, Weapon, etc).
  * @type {*}
  */
-sh.Item = sh.TileEntity.extendShared({
+sh.Item = TileEntity.extendShared({
     size: [1, 1],
     walkable: false,
     init: function(json) {

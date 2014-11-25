@@ -8,7 +8,7 @@
 /*global require, exports, module*/
 var sh = module.exports,
     _ = require('underscore')._,
-    PF = require('pathfinder'),
+    PF = require('pathfinding'),
     SharedClass = require('./10_shared-class').SharedClass,
     Jsonable = require('./20_jsonable').Jsonable,
     utils = require('../12_utils').utils,

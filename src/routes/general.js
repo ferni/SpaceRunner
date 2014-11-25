@@ -8,7 +8,7 @@
 /*global exports, require*/
 
 var auth = require('../auth'),
-    sh = require('../public/js/shared');
+    sh = require('../shared');
 
 /**
  * Initializes the entire app. Creates the player

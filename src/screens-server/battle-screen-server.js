@@ -10,7 +10,7 @@
 var auth = require('../auth'),
     _ = require('underscore')._,
     routes = require('./routes'),
-    sh = require('../public/js/shared'),
+    sh = require('../shared'),
     chat = require('../chat');
 
 function getByID(battleID) {

@@ -9,7 +9,7 @@
 
 var _ = require('underscore')._,
     routes = require('./routes/index'),
-    sh = require('../public/js/shared'),
+    sh = require('../shared'),
     ChallengeBattle = require('../models/').ChallengeBattle,
     auth = require('../auth.js');
 
