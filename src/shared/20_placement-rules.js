@@ -10,7 +10,6 @@
 var sh = module.exports,
     _ = require('underscore')._,
     Map = require('./25_classes/40_map').Map,
-    items = require('./25_classes/32_items').items,
     gen = require('./10_general-stuff'),
     tiles = gen.tiles,
     GRID_SUB = gen.GRID_SUB;
@@ -208,21 +207,21 @@ sh.pr = {
     }, s(1), s(1)));
 
     pr.door = or(pr.make.spaceRule(function(tile) {
-        return tile instanceof items.Wall && tile.isHorizontal();
+        return tile.type === 'Wall' && tile.isHorizontal();
     }, s(2), s(1)),
         //or...
         and(space2x1,
             //and...
             new pr.PlacementRule({tileCondition: function(tile) {
-                return tile instanceof items.Wall;
+                return tile.type === 'Wall';
             }, inAll: [{x: s(-1), y: s(0)}, {x: s(2), y: s(0)}]}))
         );
 
     pr.doorRotated = or(pr.make.spaceRule(function(tile) {
-        return tile instanceof items.Wall && tile.isVertical();
+        return tile.type === 'Wall' && tile.isVertical();
     }, s(1), s(2)),
         and(space1x2,
             new pr.PlacementRule({tileCondition: function(tile) {
-                return tile instanceof items.Wall;
+                return tile.type === 'Wall';
             }, inAll: [{x: s(0), y: s(-1)}, {x: s(0), y: s(2)}]})));
 }());
