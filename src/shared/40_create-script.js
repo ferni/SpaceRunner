@@ -10,7 +10,8 @@
 var sh = module.exports,
     _ = require('underscore')._,
     Script = require('./25_classes/80_script').Script,
-    utils = require('./12_utils').utils;
+    utils = require('./12_utils').utils,
+    ModelChange = require('./25_classes/60_actions').ModelChange;
 
 (function() {
     'use strict';
@@ -21,7 +22,7 @@ var sh = module.exports,
     }
 
     function getVoidModelChange(time) {
-        return new sh.ModelChange(0, function() {
+        return new ModelChange(0, function() {
             return null;//for jslint
         }, {time: time});
     }

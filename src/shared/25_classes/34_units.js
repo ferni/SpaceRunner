@@ -12,7 +12,7 @@ var sh = module.exports,
     TileEntity = require('./30_tile-entity').TileEntity,
     UnitOrders = require('./70_orders').UnitOrders,
     items = require('./32_items').items,
-    actions = require('./60_actions').actions,
+    act = require('./60_actions').actions,
     v = require('../10_general-stuff').v;
 
 /**
@@ -117,7 +117,7 @@ sh.Unit = TileEntity.extendShared({
                 enemyToAttack = enemiesInRange[0];
             }
             if (enemyToAttack) {
-                actions.push(new actions.Attack({
+                actions.push(new act.Attack({
                     attackerID: self.id,
                     receiverID: enemyToAttack.id,
                     damage: self.meleeDamage,
@@ -161,7 +161,7 @@ sh.Unit = TileEntity.extendShared({
                 !this.inCombat &&
                 this.ship.itemsMap.at(this.x, this.y) instanceof
                     items.WeakSpot) {
-            return [new actions.DamageShip({
+            return [new act.DamageShip({
                 shipID: this.ship.id,
                 unitID: this.id,
                 tile: {x: this.x, y: this.y},
@@ -185,7 +185,7 @@ sh.Unit = TileEntity.extendShared({
             controlled = standingOn.getControlled();
         }
         if (controlled instanceof items.Weapon && !controlled.chargedBy) {
-            return [new actions.BeginShipWeaponCharge({
+            return [new act.BeginShipWeaponCharge({
                 unitID: this.id,
                 weaponID: controlled.id,
                 chargeTime: controlled.chargeTime
@@ -230,7 +230,7 @@ sh.Unit = TileEntity.extendShared({
             );
             if (turnTime >= this.chargingShipWeapon.startingTime +
                     shipWeapon.chargeTime) {
-                actions.push(new actions.FireShipWeapon({
+                actions.push(new act.FireShipWeapon({
                     unitID: this.id,
                     weaponID: this.chargingShipWeapon.weaponID,
                     targetID: battle.getEnemyShips(this.ownerID)[0].id
