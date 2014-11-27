@@ -180,6 +180,8 @@
           </condition>
     </target>
     <target name="tools/node" depends="check-node" if="node-not-downloaded" description="Downloads NodeJS into the tools folder">
+        <delete file="tools/node"/>
+        <delete file="tools/npm"/>
         <exec executable="wget" dir="tools">
 	        <arg line="-c http://nodejs.org/dist/v${node-version}/${node-dir}.tar.gz"/>
         </exec>
