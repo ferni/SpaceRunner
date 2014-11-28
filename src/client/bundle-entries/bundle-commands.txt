@@ -1,0 +1,1 @@
+watchify client/bundle-entries/shared.js -o public/js/bundles/shared.js -v
