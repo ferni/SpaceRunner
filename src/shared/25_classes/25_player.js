@@ -7,18 +7,12 @@
 
 /*global require, exports, module, xyz*/
 
-var sh = require('../25_classes/20_jsonable'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    Jsonable = require('./20_jsonable').Jsonable;
 
 (function() {
     'use strict';
-    sh.Player = sh.Jsonable.extendShared({
+    sh.Player = Jsonable.extendShared({
         init: function(json) {
             this.setJson({
                 type: 'Player',

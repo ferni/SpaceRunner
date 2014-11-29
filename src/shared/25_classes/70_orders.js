@@ -6,23 +6,24 @@
 */
 
 /*global require, exports, module*/
-var sh = require('../25_classes/60_actions'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    PF = require('pathfinding'),
+    SharedClass = require('./10_shared-class').SharedClass,
+    Jsonable = require('./20_jsonable').Jsonable,
+    utils = require('../12_utils').utils,
+    v = require('../10_general-stuff').v,
+    actions = require('./60_actions').actions,
+    items = require('./32_items').items;
 
 (function() {
     'use strict';
-    var pathfinder = new sh.PF.AStarFinder({
+    var pathfinder = new PF.AStarFinder({
             allowDiagonal: true,
             dontCrossCorners: true
         });
 
-    sh.OrderCollection = sh.SharedClass.extendShared({
+    sh.OrderCollection = SharedClass.extendShared({
         init: function(json) {
             this.allUnitOrders = {};
             if (json) {
@@ -67,11 +68,11 @@ if (typeof exports !== 'undefined') {
         }
     });
 
-    sh.UnitOrders = sh.SharedClass.extendShared({
+    sh.UnitOrders = SharedClass.extendShared({
         type: 'UnitOrders',
         init: function(json) {
             this.unitID = parseInt(json.unitID, 10);
-            this.array = sh.utils.mapFromJson(json.array, sh.orders);
+            this.array = utils.mapFromJson(json.array, sh.orders);
             this.validate(this.unitID);
         },
         validate: function(unitID) {
@@ -91,12 +92,12 @@ if (typeof exports !== 'undefined') {
             return {
                 type: this.type,
                 unitID: this.unitID,
-                array: sh.utils.mapToJson(this.array)
+                array: utils.mapToJson(this.array)
             };
         }
     });
 
-    sh.Order = sh.Jsonable.extendShared({
+    sh.Order = Jsonable.extendShared({
         init: function(json) {
             this.setJson({
                 type: 'Order',
@@ -117,7 +118,7 @@ if (typeof exports !== 'undefined') {
             _.all(units, function(u) {
                 return !u.isAlive() ||//or they're either dead...
                     (u.moving && //...or they're going away
-                    !sh.v.equal(u.moving.dest, tile) &&
+                    !v.equal(u.moving.dest, tile) &&
                     u.moving.arrivalTime <= arrivalTime
                     );
             })) &&
@@ -127,7 +128,7 @@ if (typeof exports !== 'undefined') {
                     //no unit is moving there
                     return u.id !== unit.id &&
                         u.moving &&
-                        sh.v.equal(u.moving.dest, tile);
+                        v.equal(u.moving.dest, tile);
                 });
     }
 
@@ -151,7 +152,7 @@ if (typeof exports !== 'undefined') {
         },
         getPath: function(from, to, ship) {
             if (!this.gridForPath) {
-                this.gridForPath = new sh.PF.Grid(ship.width, ship.height,
+                this.gridForPath = new PF.Grid(ship.width, ship.height,
                     ship.getPfMatrix());
             }
             return pathfinder.findPath(from.x, from.y, to.x, to.y,
@@ -166,7 +167,7 @@ if (typeof exports !== 'undefined') {
             if (state && !state.arrived) {
                 unit = battle.getUnitByID(this.unitID);
                 ship = unit.ship;
-                if (sh.v.equal(unit, state.to)) {
+                if (v.equal(unit, state.to)) {
                     //unit is already at destination
                     state.arrived = true;
                     return null;
@@ -183,7 +184,7 @@ if (typeof exports !== 'undefined') {
                 if (tileIsClear(time, ship, unit, nextTile)) {
                     from = {x: unit.x, y: unit.y};
                     state.pathIndex++;
-                    return new sh.actions.Move({
+                    return new actions.Move({
                         unitID: unit.id,
                         from: from,
                         to: nextTile,
@@ -225,12 +226,12 @@ if (typeof exports !== 'undefined') {
                 move = this.getMoveAction(time, battle);
                 return move ? [move] : [];
             }
-            return [new sh.actions.FinishOrder({
+            return [new actions.FinishOrder({
                 unitID: this.unitID
             })];
         },
         toString: function() {
-            return 'Move to ' + sh.v.str(this.destination);
+            return 'Move to ' + v.str(this.destination);
         },
         isValid: function(battle, playerID) {
             var ship = battle.getUnitByID(this.unitID).ship;
@@ -255,7 +256,7 @@ if (typeof exports !== 'undefined') {
             var ship = battle.getUnitByID(this.unitID).ship;
             return this.parent(battle, playerID) &&
                 ship.itemsMap.at(this.destination.x,
-                    this.destination.y) instanceof sh.items.Console;
+                    this.destination.y) instanceof items.Console;
         }
     });
 
@@ -274,17 +275,17 @@ if (typeof exports !== 'undefined') {
             target = battle.getUnitByID(this.targetID);
             if (!target || !target.isAlive() || unit.ship !== target.ship) {
                 //unit is already dead
-                return [new sh.actions.SetUnitProperty({
+                return [new actions.SetUnitProperty({
                     unitID: unit.id,
                     property: 'targetID',
                     value: null
                 }),
-                    new sh.actions.FinishOrder({
+                    new actions.FinishOrder({
                         unitID: unit.id
                     })];
             }
             if (unit.targetID === null || unit.targetID === undefined) {
-                return [new sh.actions.SetUnitProperty({
+                return [new actions.SetUnitProperty({
                     unitID: unit.id,
                     property: 'targetID',
                     value: target.id
@@ -306,7 +307,7 @@ if (typeof exports !== 'undefined') {
         pathOutOfTarget: function(path, target) {
             var pathLast = _.last(path);
             pathLast = {x: pathLast[0], y: pathLast[1]};
-            return !sh.v.equal(pathLast, target);
+            return !v.equal(pathLast, target);
         },
         toString: function() {
             return 'Seek & Destroy';
@@ -332,10 +333,10 @@ if (typeof exports !== 'undefined') {
             });
         },
         getActions: function() {//(turnTime, battle)
-            return [new sh.actions.Recall({
+            return [new actions.Recall({
                 unitID: this.unitID
             }),
-                new sh.actions.FinishOrder({
+                new actions.FinishOrder({
                     unitID: this.unitID
                 })];
         },

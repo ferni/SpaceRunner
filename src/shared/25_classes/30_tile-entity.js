@@ -7,20 +7,13 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('../25_classes/25_player'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * NodeJS exports
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
-
+var sh = module.exports,
+    Jsonable = require('./20_jsonable').Jsonable;
 /**
  * An object on the ship. (An item, an unit, etc)
  * @type {*}
  */
-sh.TileEntity = sh.Jsonable.extendShared({
+sh.TileEntity = Jsonable.extendShared({
     id: null, //the ship is in charge of setting the id
     init: function(json) {
         'use strict';

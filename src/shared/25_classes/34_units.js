@@ -7,20 +7,19 @@
 
 /*global me, require, exports, module*/
 
-var sh = require('../25_classes/32_items'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    TileEntity = require('./30_tile-entity').TileEntity,
+    UnitOrders = require('./70_orders').UnitOrders,
+    items = require('./32_items').items,
+    act = require('./60_actions').actions,
+    v = require('../10_general-stuff').v;
 
 /**
  * A crew member.
  * @type {*}
  */
-sh.Unit = sh.TileEntity.extendShared({
+sh.Unit = TileEntity.extendShared({
     imgIndex: 0,
     speed: 1, //tiles per second
     maxHP: 100,
@@ -46,7 +45,7 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     makeUnitOrders: function() {
         'use strict';
-        var unitOrders = new sh.UnitOrders({
+        var unitOrders = new UnitOrders({
             unitID: this.id
         });
         unitOrders.array = this.orders;
@@ -118,7 +117,7 @@ sh.Unit = sh.TileEntity.extendShared({
                 enemyToAttack = enemiesInRange[0];
             }
             if (enemyToAttack) {
-                actions.push(new sh.actions.Attack({
+                actions.push(new act.Attack({
                     attackerID: self.id,
                     receiverID: enemyToAttack.id,
                     damage: self.meleeDamage,
@@ -131,7 +130,7 @@ sh.Unit = sh.TileEntity.extendShared({
     inTeleporter: function() {
         'use strict';
         return this.ship.itemsMap.at(this.x, this.y) instanceof
-            sh.items.Teleporter;
+            items.Teleporter;
     },
     getOrdersActions: function(turnTime, battle) {
         'use strict';
@@ -161,8 +160,8 @@ sh.Unit = sh.TileEntity.extendShared({
                 !this.dizzy &&
                 !this.inCombat &&
                 this.ship.itemsMap.at(this.x, this.y) instanceof
-                    sh.items.WeakSpot) {
-            return [new sh.actions.DamageShip({
+                    items.WeakSpot) {
+            return [new act.DamageShip({
                 shipID: this.ship.id,
                 unitID: this.id,
                 tile: {x: this.x, y: this.y},
@@ -182,11 +181,11 @@ sh.Unit = sh.TileEntity.extendShared({
         }
         var standingOn = this.ship.itemsMap.at(this.x, this.y),
             controlled;
-        if (standingOn instanceof sh.items.Console) {
+        if (standingOn instanceof items.Console) {
             controlled = standingOn.getControlled();
         }
-        if (controlled instanceof sh.items.Weapon && !controlled.chargedBy) {
-            return [new sh.actions.BeginShipWeaponCharge({
+        if (controlled instanceof items.Weapon && !controlled.chargedBy) {
+            return [new act.BeginShipWeaponCharge({
                 unitID: this.id,
                 weaponID: controlled.id,
                 chargeTime: controlled.chargeTime
@@ -231,7 +230,7 @@ sh.Unit = sh.TileEntity.extendShared({
             );
             if (turnTime >= this.chargingShipWeapon.startingTime +
                     shipWeapon.chargeTime) {
-                actions.push(new sh.actions.FireShipWeapon({
+                actions.push(new act.FireShipWeapon({
                     unitID: this.id,
                     weaponID: this.chargingShipWeapon.weaponID,
                     targetID: battle.getEnemyShips(this.ownerID)[0].id
@@ -248,7 +247,7 @@ sh.Unit = sh.TileEntity.extendShared({
     },
     isInRange: function(unit) {
         'use strict';
-        return sh.v.distance(unit, this) <= this.attackRange;
+        return v.distance(unit, this) <= this.attackRange;
     },
     cancelShipWeaponFire: function() {
         'use strict';

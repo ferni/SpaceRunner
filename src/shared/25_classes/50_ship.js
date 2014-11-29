@@ -7,20 +7,26 @@
 
 /*global require, exports, module, hullMaps*/
 
-var sh = require('../25_classes/40_map'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    SharedClass = require('./10_shared-class').SharedClass,
+    maps = require('./40_map'),
+    gen = require('../10_general-stuff'),
+    GRID_SUB = gen.GRID_SUB,
+    tiles = gen.tiles,
+    items = require('./32_items').items,
+    utils = require('../12_utils').utils,
+    Player = require('./25_player').Player,
+    Unit = require('./34_units').Unit,
+    units = require('./34_units').units,
+    Item = require('./32_items').Item,
+    orders = require('./70_orders').orders;
 
 /**
  * A ship.
  * @type {*}
  */
-sh.Ship = sh.SharedClass.extendShared({
+sh.Ship = SharedClass.extendShared({
     id: null,
     owner: null,
     hullMap: {},
@@ -39,13 +45,13 @@ sh.Ship = sh.SharedClass.extendShared({
         this.loadMap();
         //Array of items built
         this.built = [];
-        this.itemsMap = new sh.EntityMap(this.width, this.height,
+        this.itemsMap = new maps.EntityMap(this.width, this.height,
             this.built);
         this.units = [];
-        this.unitsMap = new sh.EntityMap3d(this.width, this.height,
+        this.unitsMap = new maps.EntityMap3d(this.width, this.height,
             this.units);
-        this.map = new sh.CompoundMap([
-            new sh.Map(this.hullMap).scale(sh.GRID_SUB), this.itemsMap,
+        this.map = new maps.CompoundMap([
+            new maps.Map(this.hullMap).scale(GRID_SUB), this.itemsMap,
             this.unitsMap
         ]);
         if (settings.json) {
@@ -63,18 +69,18 @@ sh.Ship = sh.SharedClass.extendShared({
             throw 'hullMap "' + this.tmxName.toLowerCase() + '" not found';
         }
         this.hullMap = hull.map;
-        this.width = hull.width * sh.GRID_SUB;
-        this.height = hull.height * sh.GRID_SUB;
+        this.width = hull.width * GRID_SUB;
+        this.height = hull.height * GRID_SUB;
     },
     //this should be called when the user builds something
     buildAt: function(x, y, buildingType) {
         'use strict';
         var self, building, canBuild, canBuildRotated;
         self = this;
-        if (!sh.items[buildingType]) {
+        if (!items[buildingType]) {
             throw 'No such item type "' + buildingType + '".';
         }
-        building = new sh.items[buildingType]({});
+        building = new items[buildingType]({});
         canBuild = building.canBuildAt(x, y, this);
         if (!canBuild) {
             canBuildRotated = building.canBuildRotated(x, y, this);
@@ -108,14 +114,14 @@ sh.Ship = sh.SharedClass.extendShared({
         }
         empty = this.closestTile(position.x, position.y,
             function(tile) {
-                return tile === sh.tiles.clear;
+                return tile === tiles.clear;
             });
-        sh.utils.matrixTiles(ship.width, ship.height,
+        utils.matrixTiles(ship.width, ship.height,
             function(x, y) {
                 if (empty) {
                     return;
                 }
-                if (ship.at(x, y) === sh.tiles.clear) {
+                if (ship.at(x, y) === tiles.clear) {
                     empty = {x: x, y: y};
                 }
             });
@@ -290,8 +296,8 @@ sh.Ship = sh.SharedClass.extendShared({
     isInside: function(x, y) {
         'use strict';
         var tile = this.at(x, y);
-        return tile !== sh.tiles.solid && tile !== sh.tiles.front &&
-            tile !== sh.tiles.back;
+        return tile !== tiles.solid && tile !== tiles.front &&
+            tile !== tiles.back;
     },
     toJson: function() {
         'use strict';
@@ -300,9 +306,9 @@ sh.Ship = sh.SharedClass.extendShared({
             'id': this.id,
             'hp': this.hp,
             'owner': this.owner ? this.owner.toJson() : null,
-            'buildings': sh.utils.mapToJson(this.built),
-            'units': sh.utils.mapToJson(this.units),
-            'GRID_SUB': sh.GRID_SUB
+            'buildings': utils.mapToJson(this.built),
+            'units': utils.mapToJson(this.units),
+            'GRID_SUB': GRID_SUB
         };
     },
     fromJson: function(json) {
@@ -315,28 +321,28 @@ sh.Ship = sh.SharedClass.extendShared({
         if (json.hp !== undefined) {
             this.hp = parseInt(json.hp, 10);
         }
-        this.owner = new sh.Player(json.owner);
+        this.owner = new Player(json.owner);
         if (json.GRID_SUB !== undefined) {
             jsonGridSub = parseInt(json.GRID_SUB, 10);
         } else {
             jsonGridSub = 1;
         }
         ship.removeAll();
-        if (sh.GRID_SUB !== jsonGridSub) {
+        if (GRID_SUB !== jsonGridSub) {
             console.warn('GRID_SUB from json differs from current GRID_SUB,' +
                 ' the values will be converted.');
         }
         _.each(json.buildings, function(b) {
-            if (sh.GRID_SUB !== jsonGridSub) {
-                sh.utils.convertPosition(b, jsonGridSub, sh.GRID_SUB);
+            if (GRID_SUB !== jsonGridSub) {
+                utils.convertPosition(b, jsonGridSub, GRID_SUB);
             }
-            ship.addItem(new sh.items[b.type](b));
+            ship.addItem(new items[b.type](b));
         });
         _.each(json.units, function(u) {
             if (u.type === 'Unit') {//is generic unit
-                ship.addUnit(new sh.Unit(u));
+                ship.addUnit(new Unit(u));
             } else { //is specific unit
-                ship.addUnit(new sh.units[u.type](u));
+                ship.addUnit(new units[u.type](u));
             }
         });
         this.buildingsChanged();
@@ -344,7 +350,7 @@ sh.Ship = sh.SharedClass.extendShared({
     getPfMatrix: function() {
         'use strict';
         var ship = this,
-            pfMatrix = sh.utils.getEmptyMatrix(this.width, this.height, 1);
+            pfMatrix = utils.getEmptyMatrix(this.width, this.height, 1);
         ship.map.tiles(function(x, y) {
             if (ship.isWalkable(x, y)) {
                 pfMatrix[y][x] = 0;
@@ -356,8 +362,8 @@ sh.Ship = sh.SharedClass.extendShared({
         'use strict';
         var tile = this.map.at(x, y);
         //clear tiles and units are walkable
-        return tile === sh.tiles.clear || this.hasUnits({x: x, y: y}) ||
-            (tile instanceof sh.Item && tile.walkable);
+        return tile === tiles.clear || this.hasUnits({x: x, y: y}) ||
+            (tile instanceof Item && tile.walkable);
     },
     endOfTurnReset: function(turnDuration) {
         'use strict';
@@ -386,22 +392,22 @@ sh.Ship = sh.SharedClass.extendShared({
             order;
         if (_.isArray(stuff)) {
             enemies = _.filter(stuff, function(u) {
-                return u instanceof sh.Unit && u.isEnemy(unit);
+                return u instanceof Unit && u.isEnemy(unit);
             });
             if (enemies.length > 0) {
-                order = new sh.orders.SeekAndDestroy({
+                order = new orders.SeekAndDestroy({
                     unitID: unit.id,
                     targetID: enemies[0].id
                 });
             }
         } else {
-            if (stuff instanceof sh.items.Console) {
-                order = new sh.orders.MoveToConsole({
+            if (stuff instanceof items.Console) {
+                order = new orders.MoveToConsole({
                     unitID: unit.id,
                     destination: {x: pos.x, y: pos.y}
                 });
             } else if (this.isWalkable(pos.x, pos.y)) {
-                order = new sh.orders.Move({
+                order = new orders.Move({
                     unitID: unit.id,
                     destination: {x: pos.x, y: pos.y}
                 });

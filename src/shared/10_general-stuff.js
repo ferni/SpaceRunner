@@ -7,17 +7,9 @@
 
 /*global require, module, exports*/
 
-var sh = require('./00_init'), _ = sh._,
-    PF = sh.PF;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports;
 
-(function(sh) {
+(function() {
     'use strict';
     /**
      * The grid gets subdivided in its width and its height according to this
@@ -102,5 +94,5 @@ if (typeof exports !== 'undefined') {
         }
         return props;
     };
-}(sh));
+}());
 

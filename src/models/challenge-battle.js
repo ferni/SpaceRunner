@@ -9,7 +9,7 @@
 
 var BattleServer = require('./battle-server').BattleServer,
     AIPlayer = require('./ai-player').AIPlayer,
-    sh = require('../public/js/shared'),
+    sh = require('../shared'),
     _ = require('underscore')._;
 
 /**

@@ -7,7 +7,7 @@
 
 /*global require, __dirname, exports*/
 
-var sh = require('./public/js/shared'),
+var sh = require('./shared'),
     fs = require('fs'),
     tmx = require('tmx');
 

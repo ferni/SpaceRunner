@@ -7,7 +7,7 @@
 
 /*global require, exports, battles*/
 
-var sh = require('../public/js/shared'),
+var sh = require('../shared'),
     auth = require('../auth'),
     BattleServer = require('./battle-server').BattleServer,
     _ = require('underscore')._;

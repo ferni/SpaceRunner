@@ -6,19 +6,19 @@
 */
 
 /*global require, exports, module*/
-var sh = require('../25_classes/50_ship'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    Jsonable = require('./20_jsonable').Jsonable,
+    _ = require('underscore')._,
+    actions = require('./60_actions').actions,
+    Ship = require('./50_ship').Ship,
+    Player = require('./25_player').Player,
+    OrderCollection = require('./70_orders').OrderCollection,
+    utils = require('../12_utils').utils;
 
 /**
  * A battle.
  */
-sh.Battle = sh.Jsonable.extendShared({
+sh.Battle = Jsonable.extendShared({
     ships: [],
     arbiter: {//actor that declares a winner
         type: 'Arbiter',
@@ -34,7 +34,7 @@ sh.Battle = sh.Jsonable.extendShared({
 
             if (shipsByStatus.destroyed) {
                 if (shipsByStatus.alive) {
-                    return [new sh.actions.DeclareWinner({
+                    return [new actions.DeclareWinner({
                         playerID: shipsByStatus.alive[0].owner.id
                     })];
                 }
@@ -47,7 +47,7 @@ sh.Battle = sh.Jsonable.extendShared({
                 .groupBy('ownerID').value();
 
             if (_.size(unitsByPlayer) === 1) {
-                return [new sh.actions.DeclareWinner({
+                return [new actions.DeclareWinner({
                     playerID: parseInt(_.keys(unitsByPlayer)[0], 10)
                 })];
             }
@@ -63,21 +63,21 @@ sh.Battle = sh.Jsonable.extendShared({
             json: json
         });
         this.ships = _.map(json.ships, function(shipJson) {
-            var ship = new sh.Ship({json: shipJson});
+            var ship = new Ship({json: shipJson});
             ship.battle = this;
             return ship;
         }, this);
         this.players = _.map(json.players, function(playerJson) {
-            return new sh.Player(playerJson);
+            return new Player(playerJson);
         });
         this.pendingActions = [];
-        this.orderCollection = new sh.OrderCollection();
+        this.orderCollection = new OrderCollection();
     },
     toJson: function() {
         'use strict';
         var json = this.parent();
-        json.ships = sh.utils.mapToJson(this.ships);
-        json.players = sh.utils.mapToJson(this.players);
+        json.ships = utils.mapToJson(this.ships);
+        json.players = utils.mapToJson(this.players);
         return json;
     },
     addShip: function(ship) {

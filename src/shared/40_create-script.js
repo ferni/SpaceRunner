@@ -7,14 +7,11 @@
 
 /*global require, module, exports*/
 
-var sh = require('./25_classes/80_script'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * NodeJS exports
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    Script = require('./25_classes/80_script').Script,
+    utils = require('./12_utils').utils,
+    ModelChange = require('./25_classes/60_actions').ModelChange;
 
 (function() {
     'use strict';
@@ -25,7 +22,7 @@ if (typeof exports !== 'undefined') {
     }
 
     function getVoidModelChange(time) {
-        return new sh.ModelChange(0, function() {
+        return new ModelChange(0, function() {
             return null;//for jslint
         }, {time: time});
     }
@@ -41,7 +38,7 @@ if (typeof exports !== 'undefined') {
         var script, queue, changes, time, actors, actor, i,
             registerActionReturned = {}, turnDuration = battle.turnDuration,
             changesAtSameTime = [];
-        script = new sh.Script({turnDuration: turnDuration});
+        script = new Script({turnDuration: turnDuration});
         queue = [];
         function insertInQueue(item) {
             insertByTime(queue, item);
@@ -122,7 +119,7 @@ if (typeof exports !== 'undefined') {
             .pluck('action')
             .uniq()
             .value();
-        script.pendingActionsJson = sh.utils.mapToJson(battle.pendingActions);
+        script.pendingActionsJson = utils.mapToJson(battle.pendingActions);
 
         //clean up
         if (resetBattle) {

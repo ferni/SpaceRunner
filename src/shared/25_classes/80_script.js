@@ -7,14 +7,11 @@
 
 /*global me, require, module, exports*/
 
-var sh = require('../25_classes/70_orders'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * NodeJS exports
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._,
+    SharedClass = require('./10_shared-class').SharedClass,
+    utils = require('../12_utils').utils,
+    actions = require('./60_actions').actions;
 
 (function() {
     'use strict';
@@ -22,7 +19,7 @@ if (typeof exports !== 'undefined') {
      * A collection of Actions.
      * @type {*}
      */
-    sh.Script = sh.SharedClass.extendShared({
+    sh.Script = SharedClass.extendShared({
         turnDuration: 0,
         actions: [],
         sortedModelChangesIndex: [],
@@ -37,7 +34,7 @@ if (typeof exports !== 'undefined') {
         fromJson: function(json) {
             //logic here
             this.turnDuration = json.turnDuration;
-            this.actions = sh.utils.mapFromJson(json.actions, sh.actions);
+            this.actions = utils.mapFromJson(json.actions, actions);
             _.invoke(this.actions, 'updateModelChanges');
             this.sortedModelChangesIndex = json.sortedModelChangesIndex;
             this.pendingActionsJson = json.pendingActionsJson;
@@ -47,7 +44,7 @@ if (typeof exports !== 'undefined') {
             return {
                 type: 'Script',
                 turnDuration: this.turnDuration,
-                actions: sh.utils.mapToJson(this.actions),
+                actions: utils.mapToJson(this.actions),
                 sortedModelChangesIndex: this.sortedModelChangesIndex,
                 pendingActionsJson: this.pendingActionsJson
             };

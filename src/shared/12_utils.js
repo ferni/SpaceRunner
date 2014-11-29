@@ -7,14 +7,8 @@
 
 /*global require, exports, module*/
 
-var sh = require('./10_general-stuff'), _ = sh._;
-if (typeof exports !== 'undefined') {
-    /**
-     * exports from NodeJS
-     * @type {*}
-     */
-    sh = module.exports = sh;
-}
+var sh = module.exports,
+    _ = require('underscore')._;
 
 /**
  * Utilities

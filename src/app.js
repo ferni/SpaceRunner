@@ -21,7 +21,7 @@ var express = require('express'),
     chatRoutes = require('./routes/chat'),
     http = require('http'),
     path = require('path'),
-    sh = require('./public/js/shared'),
+    sh = require('./shared'),
     shipMaps = require('./ship-maps'),
     app = express(),
 
