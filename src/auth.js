@@ -84,19 +84,6 @@ exports.createNewPlayer = function() {
     return player;
 };
 
-/**
- * Disconnects the player.
- * @param {*} req
- */
-exports.disconnect = function(req) {
-    'use strict';
-    var player = exports.getPlayer(req),
-        index = currentPlayers.indexOf(player);
-    currentPlayers.splice(index, 1);
-    req.session.playerID = undefined;
-    chat.log('Player "' + player.name + '" has been disconnected' +
-        ' from the server.');
-};
 
 /**
  * Checks if the player is in currentPlayers.

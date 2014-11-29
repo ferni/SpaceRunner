@@ -90,9 +90,6 @@ var jsApp = {
         }).attr('unselectable', 'on')
             .css('user-select', 'none')
             .on('selectstart', false);//disable selection
-        $(window).bind('beforeunload', function() {
-            server.disconnect();
-        });
 
         screens.loadHtmls(function() {
             server.init(function(data) {

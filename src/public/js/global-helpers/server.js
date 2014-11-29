@@ -17,12 +17,6 @@ var server = {
                 throw 'Server error trying to initialize player.';
             });
     },
-    disconnect: function() {
-        'use strict';
-        $.post('/general/disconnect', function(data) {
-            return data;
-        }, 'json');
-    },
     createBattle: function(ship, onDone) {
         'use strict';
         console.log('Creating battle...');

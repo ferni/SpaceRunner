@@ -68,18 +68,3 @@ exports.sharedprops = function(req, res) {
     res.json({properties: sh.getProperties(sh)});
 };
 
-/**
- * Informs the server that a player is disconnecting.
- * @param {Object} req
- * @param {Object} res
- * @param {Object} next
- */
-exports.disconnect = function(req, res, next) {
-    'use strict';
-    try {
-        auth.disconnect(req);
-        res.json({ok: true});
-    } catch (e) {
-        next(new Error('Error while trying to disconnect'));
-    }
-};

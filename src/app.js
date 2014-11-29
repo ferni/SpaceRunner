@@ -85,7 +85,6 @@ screens.configureRoutes(app);
 app.post('/general/init', general.init);
 app.post('/general/ping', general.ping);
 app.post('/general/sharedprops', general.sharedprops);
-app.post('/general/disconnect', general.disconnect);
 
 //globals
 /**
