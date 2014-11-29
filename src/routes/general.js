@@ -39,9 +39,8 @@ exports.init = function(req, res, next) {
             next(new Error('Expected player to be logged in'));
         }
     }
-    res.json({
-        player: player.toJson(),
-        battleID: req.session.battleID
+    res.render('home', {
+        username: player.name
     });
 };
 

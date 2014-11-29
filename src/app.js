@@ -65,14 +65,16 @@ app.configure('development', function() {
 });
 
 
-app.get('/', function (req, res) {
-    'use strict';
-    res.render('home');
-});
+app.get('/', general.init);
 
 app.get('/battle', function (req, res) {
     'use strict';
     res.render('battle');
+});
+
+app.get('/ship-select', function (req, res) {
+    'use strict';
+    res.render('ship-select');
 });
 
 app.post('/save', ship.save);
