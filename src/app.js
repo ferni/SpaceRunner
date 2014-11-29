@@ -34,11 +34,14 @@ app.use(express.session({
         'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
     store: store
 }));
-app.engine('handlebars', exphbs({defaultLayout: 'plain'}));
+app.engine('handlebars', exphbs({
+    layoutsDir: 'screens/_common/layouts',
+    defaultLayout: 'plain'
+}));
 app.configure(function() {
     'use strict';
     app.set('port', process.env.PORT || 3000);
-    app.set('views', __dirname + '/views');
+    app.set('views', __dirname + '/screens');
     app.set('view engine', 'handlebars');
     app.use(express.favicon());
     app.use(express.logger('dev'));
@@ -65,7 +68,7 @@ app.configure('development', function() {
 });
 
 
-app.get('/', general.init);
+app.get('/', require('./screens/home/controller'));
 
 app.get('/battle', function (req, res) {
     'use strict';
