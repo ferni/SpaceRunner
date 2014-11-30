@@ -7,11 +7,11 @@
 
 /*global require, battles*/
 
-var auth = require('../auth'),
+var auth = require('../screens/_common/server-js/auth'),
     _ = require('underscore')._,
     routes = require('./routes'),
     sh = require('../shared'),
-    chat = require('../chat');
+    chat = require('../screens/_common/server-js/chat');
 
 function getByID(battleID) {
     'use strict';

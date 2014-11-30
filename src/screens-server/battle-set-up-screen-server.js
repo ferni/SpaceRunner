@@ -8,7 +8,7 @@
 /*global require, battleSetUps*/
 
 var BattleSetUp = require('../models/').BattleSetUp,
-    auth = require('../auth'),
+    auth = require('../screens/_common/server-js/auth'),
     _ = require('underscore')._,
     routes = require('./routes');
 

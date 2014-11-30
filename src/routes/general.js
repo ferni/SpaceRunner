@@ -7,7 +7,7 @@
 
 /*global exports, require*/
 
-var auth = require('../auth'),
+var auth = require('../screens/_common/server-js/auth'),
     sh = require('../shared');
 
 /**

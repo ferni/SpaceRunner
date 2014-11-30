@@ -8,8 +8,8 @@
 /*global require, exports, linesInServer*/
 
 var url = require('url'),
-    auth = require('../auth'),
-    chat = require('../chat');
+    auth = require('../screens/_common/server-js/auth'),
+    chat = require('../screens/_common/server-js/chat');
 
 /**
  * Gets all the chat lines.
