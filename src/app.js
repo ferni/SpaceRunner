@@ -36,7 +36,8 @@ app.use(express.session({
 }));
 app.engine('handlebars', exphbs({
     layoutsDir: 'screens/_common/layouts',
-    defaultLayout: 'plain'
+    defaultLayout: 'plain',
+    partialsDir: 'screens/_common/partials'
 }));
 app.configure(function() {
     'use strict';
@@ -49,8 +50,6 @@ app.configure(function() {
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
-
-
 });
 
 app.configure('production', function() {
