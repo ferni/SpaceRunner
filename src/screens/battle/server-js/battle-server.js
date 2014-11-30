@@ -7,7 +7,7 @@
 
 /*global require, exports, battles*/
 
-var Class = require('./class'),
+var Class = require('./../../_common/server-js/class'),
     sh = require('../shared'),
     _ = require('underscore')._;
 
