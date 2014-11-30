@@ -7,7 +7,7 @@
 
 /*global require, battleSetUps*/
 
-var BattleSetUp = require('../models/').BattleSetUp,
+var BattleSetUp = require('./').BattleSetUp,
     auth = require('../screens/_common/server-js/auth'),
     _ = require('underscore')._,
     routes = require('./routes');

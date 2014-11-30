@@ -10,7 +10,7 @@
 var _ = require('underscore')._,
     routes = require('./routes/index'),
     sh = require('../shared'),
-    ChallengeBattle = require('../models/').ChallengeBattle,
+    ChallengeBattle = require('./').ChallengeBattle,
     auth = require('../screens/_common/server-js/auth.js');
 
 routes.add('get', function(req, res, next) {
