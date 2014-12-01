@@ -5,14 +5,14 @@
 * All rights reserved.
 */
 
-/*global me, make, _, sh, utils, ui, ko, ItemVM, itemVMs, UnitVM, unitVMs*/
+/*global module, me, _, utils, ui, ko, ItemVM, itemVMs, UnitVM, unitVMs*/
 
 /**
  * An object in charge of representing a sh.Ship on the screen.
  * @param {sh.Ship} shipModel the ship model.
  * @constructor
  */
-var ShipVM = function(shipModel) {
+var ShipVM = module.exports = function(shipModel) {
     'use strict';
     this.itemVMs = [];
 
@@ -49,10 +49,7 @@ var ShipVM = function(shipModel) {
         return ctx;
     };
 
-    this.getVM = function(model) {
-        if (model instanceof sh.Item) {
-            return utils.getVM(model, this.m.built, this.itemVMs);
-        }
-        throw 'Invalid type of model.';
+    this.getVM = function(item) {
+        return utils.getVM(item, this.m.built, this.itemVMs);
     };
 };

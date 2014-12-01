@@ -6,22 +6,27 @@
 */
 
 
-/*global GameScreen, screens, ShipVM, sh, server,
-$, me, utils, items, ui, hullMap, _, itemVMs*/
+/*global require, module, $, me, _*/
+var _com = '../../_common/client-js/',
+    sh = require('../../_common/shared-js'),
+    ShipVM = require('./ship-vm'),
+    utils = require(_com + 'global-helpers/utils'),
+    itemVMs = require(_com + 'itemVMs'),
+    ui = require(_com + 'ui');
 
 /* Screen where one builds the ship */
-screens.register('ship-building', GameScreen.extend({
+module.exports = me.ScreenObject.extend({
     ship: null,
     prevMouse: {},
-    init: function(name) {
+    init: function() {
         'use strict';
-        this.parent(name);
+        this.parent(true);
     },
     /**
      *
      * @param {Object} settings has tmxName or jsonData.
      */
-    onReset: function(settings) {
+    onResetEvent: function(settings) {
         'use strict';
         var self = this;
         // stuff to reset on state change
@@ -48,13 +53,13 @@ screens.register('ship-building', GameScreen.extend({
         this.prepareGhostItems();
         this.greenSpots = sh.utils.getEmptyMatrix(this.ship.width,
             this.ship.height, 1);
-
+        this.onHtmlLoaded();
     },
 
     /* ---
     action to perform when game is finished (state change)
     --- */
-    onDestroy: function() {
+    onDestroyEvent: function() {
         'use strict';
         me.input.unbindKey(me.input.KEY.ESC);
         me.input.releaseMouseEvent('mousedown', me.game.viewport);
@@ -125,16 +130,6 @@ screens.register('ship-building', GameScreen.extend({
                     alert('Error: Could not load ship.');
                 }
             }, 'json');
-        });
-
-        $('.battle-button').click(function() {
-            if (!loadingNextScreen) {
-                server.createBattle(screen.ship, function(settings) {
-                    me.state.change('battle-set-up', settings);
-                });
-                loadingNextScreen = true;
-            }
-
         });
         $('#jsapp').find('canvas').css({width: '', height: ''});
     },
@@ -444,5 +439,6 @@ screens.register('ship-building', GameScreen.extend({
         }
         return shipTile;
     }
-}));
+});
+
 
