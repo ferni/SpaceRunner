@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, _, pr, PF, hullMap, utils, width, height,
+/*global exports, me, _, pr, PF, hullMap, utils, width, height,
 TileEntityVM, sh, draw*/
 
 /**
@@ -507,3 +507,6 @@ itemVMs.Teleporter = ItemVM.extend({
         this.onShip(model.onShip());
     }
 });
+
+exports.ItemVM = ItemVM;
+exports.itemVMs = itemVMs;

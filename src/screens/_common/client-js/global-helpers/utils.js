@@ -5,10 +5,10 @@
 * All rights reserved.
 */
 
-/*global me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE, sh,
-ItemVM, gs, $*/
+/*global module, me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE,
+sh, ItemVM, gs, $*/
 
-var utils = {
+var utils = module.exports = {
     getParameterByName: function(name) {
         'use strict';
         var match = new RegExp('[?&]' + name + '=([^&]*)')

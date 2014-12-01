@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global me, make, _, sh, utils, ui, ko, ItemVM, itemVMs,
+/*global module, me, make, _, sh, utils, ui, ko, ItemVM, itemVMs,
 UnitVM, unitVMs*/
 
 /**
@@ -13,7 +13,7 @@ UnitVM, unitVMs*/
  * @param {sh.Ship} shipModel the ship model.
  * @constructor
  */
-var ShipVM = function(shipModel) {
+var ShipVM = module.exports = function(shipModel) {
     'use strict';
     this.itemVMs = [];
     this.unitVMs = [];

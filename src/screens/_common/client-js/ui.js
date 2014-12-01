@@ -5,9 +5,9 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, me, sh, TILE_SIZE, _*/
+/*global module, TileEntityVM, me, sh, TILE_SIZE, _*/
 
-var ui = (function() {
+var ui = module.exports = (function() {
     'use strict';
     var ui = {};
     /**
