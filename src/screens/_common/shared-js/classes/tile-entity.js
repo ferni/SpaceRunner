@@ -8,7 +8,7 @@
 /*global me, require, module, exports*/
 
 var sh = module.exports,
-    Jsonable = require('./20_jsonable').Jsonable;
+    Jsonable = require('./jsonable').Jsonable;
 /**
  * An object on the ship. (An item, an unit, etc)
  * @type {*}

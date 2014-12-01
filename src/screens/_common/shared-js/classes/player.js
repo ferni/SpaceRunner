@@ -8,7 +8,7 @@
 /*global require, exports, module, xyz*/
 
 var sh = module.exports,
-    Jsonable = require('./20_jsonable').Jsonable;
+    Jsonable = require('./jsonable').Jsonable;
 
 (function() {
     'use strict';

@@ -9,11 +9,11 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    TileEntity = require('./30_tile-entity').TileEntity,
-    UnitOrders = require('./70_orders').UnitOrders,
-    items = require('./32_items').items,
-    act = require('./60_actions').actions,
-    v = require('../10_general-stuff').v;
+    TileEntity = require('./tile-entity').TileEntity,
+    UnitOrders = require('./orders').UnitOrders,
+    items = require('./items').items,
+    act = require('./actions').actions,
+    v = require('../general-stuff').v;
 
 /**
  * A crew member.

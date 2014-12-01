@@ -9,18 +9,18 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    SharedClass = require('./10_shared-class').SharedClass,
-    maps = require('./40_map'),
-    gen = require('../10_general-stuff'),
+    SharedClass = require('./shared-class').SharedClass,
+    maps = require('./map'),
+    gen = require('../general-stuff'),
     GRID_SUB = gen.GRID_SUB,
     tiles = gen.tiles,
-    items = require('./32_items').items,
-    utils = require('../12_utils').utils,
-    Player = require('./25_player').Player,
-    Unit = require('./34_units').Unit,
-    units = require('./34_units').units,
-    Item = require('./32_items').Item,
-    orders = require('./70_orders').orders;
+    items = require('./items').items,
+    utils = require('../utils').utils,
+    Player = require('./player').Player,
+    Unit = require('./units').Unit,
+    units = require('./units').units,
+    Item = require('./items').Item,
+    orders = require('./orders').orders;
 
 /**
  * A ship.

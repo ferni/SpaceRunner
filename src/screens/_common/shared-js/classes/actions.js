@@ -9,8 +9,8 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    Jsonable = require('./20_jsonable').Jsonable,
-    v = require('../10_general-stuff').v;
+    Jsonable = require('./jsonable').Jsonable,
+    v = require('../general-stuff').v;
 
 (function() {
     'use strict';

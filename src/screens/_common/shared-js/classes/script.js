@@ -9,9 +9,9 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    SharedClass = require('./10_shared-class').SharedClass,
-    utils = require('../12_utils').utils,
-    actions = require('./60_actions').actions;
+    SharedClass = require('./shared-class').SharedClass,
+    utils = require('../utils').utils,
+    actions = require('./actions').actions;
 
 (function() {
     'use strict';

@@ -7,13 +7,13 @@
 
 /*global require, exports, module*/
 var sh = module.exports,
-    Jsonable = require('./20_jsonable').Jsonable,
+    Jsonable = require('./jsonable').Jsonable,
     _ = require('underscore')._,
-    actions = require('./60_actions').actions,
-    Ship = require('./50_ship').Ship,
-    Player = require('./25_player').Player,
-    OrderCollection = require('./70_orders').OrderCollection,
-    utils = require('../12_utils').utils;
+    actions = require('./actions').actions,
+    Ship = require('./ship').Ship,
+    Player = require('./player').Player,
+    OrderCollection = require('./orders').OrderCollection,
+    utils = require('../utils').utils;
 
 /**
  * A battle.

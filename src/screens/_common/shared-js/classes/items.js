@@ -8,10 +8,10 @@
 /*global me, require, exports, module*/
 
 var sh = module.exports,
-    TileEntity = require('./30_tile-entity').TileEntity,
+    TileEntity = require('./tile-entity').TileEntity,
     _ = require('underscore')._,
-    pr = require('../20_placement-rules').pr,
-    gen = require('../10_general-stuff'),
+    pr = require('../placement-rules').pr,
+    gen = require('../general-stuff'),
     GRID_SUB = gen.GRID_SUB,
     tiles = gen.tiles;
 /**
@@ -389,7 +389,7 @@ sh.items.Teleporter = sh.Item.extendShared({
         'use strict';
         var self = this,
             actions = [],
-            Teleport = require('./60_actions').actions.Teleport;
+            Teleport = require('./actions').actions.Teleport;
         this.tiles(function(x, y) {
             _.each(self.ship.unitsMap.at(x, y), function(unit) {
                 actions.push(new Teleport({

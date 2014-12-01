@@ -9,8 +9,8 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    Map = require('./25_classes/40_map').Map,
-    gen = require('./10_general-stuff'),
+    Map = require('./classes/map').Map,
+    gen = require('./general-stuff'),
     tiles = gen.tiles,
     GRID_SUB = gen.GRID_SUB;
 

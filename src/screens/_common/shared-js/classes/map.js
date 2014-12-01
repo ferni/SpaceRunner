@@ -9,8 +9,8 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    SharedClass = require('./10_shared-class').SharedClass,
-    utils = require('../12_utils').utils;
+    SharedClass = require('./shared-class').SharedClass,
+    utils = require('../utils').utils;
 
 /**
  * An Array2d.

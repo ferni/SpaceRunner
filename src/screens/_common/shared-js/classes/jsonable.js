@@ -8,7 +8,7 @@
 /*global require, exports, module*/
 
 var sh = module.exports,
-    SharedClass = require('./10_shared-class').SharedClass,
+    SharedClass = require('./shared-class').SharedClass,
     _ = require('underscore')._;
 
 (function() {

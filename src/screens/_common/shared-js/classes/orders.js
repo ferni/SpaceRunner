@@ -9,12 +9,12 @@
 var sh = module.exports,
     _ = require('underscore')._,
     PF = require('pathfinding'),
-    SharedClass = require('./10_shared-class').SharedClass,
-    Jsonable = require('./20_jsonable').Jsonable,
-    utils = require('../12_utils').utils,
-    v = require('../10_general-stuff').v,
-    actions = require('./60_actions').actions,
-    items = require('./32_items').items;
+    SharedClass = require('./shared-class').SharedClass,
+    Jsonable = require('./jsonable').Jsonable,
+    utils = require('../utils').utils,
+    v = require('../general-stuff').v,
+    actions = require('./actions').actions,
+    items = require('./items').items;
 
 (function() {
     'use strict';
