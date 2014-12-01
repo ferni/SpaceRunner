@@ -8,27 +8,6 @@
 /*global me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE, sh,
 ItemVM, gs, $*/
 
-// Avoid `console` errors in browsers that lack a console.
-if (!(window.console && console.log)) {
-    (function() {
-        'use strict';
-        var noop, methods, length, console;
-        noop = function() {
-            return null;
-        };
-        methods = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml',
-            'error', 'exception', 'group', 'groupCollapsed', 'groupEnd',
-            'info', 'log', 'markTimeline', 'profile', 'profileEnd',
-            'markTimeline', 'table', 'time', 'timeEnd', 'timeStamp', 'trace',
-            'warn'];
-        length = methods.length;
-        console = window.console = {};
-        while (length--) {
-            console[methods[length]] = noop;
-        }
-    }());
-}
-
 var utils = {
     getParameterByName: function(name) {
         'use strict';
