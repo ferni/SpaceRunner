@@ -5,8 +5,7 @@
 * All rights reserved.
 */
 
-/*global module, me, _, g_resources, items, width, height, TILE_SIZE, HALF_TILE,
-sh, ItemVM, gs, $*/
+/*global module, me, _, TILE_SIZE, sh, gs*/
 
 var utils = module.exports = {
     getParameterByName: function(name) {
