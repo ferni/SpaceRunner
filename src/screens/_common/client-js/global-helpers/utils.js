@@ -46,38 +46,6 @@ var utils = module.exports = {
         }
     },
     /**
-     * Executes a callback when a certain number of
-     * .done() were called on TaskWait, or an
-     * error handler if .error() was called instead.
-     * @param {Object} settings has 'pendingCount'(int), 'allDone', 'error'.
-     * @constructor
-     */
-    TaskWait: function(settings) {
-        'use strict';
-        var tickCount = 0,
-            errorThrown = false,
-            pendingCount = settings.pendingCount,
-            _allDoneCallback = settings.allDone,
-            _errorCallback = settings.error;
-
-        this.done = function() {
-            if (errorThrown) {
-                return;
-            }
-            tickCount++;
-            if (tickCount === pendingCount) {
-                _allDoneCallback();
-            } else if (tickCount > pendingCount) {
-                throw 'Number of ticks exceeded expected count ' +
-                    '(pendingCount).';
-            }
-        };
-        this.error = function() {
-            errorThrown = true;
-            _errorCallback();
-        };
-    },
-    /**
      * Returns the model of the object if it's a viewmodel,
      * or returns the object itself if it's a model.
      * @param {*} object
