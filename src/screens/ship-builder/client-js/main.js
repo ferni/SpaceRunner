@@ -59,7 +59,6 @@ jsApp = {
         'use strict';
         // set screens-html
         var self = this;
-        window.gs = new GameState();
 
         this.generateHullMaps();
 

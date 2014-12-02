@@ -5,17 +5,18 @@
 * All rights reserved.
 */
 
-var GameState = function() {
-    'use strict';
+/*global module*/
+
+var gs = module.exports = {
     //sh.Player
-    this.player = null;
+    player: null,
     //sh.Ship
-    this.ship = null;
-    this.modes = {
+    ship: null,
+    modes: {
         //auto-creates battles, and auto-joins
         auto: false,
         useprebuilt: false
-    };
+    },
     //selected TileEntityVMs at a given moment.
-    this.selected = [];
+    selected: []
 };

@@ -72,7 +72,6 @@ var jsApp = {
         // set screens-html
         var self = this;
         window.FIRST_SCREEN = 'lobby';
-        window.gs = new GameState();
 
         //set development modes
         if (utils.getParameterByName('auto') === '1') {
