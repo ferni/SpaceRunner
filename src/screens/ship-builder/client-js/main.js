@@ -10,12 +10,13 @@
 
 //sugar
 var hullMaps = {},
-    gs,
     jsApp,
+    gs = require('../../_common/game-state'),
     sh = require('../../_common/shared-js'),
-    ShipBuilding = require('./ship-building-screen'),
-    TILE_SIZE = 32 / sh.GRID_SUB,
-    HALF_TILE = 16 / sh.GRID_SUB;
+    ShipBuilding = require('./ship-building-screen');
+
+gs.TILE_SIZE = 32 / sh.GRID_SUB;
+gs.HALF_TILE = 16 / sh.GRID_SUB;
 
 jsApp = {
     loadReady: false,

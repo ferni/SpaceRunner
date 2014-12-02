@@ -13,5 +13,7 @@ var gs = module.exports = {
     //sh.Ship
     ship: null,
     //selected TileEntityVMs at a given moment.
-    selected: []
+    selected: [],
+    TILE_SIZE: 32,
+    HALF_TILE: 16
 };
