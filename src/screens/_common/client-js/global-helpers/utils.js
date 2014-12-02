@@ -5,7 +5,9 @@
 * All rights reserved.
 */
 
-/*global module, me, _, TILE_SIZE, sh, gs*/
+/*global require, module, me, _, TILE_SIZE*/
+var sh = require('../../shared-js'),
+    gs = require('../game-state');
 
 var utils = module.exports = {
     getParameterByName: function(name) {
@@ -24,7 +26,7 @@ var utils = module.exports = {
     //returns the tile position of the mouse
     getMouse: function() {
         'use strict';
-        var tile = utils.toTileVector(utils.getMousePx(), TILE_SIZE);
+        var tile = utils.toTileVector(utils.getMousePx(), gs.TILE_SIZE);
         this.lastMouse = tile;
         return tile;
     },
