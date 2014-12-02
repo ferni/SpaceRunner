@@ -5,8 +5,13 @@
 * All rights reserved.
 */
 
-/*global exports, me, _, pr, PF, hullMap, utils, width, height,
-TileEntityVM, sh, draw*/
+/*global require, exports, me*/
+
+var _ = require('underscore'),
+    PF = require('pathfinding'),
+    TileEntityVM = require('./tile-entity-vm'),
+    sh = require('../shared-js'),
+    draw = require('./global-helpers/draw');
 
 /**
  * A melonJS object used to represent an sh.Item on screen.
