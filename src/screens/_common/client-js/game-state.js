@@ -12,11 +12,6 @@ var gs = module.exports = {
     player: null,
     //sh.Ship
     ship: null,
-    modes: {
-        //auto-creates battles, and auto-joins
-        auto: false,
-        useprebuilt: false
-    },
     //selected TileEntityVMs at a given moment.
     selected: []
 };
