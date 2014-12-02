@@ -45,22 +45,6 @@ var utils = module.exports = {
             this.currentCursor = cursor;
         }
     },
-    /**
-     * Returns the model of the object if it's a viewmodel,
-     * or returns the object itself if it's a model.
-     * @param {*} object
-     * @return {sh.Item}
-     */
-    getModel: function(object) {
-        'use strict';
-        if (object instanceof sh.Item) {
-            return object;
-        }
-        if (object instanceof ItemVM) {
-            return object.m;
-        }
-        return null;
-    },
     isMine: function(object) {
         'use strict';
         var ownerID = object.ownerID;

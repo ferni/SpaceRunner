@@ -343,6 +343,22 @@ itemVMs.Wall = ItemVM.extend({
         this.animationspeed = 6;
         this.onShip(wallModel.onShip());
     },
+    /**
+     * Returns the model of the object if it's a viewmodel,
+     * or returns the object itself if it's a model.
+     * @param {*} object
+     * @return {sh.Item}
+     */
+    getModel: function(object) {
+        'use strict';
+        if (object instanceof sh.Item) {
+            return object;
+        }
+        if (object instanceof ItemVM) {
+            return object.m;
+        }
+        return null;
+    },
     updateAnimation: function() {
         'use strict';
         var screen = me.state.current(),
@@ -352,10 +368,10 @@ itemVMs.Wall = ItemVM.extend({
             right = screen.at(this.x + sh.GRID_SUB, this.y),
             wallsAround = [],
             animationName;
-        top = utils.getModel(top);
-        left = utils.getModel(left);
-        bot = utils.getModel(bot);
-        right = utils.getModel(right);
+        top = this.getModel(top);
+        left = this.getModel(left);
+        bot = this.getModel(bot);
+        right = this.getModel(right);
         this.m.updateConnections(top, left, bot, right);
         if (this.m.isHorizontal()) {
             this.setCurrentAnimation('lr');
