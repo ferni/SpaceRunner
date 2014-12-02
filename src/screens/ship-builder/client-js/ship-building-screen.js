@@ -11,7 +11,7 @@ var _com = '../../_common/client-js/',
     sh = require('../../_common/shared-js'),
     ShipVM = require('./ship-vm'),
     utils = require(_com + 'global-helpers/utils'),
-    itemVMs = require(_com + 'itemVMs'),
+    itemVMs = require(_com + 'itemVMs').itemVMs,
     ui = require(_com + 'ui');
 
 /* Screen where one builds the ship */

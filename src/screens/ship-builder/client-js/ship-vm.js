@@ -5,7 +5,13 @@
 * All rights reserved.
 */
 
-/*global module, me, _, utils, ui, ko, ItemVM, itemVMs, UnitVM, unitVMs*/
+/*global require, module, me, _, ko*/
+
+var _com = '../../_common/client-js/',
+    utils = require(_com + 'global-helpers/utils'),
+    ItemVM = require(_com + 'itemVMs').ItemVM,
+    itemVMs = require(_com + 'itemVMs').itemVMs,
+    ui = require(_com + 'ui');
 
 /**
  * An object in charge of representing a sh.Ship on the screen.
