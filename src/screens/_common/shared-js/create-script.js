@@ -9,9 +9,9 @@
 
 var sh = module.exports,
     _ = require('underscore')._,
-    Script = require('./25_classes/script').Script,
+    Script = require('./classes/script').Script,
     utils = require('./utils').utils,
-    ModelChange = require('./25_classes/actions').ModelChange;
+    ModelChange = require('./classes/actions').ModelChange;
 
 (function() {
     'use strict';

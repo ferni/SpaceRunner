@@ -10,11 +10,10 @@
 //sugar
 var hullMaps = {},
     jsApp,
-    _com = '../../_common/client-js/',
-    gs = require(_com + 'game-state'),
+    gs = require('../../_common/client-js/game-state'),
     sh = require('../../_common/shared-js'),
     ShipBuilding = require('./ship-building-screen'),
-    hullMapGenerator = require(_com + 'global-helpers/hull-map-generator'),
+    hullMapGenerator = require('../../_common/client-js/global-helpers/hull-map-generator'),
     assets = require('./assets');
 
 gs.TILE_SIZE = 32 / sh.GRID_SUB;
@@ -80,3 +79,8 @@ jsApp = {
         return 0;
     }
 };
+
+window.onReady(function() {
+    'use strict';
+    jsApp.onload();
+});

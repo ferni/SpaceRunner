@@ -8,7 +8,7 @@
 /*global require, exports*/
 
 var _ = require('underscore')._,
-    sh = require('./shared'),
+    sh = require('../shared-js'),
     chat = require('./chat'),
     currentPlayers = []; //filled with sh.Player;
 

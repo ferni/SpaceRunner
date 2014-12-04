@@ -7,12 +7,11 @@
 
 
 /*global require, module, $, me, _*/
-var _com = '../../_common/client-js/',
-    sh = require('../../_common/shared-js'),
+var sh = require('../../_common/shared-js'),
     ShipVM = require('./ship-vm'),
-    utils = require(_com + 'global-helpers/utils'),
-    itemVMs = require(_com + 'itemVMs').itemVMs,
-    ui = require(_com + 'ui');
+    utils = require('../../_common/client-js/global-helpers/utils'),
+    itemVMs = require('../../_common/client-js/item-vms').itemVMs,
+    ui = require('../../_common/client-js/ui');
 
 /* Screen where one builds the ship */
 module.exports = me.ScreenObject.extend({

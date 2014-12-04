@@ -13,15 +13,10 @@
 
 var express = require('express'),
     exphbs  = require('express-handlebars'),
-    routes = require('./routes'),
-    ship = require('./routes/ship'),
     screens = require('./screens-server'),
-    general = require('./routes/general'),
     chat = require('./screens/_common/server-js/chat'),
-    chatRoutes = require('./routes/chat'),
     http = require('http'),
     path = require('path'),
-    sh = require('./shared'),
     shipMaps = require('./screens/_common/server-js/ship-maps'),
     app = express(),
 
@@ -68,6 +63,7 @@ app.configure('development', function() {
 
 
 app.get('/', require('./screens/home/controller'));
+app.get('/ship-builder', require('./screens/ship-builder/controller'));
 
 app.get('/battle', function (req, res) {
     'use strict';
@@ -79,16 +75,6 @@ app.get('/ship-select', function (req, res) {
     res.render('ship-select');
 });
 
-app.post('/save', ship.save);
-app.post('/load', ship.load);
-app.post('/ship/gethulls', ship.gethulls);
-
-screens.configureRoutes(app);
-//console.log(screens.getAll());
-
-app.post('/general/init', general.init);
-app.post('/general/ping', general.ping);
-app.post('/general/sharedprops', general.sharedprops);
 
 //globals
 /**
@@ -101,9 +87,6 @@ GLOBAL.battleSetUps = [];
  * @type {Array}
  */
 GLOBAL.battles = [];
-
-
-chat.init(app, chatRoutes);
 
 console.log('Loading maps...');
 shipMaps.loadMaps(function(maps) {
