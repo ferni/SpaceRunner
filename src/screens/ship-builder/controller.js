@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global module*/
+/*global module, hullMaps*/
 
 /**
  * Initializes the entire app. Creates the player
@@ -18,6 +18,7 @@
 module.exports = function(req, res, next) {
     'use strict';
     res.render('ship-builder/view', {
-        username: 'server-hardcoded username'
+        username: 'server-hardcoded username',
+        hullMaps: JSON.stringify(hullMaps)
     });
 };

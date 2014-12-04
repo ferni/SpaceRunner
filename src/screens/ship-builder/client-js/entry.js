@@ -8,12 +8,10 @@
 /*global require, me*/
 
 //sugar
-var hullMaps = {},
-    jsApp,
+var jsApp,
     gs = require('../../_common/client-js/game-state'),
     sh = require('../../_common/shared-js'),
     ShipBuilding = require('./ship-building-screen'),
-    hullMapGenerator = require('../../_common/client-js/global-helpers/hull-map-generator'),
     assets = require('./assets');
 
 gs.TILE_SIZE = 32 / sh.GRID_SUB;
@@ -42,24 +40,12 @@ jsApp = {
         // load everything & display a loading screen
         me.state.change(me.state.LOADING);
     },
-    generateHullMaps: function() {
-        'use strict';
-        var i, tmxTileMap;
-        window.hullMaps = {};
-        for (i = 0; i < sh.mapNames.length; i++) {
-            tmxTileMap = new me.TMXTileMap(sh.mapNames[i], 0, 0);
-            tmxTileMap.load();
-            hullMaps[sh.mapNames[i]] = hullMapGenerator.get(tmxTileMap);
-        }
-    },
     /* ---
     callback when everything is loaded
     --- */
     loaded: function() {
         'use strict';
         var self = this;
-
-        this.generateHullMaps();
 
         gs.player = new sh.Player({
             id: 777,
