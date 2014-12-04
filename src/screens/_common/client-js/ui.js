@@ -5,7 +5,10 @@
 * All rights reserved.
 */
 
-/*global module, TileEntityVM, me, sh, TILE_SIZE, _*/
+/*global require, module, me*/
+
+var TileEntityVM = require('./tile-entity-vm'),
+    _ = require('underscore');
 
 var ui = module.exports = (function() {
     'use strict';
