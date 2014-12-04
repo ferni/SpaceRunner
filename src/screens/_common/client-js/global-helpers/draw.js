@@ -5,13 +5,17 @@
 * All rights reserved.
 */
 
-/*global TILE_SIZE, HALF_TILE*/
+/*global require, module*/
+
+var gs = require('../game-state'),
+    TILE_SIZE = gs.TILE_SIZE,
+    HALF_TILE = gs.HALF_TILE;
 
 /**
  * Draws stuff on the canvas based on canvas' primitives
  * @type {{}}
  */
-var draw = (function() {
+var draw = module.exports = (function() {
     'use strict';
     var lineDashOffset = 1000;
     setInterval(function() {

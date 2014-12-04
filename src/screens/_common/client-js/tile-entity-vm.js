@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, module, me, _, utils, gs*/
+/*global require, module, me*/
 
 var _ = require('underscore')._,
     utils = require('./global-helpers/utils'),
