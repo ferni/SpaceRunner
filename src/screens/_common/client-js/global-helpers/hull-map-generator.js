@@ -5,9 +5,10 @@
 * All rights reserved.
 */
 
-/*global sh*/
+/*global require, module*/
 
-var hullMapGenerator = {
+var sh = require('../../shared-js');
+var hullMapGenerator = module.exports = {
     getCollisionTileChar: function(tmxMap, x, y) {
         'use strict';
         var tileLayer, tileId, tileSet, tilePro;
