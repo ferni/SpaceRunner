@@ -5,15 +5,17 @@
 * All rights reserved.
 */
 
-/*global require, me, _, utils, $, sh, hullMapGenerator, GameState, gs,
- chatClient, server, screens, gameResources*/
+/*global require, me*/
 
 //sugar
 var hullMaps = {},
     jsApp,
-    gs = require('../../_common/game-state'),
+    _com = '../../_common/client-js/',
+    gs = require(_com + 'game-state'),
     sh = require('../../_common/shared-js'),
-    ShipBuilding = require('./ship-building-screen');
+    ShipBuilding = require('./ship-building-screen'),
+    hullMapGenerator = require(_com + 'global-helpers/hull-map-generator'),
+    assets = require('./assets');
 
 gs.TILE_SIZE = 32 / sh.GRID_SUB;
 gs.HALF_TILE = 16 / sh.GRID_SUB;
@@ -28,9 +30,7 @@ jsApp = {
     onload: function() {
         'use strict';
         // init the video
-        var width = utils.getParameterByName('width'),
-            height = utils.getParameterByName('height');
-        if (!me.video.init('jsapp', width, height)) {
+        if (!me.video.init('jsapp', 1440, 1344)) {
             alert('Sorry but your browser does not support html 5 canvas.');
             return;
         }
@@ -39,7 +39,7 @@ jsApp = {
         // set all resources to be loaded
         me.loader.onload = this.loaded.bind(this);
         // set all resources to be loaded
-        me.loader.preload(gameResources);
+        me.loader.preload(assets);
         // load everything & display a loading screen
         me.state.change(me.state.LOADING);
     },
@@ -58,12 +58,14 @@ jsApp = {
     --- */
     loaded: function() {
         'use strict';
-        // set screens-html
         var self = this;
 
         this.generateHullMaps();
 
-        gs.player = new sh.Player(event.data.playerJson);
+        gs.player = new sh.Player({
+            id: 777,
+            name: 'hardcoded name'
+        });
         me.state.set('ship-building', new ShipBuilding());
         me.state.change('ship-building', {tmxName: 'Cyborg_Frigate'});
         self.loadReady = true;
