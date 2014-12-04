@@ -5,12 +5,18 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, hullMap, pr, TILE_SIZE, gs, sh*/
+/*global require, module, me, _, utils, gs*/
+
+var _ = require('underscore')._,
+    utils = require('./global-helpers/utils'),
+    gs = require('./game-state'),
+    TILE_SIZE = gs.TILE_SIZE,
+    sh = require('../shared-js');
 
 /* An object that has tile position (x and y),
  and row length and col length through "size"
  */
-var TileEntityVM = me.ObjectEntity.extend({
+var TileEntityVM = module.exports = me.ObjectEntity.extend({
     x: 0, //column
     y: 0, //row
     size: [1, 1],
