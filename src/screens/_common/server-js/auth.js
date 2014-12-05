@@ -9,7 +9,7 @@
 
 var _ = require('underscore')._,
     sh = require('../shared-js'),
-    chat = require('./chat'),
+    //chat = require('./chat'),
     currentPlayers = []; //filled with sh.Player;
 
 /**
@@ -79,7 +79,7 @@ exports.createNewPlayer = function() {
         id: currentPlayers.length,
         name: exports.toUniqueName('Player')
     });
-    chat.log('Player "' + player.name + '" connected to server.');
+    //chat.log('Player "' + player.name + '" connected to server.');
     currentPlayers.push(player);
     return player;
 };
