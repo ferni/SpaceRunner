@@ -1,27 +1,27 @@
-﻿#ship-select-screen ul {
+﻿ul {
     list-style-type: none;
 }
 
-#ship-select-screen .race-button {
+.race-button {
     background-color: green;
 }
 
-#ship-select-screen .race-button:hover {
+.race-button:hover {
     background-color: greenyellow;
 }
 
-#ship-select-screen .race-button.selected 
+.race-button.selected 
 {
     color: yellow;
 }
 
-#ship-select-screen .ship-select-buttons {
+.ship-select-buttons {
     position: absolute;
     top: 60px;
     left: 40px;
     
 }
-#ship-select-screen .ships {
+.ships {
     position: absolute;
     top: 0px;
     left: 200px;
@@ -29,19 +29,19 @@
     height: 500px;
 }
 
-#ship-select-screen .ship-button  
+.ship-button  
 {
     background-color: #0099FF;
     font-size: 20px;
     float: left;
 
 }
-#ship-select-screen .ship-button img{
+.ship-button img{
     width: 200px;
     height: 200px;
     float: none;
 }
-#ship-select-screen .ship-button:hover
+.ship-button:hover
 {
     background-color: #66CCFF;
 }
