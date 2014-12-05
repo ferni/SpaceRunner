@@ -23,13 +23,8 @@ module.exports = function(req, res, next) {
     console.log(req.session);
     if (req.session.playerID === undefined) {
         //create the player
-        try {
-            player = auth.createNewPlayer();
-            req.session.playerID = player.id;
-        } catch (e) {
-            next(new Error('Could not create new player'));
-        }
-
+        player = auth.createNewPlayer();
+        req.session.playerID = player.id;
     } else {
         try {
             player = auth.getPlayer(req);
