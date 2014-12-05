@@ -64,16 +64,7 @@ app.configure('development', function() {
 
 app.get('/', require('./screens/home/controller'));
 app.get('/ship-builder', require('./screens/ship-builder/controller'));
-
-app.get('/battle', function (req, res) {
-    'use strict';
-    res.render('battle');
-});
-
-app.get('/ship-select', function (req, res) {
-    'use strict';
-    res.render('ship-select');
-});
+app.get('/ship-list', require('./screens/ship-list/controller'));
 
 
 //globals
