@@ -6,12 +6,13 @@
 */
 
 
-/*global require, module, $, me, _*/
+/*global require, module, $, me*/
 var sh = require('../../_common/shared-js'),
     ShipVM = require('./ship-vm'),
     utils = require('../../_common/client-js/global-helpers/utils'),
     itemVMs = require('../../_common/client-js/item-vms').itemVMs,
-    ui = require('../../_common/client-js/ui');
+    ui = require('../../_common/client-js/ui'),
+    _ = require('underscore')._;
 
 /* Screen where one builds the ship */
 module.exports = me.ScreenObject.extend({
