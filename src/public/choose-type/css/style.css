@@ -10,7 +10,7 @@
     background-color: greenyellow;
 }
 
-.race-button.selected 
+.active .race-button
 {
     color: yellow;
 }
