@@ -11,7 +11,7 @@ var auth = require('../_common/server-js/auth');
 
 module.exports = function(req, res, next) {
     'use strict';
-    res.render('ship-list/view', {
-        path: '/ship-list/'
+    res.render('choose-type/view', {
+        path: '/choose-type/'
     });
 };
