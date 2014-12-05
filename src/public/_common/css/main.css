@@ -23,7 +23,7 @@ body {
     -ms-user-select: none;
     user-select: none;
 
-    background: url('/data/img/render/space.jpg') repeat;
+    background: url('/_common/img/render/space.jpg') repeat;
 }
 
 ::-moz-selection {
