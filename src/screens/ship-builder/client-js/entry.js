@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, me*/
+/*global require, me, shipType*/
 
 //sugar
 var jsApp, gs, sh, ShipBuilding, assets;
@@ -53,7 +53,7 @@ jsApp = {
             name: 'hardcoded name'
         });
         me.state.set('ship-building', new ShipBuilding());
-        me.state.change('ship-building', {tmxName: 'Cyborg_Frigate'});
+        me.state.change('ship-building', {tmxName: shipType});
         self.loadReady = true;
         self.onAppLoaded();
 

@@ -12,6 +12,7 @@ module.exports = function(req, res, next) {
     res.render('ship-builder/view', {
         username: 'server-hardcoded username',
         hullMaps: JSON.stringify(hullMaps),
-        path: '/ship-builder/'
+        path: '/ship-builder/',
+        shipType: req.query.type
     });
 };
