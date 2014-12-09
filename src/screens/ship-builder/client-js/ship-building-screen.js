@@ -111,7 +111,7 @@ module.exports = me.ScreenObject.extend({
         $('#file_save').click(function() {
             var shipData = screen.ship.toJson(),
                 name = prompt('Enter the ship name.');
-            $.post('/save', {name: name, buildings: shipData},
+            $.post('/ship/save', {name: name, buildings: shipData},
                 function(response) {
                     if (response) {
                         alert('saved');
@@ -123,7 +123,7 @@ module.exports = me.ScreenObject.extend({
         //Load
         $('#file_load').click(function() {
             var name = prompt('Enter the ship name you wish to load.');
-            $.post('/load', {name: name}, function(response) {
+            $.post('/ship/load', {name: name}, function(response) {
                 if (response) {
                     me.state.change('ship-building', {json: response});
                 } else {
