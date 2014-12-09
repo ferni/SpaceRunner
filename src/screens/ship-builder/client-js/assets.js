@@ -5,11 +5,26 @@
 * All rights reserved.
 */
 
-/*global module*/
+/*global module, shipType*/
 
 // game resources
 // in the case of the items, set their image name equal to their type.
-var assets = module.exports = [{
+function getShipAssets(shipType) {
+    'use strict';
+    var race = shipType.split('_')[0];
+    return [{
+        name: shipType,
+        type: 'tmx',
+        src: '/_common/outlines/' + shipType + '.tmx'
+    }, {
+        name: shipType + '_img',
+        type: 'image',
+        src: '/_common/img/render/ships/' + race +
+            '/' + shipType + '_img.png'
+    }];
+}
+
+var assets = [{
     name: 'outline',
     type: 'image',
     src: '/_common/img/render/outline.png'
@@ -70,142 +85,6 @@ var assets = module.exports = [{
     type: 'tmx',
     src: '/_common/outlines/test.tmx'
 }, {
-    name: 'cyborg_frigate',
-    type: 'tmx',
-    src: '/_common/outlines/cyborg_frigate.tmx'
-}, {
-    name: 'cyborg_frigate_img',
-    type: 'image',
-    src: '/_common/img/render/ships/cyborg/cyborg_frigate_img.png'
-}, {
-    name: 'cyborg_cruiser',
-    type: 'tmx',
-    src: '/_common/outlines/cyborg_cruiser.tmx'
-}, {
-    name: 'cyborg_cruiser_img',
-    type: 'image',
-    src: '/_common/img/render/ships/cyborg/cyborg_cruiser_img.png'
-}, {
-    name: 'cyborg_battleship1',
-    type: 'tmx',
-    src: '/_common/outlines/cyborg_battleship1.tmx'
-}, {
-    name: 'cyborg_battleship1_img',
-    type: 'image',
-    src: '/_common/img/render/ships/cyborg/cyborg_battleship1_img.png'
-}, {
-    name: 'cyborg_battleship2',
-    type: 'tmx',
-    src: '/_common/outlines/cyborg_battleship2.tmx'
-}, {
-    name: 'cyborg_battleship2_img',
-    type: 'image',
-    src: '/_common/img/render/ships/cyborg/cyborg_battleship2_img.png'
-}, {
-    name: 'cyborg_drone',
-    type: 'tmx',
-    src: '/_common/outlines/cyborg_drone.tmx'
-}, {
-    name: 'cyborg_drone_img',
-    type: 'image',
-    src: '/_common/img/render/ships/cyborg/cyborg_drone_img.png'
-}, {
-    name: 'humanoid_frigate',
-    type: 'tmx',
-    src: '/_common/outlines/humanoid_frigate.tmx'
-}, {
-    name: 'humanoid_frigate_img',
-    type: 'image',
-    src: '/_common/img/render/ships/humanoid/humanoid_frigate_img.png'
-}, {
-    name: 'humanoid_cruiser',
-    type: 'tmx',
-    src: '/_common/outlines/humanoid_cruiser.tmx'
-}, {
-    name: 'humanoid_cruiser_img',
-    type: 'image',
-    src: '/_common/img/render/ships/humanoid/humanoid_cruiser_img.png'
-}, {
-    name: 'humanoid_battleship',
-    type: 'tmx',
-    src: '/_common/outlines/humanoid_battleship.tmx'
-}, {
-    name: 'humanoid_battleship_img',
-    type: 'image',
-    src: '/_common/img/render/ships/humanoid/humanoid_battleship_img.png'
-}, {
-    name: 'humanoid_drone',
-    type: 'tmx',
-    src: '/_common/outlines/humanoid_drone.tmx'
-}, {
-    name: 'humanoid_drone_img',
-    type: 'image',
-    src: '/_common/img/render/ships/humanoid/humanoid_drone_img.png'
-}, {
-    name: 'liquid_frigate',
-    type: 'tmx',
-    src: '/_common/outlines/liquid_frigate.tmx'
-}, {
-    name: 'liquid_frigate_img',
-    type: 'image',
-    src: '/_common/img/render/ships/liquid/liquid_frigate_img.png'
-}, {
-    name: 'liquid_cruiser',
-    type: 'tmx',
-    src: '/_common/outlines/liquid_cruiser.tmx'
-}, {
-    name: 'liquid_cruiser_img',
-    type: 'image',
-    src: '/_common/img/render/ships/liquid/liquid_cruiser_img.png'
-}, {
-    name: 'liquid_battleship',
-    type: 'tmx',
-    src: '/_common/outlines/liquid_battleship.tmx'
-}, {
-    name: 'liquid_battleship_img',
-    type: 'image',
-    src: '/_common/img/render/ships/liquid/liquid_battleship_img.png'
-}, {
-    name: 'liquid_drone',
-    type: 'tmx',
-    src: '/_common/outlines/liquid_drone.tmx'
-}, {
-    name: 'liquid_drone_img',
-    type: 'image',
-    src: '/_common/img/render/ships/liquid/liquid_drone_img.png'
-}, {
-    name: 'mechanoid_frigate',
-    type: 'tmx',
-    src: '/_common/outlines/mechanoid_frigate.tmx'
-}, {
-    name: 'mechanoid_frigate_img',
-    type: 'image',
-    src: '/_common/img/render/ships/mechanoid/mechanoid_frigate_img.png'
-}, {
-    name: 'mechanoid_cruiser',
-    type: 'tmx',
-    src: '/_common/outlines/mechanoid_cruiser.tmx'
-}, {
-    name: 'mechanoid_cruiser_img',
-    type: 'image',
-    src: '/_common/img/render/ships/mechanoid/mechanoid_cruiser_img.png'
-}, {
-    name: 'mechanoid_battleship',
-    type: 'tmx',
-    src: '/_common/outlines/mechanoid_battleship.tmx'
-}, {
-    name: 'mechanoid_battleship_img',
-    type: 'image',
-    src: '/_common/img/render/ships/mechanoid/mechanoid_battleship_img.png'
-}, {
-    name: 'mechanoid_drone',
-    type: 'tmx',
-    src: '/_common/outlines/mechanoid_drone.tmx'
-}, {
-    name: 'mechanoid_drone_img',
-    type: 'image',
-    src: '/_common/img/render/ships/mechanoid/mechanoid_drone_img.png'
-}, {
     name: 'button',
     type: 'image',
     src: '/_common/img/render/button.png'
@@ -238,3 +117,6 @@ var assets = module.exports = [{
     type: 'image',
     src: '/_common/img/render/charging-weapon-icon.png'
 }];
+
+assets = assets.concat(getShipAssets(shipType));
+module.exports = assets;
