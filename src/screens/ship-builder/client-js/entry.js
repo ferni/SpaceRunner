@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, me, shipType*/
+/*global require, me, shipType, hullMaps*/
 
 //sugar
 var jsApp, gs, sh, ShipBuilding, assets;
@@ -28,6 +28,7 @@ jsApp = {
     onload: function() {
         'use strict';
         // init the video
+        //to get ship width: hullMaps[shipType].width * gs.TILE_SIZE
         if (!me.video.init('jsapp', 1440, 1344)) {
             alert('Sorry but your browser does not support html 5 canvas.');
             return;
