@@ -19,9 +19,27 @@ exports.ship = {
         var data = req.body,
             client = redis.createClient();
 
-        client.hset('ships', data.name, data.buildings, function(error, reply) {
-            res.json({error: error, reply: reply});
+        client.incr('next_hull_id', function(error, id) {
+            if (error) {
+                res.json({error: error});
+                return;
+            }
+            client.hmset('hull:' + id, {
+                name: data.name,
+                shipJson: data.jsonString
+            }, function(error, reply) {
+                if (error) {
+                    res.json({error: error});
+                    return;
+                }
+                client.rpush('hulls', id, function(error, reply) {
+                    if (error) {
+                        res.json({error: error});
+                    }
+                });
+            });
         });
+        res.json({});
     },
     /**
      * Loads a ship

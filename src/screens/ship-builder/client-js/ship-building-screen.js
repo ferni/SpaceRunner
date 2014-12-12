@@ -109,27 +109,18 @@ module.exports = me.ScreenObject.extend({
 
         //Save
         $('#file_save').click(function() {
-            var shipData = screen.ship.toJson(),
-                name = prompt('Enter the ship name.');
-            $.post('/ship/save', {name: name, buildings: shipData},
+            var shipJson = screen.ship.toJson();
+            $.post('/ship/save', {
+                name: screen.ship.tmxName,
+                jsonString: JSON.stringify(shipJson)
+            },
                 function(response) {
                     if (response) {
-                        alert('saved');
+                        location.href = '/ship-list';
                     } else {
                         alert('Error: Could not save ship.');
                     }
                 }, 'json');
-        });
-        //Load
-        $('#file_load').click(function() {
-            var name = prompt('Enter the ship name you wish to load.');
-            $.post('/ship/load', {name: name}, function(response) {
-                if (response) {
-                    me.state.change('ship-building', {json: response});
-                } else {
-                    alert('Error: Could not load ship.');
-                }
-            }, 'json');
         });
         $('#jsapp').find('canvas').css({width: '', height: ''});
     },
