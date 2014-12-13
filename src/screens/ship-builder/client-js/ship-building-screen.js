@@ -6,7 +6,7 @@
 */
 
 
-/*global require, module, $, me*/
+/*global require, module, $, me, shipJson*/
 var sh = require('../../_common/shared-js'),
     ShipVM = require('./ship-vm'),
     utils = require('../../_common/client-js/global-helpers/utils'),
@@ -26,11 +26,11 @@ module.exports = me.ScreenObject.extend({
      *
      * @param {Object} settings has tmxName or jsonData.
      */
-    onResetEvent: function(settings) {
+    onResetEvent: function() {
         'use strict';
         var self = this;
         // stuff to reset on state change
-        this.ship = new sh.Ship(settings, true);
+        this.ship = new sh.Ship({json: shipJson});
         this.shipVM = new ShipVM(this.ship);
         this.shipVM.showInScreen();
         this.ship.onBuildingsChanged = function() {

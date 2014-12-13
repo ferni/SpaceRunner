@@ -12,6 +12,7 @@ var Ship = require('../_common/shared-js').Ship,
 module.exports = function(req, res, next) {
     'use strict';
     var shipType = req.query.type,
+        hullID = req.query.hull_id,
         rc = redis.createClient(),
         newShip;
     if (shipType) {
@@ -35,13 +36,23 @@ module.exports = function(req, res, next) {
                 });
             });
         });
-    } else {
-        res.render('ship-builder/view', {
-            username: 'server-hardcoded username',
-            hullMaps: JSON.stringify(hullMaps),
-            path: '/ship-builder/',
-            shipType: req.query.type
+    } else if (hullID) {
+        //pull the ship by hull_id from the database
+        rc.hgetall('hull:' + hullID, function(error, reply) {
+            if (error) {
+                res.error(error);
+                return;
+            }
+            res.render('ship-builder/view', {
+                username: 'server-hardcoded username',
+                hullMaps: JSON.stringify(hullMaps),
+                path: '/ship-builder/',
+                shipType: reply.name,
+                shipJson: reply.shipJson
+            });
         });
+    } else {
+        res.error('Must specify type or hull_id in query string.');
     }
 
 };

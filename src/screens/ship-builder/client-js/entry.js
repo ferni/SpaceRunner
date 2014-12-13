@@ -54,7 +54,7 @@ jsApp = {
             name: 'hardcoded name'
         });
         me.state.set('ship-building', new ShipBuilding());
-        me.state.change('ship-building', {tmxName: shipType});
+        me.state.change('ship-building');
         self.loadReady = true;
         self.onAppLoaded();
 
