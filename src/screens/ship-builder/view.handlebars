@@ -64,9 +64,9 @@
 <script type="text/javascript" src="/_common/vendor/knockout.mapping-latest.debug.js"></script>
 
 <script type="text/javascript">
-    window.shipType = '{{shipType}}';
-    window.shipJson = {{{shipJson}}};
-    window.hullMaps = {{{hullMaps}}};
+    window.bootstrapped = {{{bootstrapped}}};
+    //Because Ship needs a global object "hullMaps"
+    window.hullMaps = bootstrapped.hullMaps;
 </script>
 
 {{> js-bundle }}

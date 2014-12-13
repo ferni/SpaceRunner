@@ -45,10 +45,13 @@ module.exports = function(req, res, next) {
             }
             res.render('ship-builder/view', {
                 username: 'server-hardcoded username',
-                hullMaps: JSON.stringify(hullMaps),
                 path: '/ship-builder/',
-                shipType: reply.name,
-                shipJson: reply.shipJson
+                bootstrapped: JSON.stringify({
+                    shipType: reply.name,
+                    shipJson: reply.shipJson,
+                    hullID: hullID,
+                    hullMaps: hullMaps
+                })
             });
         });
     } else {

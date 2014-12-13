@@ -6,7 +6,7 @@
 */
 
 
-/*global require, module, $, me, shipJson*/
+/*global require, module, $, me, bootstrapped*/
 var sh = require('../../_common/shared-js'),
     ShipVM = require('./ship-vm'),
     utils = require('../../_common/client-js/global-helpers/utils'),
@@ -30,7 +30,7 @@ module.exports = me.ScreenObject.extend({
         'use strict';
         var self = this;
         // stuff to reset on state change
-        this.ship = new sh.Ship({json: shipJson});
+        this.ship = new sh.Ship({json: JSON.parse(bootstrapped.shipJson)});
         this.shipVM = new ShipVM(this.ship);
         this.shipVM.showInScreen();
         this.ship.onBuildingsChanged = function() {
@@ -111,7 +111,7 @@ module.exports = me.ScreenObject.extend({
         $('#file_save').click(function() {
             var shipJson = screen.ship.toJson();
             $.post('/ship/save', {
-                name: screen.ship.tmxName,
+                hullID: bootstrapped.hullID,
                 jsonString: JSON.stringify(shipJson)
             },
                 function(response) {

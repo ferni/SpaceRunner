@@ -21,24 +21,6 @@ exports.ship = {
 
     },
     /**
-     * Loads a ship
-     * @param {Object} req The request object.
-     * @param {Object} res The response object.
-     */
-    load: function(req, res) {
-        'use strict';
-        var name = req.body.name,
-            client = redis.createClient();
-
-        client.hget('ships', name, function(error, reply) {
-            if (!error) {
-                res.json(reply);
-            } else {
-                res.json(null);
-            }
-        });
-    },
-    /**
      * Gets the hull maps.
      * @param {Object} req
      * @param {Object} res

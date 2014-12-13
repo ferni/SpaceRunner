@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global module, shipType*/
+/*global module, bootstrapped*/
 
 // game resources
 // in the case of the items, set their image name equal to their type.
@@ -118,5 +118,5 @@ var assets = [{
     src: '/_common/img/render/charging-weapon-icon.png'
 }];
 
-assets = assets.concat(getShipAssets(shipType));
+assets = assets.concat(getShipAssets(bootstrapped.shipType));
 module.exports = assets;
