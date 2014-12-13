@@ -7,11 +7,17 @@
 
 /*global require, module*/
 //HOME
-var auth = require('../_common/server-js/auth');
+var auth = require('../_common/server-js/auth'),
+    redis = require('redis');
 
 module.exports = function(req, res, next) {
     'use strict';
-    res.render('ship-list/view', {
-        path: '/ship-list/'
+    var rc = redis.createClient();
+    rc.hgetall('hulls', function(error, reply) {
+        res.render('ship-list/view', {
+            path: '/ship-list/',
+            hulls: reply
+        });
     });
+
 };

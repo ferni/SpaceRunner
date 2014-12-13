@@ -17,14 +17,14 @@ exports.ship = {
     save: function(req, res) {
         'use strict';
         var data = req.body,
-            client = redis.createClient();
+            rc = redis.createClient();
 
-        client.incr('next_hull_id', function(error, id) {
+        rc.incr('next_hull_id', function(error, id) {
             if (error) {
                 res.json({error: error});
                 return;
             }
-            client.hmset('hull:' + id, {
+            rc.hmset('hull:' + id, {
                 name: data.name,
                 shipJson: data.jsonString
             }, function(error, reply) {
@@ -32,7 +32,7 @@ exports.ship = {
                     res.json({error: error});
                     return;
                 }
-                client.rpush('hulls', id, function(error, reply) {
+                rc.hset(['hulls', data.name, id], function(error, reply) {
                     if (error) {
                         res.json({error: error});
                     }

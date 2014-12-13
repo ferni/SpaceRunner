@@ -1,1 +1,6 @@
 <a href="/choose-type">+Add</a>
+<ul>
+{{#each hulls}}
+    <li><a href="/ship-builder/?hull_id={{this}}">{{@key}}</a></li>
+{{/each}}
+</ul>
