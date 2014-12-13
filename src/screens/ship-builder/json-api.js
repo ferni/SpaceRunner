@@ -33,13 +33,10 @@ exports.ship = {
                     return;
                 }
                 rc.hset(['hulls', data.name, id], function(error, reply) {
-                    if (error) {
-                        res.json({error: error});
-                    }
+                    res.json({error: error});
                 });
             });
         });
-        res.json({});
     },
     /**
      * Loads a ship
