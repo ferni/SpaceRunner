@@ -18,7 +18,10 @@ exports.ship = {
         'use strict';
         var data = req.body,
             rc = redis.createClient();
-
+        rc.hset(['hull:' + data.hullID, 'shipJson', data.jsonString],
+            function(error, reply) {
+                res.json({error: error});
+            });
     },
     /**
      * Gets the hull maps.
