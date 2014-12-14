@@ -37,7 +37,7 @@ module.exports = function(req, res, next) {
             });
         });
     } else if (hullID) {
-        //pull the ship by hull_id from the database
+        //pull the ship by hull id from the database
         rc.hgetall('hull:' + hullID, function(error, reply) {
             if (error) {
                 res.error(error);

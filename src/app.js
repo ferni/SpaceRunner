@@ -20,7 +20,6 @@ var express = require('express'),
     shipMaps = require('./screens/_common/server-js/ship-maps'),
     app = express(),
     _ = require('underscore')._,
-    shipApi = require('./screens/ship-builder/json-api'),
     //TODO: change for connect-redis store
     store = new express.session.MemoryStore();
 app.use(express.cookieParser());
@@ -68,12 +67,16 @@ app.get('/ship-builder', require('./screens/ship-builder/controller'));
 app.get('/ship-list', require('./screens/ship-list/controller'));
 app.get('/choose-type', require('./screens/choose-type/controller'));
 
-_.each(shipApi, function(apiGroup, groupName) {
+_.each(['ship-builder', 'ship-list'], function(screen) {
     'use strict';
-    _.each(apiGroup, function(callback, methodName) {
-        app.post('/' + groupName + '/' + methodName, callback);
-    });
+    _.each(require('./screens/' + screen + '/json-api'),
+        function(apiGroup, groupName) {
+            _.each(apiGroup, function(callback, methodName) {
+                app.post('/' + groupName + '/' + methodName, callback);
+            });
+        });
 });
+
 
 //globals
 /**
