@@ -18,7 +18,10 @@ exports.ship = {
         'use strict';
         var data = req.body,
             rc = redis.createClient();
-        rc.hset(['hull:' + data.hullID, 'shipJson', data.jsonString],
+        rc.hmset('hull:' + data.hullID, {
+            'shipJson': data.jsonString,
+            'name': data.name
+        },
             function(error, reply) {
                 res.json({error: error});
             });

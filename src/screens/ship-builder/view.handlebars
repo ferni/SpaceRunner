@@ -2,7 +2,9 @@
     <div id="jsapp"></div>
     <div id="screensUi">
         <div id="ship-building-screen">
-            <div>Name: <input id="ship-name" type="text"/></div>
+            <div id="top-panel">
+                Name: <input id="ship-name" type="text"/><button class="button" id="file_save">Save</button>
+            </div>
             <div id="itemboard">
                 <div id="items">
                     <div class="item">
@@ -49,10 +51,6 @@
                         <img id="item_WeakSpot" src="/_common/img/render/weakspot.png" width="43px" height="43px" style="background-color:#000000"/>
                         <span>Weak Spot</span>
                     </div>
-                </div>
-                <div class="blackempty">&nbsp;</div>
-                <div class="blackempty">
-                    <button class = "globalbutton" id="file_save">Save</button>
                 </div>
             </div>
         </div>

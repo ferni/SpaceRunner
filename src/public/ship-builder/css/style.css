@@ -1,19 +1,17 @@
-﻿#ship-building-screen .battle-button {
-    background-color: green;
+﻿#top-panel {
     position: fixed;
-    bottom: 15px;
     left: 180px;
-    border: 3px solid white;
-    color: white;
-    opacity:0.8;
+    border: 1px solid white;
+    background-color: darkslateblue;
+    padding: 5px;
 }
 
-#ship-building-screen .battle-button:hover {
-    background-color: limegreen;
-    opacity:1;
+#file_save {
+    margin-left: 5px;
+    padding: 2px;
 }
 
-#ship-building-screen #itemboard 
+#itemboard
 {
     width: 160px;
     position: fixed;
@@ -23,14 +21,14 @@
 
     overflow-y: scroll;
 }
-#ship-building-screen #items{
+#items{
     margin-left: 20px;
 }
-#ship-building-screen #itemboard .empty{
+#itemboard .empty{
     float:left;
 }
 
-#ship-building-screen .item {
+.item {
     width:100px;
     height:64px;
     background-color:rgba(254,226,235,0.8);
@@ -41,28 +39,28 @@
     cursor:pointer;
     position: relative;
 }
-#ship-building-screen .item img{
+.item img{
     position: absolute;
     top: 5px;
     left: 5px;
 }
-#ship-building-screen .item span{
+.item span{
     position: absolute;
     bottom: 7px;
     left: 5px;
     right: 5px;
 }
-#ship-building-screen .chosen{
+.chosen{
     border:#FFFF33 3px solid;
 }
 
-#ship-building-screen .blackempty{
+.blackempty{
     background:#000000;
     text-align:center;
     padding:0px;
 }
 
-#ship-building-screen .globalbutton{
+.globalbutton{
     width:130px;
     height:32px;
     text-align:center;

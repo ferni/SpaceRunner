@@ -112,6 +112,7 @@ module.exports = me.ScreenObject.extend({
             var shipJson = screen.ship.toJson();
             $.post('/ship/save', {
                 hullID: bootstrapped.hullID,
+                name: $('#ship-name').val(),
                 jsonString: JSON.stringify(shipJson)
             },
                 function(response) {
@@ -122,6 +123,7 @@ module.exports = me.ScreenObject.extend({
                     }
                 }, 'json');
         });
+        $('#ship-name').val(bootstrapped.shipName);
         $('#jsapp').find('canvas').css({width: '', height: ''});
     },
     mouseDbClick: function() {
