@@ -12,22 +12,25 @@ exports.ship = {
     remove: function(req, res) {
         'use strict';
         var id = req.body.id,
-            rc = redis.createClient();
-        rc.hget(['hull:' + id, 'name'], function(error, reply) {
+            rc = redis.createClient(),
+            tasksDone = 0;
+        function taskDone() {
+            tasksDone++;
+            if (tasksDone >= 2) {
+                res.json({});
+            }
+        }
+        rc.lrem(['hull_ids', 0, id], function(error, reply) {
             if (error) {
                 return res.json({error: error});
             }
-            rc.hdel(['hulls', reply], function(error, reply) {
-                if (error) {
-                    return res.json({error: error});
-                }
-                rc.del('hull:' + id, function(error, reply) {
-                    if (error) {
-                        return res.json({error: error});
-                    }
-                    res.json({});
-                });
-            });
+            taskDone();
+        });
+        rc.del('hull:' + id, function(error, reply) {
+            if (error) {
+                return res.json({error: error});
+            }
+            taskDone();
         });
     }
 };

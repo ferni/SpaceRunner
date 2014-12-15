@@ -118,5 +118,5 @@ var assets = [{
     src: '/_common/img/render/charging-weapon-icon.png'
 }];
 
-assets = assets.concat(getShipAssets(bootstrapped.shipType));
+assets = assets.concat(getShipAssets(bootstrapped.shipJson.tmxName));
 module.exports = assets;

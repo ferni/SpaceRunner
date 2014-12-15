@@ -30,7 +30,7 @@ module.exports = me.ScreenObject.extend({
         'use strict';
         var self = this;
         // stuff to reset on state change
-        this.ship = new sh.Ship({json: JSON.parse(bootstrapped.shipJson)});
+        this.ship = new sh.Ship({json: bootstrapped.shipJson});
         this.shipVM = new ShipVM(this.ship);
         this.shipVM.showInScreen();
         this.ship.onBuildingsChanged = function() {

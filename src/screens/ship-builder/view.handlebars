@@ -2,6 +2,7 @@
     <div id="jsapp"></div>
     <div id="screensUi">
         <div id="ship-building-screen">
+            <div>Name: <input id="ship-name" type="text"/></div>
             <div id="itemboard">
                 <div id="items">
                     <div class="item">
@@ -65,6 +66,7 @@
 
 <script type="text/javascript">
     window.bootstrapped = {{{bootstrapped}}};
+    bootstrapped.shipJson = JSON.parse(bootstrapped.shipJson);
     //Because Ship needs a global object "hullMaps"
     window.hullMaps = bootstrapped.hullMaps;
 </script>

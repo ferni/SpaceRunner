@@ -31,7 +31,11 @@ module.exports = function(req, res, next) {
                     res.json({error: error});
                     return;
                 }
-                rc.hset(['hulls', shipType, id], function(error, reply) {
+                rc.rpush(['hull_ids', id], function(error, reply) {
+                    if (error) {
+                        res.json({error: error});
+                        return;
+                    }
                     res.redirect('/ship-builder?hull_id=' + id);
                 });
             });
@@ -47,7 +51,7 @@ module.exports = function(req, res, next) {
                 username: 'server-hardcoded username',
                 path: '/ship-builder/',
                 bootstrapped: JSON.stringify({
-                    shipType: reply.name,
+                    shipName: reply.name,
                     shipJson: reply.shipJson,
                     hullID: hullID,
                     hullMaps: hullMaps
