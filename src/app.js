@@ -64,7 +64,7 @@ app.configure('development', function() {
 });
 
 
-app.get('/', require('./screens/home/controller'));
+app.get('/', require('./screens/ship-list/controller'));
 app.get('/ship-builder', require('./screens/ship-builder/controller'));
 app.get('/ship-list', require('./screens/ship-list/controller'));
 app.get('/choose-type', require('./screens/choose-type/controller'));

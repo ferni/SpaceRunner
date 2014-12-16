@@ -104,9 +104,6 @@ exports.authenticate = function(req, res, next) {
         //create the player
         player = exports.createNewPlayer();
         req.session.playerID = player.id;
-        res.redirect('/');
-    } else {
-        //player is logged in, carry on
-        next();
     }
+    next();
 };
