@@ -1,23 +1,6 @@
-<a href="/choose-type">+Add</a>
+<h2>Choose your ship</h2>
 <ul>
 {{#each hulls}}
-    <li><a href="/ship-builder/?hull_id={{id}}">{{name}}</a>
-    <button class="delete-button" value="{{id}}">[X]</button>
+    <li><a href="/battle/?hull_id={{id}}">{{name}}</a>
 {{/each}}
 </ul>
-
-<script src="/_common/vendor/jquery-1.9.1.js"></script>
-<script type="text/javascript">
-    $('.delete-button').click(function() {
-        $(this).removeClass('delete-button').text('[...]');
-        $.post('/ship/remove', {id: $(this).val()}, function(data) {
-            if (data.error) {
-                alert(JSON.stringify(data.error));
-            } else {
-                location.reload();
-            }
-        }).error(function() {
-            alert('Error');
-        });
-    });
-</script>

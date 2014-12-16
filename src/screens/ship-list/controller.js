@@ -14,10 +14,12 @@ var auth = require('../_common/server-js/auth'),
 module.exports = function(req, res, next) {
     'use strict';
     hulls.getAll(function(error, hulls) {
+        var view;
         if (error) {
             res.render('_common/error', {error: error});
         }
-        res.render('ship-list/view', {
+        view = req.query.edit ? 'edit' : 'view';
+        res.render('ship-list/' + view, {
             path: '/ship-list/',
             hulls: hulls
         });
