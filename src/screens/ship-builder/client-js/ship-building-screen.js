@@ -117,7 +117,7 @@ module.exports = me.ScreenObject.extend({
             },
                 function(response) {
                     if (response) {
-                        location.href = '/ship-list';
+                        location.href = '/ship-list?edit=true';
                     } else {
                         alert('Error: Could not save ship.');
                     }
