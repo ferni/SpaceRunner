@@ -142,4 +142,13 @@ textarea {
     margin-top: 50px;
 }
 
+header {
+    border: 1px solid rgb(76, 191, 255);
+    background-color: #000;
+    color: rgb(76, 191, 255);
+}
 
+.player-name {
+    color: rgb(158, 229, 255);
+    font-weight: bold;
+}

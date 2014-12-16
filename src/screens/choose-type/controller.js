@@ -12,6 +12,7 @@ var auth = require('../_common/server-js/auth');
 module.exports = function(req, res, next) {
     'use strict';
     res.render('choose-type/view', {
-        path: '/choose-type/'
+        path: '/choose-type/',
+        player: auth.getPlayer(req)
     });
 };

@@ -7,6 +7,7 @@
 
 /*global require, module, hullMaps*/
 var Ship = require('../_common/shared-js').Ship,
+    auth = require('../_common/server-js/auth'),
     redis = require('redis');
 
 module.exports = function(req, res, next) {
@@ -48,14 +49,14 @@ module.exports = function(req, res, next) {
                 return;
             }
             res.render('ship-builder/view', {
-                username: 'server-hardcoded username',
                 path: '/ship-builder/',
                 bootstrapped: JSON.stringify({
                     shipName: reply.name,
                     shipJson: reply.shipJson,
                     hullID: hullID,
                     hullMaps: hullMaps
-                })
+                }),
+                player: auth.getPlayer(req)
             });
         });
     } else {

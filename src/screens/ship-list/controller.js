@@ -21,7 +21,8 @@ module.exports = function(req, res, next) {
         view = req.query.edit ? 'edit' : 'view';
         res.render('ship-list/' + view, {
             path: '/ship-list/',
-            hulls: hulls
+            hulls: hulls,
+            player: auth.getPlayer(req)
         });
     });
 };

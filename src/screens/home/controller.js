@@ -20,6 +20,6 @@ var auth = require('../_common/server-js/auth');
 module.exports = function(req, res, next) {
     'use strict';
     res.render('home/view', {
-        username: auth.getPlayer(req).name
+        player: auth.getPlayer(req)
     });
 };
