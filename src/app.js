@@ -15,6 +15,7 @@ var express = require('express'),
     exphbs  = require('express-handlebars'),
     screens = require('./screens-server'),
     chat = require('./screens/_common/server-js/chat'),
+    auth = require('./screens/_common/server-js/auth'),
     http = require('http'),
     path = require('path'),
     shipMaps = require('./screens/_common/server-js/ship-maps'),
@@ -29,6 +30,7 @@ app.use(express.session({
         'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
     store: store
 }));
+app.use(auth.authenticate);
 app.engine('handlebars', exphbs({
     layoutsDir: 'screens/_common/layouts',
     defaultLayout: 'plain',

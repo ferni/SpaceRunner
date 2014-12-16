@@ -96,3 +96,17 @@ exports.isOnline = function(playerID) {
         return p.id === playerID;
     });
 };
+
+exports.authenticate = function(req, res, next) {
+    'use strict';
+    var player;
+    if (req.session.playerID === undefined) {
+        //create the player
+        player = exports.createNewPlayer();
+        req.session.playerID = player.id;
+        res.redirect('/');
+    } else {
+        //player is logged in, carry on
+        next();
+    }
+};

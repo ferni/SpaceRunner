@@ -19,20 +19,7 @@ var auth = require('../_common/server-js/auth');
  */
 module.exports = function(req, res, next) {
     'use strict';
-    var player;
-    console.log(req.session);
-    if (req.session.playerID === undefined) {
-        //create the player
-        player = auth.createNewPlayer();
-        req.session.playerID = player.id;
-    } else {
-        try {
-            player = auth.getPlayer(req);
-        } catch (e2) {
-            next(new Error('Expected player to be logged in'));
-        }
-    }
     res.render('home/view', {
-        username: player.name
+        username: auth.getPlayer(req).name
     });
 };
