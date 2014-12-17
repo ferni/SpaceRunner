@@ -1,8 +1,10 @@
 <a href="/choose-type">+Add</a>
 <ul>
 {{#each hulls}}
-    <li><a href="/ship-builder/?hull_id={{id}}">{{name}}</a>
-    <button class="delete-button" value="{{id}}">[X]</button>
+    <li>
+        <a href="/ship-builder/?hull_id={{id}}">{{name}}</a>
+        <button class="delete-button" value="{{id}}">[X]</button>
+    </li>
 {{/each}}
 </ul>
 
