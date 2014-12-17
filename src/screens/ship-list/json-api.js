@@ -6,7 +6,9 @@
 */
 
 /*global require, exports, hullMaps*/
-var redis = require('redis');
+var redis = require('redis'),
+    queue = require('../_common/server-js/queue'),
+    auth = require('../_common/server-js/auth');
 
 exports.ship = {
     remove: function(req, res) {
@@ -32,5 +34,12 @@ exports.ship = {
             }
             taskDone();
         });
+    },
+    pick: function(req, res) {
+        'use strict';
+        var player = auth.getPlayer(req);
+        player.hullID = req.body.id;
+        queue.addPlayer(player.id);
+        res.json({});
     }
 };

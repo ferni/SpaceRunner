@@ -1,6 +1,23 @@
 <h2>Choose your ship</h2>
-<ul>
+<ul id="ship-list">
 {{#each hulls}}
-    <li><a href="/battle/?hull_id={{id}}">{{name}}</a>
+    <li><a href="#" data-id="{{id}}">{{name}}</a></li>
 {{/each}}
 </ul>
+
+<script src="/_common/vendor/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+    $('#ship-list').find('a').click(function(e) {
+        e.preventDefault();
+        $.post('/ship/pick', {id: $(this).attr('data-id')}, function(data) {
+            if (data.error) {
+                alert(JSON.stringify(data.error));
+            } else {
+                alert('Added to queue');
+                //todo: show "waiting for another player".
+            }
+        }).error(function() {
+            alert('Server error');
+        });
+    });
+</script>
