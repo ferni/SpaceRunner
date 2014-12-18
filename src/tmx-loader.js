@@ -7,14 +7,14 @@
 
 /*global require, __dirname, exports, GLOBAL*/
 
-var sh = require('screens/_common/shared-js'),
+var sh = require('./screens/_common/shared-js'),
     fs = require('fs'),
     tmx = require('tmx');
 
 
 function getPath(mapName) {
     'use strict';
-    return __dirname + '../../../../public/_common/outlines/' + mapName + '.tmx';
+    return __dirname + '/public/_common/outlines/' + mapName + '.tmx';
 }
 
 function getCollisionTileChar(tileId) {

@@ -7,8 +7,8 @@
 
 /*global require, exports, hullMaps*/
 var redis = require('redis'),
-    queue = require('../_common/server-js/queue'),
-    auth = require('../../state/players');
+    battles = require('../../state/battles'),
+    players = require('../../state/players');
 
 exports.ship = {
     remove: function(req, res) {
@@ -39,7 +39,7 @@ exports.ship = {
         'use strict';
         var player = players.getPlayer(req);
         player.hullID = req.body.id;
-        queue.addPlayer(player.id);
+        battles.addPlayerToQueue(player.id);
         res.json({});
     }
 };

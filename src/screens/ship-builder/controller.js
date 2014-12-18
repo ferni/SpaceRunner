@@ -7,7 +7,7 @@
 
 /*global require, module, hullMaps*/
 var Ship = require('../_common/shared-js').Ship,
-    auth = require('../../state/players'),
+    players = require('../../state/players'),
     redis = require('redis');
 
 module.exports = function(req, res, next) {

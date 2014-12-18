@@ -7,8 +7,8 @@
 
 /*global require, module*/
 //HOME
-var auth = require('../../state/players'),
-    hulls = require('../_common/server-js/saved-hulls'),
+var players = require('../../state/players'),
+    hulls = require('../../state/prebuilt-ships'),
     _ = require('underscore')._;
 
 module.exports = function(req, res, next) {

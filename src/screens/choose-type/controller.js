@@ -7,7 +7,7 @@
 
 /*global require, module*/
 //HOME
-var auth = require('../../state/players');
+var players = require('../../state/players');
 
 module.exports = function(req, res, next) {
     'use strict';
