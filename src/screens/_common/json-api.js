@@ -8,7 +8,7 @@
 /*global require, exports, linesInServer*/
 
 var url = require('url'),
-    auth = require('./server-js/auth'),
+    auth = require('./../../state/players'),
     chat = require('./server-js/chat'),
     sh = require('./shared-js');
 
@@ -48,7 +48,7 @@ exports.chat = {
     send: function(req, res) {
         'use strict';
         var line = req.body.line;
-        chat.addLine(auth.getPlayer(req).name, line.message);
+        chat.addLine(players.getPlayer(req).name, line.message);
         res.json({});
     }
 };

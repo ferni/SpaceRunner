@@ -7,7 +7,7 @@
 
 /*global require, module*/
 //HOME
-var auth = require('../_common/server-js/auth'),
+var auth = require('../../state/players'),
     hulls = require('../_common/server-js/saved-hulls'),
     _ = require('underscore')._;
 
@@ -22,7 +22,7 @@ module.exports = function(req, res, next) {
         res.render('ship-list/' + view, {
             path: '/ship-list/',
             hulls: hulls,
-            player: auth.getPlayer(req)
+            player: players.getPlayer(req)
         });
     });
 };

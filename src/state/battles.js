@@ -8,13 +8,11 @@
 /*global exports*/
 var playersWaiting = [];
 
-exports.addPlayer = function(playerID) {
+exports.addPlayerToQueue = function(playerID) {
     'use strict';
-    var match = [];
     playersWaiting.push(playerID);
     if (playersWaiting >= 2) {
-        match.push(playersWaiting.shift());
-        match.push(playersWaiting.shift());
-        //todo: create battle with both this players.
+        //todo: create battle with both these players: [0] and [1].
     }
 };
+

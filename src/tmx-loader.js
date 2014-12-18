@@ -5,9 +5,9 @@
 * All rights reserved.
 */
 
-/*global require, __dirname, exports*/
+/*global require, __dirname, exports, GLOBAL*/
 
-var sh = require('../shared-js'),
+var sh = require('screens/_common/shared-js'),
     fs = require('fs'),
     tmx = require('tmx');
 
@@ -82,7 +82,8 @@ function loadMap(maps, index, end) {
         if (index < sh.mapNames.length - 1) {
             loadMap(maps, index + 1, end);
         } else {
-            end(maps);
+            GLOBAL.hullMaps = maps;
+            end();
         }
     });
     file.pipe(parser);
@@ -92,7 +93,7 @@ function loadMap(maps, index, end) {
  * Loads all the maps.
  * @param {Function} callback Callback when finished.
  */
-exports.loadMaps = function(callback) {
+exports.load = function(callback) {
     'use strict';
     loadMap({}, 0, callback);
 };

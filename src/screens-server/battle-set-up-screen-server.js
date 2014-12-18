@@ -8,7 +8,7 @@
 /*global require, battleSetUps*/
 
 var BattleSetUp = require('./').BattleSetUp,
-    auth = require('../screens/_common/server-js/auth'),
+    auth = require('../state/players'),
     _ = require('underscore')._,
     routes = require('./routes');
 
@@ -18,7 +18,7 @@ routes.add('get', function(req, res, next) {
         bsu = _.find(battleSetUps, function(bsu) {
             return bsu.id === id;
         }),
-        playerID = auth.getID(req);
+        playerID = players.getID(req);
     if (!bsu) {
         next(new Error('No battleSetUp with id ' + id));
         return;
@@ -49,7 +49,7 @@ routes.add('start', function(req, res, next) {
         bsu = _.find(battleSetUps, function(bsu) {
             return bsu.id === id;
         }),
-        playerID = auth.getID(req);
+        playerID = players.getID(req);
     if (!bsu.isFull()) {
         next(new Error("Battle can't start unless both players are present."));
         return;
@@ -79,7 +79,7 @@ routes.add('create', function(req, res, next) {
     }
     bsu = new BattleSetUp({
         id: id,
-        creator: auth.getPlayer(req),
+        creator: players.getPlayer(req),
         shipJson: req.body.shipJson
     });
     battleSetUps.push(bsu);
@@ -103,7 +103,7 @@ routes.add('join', function(req, res, next) {
     if (battle.isFull()) {
         res.json({error: 'battle is full'});
     } else {
-        battle.addPlayer(auth.getPlayer(req));
+        battle.addPlayer(players.getPlayer(req));
         res.json(battle.toJson());
     }
 });

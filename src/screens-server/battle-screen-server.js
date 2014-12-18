@@ -7,7 +7,7 @@
 
 /*global require, battles*/
 
-var auth = require('../screens/_common/server-js/auth'),
+var auth = require('../state/players'),
     _ = require('underscore')._,
     routes = require('./routes'),
     sh = require('../shared'),
@@ -33,7 +33,7 @@ function authenticate(req, next, callback) {
     'use strict';
     var id = req.body.id,
         battle = getByID(id),
-        playerID = auth.getID(req);
+        playerID = players.getID(req);
     if (!battle) {
         next(new Error('Battle not found, id: ' + id));
         return;
@@ -82,7 +82,7 @@ routes.add('sendunitorders', function(req, res, next) {
         }
         turn.addOrders(unitOrders, playerID);
         chat.log('SUCCESS: The orders issued by ' +
-            auth.playerByID(playerID).name +
+            players.playerByID(playerID).name +
             ' have been validated by the server');
         return res.json({ok: true});
     });

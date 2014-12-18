@@ -7,7 +7,7 @@
 
 /*global require, module, hullMaps*/
 var Ship = require('../_common/shared-js').Ship,
-    auth = require('../_common/server-js/auth'),
+    auth = require('../../state/players'),
     redis = require('redis');
 
 module.exports = function(req, res, next) {
@@ -56,7 +56,7 @@ module.exports = function(req, res, next) {
                     hullID: hullID,
                     hullMaps: hullMaps
                 }),
-                player: auth.getPlayer(req)
+                player: players.getPlayer(req)
             });
         });
     } else {

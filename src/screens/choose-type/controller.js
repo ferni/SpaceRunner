@@ -7,12 +7,12 @@
 
 /*global require, module*/
 //HOME
-var auth = require('../_common/server-js/auth');
+var auth = require('../../state/players');
 
 module.exports = function(req, res, next) {
     'use strict';
     res.render('choose-type/view', {
         path: '/choose-type/',
-        player: auth.getPlayer(req)
+        player: players.getPlayer(req)
     });
 };

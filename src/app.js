@@ -18,7 +18,7 @@ var express = require('express'),
     auth = require('./screens/_common/server-js/auth'),
     http = require('http'),
     path = require('path'),
-    shipMaps = require('./screens/_common/server-js/ship-maps'),
+    tmxLoader = require('./tmx-loader'),
     app = express(),
     _ = require('underscore')._,
     //TODO: change for connect-redis store
@@ -30,7 +30,7 @@ app.use(express.session({
         'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
     store: store
 }));
-app.use(auth.authenticate);
+app.use(players.authenticate);
 app.engine('handlebars', exphbs({
     layoutsDir: 'screens/_common/layouts',
     defaultLayout: 'plain',
@@ -93,9 +93,8 @@ GLOBAL.battleSetUps = [];
 GLOBAL.battles = [];
 
 console.log('Loading maps...');
-shipMaps.loadMaps(function(maps) {
+tmxLoader.load(function() {
     'use strict';
-    GLOBAL.hullMaps = maps;
     http.createServer(app).listen(app.get('port'), function() {
         console.log('Express server listening on port ' + app.get('port'));
     });

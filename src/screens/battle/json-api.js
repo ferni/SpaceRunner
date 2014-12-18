@@ -4,3 +4,14 @@
 * Copyright 2013 MITHIS
 * All rights reserved.
 */
+
+/*global exports, require*/
+
+var auth = require('../../state/players')
+
+exports.battle = {
+    issetup: function(req, res) {
+        'use strict';
+
+    }
+};

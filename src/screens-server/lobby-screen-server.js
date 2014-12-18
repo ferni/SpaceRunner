@@ -11,7 +11,7 @@ var _ = require('underscore')._,
     routes = require('./routes/index'),
     sh = require('../shared'),
     ChallengeBattle = require('./').ChallengeBattle,
-    auth = require('../screens/_common/server-js/auth.js');
+    auth = require('../state/players.js');
 
 routes.add('get', function(req, res, next) {
     'use strict';
@@ -28,7 +28,7 @@ routes.add('get', function(req, res, next) {
 routes.add('newchallenge', function(req, res, next) {
     'use strict';
     try {
-        var player = auth.getPlayer(req),
+        var player = players.getPlayer(req),
             battleServer,
             challengeShips,
             challengeIndex = req.body.challengeIndex;
