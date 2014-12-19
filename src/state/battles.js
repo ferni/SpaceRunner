@@ -31,6 +31,7 @@ function createBattle(players) {
         });
         ship1 = battleServer.battleModel.ships[0];
         ship1.owner = players[0];
+        players[0].battleID = battleServer.id;
         ship1.putUnit(new U({imgIndex: 6, speed: 2}));
         ship1.putUnit(new U({imgIndex: 6, speed: 2}));
         ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
@@ -38,6 +39,7 @@ function createBattle(players) {
 
         ship2 = battleServer.battleModel.ships[1];
         ship2.owner = players[1];
+        players[1].battleID = battleServer.id;
         ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
         ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
         ship2.putUnit(new U({imgIndex: 12, speed: 2}));
