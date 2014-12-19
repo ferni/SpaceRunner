@@ -19,6 +19,7 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     tmxLoader = require('./tmx-loader'),
+    routes = require('./routes'),
     app = express(),
     _ = require('underscore')._,
     //TODO: change for connect-redis store
@@ -63,21 +64,7 @@ app.configure('development', function() {
     app.use(express.errorHandler());
 });
 
-
-app.get('/', require('./screens/ship-list/controller'));
-app.get('/ship-builder', require('./screens/ship-builder/controller'));
-app.get('/ship-list', require('./screens/ship-list/controller'));
-app.get('/choose-type', require('./screens/choose-type/controller'));
-
-_.each(['ship-builder', 'ship-list'], function(screen) {
-    'use strict';
-    _.each(require('./screens/' + screen + '/json-api'),
-        function(apiGroup, groupName) {
-            _.each(apiGroup, function(callback, methodName) {
-                app.post('/' + groupName + '/' + methodName, callback);
-            });
-        });
-});
+routes.register(app);
 
 console.log('Loading maps...');
 tmxLoader.load(function() {
