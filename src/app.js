@@ -79,19 +79,6 @@ _.each(['ship-builder', 'ship-list'], function(screen) {
         });
 });
 
-
-//globals
-/**
- * filled with model.BattleSetUp.
- * @type {Array}
- */
-GLOBAL.battleSetUps = [];
-/**
- * filled with model.BattleServer.
- * @type {Array}
- */
-GLOBAL.battles = [];
-
 console.log('Loading maps...');
 tmxLoader.load(function() {
     'use strict';
