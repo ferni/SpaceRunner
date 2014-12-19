@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, exports, battles*/
+/*global require, module*/
 
 var Class = require('./class'),
     sh = require('../screens/_common/shared-js'),
@@ -44,7 +44,7 @@ function BattleTurn(params) {
  * @param {{id:int}} parameters
  * @constructor
  */
-exports.BattleServer = Class.extend({
+var BattleServer = module.exports = Class.extend({
     numberOfPlayers: 2,
     turnCount: 0,
     currentTurn: null,

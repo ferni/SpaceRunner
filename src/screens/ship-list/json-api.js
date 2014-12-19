@@ -39,7 +39,7 @@ exports.ship = {
         'use strict';
         var player = players.getPlayer(req);
         player.hullID = req.body.id;
-        battles.addPlayerToQueue(player.id);
+        battles.addPlayerToQueue(player);
         res.json({});
     }
 };

@@ -8,7 +8,8 @@
 /*global require, module, hullMaps*/
 var Ship = require('../_common/shared-js').Ship,
     players = require('../../state/players'),
-    redis = require('redis');
+    redis = require('redis'),
+    prebuiltShips = require('../../state/prebuilt-ships');
 
 module.exports = function(req, res, next) {
     'use strict';
@@ -43,7 +44,7 @@ module.exports = function(req, res, next) {
         });
     } else if (hullID) {
         //pull the ship by hull id from the database
-        rc.hgetall('hull:' + hullID, function(error, reply) {
+        prebuiltShips.get(hullID, function(error, reply) {
             if (error) {
                 res.error(error);
                 return;

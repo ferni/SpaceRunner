@@ -10,7 +10,7 @@
 var redis = require('redis'),
     _ = require('underscore')._;
 
-exports.getAll = function(cb) {
+function getAll(cb) {
     'use strict';
     var rc = redis.createClient();
     function renderIfLoaded(ids, hulls) {
@@ -37,4 +37,19 @@ exports.getAll = function(cb) {
             });
         });
     });
-};
+}
+
+function get(id, cb) {
+    'use strict';
+    var rc = redis.createClient();
+    rc.hgetall('hull:' + id, function(error, reply) {
+        if (error) {
+            cb(error);
+        } else {
+            cb(null, reply);
+        }
+    });
+}
+
+exports.getAll = getAll;
+exports.get = get;
