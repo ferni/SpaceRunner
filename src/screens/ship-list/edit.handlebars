@@ -1,4 +1,4 @@
-<a href="/choose-type">+Add</a>
+<button id="add-button">+Add</button>
 <ul>
 {{#each hulls}}
     <li>
@@ -22,4 +22,7 @@
             alert('Error');
         });
     });
+    $('#add-button').click(function() {
+        location.href = "/choose-type";
+    })
 </script>
