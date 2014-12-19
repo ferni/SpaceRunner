@@ -9,14 +9,14 @@
 
 //sugar
 var jsApp, gs, sh, ShipBuilding, assets;
-gs = require('../../_common/client-js/game-state');
+gs = require('client/game-state');
 sh = require('shared');
 gs.TILE_SIZE = 32 / sh.GRID_SUB;
 gs.HALF_TILE = 16 / sh.GRID_SUB;
 ShipBuilding = require('./ship-building-screen');
 assets = require('./assets');
 
-require('../../_common/client-js/melonjs-plugins');
+require('client/melonjs-plugins');
 
 jsApp = {
     loadReady: false,

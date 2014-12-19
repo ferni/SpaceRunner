@@ -9,9 +9,9 @@
 /*global require, module, $, me, bootstrapped*/
 var sh = require('shared'),
     ShipVM = require('./ship-vm'),
-    utils = require('../../_common/client-js/global-helpers/utils'),
-    itemVMs = require('../../_common/client-js/item-vms').itemVMs,
-    ui = require('../../_common/client-js/ui'),
+    utils = require('client/utils'),
+    itemVMs = require('client/item-vms').itemVMs,
+    ui = require('client/ui'),
     _ = require('underscore')._;
 
 /* Screen where one builds the ship */

@@ -7,10 +7,10 @@
 
 /*global require, module, me, _, ko*/
 
-var utils = require('../../_common/client-js/global-helpers/utils'),
-    ItemVM = require('../../_common/client-js/item-vms').ItemVM,
-    itemVMs = require('../../_common/client-js/item-vms').itemVMs,
-    ui = require('../../_common/client-js/ui');
+var utils = require('client/utils'),
+    ItemVM = require('client/item-vms').ItemVM,
+    itemVMs = require('client/item-vms').itemVMs,
+    ui = require('client/ui');
 
 /**
  * An object in charge of representing a sh.Ship on the screen.
