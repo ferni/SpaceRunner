@@ -125,6 +125,9 @@ sh.Ship = SharedClass.extendShared({
                     empty = {x: x, y: y};
                 }
             });
+        if (!empty) {
+            throw new Error('Could not find empty position in ship');
+        }
         unit.x = empty.x;
         unit.y = empty.y;
         if (unit.ownerID === undefined) {
