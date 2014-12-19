@@ -9,8 +9,8 @@
 
 var url = require('url'),
     auth = require('./../../state/players'),
-    chat = require('./server-js/chat'),
-    sh = require('./shared-js');
+    chat = require('./../../chat'),
+    sh = require('shared');
 
 exports.chat = {
     /**

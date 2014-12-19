@@ -6,7 +6,7 @@
 */
 
 /*global require, exports*/
-var sh = require('../screens/_common/shared-js'),
+var sh = require('shared'),
     BattleServer = require('../classes/battle-server'),
     prebuiltShips = require('./prebuilt-ships'),
     players = require('./players');

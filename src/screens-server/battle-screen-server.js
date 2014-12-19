@@ -11,7 +11,7 @@ var auth = require('../state/players'),
     _ = require('underscore')._,
     routes = require('./routes'),
     sh = require('../shared'),
-    chat = require('../screens/_common/server-js/chat');
+    chat = require('../chat');
 
 function getByID(battleID) {
     'use strict';

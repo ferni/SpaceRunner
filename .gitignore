@@ -20,4 +20,7 @@ Session.vim
 /src/.idea/workspace.xml
 
 
-/src/node_modules
+/src/node_modules/*
+!/src/node_modules/client
+!/src/node_modules/server
+!/src/node_modules/shared

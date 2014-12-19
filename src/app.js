@@ -14,7 +14,7 @@
 var express = require('express'),
     exphbs  = require('express-handlebars'),
     screens = require('./screens-server'),
-    chat = require('./screens/_common/server-js/chat'),
+    chat = require('./chat'),
     players = require('./state/players'),
     http = require('http'),
     path = require('path'),

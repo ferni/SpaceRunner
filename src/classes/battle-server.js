@@ -8,7 +8,7 @@
 /*global require, module*/
 
 var Class = require('./class'),
-    sh = require('../screens/_common/shared-js'),
+    sh = require('shared'),
     _ = require('underscore')._;
 
 function BattleTurn(params) {

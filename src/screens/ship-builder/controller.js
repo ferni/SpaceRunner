@@ -6,7 +6,7 @@
 */
 
 /*global require, module, hullMaps*/
-var Ship = require('../_common/shared-js').Ship,
+var Ship = require('shared').Ship,
     players = require('../../state/players'),
     redis = require('redis'),
     prebuiltShips = require('../../state/prebuilt-ships');

@@ -10,7 +10,7 @@
 //sugar
 var jsApp, gs, sh, ShipBuilding, assets;
 gs = require('../../_common/client-js/game-state');
-sh = require('../../_common/shared-js');
+sh = require('shared');
 gs.TILE_SIZE = 32 / sh.GRID_SUB;
 gs.HALF_TILE = 16 / sh.GRID_SUB;
 ShipBuilding = require('./ship-building-screen');

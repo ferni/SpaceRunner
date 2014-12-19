@@ -11,7 +11,7 @@ var _ = require('underscore')._,
     utils = require('./global-helpers/utils'),
     gs = require('./game-state'),
     TILE_SIZE = gs.TILE_SIZE,
-    sh = require('../shared-js');
+    sh = require('shared');
 
 /* An object that has tile position (x and y),
  and row length and col length through "size"

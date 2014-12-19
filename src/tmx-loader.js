@@ -7,7 +7,7 @@
 
 /*global require, __dirname, exports, GLOBAL*/
 
-var sh = require('./screens/_common/shared-js'),
+var sh = require('shared'),
     fs = require('fs'),
     tmx = require('tmx');
 

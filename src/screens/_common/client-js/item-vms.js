@@ -10,7 +10,7 @@
 var _ = require('underscore'),
     PF = require('pathfinding'),
     TileEntityVM = require('./tile-entity-vm'),
-    sh = require('../shared-js'),
+    sh = require('shared'),
     draw = require('./global-helpers/draw');
 
 /**

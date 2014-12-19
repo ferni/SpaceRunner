@@ -6,7 +6,7 @@
 */
 
 /*global require, module, me, _, TILE_SIZE*/
-var sh = require('../../shared-js'),
+var sh = require('shared'),
     gs = require('../game-state');
 
 var utils = module.exports = {

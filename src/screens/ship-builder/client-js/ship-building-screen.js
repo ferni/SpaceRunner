@@ -7,7 +7,7 @@
 
 
 /*global require, module, $, me, bootstrapped*/
-var sh = require('../../_common/shared-js'),
+var sh = require('shared'),
     ShipVM = require('./ship-vm'),
     utils = require('../../_common/client-js/global-helpers/utils'),
     itemVMs = require('../../_common/client-js/item-vms').itemVMs,
