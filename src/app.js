@@ -13,7 +13,6 @@
 
 var express = require('express'),
     exphbs  = require('express-handlebars'),
-    screens = require('./screens-server'),
     chat = require('./chat'),
     players = require('./state/players'),
     http = require('http'),
