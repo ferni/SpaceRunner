@@ -7,8 +7,8 @@
 
 /*global require, exports, battles*/
 
-var Class = require('./../../_common/server-js/class'),
-    sh = require('../shared'),
+var Class = require('./class'),
+    sh = require('../screens/_common/shared-js'),
     _ = require('underscore')._;
 
 function BattleTurn(params) {

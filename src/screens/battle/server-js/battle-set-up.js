@@ -9,7 +9,7 @@
 
 var sh = require('../shared'),
     auth = require('../state/players'),
-    BattleServer = require('./battle-server').BattleServer,
+    BattleServer = require('./../../../classes/battle-server').BattleServer,
     _ = require('underscore')._;
 
 

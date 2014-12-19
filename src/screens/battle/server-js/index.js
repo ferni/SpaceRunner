@@ -11,7 +11,7 @@
  * Manages the battle from the server side.
  * @type {exports.BattleServer|*}
  */
-exports.BattleServer = require('./battle-server').BattleServer;
+exports.BattleServer = require('./../../../classes/battle-server').BattleServer;
 
 /**
  * Inherits from BattleServer
