@@ -52,16 +52,16 @@ exports.BattleServer = Class.extend({
     winner: null,
     init: function(parameters) {
         'use strict';
-        var model;
+        var battle;
         this.id = parameters.id;
-        model = new sh.Battle({
+        battle = new sh.Battle({
             id: this.id,
             turnDuration: 4000
         });
         _.each(parameters.shipJsons, function(json) {
-            model.addShip(new sh.Ship({json: json}));
+            battle.addShip(new sh.Ship({json: json}));
         });
-        this.battleModel = model;
+        this.battleModel = battle;
     },
     /**
      * Informs that some player has received the script.
@@ -108,3 +108,20 @@ exports.BattleServer = Class.extend({
         turn.script = sh.createScript(orderCollection, battle, resetShip);
     }
 });
+
+//for playing against AI
+/*
+nextTurn: function() {
+    'use strict';
+    var self = this,
+        aiOrders;
+    this.parent();
+    //register AI player orders
+    aiOrders = this.aiPlayer.getOrders();
+    _.each(aiOrders.allUnitOrders, function(unitOrders) {
+        self.currentTurn.addOrders(unitOrders, self.aiPlayer.id);
+    });
+
+    this.currentTurn.setPlayerReady(this.aiPlayer.id);
+    this.registerScriptReceived(this.aiPlayer.id);
+}*/
