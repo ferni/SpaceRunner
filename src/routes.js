@@ -17,7 +17,7 @@ exports.register = function(app) {
     app.get('/choose-type', require('./screens/choose-type/controller'));
 
     //JSON API
-    _.each(['ship-builder', 'ship-list'], function(screen) {
+    _.each(['ship-builder', 'ship-list', 'battle'], function(screen) {
         _.each(require('./screens/' + screen + '/json-api'),
             function(apiGroup, groupName) {
                 _.each(apiGroup, function(callback, methodName) {

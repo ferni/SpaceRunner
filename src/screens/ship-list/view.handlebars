@@ -18,7 +18,7 @@
                 $('body').append('<p>Waiting for another player...</p>');
                 setInterval(function() {
                     $.post('/battle/issetup', function(data) {
-                        if (data.isSetup) {
+                        if (data.issetup) {
                             location.href = '/battle';
                         }
                     });

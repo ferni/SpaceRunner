@@ -7,12 +7,14 @@
 
 /*global exports, require*/
 
-var auth = require('../../state/players');
+var players = require('../../state/players');
+
 
 exports.battle = {
     issetup: function(req, res) {
         'use strict';
-
+        var player = players.getPlayer(req);
+        return res.json({issetup: player.battleID !== undefined});
     },
     get: function(req, res, next) {
         'use strict';
