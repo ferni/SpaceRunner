@@ -5,11 +5,19 @@
 * All rights reserved.
 */
 
-/*global me, screens, ConnectedScreen, gs, sh, ShipFrame, ScriptPrediction,
-$, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko, Timeline,
-KeyManagerPage*/
+/*global require, module, me, $, ko*/
 
-screens.register('battle', ConnectedScreen.extend({
+var ConnectedScreen = require('./screen-base/connected-screen'),
+    gs = require('client/game-state'),
+    utils = require('client/utils'),
+    draw = require('client/draw'),
+    sh = require('shared'),
+    ShipFrame = require('entities/ship-frame'),
+    Timeline = require('entities/timeline'),
+    KeyManagerPage = require('entities/key-manager-page'),
+    _ = require('underscore')._;
+
+module.exports = ConnectedScreen.extend({
     currentTurnID: null,
     scriptServer: [],
     mouseDownPos: null,
