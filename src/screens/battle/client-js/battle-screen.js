@@ -7,8 +7,7 @@
 
 /*global require, module, me, $, ko*/
 
-var ConnectedScreen = require('./screen-base/connected-screen'),
-    gs = require('client/game-state'),
+var gs = require('client/game-state'),
     utils = require('client/utils'),
     draw = require('client/draw'),
     sh = require('shared'),
@@ -17,10 +16,14 @@ var ConnectedScreen = require('./screen-base/connected-screen'),
     KeyManagerPage = require('entities/key-manager-page'),
     _ = require('underscore')._;
 
-module.exports = ConnectedScreen.extend({
+module.exports = me.ScreenObject.extend({
     currentTurnID: null,
     scriptServer: [],
     mouseDownPos: null,
+    init: function() {
+        'use strict';
+        this.parent(true);
+    },
     /**
      * Gets executed before onReset.
      */
@@ -50,21 +53,17 @@ module.exports = ConnectedScreen.extend({
         }());
         $('html, body, #game, #screensUi, #battle-screen')
             .css({width: '100%', height: '100%'});
-        if (this.isReset) {
-            this.onResetAndLoaded();
-        }
-        this.htmlLoaded = true;
     },
     /**
      *
      * @param {sh.Battle} battle
      * @param {Object} orders
      */
-    onReset: function(battle, orders) {
+    onResetEvent: function(battle, orders) {
         'use strict';
         var self = this,
             framesFinished = 0;
-        this.parent({id: battle.id});
+        this.id = battle.id;
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
         this.stopFetching();
@@ -134,11 +133,10 @@ module.exports = ConnectedScreen.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
-        if (this.htmlLoaded) {
-            this.onResetAndLoaded();
-        }
+        this.onHtmlLoaded();
+        this.onResetAndLoaded();
     },
-    onDestroy: function() {
+    onDestroyEvent: function() {
         'use strict';
         this.keys.unbindAll();
     },
@@ -155,28 +153,7 @@ module.exports = ConnectedScreen.extend({
         this.htmlVM = new ViewModel();
         ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
         $('#time-line').jScrollPane();
-    },
-    onData: function(data) {
-        'use strict';
-        var screen = this;
-        this.currentTurnID = data.currentTurnID;
-        $('#turn-number').html(this.currentTurnID);
-        if (this.paused && data.scriptReady) {
-            $.post('/battle/getscript', {id: screen.id}, function(data) {
-                //send script to ships through postMessage
-                screen.scriptServer = new sh.Script().fromJson(data.script);
-                _.invoke(screen.shipFrames, 'runScript', data.script);
-                screen.resultingServerModel = data.resultingServerModel;
-                screen.resume();
-                screen.stopFetching();
-                $.post('/battle/scriptreceived', {id: screen.id}, function() {
-                    //(informs the server that the script has been received)
-                    return null;//for jslint
-                }).fail(function() {
-                    console.error('Error pinging server.');
-                });
-            });
-        }
+        this.startFetching();
     },
     update: function() {
         'use strict';
@@ -203,6 +180,42 @@ module.exports = ConnectedScreen.extend({
             }
             _.invoke(this.previewOrders, 'draw', ctx);
         }
+    },
+    onData: function(data) {
+        'use strict';
+        var screen = this;
+        this.currentTurnID = data.currentTurnID;
+        $('#turn-number').html(this.currentTurnID);
+        if (this.paused && data.scriptReady) {
+            $.post('/battle/getscript', {id: screen.id}, function(data) {
+                //send script to ships through postMessage
+                screen.scriptServer = new sh.Script().fromJson(data.script);
+                _.invoke(screen.shipFrames, 'runScript', data.script);
+                screen.resultingServerModel = data.resultingServerModel;
+                screen.resume();
+                screen.stopFetching();
+                $.post('/battle/scriptreceived', {id: screen.id}, function() {
+                    //(informs the server that the script has been received)
+                    return null;//for jslint
+                }).fail(function() {
+                    console.error('Error pinging server.');
+                });
+            });
+        }
+    },
+    startFetching: function() {
+        'use strict';
+        var self = this;
+        this.fetchIntervalID = setInterval(function() {
+            $.post('/battle/get', {id: self.id}, function(data) {
+                self.data = data;
+                self.onData(data);
+            }, 'json');
+        }, 500);
+    },
+    stopFetching: function() {
+        'use strict';
+        clearInterval(this.fetchIntervalID);
     },
     newOrders: function(unitOrdersJson) {
         'use strict';
