@@ -12,12 +12,8 @@ exports.register = function(app) {
     'use strict';
     //Screens
     app.get('/', require('./screens/ship-list/controller'));
-    app.get('/ship-builder', require('./screens/ship-builder/controller'));
-    app.get('/ship-list', require('./screens/ship-list/controller'));
-    app.get('/choose-type', require('./screens/choose-type/controller'));
-
-    //JSON API
     _.each(['ship-builder', 'ship-list', 'battle'], function(screen) {
+        app.get('/' + screen, require('./screens/' + screen + '/controller'));
         _.each(require('./screens/' + screen + '/json-api'),
             function(apiGroup, groupName) {
                 _.each(apiGroup, function(callback, methodName) {
