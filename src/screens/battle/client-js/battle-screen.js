@@ -330,4 +330,4 @@ module.exports = me.ScreenObject.extend({
             .append('<a href="/">' + message + '</a>')
             .show();
     }
-}));
+});
