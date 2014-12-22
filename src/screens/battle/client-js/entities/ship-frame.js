@@ -5,9 +5,11 @@
 * All rights reserved.
 */
 
-/*global HTMLIFrameElement, $, gs, TILE_SIZE, _*/
+/*global require, module, HTMLIFrameElement, $*/
+var gs = require('client/game-state'),
+    _ = require('underscore')._;
 
-var ShipFrame = (function() {
+module.exports = (function() {
     'use strict';
     /**
      *
@@ -29,8 +31,8 @@ var ShipFrame = (function() {
         init: function() {
             //create an iframe, pass the model and bind with onEvent
             var self = this,
-                url = 'ship-frame/?width=' + (self.ship.width * TILE_SIZE) +
-                    '&height=' + (self.ship.height * TILE_SIZE),
+                url = 'ship-frame/?width=' + (self.ship.width * gs.TILE_SIZE) +
+                    '&height=' + (self.ship.height * gs.TILE_SIZE),
                 iframe = $('<iframe src="' + url + '"/>')[0];
             $('#frames').append(iframe);
             //listen to messages from the iframe

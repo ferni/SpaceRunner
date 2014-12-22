@@ -5,9 +5,14 @@
 * All rights reserved.
 */
 
-/*global ko, _, gs, sh, $, utils, OrderVMTimeline, UnitVMTimeline*/
+/*global require, module, ko, $*/
 
-var Timeline = function(screen) {
+var _ = require('underscore')._,
+    sh = require('shared'),
+    gs = require('client/game-state'),
+    OrderVMTimeline = require('./order-vm-timeline');
+
+module.exports = function(screen) {
     'use strict';
     var self = this,
         markerProximityThreshold = 5,//pixels

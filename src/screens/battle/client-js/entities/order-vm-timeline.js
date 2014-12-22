@@ -5,9 +5,9 @@
 * All rights reserved.
 */
 
-/*global _, gs, me, utils, sh, ko*/
+/*global module, ko*/
 
-var OrderVMTimeline = Object.extend({
+module.exports = Object.extend({
     isPreview: false,
     init: function(order, timeline, battle) {
         'use strict';
