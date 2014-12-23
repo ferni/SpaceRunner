@@ -25,9 +25,10 @@ module.exports = function(req, res, next) {
             path: '/battle/',
             bootstrapped: JSON.stringify({
                 battleJson: battleServer.battleModel.toJson(),
-                hullMaps: hullMaps
+                hullMaps: hullMaps,
+                playerJson: player.toJson()
             }),
-            player: players.getPlayer(req)
+            player: player
         });
     }
 };

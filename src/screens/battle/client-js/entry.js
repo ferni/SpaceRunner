@@ -47,10 +47,7 @@ jsApp = {
         'use strict';
         var self = this;
 
-        gs.player = new sh.Player({
-            id: 777,
-            name: 'hardcoded name'
-        });
+        gs.player = new sh.Player(bootstrapped.playerJson);
         me.state.set(1, new BattleScreen());
         me.state.change(1, new sh.Battle(bootstrapped.battleJson));
         self.loadReady = true;
