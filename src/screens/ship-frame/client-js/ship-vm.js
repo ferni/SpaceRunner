@@ -5,15 +5,23 @@
 * All rights reserved.
 */
 
-/*global module, me, make, _, sh, utils, ui, ko, ItemVM, itemVMs,
-UnitVM, unitVMs*/
+/*global require, module, me*/
+
+var _ = require('underscore')._,
+    sh = require('shared'),
+    utils = require('client/utils'),
+    ui = require('client/ui'),
+    ItemVM = require('client/item-vms').ItemVM,
+    itemVMs = require('client/item-vms').itemVMs,
+    UnitVM = require('./unit-vms').UnitVM,
+    unitVMs = require('./unit-vms').unitVMs;
 
 /**
  * An object in charge of representing a sh.Ship on the screen.
  * @param {sh.Ship} shipModel the ship model.
  * @constructor
  */
-var ShipVM = module.exports = function(shipModel) {
+module.exports = function(shipModel) {
     'use strict';
     this.itemVMs = [];
     this.unitVMs = [];
