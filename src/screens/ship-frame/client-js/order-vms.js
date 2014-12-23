@@ -5,9 +5,16 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, TILE_SIZE, _, gs, me, utils, HALF_TILE, draw, sh, ko*/
+/*global require, module, me*/
 
-var orderVMs = (function() {
+var TileEntityVM = require('client/tile-entity-vm'),
+    _ = require('underscore'),
+    gs = require('client/game-state'),
+    utils = require('client/utils'),
+    draw = require('client/draw'),
+    sh = require('shared');
+
+module.exports = (function() {
     'use strict';
     var orderVMs = {},
         OrderVM;
@@ -20,7 +27,7 @@ var orderVMs = (function() {
             pos = this.getMarkerTile();
             this.isSelectable = true;
             this.parent(pos.x, pos.y, {image: 'markers',
-                spritewidth: TILE_SIZE, spriteheight: TILE_SIZE,
+                spritewidth: gs.TILE_SIZE, spriteheight: gs.TILE_SIZE,
                 name: 'order'});
         },
         getMarkerTile: function() {
@@ -103,10 +110,10 @@ var orderVMs = (function() {
                 }
             }
             _.each(this.path, function(pos) {
-                ctx.moveTo((from[0] * TILE_SIZE) + HALF_TILE,
-                        (from[1] * TILE_SIZE) + HALF_TILE);
-                ctx.lineTo((pos[0] * TILE_SIZE) + HALF_TILE,
-                        (pos[1] * TILE_SIZE) + HALF_TILE);
+                ctx.moveTo((from[0] * gs.TILE_SIZE) + gs.HALF_TILE,
+                        (from[1] * gs.TILE_SIZE) + gs.HALF_TILE);
+                ctx.lineTo((pos[0] * gs.TILE_SIZE) + gs.HALF_TILE,
+                        (pos[1] * gs.TILE_SIZE) + gs.HALF_TILE);
                 from = pos;
             });
             ctx.stroke();
