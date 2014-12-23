@@ -11,9 +11,9 @@ var gs = require('client/game-state'),
     utils = require('client/utils'),
     draw = require('client/draw'),
     sh = require('shared'),
-    ShipFrame = require('entities/ship-frame'),
-    Timeline = require('entities/timeline'),
-    KeyManagerPage = require('entities/key-manager-page'),
+    ShipFrame = require('./entities/ship-frame'),
+    Timeline = require('./entities/timeline'),
+    KeyManagerPage = require('./entities/key-manager-page'),
     _ = require('underscore')._;
 
 module.exports = me.ScreenObject.extend({
