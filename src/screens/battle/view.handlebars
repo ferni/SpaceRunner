@@ -1,7 +1,76 @@
 {{> header }}
 <div id="game">
     <div id="jsapp"></div>
-    <div id="screensUi"></div>
+    <div id="screensUi">
+        <div id="battle-screen">
+            <div id="ui">
+                <img src="/data/img/render/pause-icon.png" id="paused-indicator" title="Paused" />
+                <span id="elapsed"></span>
+                <div id="top-hud">
+                    <span id="turn-info">Turn #<span id="turn-number">0</span></span>
+                    <span id="hp">[Own: <span data-bind="text:myShip().hp"></span>]</span>
+                    <span id="enemyHP">[Enemy: <span data-bind="text:enemyShip().hp"></span>]</span>
+                </div>
+                <div id="left-hud">
+                    <!-- ko if:selectedUnit() -->
+                    <div id="unit-portrait" data-bind="with: selectedUnit">
+                        <h3 data-bind="text:type"></h3>
+                    </div>
+                    <!-- /ko -->
+                    <div id="zoom">
+                        <div id="zoom-info">
+                            <label id="zoom-level" data-bind="text:timeline.zoomLevel() + 'x'"></label>
+                        </div>
+                        <div id="zoom-slider"></div>
+                    </div>
+                    <div id="time-line" data-bind="timeline:timeline">
+                        <div id="time-ruler" data-bind="with:timeline">
+                            <div id="numbers">
+                                <div data-bind="foreach: turns">
+                                    <hr class="separator" data-bind="style:{top:top()}"/>
+                                    <h3 data-bind="text:separatorLabel"></h3>
+                                    <!-- ko foreach:segments -->
+                                    <div class="time-segment" data-bind="style:{height:height(), lineHeight:height()}">
+                                        <label data-bind="text:$index() + 1"></label>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                                <div id="markers" data-bind="foreach:markers">
+                                    <div class="marker" data-bind="style:{backgroundColor:color,
+                                top:top()}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-bind="with:timeline">
+                            <ol id="unit-orders" data-bind="foreach: orderVMs, sortableList: setOrders">
+                                <li data-bind="style:{height:itemHeight(),
+                                        backgroundColor: itemColorObs()}">
+                                    <span data-bind="text:m.toString()"></span>
+                                    <button class="delete-button" data-bind="click:$parent.removeOrder">x</button>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <hr id="mouse-marker"/>
+                    <table id="marker-labels-container" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td>
+                                <img id="balloon-pointer" src="data/img/render/balloon-pointer.png"
+                                     height="10px"/>
+                            </td>
+                            <td valign="middle">
+                                <div id="marker-labels"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <button id="ready-button" class="button">Ready</button>
+                <div id="end-sign"></div>
+            </div>
+            <div id="frames">
+            </div>
+        </div>
+    </div>
 </div>
 <div id="chat-client" data-bind="css:{disabled:!enabled()}">
     <div data-bind="if: enabled">
@@ -22,14 +91,9 @@
     </div>
 </div>
 
-<link rel="stylesheet" type="text/css" href="css/main.css" title="style" />
-<link href="css/screens-css/lobby.css" rel="stylesheet" type="text/css" />
-<link href="css/screens-css/ship-select.css" rel="stylesheet" type="text/css" />
-<link href="css/screens-css/ship-building.css" rel="stylesheet" type="text/css" />
-<link href="css/screens-css/battle.css" rel="stylesheet" type="text/css" />
-<link href="css/chat-client.css" rel="stylesheet" type="text/css" />
-<link href="css/jquery.jscrollpane.css" rel="stylesheet" type="text/css" />
-<link href="css/dhtmlxslider.css" rel="stylesheet" type="text/css" />
+<link href="/_common/css/chat-client.css" rel="stylesheet" type="text/css" />
+<link href="/_common/css/jquery.jscrollpane.css" rel="stylesheet" type="text/css" />
+<link href="/_common/css/dhtmlxslider.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript" src="js/vendor/pathfinding-browser.js"></script>
 <script type="text/javascript" src="js/vendor/underscore.js"></script>
