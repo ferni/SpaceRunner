@@ -39,7 +39,7 @@ jsApp = {
         // set all resources to be loaded
         me.loader.onload = this.loaded.bind(this);
         // set all resources to be loaded
-        me.loader.preload(gameResources);
+        me.loader.preload(assets);
         // load everything & display a loading screen
         me.state.change(me.state.LOADING);
     },

@@ -1,2 +1,3 @@
 watchify screens/ship-builder/client-js/entry.js -o public/ship-builder/bundle.js -v
 watchify screens/battle/client-js/entry.js -o public/battle/bundle.js -v
+watchify screens/ship-frame/client-js/entry.js -o public/ship-frame/bundle.js -v
