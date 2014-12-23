@@ -1,0 +1,13 @@
+<div id="game">
+    <div id="jsapp"></div>
+</div>
+
+<script type="text/javascript" src="/_common/vendor/melonJS-0.9.5.js"></script>
+
+<script type="text/javascript">
+    window.bootstrapped = {{{bootstrapped}}};
+    //Because Ship needs a global object "hullMaps"
+    window.hullMaps = bootstrapped.hullMaps;
+</script>
+
+{{> js-bundle }}
