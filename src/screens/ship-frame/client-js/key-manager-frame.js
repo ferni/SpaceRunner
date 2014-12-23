@@ -5,9 +5,11 @@
 * All rights reserved.
 */
 
-/*global me, _*/
+/*global require, module, me*/
 
-var KeyManagerFrame = function() {
+var _ = require('underscore')._;
+
+module.exports = function() {
     'use strict';
     var bindings = [];
 
