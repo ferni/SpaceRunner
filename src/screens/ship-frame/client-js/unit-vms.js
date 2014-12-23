@@ -5,8 +5,16 @@
 * All rights reserved.
 */
 
-/*global TileEntityVM, draw, utils, TILE_SIZE, HALF_TILE,
-sh, _, me, ko, gs, $, ui, orderVMs*/
+/*global require, exports, me*/
+
+var TileEntityVM = require('client/tile-entity-vm'),
+    draw = require('client/draw'),
+    utils = require('client/utils'),
+    sh = require('shared'),
+    _ = require('underscore')._,
+    gs = require('client/game-state'),
+    ui = require('client/ui'),
+    orderVMs = require('./order-vms');
 
 var UnitVM = TileEntityVM.extend({
     speed: 1, //tiles per second
@@ -39,9 +47,9 @@ var UnitVM = TileEntityVM.extend({
         this.setCurrentAnimation('idle');
         this.setTransparency('000000');
         this.center = {x: 8, y: 8};
-        this.adjustSize(-8, TILE_SIZE, -8, TILE_SIZE);
-        this.pos.x = (this.m.x * TILE_SIZE) + HALF_TILE;
-        this.pos.y = (this.m.y * TILE_SIZE) + HALF_TILE;
+        this.adjustSize(-8, gs.TILE_SIZE, -8, gs.TILE_SIZE);
+        this.pos.x = (this.m.x * gs.TILE_SIZE) + gs.HALF_TILE;
+        this.pos.y = (this.m.y * gs.TILE_SIZE) + gs.HALF_TILE;
         this.updateHealthBar();
         this.orderVMs = [];
         this.isSelectable = this.isMine();
@@ -166,7 +174,7 @@ var UnitVM = TileEntityVM.extend({
     drawWeaponChargeProgressBar: function(ctx) {
         'use strict';
         var weapon = this.chargingShipWeapon.weapon,
-            pos = sh.v.mul(weapon, TILE_SIZE),
+            pos = sh.v.mul(weapon, gs.TILE_SIZE),
             elapsed = this.screen.elapsed -
                 this.m.chargingShipWeapon.startingTime,
             width = (40 * elapsed) / weapon.chargeTime;
@@ -206,8 +214,8 @@ var UnitVM = TileEntityVM.extend({
     centerInTile: function() {
         'use strict';
         this.tweenTo({
-            x: (this.m.x * TILE_SIZE) + HALF_TILE,
-            y: (this.m.y * TILE_SIZE) + HALF_TILE
+            x: (this.m.x * gs.TILE_SIZE) + gs.HALF_TILE,
+            y: (this.m.y * gs.TILE_SIZE) + gs.HALF_TILE
         }, 700, me.Tween.Easing.Sinusoidal.EaseOut);
     },
     playAttack: function() {
@@ -291,3 +299,6 @@ unitVMs.ZealotVM = UnitVM.extend({
         tween.start();
     }
 });
+
+exports.UnitVM = UnitVM;
+exports.unitVMs = unitVMs;
