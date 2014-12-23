@@ -11,8 +11,16 @@ var players = require('../../state/players');
 
 module.exports = function(req, res, next) {
     'use strict';
-    res.render('battle/view', {
-        path: '/battle/',
-        player: players.getPlayer(req)
-    });
+    var player = players.getPlayer(req),
+        battleID = player.battleID;
+    if (battleID === undefined) {
+        res.render('_common/error', {
+            error: 'You\'re not in a battle'
+        });
+    } else {
+        res.render('battle/view', {
+            path: '/battle/',
+            player: players.getPlayer(req)
+        });
+    }
 };
