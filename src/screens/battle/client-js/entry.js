@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, me, shipType, hullMaps*/
+/*global require, me, bootstrapped*/
 
 //sugar
 var jsApp, gs, sh, BattleScreen, assets;
@@ -27,7 +27,6 @@ jsApp = {
     onload: function() {
         'use strict';
         // init the video
-        //to get ship width: hullMaps[shipType].width * gs.TILE_SIZE
         if (!me.video.init('jsapp', 1440, 1344)) {
             alert('Sorry but your browser does not support html 5 canvas.');
             return;
@@ -53,7 +52,7 @@ jsApp = {
             name: 'hardcoded name'
         });
         me.state.set(1, new BattleScreen());
-        me.state.change(1);
+        me.state.change(1, new sh.Battle(bootstrapped.battleJson));
         self.loadReady = true;
         self.onAppLoaded();
 

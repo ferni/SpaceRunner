@@ -5,21 +5,28 @@
 * All rights reserved.
 */
 
-/*global require, module*/
+/*global require, module, hullMaps*/
 //HOME
-var players = require('../../state/players');
+var players = require('../../state/players'),
+    battles = require('../../state/battles');
 
 module.exports = function(req, res, next) {
     'use strict';
     var player = players.getPlayer(req),
-        battleID = player.battleID;
+        battleID = player.battleID,
+        battleServer;
     if (battleID === undefined) {
         res.render('_common/error', {
             error: 'You\'re not in a battle'
         });
     } else {
+        battleServer = battles.get(battleID);
         res.render('battle/view', {
             path: '/battle/',
+            bootstrapped: JSON.stringify({
+                battleJson: battleServer.battleModel.toJson(),
+                hullMaps: hullMaps
+            }),
             player: players.getPlayer(req)
         });
     }

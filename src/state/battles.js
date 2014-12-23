@@ -9,7 +9,8 @@
 var sh = require('shared'),
     BattleServer = require('../classes/battle-server'),
     prebuiltShips = require('./prebuilt-ships'),
-    players = require('./players');
+    players = require('./players'),
+    _ = require('underscore')._;
 
 var playersWaiting = [],
     battleServers = [];
@@ -68,4 +69,12 @@ function addPlayerToQueue(player) {
     }
 }
 
+function get(id) {
+    'use strict';
+    return _.find(battleServers, function(bs) {
+        return bs.id === id;
+    });
+}
+
 exports.addPlayerToQueue = addPlayerToQueue;
+exports.get = get;
