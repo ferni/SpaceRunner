@@ -5,7 +5,11 @@
 * All rights reserved.
 */
 
-/*global gs, me, TILE_SIZE, HALF_TILE, ui, _, draw, sh, utils, $*/
+/*global require, module, me*/
+var gs = require('client/game-state'),
+    ui = require('client/ui'),
+    _ = require('underscore')._,
+    sh = require('shared');
 
 /**
  * Manages and reproduces actions on the screen
@@ -13,7 +17,7 @@
  * @param {*} battleScreen The battle screen.
  * @constructor
  */
-var ScriptPlayer = function(battleScreen) {
+module.exports = function(battleScreen) {
     'use strict';
     var script,
         nextChange,
@@ -38,7 +42,7 @@ var ScriptPlayer = function(battleScreen) {
                     //unit was not in this ship
                     return;
                 }
-                tilePx = v.mul(action.to, TILE_SIZE);
+                tilePx = v.mul(action.to, gs.TILE_SIZE);
                 toPx = v.add(tilePx, {x: 8, y: 8});//center
                 unitVM.tweenTo(toPx, action.duration);
             }
