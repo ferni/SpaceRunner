@@ -63,6 +63,7 @@ module.exports = me.ScreenObject.extend({
         'use strict';
         var self = this,
             framesFinished = 0;
+        this.onHtmlLoaded();
         this.id = battle.id;
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
