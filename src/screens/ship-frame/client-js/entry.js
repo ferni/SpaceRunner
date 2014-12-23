@@ -5,12 +5,18 @@
 * All rights reserved.
 */
 
-/*global me, _, utils, $, sh, hullMapGenerator, GameState, gs,
- chatClient, server, screens, gameResources*/
+/*global require, me*/
 
 //sugar
-var TILE_SIZE = 32 / sh.GRID_SUB, HALF_TILE = 16 / sh.GRID_SUB, hullMaps = {},
-    gs, jsApp;
+var jsApp, gs, sh, Screen, assets, utils;
+gs = require('client/game-state');
+sh = require('shared');
+gs.TILE_SIZE = 32 / sh.GRID_SUB;
+gs.HALF_TILE = 16 / sh.GRID_SUB;
+Screen = require('./screen');
+assets = require('./assets');
+utils = require('client/utils');
+
 
 jsApp = {
     loadReady: false,
@@ -37,16 +43,6 @@ jsApp = {
         // load everything & display a loading screen
         me.state.change(me.state.LOADING);
     },
-    generateHullMaps: function() {
-        'use strict';
-        var i, tmxTileMap;
-        window.hullMaps = {};
-        for (i = 0; i < sh.mapNames.length; i++) {
-            tmxTileMap = new me.TMXTileMap(sh.mapNames[i], 0, 0);
-            tmxTileMap.load();
-            hullMaps[sh.mapNames[i]] = hullMapGenerator.get(tmxTileMap);
-        }
-    },
     /* ---
     callback when everything is loaded
     --- */
@@ -54,13 +50,11 @@ jsApp = {
         'use strict';
         // set screens-html
         var self = this;
-
-        this.generateHullMaps();
-
+        me.state.set('screen', new Screen());
         function handleParentMessage(event) {
             if (event.data.type === 'start battle') {
                 gs.player = new sh.Player(event.data.playerJson);
-                me.state.change('battle', new sh.Battle(event.data.battleJson),
+                me.state.change('screen', new sh.Battle(event.data.battleJson),
                     event.data.shipID);
                 self.loadReady = true;
                 self.onAppLoaded();
@@ -81,3 +75,8 @@ jsApp = {
         return 0;
     }
 };
+
+window.onReady(function() {
+    'use strict';
+    jsApp.onload();
+});
