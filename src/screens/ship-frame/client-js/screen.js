@@ -5,11 +5,20 @@
 * All rights reserved.
 */
 
-/*global me, screens, gs, sh, ShipVM, KeyManagerFrame,
-ScriptPlayer, $, utils, _, draw, ui, make, TILE_SIZE, HALF_TILE, ko,
-orderVMs*/
+/*global require, me, module*/
 
-screens.register('battle', me.ScreenObject.extend({
+var gs = require('client/game-state'),
+    sh = require('shared'),
+    ShipVM = require('./ship-vm'),
+    KeyManagerFrame = require('key-manager-frame'),
+    ScriptPlayer = require('script-player'),
+    utils = require('client/utils'),
+    _ = require('underscore')._,
+    draw = require('client/draw'),
+    ui = require('client/ui'),
+    orderVMs = require('./order-vms');
+
+module.exports = me.ScreenObject.extend({
     currentTurnID: null,
     scriptPlayer: null,
     scriptServer: [],
@@ -303,10 +312,10 @@ screens.register('battle', me.ScreenObject.extend({
                 var pos, unitRect;
                 if (u.isMine()) {
                     pos = new me.Vector2d(
-                        u.m.x * TILE_SIZE,
-                        u.m.y * TILE_SIZE
+                        u.m.x * gs.TILE_SIZE,
+                        u.m.y * gs.TILE_SIZE
                     );
-                    unitRect = new me.Rect(pos, TILE_SIZE, TILE_SIZE);
+                    unitRect = new me.Rect(pos, gs.TILE_SIZE, gs.TILE_SIZE);
                     if (self.dragBox.overlaps(unitRect)) {
                         u.select();
                     }
@@ -323,4 +332,4 @@ screens.register('battle', me.ScreenObject.extend({
         'use strict';
         return gs.ship.at(x, y);
     }
-}));
+});
