@@ -16,7 +16,7 @@ gs.HALF_TILE = 16 / sh.GRID_SUB;
 Screen = require('./screen');
 assets = require('./assets');
 utils = require('client/utils');
-
+require('client/melonjs-plugins');
 
 jsApp = {
     loadReady: false,
