@@ -7,8 +7,16 @@
 
 /*global exports, require*/
 
-var players = require('../../state/players');
+var players = require('../../state/players'),
+    battles = require('../../state/battles'),
+    sh = require('shared'),
+    _ = require('underscore')._;
 
+function getBattle(req) {
+    'use strict';
+    var player = players.getPlayer(req);
+    return battles.get(player.battleID);
+}
 
 exports.battle = {
     issetup: function(req, res) {
@@ -18,6 +26,7 @@ exports.battle = {
     },
     get: function(req, res, next) {
         'use strict';
+        var battle = getBattle(req);
         return res.json({
             id: battle.id,
             scriptReady: battle.currentTurn.script !== null,
@@ -26,7 +35,8 @@ exports.battle = {
     },
     getmodel: function(req, res, next) {
         'use strict';
-        var battleJson = battle.battleModel.toJson();
+        var battle = getBattle(req),
+            battleJson = battle.battleModel.toJson();
         if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[playerID];
         }
@@ -34,32 +44,36 @@ exports.battle = {
     },
     sendunitorders: function(req, res, next) {
         'use strict';
-        var unitOrders = new sh.UnitOrders(req.body.ordersJson),
+        var battle = getBattle(req),
+            playerID = players.getID(req),
+            unitOrders = new sh.UnitOrders(req.body.ordersJson),
             turn = battle.currentTurn,
             ordersValid = _.all(unitOrders.array, function(order) {
                 return order.isValid(battle.battleModel, playerID);
             });
         if (!ordersValid) {
-            chat.log('ERROR: An order was invalid.');
+            //chat.log('ERROR: An order was invalid.');
             next(new Error('An order submitted is invalid'));
             return;
         }
         turn.addOrders(unitOrders, playerID);
-        chat.log('SUCCESS: The orders issued by ' +
+        /*chat.log('SUCCESS: The orders issued by ' +
             players.playerByID(playerID).name +
-            ' have been validated by the server');
+            ' have been validated by the server');*/
         return res.json({ok: true});
     },
     ready: function(req, res, next) {
         'use strict';
-        var turn = battle.currentTurn,
+        var battle = getBattle(req),
+            playerID = players.getID(req),
+            turn = battle.currentTurn,
             winnerDeclared;
         if (turn.isPlayerReady(playerID)) {
             return res.json({wasReady: true});
         }
         turn.setPlayerReady(playerID);
         if (_.uniq(turn.playersSubmitted).length === battle.numberOfPlayers &&
-            !turn.script) {
+                !turn.script) {
             //all orders have been submitted, generate the script
             battle.generateScript();
             winnerDeclared = _.find(turn.script.actions, function(a) {
@@ -73,6 +87,7 @@ exports.battle = {
     },
     getscript: function(req, res, next) {
         'use strict';
+        var battle = getBattle(req);
         return res.json({
             script: battle.currentTurn.script.toJson(),
             resultingServerModel: battle.battleModel.toJson()
@@ -80,16 +95,16 @@ exports.battle = {
     },
     scriptreceived: function(req, res, next) {
         'use strict';
+        var battle = getBattle(req),
+            playerID = players.getID(req),
+            nextTurnCreated,
+            index;
         try {
-            var nextTurnCreated = battle.registerScriptReceived(playerID),
-                index;
+            nextTurnCreated = battle.registerScriptReceived(playerID);
             if (nextTurnCreated) {
                 if (battle.winner !== null) {
                     index = _.indexOf(battles, battle);
                     battles.splice(index, 1);
-                } else {
-                    chat.log('All players received the script,' +
-                        ' created next turn.');
                 }
             }
             return res.json({ok: true});
