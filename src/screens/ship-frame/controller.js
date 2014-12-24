@@ -11,8 +11,8 @@ module.exports = function(req, res, next) {
     'use strict';
     res.render('ship-frame/view', {
         path: '/ship-frame/',
-        bootstrapped: {
+        bootstrapped: JSON.stringify({
             hullMaps: hullMaps
-        }
+        })
     });
 };
