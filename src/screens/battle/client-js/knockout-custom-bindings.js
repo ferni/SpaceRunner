@@ -5,7 +5,9 @@
 * All rights reserved.
 */
 
-/*global ko, $, _, dhtmlxSlider, utils, me*/
+/*global require, ko, $, dhtmlxSlider, me*/
+
+var _ = require('underscore')._;
 
 /**
  * Makes a list sortable.
@@ -83,7 +85,7 @@ ko.bindingHandlers.timeline = {
         //zoom slider
         sld = new dhtmlxSlider('zoom-slider', 75,
             'arrowgreen', false, 0.25, 2, 1, 0.25);
-        sld.setImagePath('data/img/render/slider/');
+        sld.setImagePath('_common/img/render/slider/');
         $('#zoom-slider').append(sld);
         sld.setOnChangeHandler(function(value) {
             timeline.zoomLevel(value);

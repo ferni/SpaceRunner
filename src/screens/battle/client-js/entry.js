@@ -16,6 +16,8 @@ gs.HALF_TILE = 16 / sh.GRID_SUB;
 BattleScreen = require('./battle-screen');
 
 require('client/melonjs-plugins');
+require('./knockout-custom-bindings');
+
 
 jsApp = {
     loadReady: false,
