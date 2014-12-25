@@ -13,6 +13,7 @@ module.exports = function(req, res, next) {
         path: '/ship-frame/',
         bootstrapped: JSON.stringify({
             hullMaps: hullMaps
-        })
+        }),
+        layout: null
     });
 };

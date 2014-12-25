@@ -1,13 +1,25 @@
-<div id="game">
-    <div id="jsapp"></div>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Runner</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Space Runner game" />
+    <meta name="keywords" content="melonJS, HTML5, javascript, game, Engine, framework" />
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+    <link rel="stylesheet" type="text/css" href="/_common/css/main.css" title="style" />
+</head>
+<body>
+    <div id="game">
+        <div id="jsapp"></div>
+    </div>
 
-<script type="text/javascript" src="/_common/vendor/melonJS-0.9.5.js"></script>
+    <script type="text/javascript" src="/_common/vendor/melonJS-0.9.5.js"></script>
 
-<script type="text/javascript">
-    window.bootstrapped = {{{bootstrapped}}};
-    //Because Ship needs a global object "hullMaps"
-    window.hullMaps = bootstrapped.hullMaps;
-</script>
-
-{{> js-bundle }}
+    <script type="text/javascript">
+        window.bootstrapped = {{{bootstrapped}}};
+        //Because Ship needs a global object "hullMaps"
+        window.hullMaps = bootstrapped.hullMaps;
+    </script>
+    {{> js-bundle }}
+</body>
+</html>
