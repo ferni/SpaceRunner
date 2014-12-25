@@ -27,7 +27,7 @@ jsApp = {
     onload: function() {
         'use strict';
         // init the video
-        if (!me.video.init('jsapp', 1440, 1344)) {
+        if (!me.video.init('jsapp', 100, 100)) {
             alert('Sorry but your browser does not support html 5 canvas.');
             return;
         }
