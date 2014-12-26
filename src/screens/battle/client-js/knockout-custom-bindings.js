@@ -73,7 +73,8 @@ ko.bindingHandlers.timeline = {
             $markerLabels = $('#marker-labels'),
             timeline = valueAccessor(),
             jScrollApi,
-            sld;
+            sld,
+            contentTop = 22;
         jScrollApi = $(element).jScrollPane().data('jsp');
         $('#time-line').find('.jspPane').css({
             marginLeft: '20px',
@@ -99,10 +100,10 @@ ko.bindingHandlers.timeline = {
             $mouseMarker.hide();
             $markerLabelsCont.hide();
         }).mousemove(function(e) {
-            var pixelTime = e.clientY - 125 + jScrollApi.getContentPositionY(),
+            var pixelTime = e.clientY - 125 - contentTop + jScrollApi.getContentPositionY(),
                 //time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
-            $mouseMarker.css('top', (e.clientY - 68) + 'px');
+            $mouseMarker.css('top', (e.clientY - 68 - contentTop) + 'px');
             markers = timeline.getMarkersNear(pixelTime);
             $markerLabels.html('');
             if (markers.length > 0) {
