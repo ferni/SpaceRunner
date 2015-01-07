@@ -6,41 +6,20 @@
 */
 
 /*global require, module, hullMaps*/
-var Ship = require('shared').Ship,
-    players = require('../../state/players'),
-    redis = require('redis'),
+var players = require('../../state/players'),
     prebuiltShips = require('../../state/prebuilt-ships');
 
 module.exports = function(req, res, next) {
     'use strict';
     var shipType = req.query.type,
-        hullID = req.query.hull_id,
-        rc = redis.createClient(),
-        newShip;
+        hullID = req.query.hull_id;
     if (shipType) {
         //create new ship in the database
-        newShip = new Ship({tmxName: shipType});
-        rc.incr('next_hull_id', function(error, id) {
+        prebuiltShips.create(shipType, function(error, id) {
             if (error) {
-                res.json({error: error});
-                return;
+                res.render('_common/error', {error: error});
             }
-            rc.hmset('hull:' + id, {
-                name: shipType,
-                shipJson: JSON.stringify(newShip.toJson())
-            }, function(error, reply) {
-                if (error) {
-                    res.json({error: error});
-                    return;
-                }
-                rc.rpush(['hull_ids', id], function(error, reply) {
-                    if (error) {
-                        res.json({error: error});
-                        return;
-                    }
-                    res.redirect('/ship-builder?hull_id=' + id);
-                });
-            });
+            res.redirect('/ship-builder?hull_id=' + id);
         });
     } else if (hullID) {
         //pull the ship by hull id from the database

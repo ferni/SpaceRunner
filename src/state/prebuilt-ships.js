@@ -8,7 +8,8 @@
 /*global require, exports*/
 
 var redis = require('redis'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    Ship = require('shared').Ship;
 
 function getAll(cb) {
     'use strict';
@@ -51,5 +52,34 @@ function get(id, cb) {
     });
 }
 
+function create(shipType, cb) {
+    'use strict';
+    var rc = redis.createClient(),
+        newShip = new Ship({tmxName: shipType});
+    rc.incr('next_hull_id', function(error, id) {
+        if (error) {
+            cb(error);
+            return;
+        }
+        rc.hmset('hull:' + id, {
+            name: shipType,
+            shipJson: JSON.stringify(newShip.toJson())
+        }, function(error, reply) {
+            if (error) {
+                cb(error);
+                return;
+            }
+            rc.rpush(['hull_ids', id], function(error, reply) {
+                if (error) {
+                    cb(error);
+                    return;
+                }
+                cb(null, id);
+            });
+        });
+    });
+}
+
 exports.getAll = getAll;
 exports.get = get;
+exports.create = create;
