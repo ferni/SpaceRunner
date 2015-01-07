@@ -11,6 +11,7 @@
     "underscore": "1.7.0",
     "tmx": "0.2.2",
     "pathfinding": "0.4.2",
-    "redis": "*"
+    "redis": "*",
+    "browserify-middleware": "^4.1.0"
   }
 }

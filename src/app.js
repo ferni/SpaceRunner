@@ -21,6 +21,7 @@ var express = require('express'),
     routes = require('./routes'),
     app = express(),
     _ = require('underscore')._,
+    browserify = require('browserify-middleware'),
     //TODO: change for connect-redis store
     store = new express.session.MemoryStore();
 app.use(express.cookieParser());
@@ -64,6 +65,11 @@ app.configure('development', function() {
 });
 
 routes.register(app);
+
+//js bundles
+app.get('/ship-builder/bundle.js', browserify('./screens/ship-builder/client-js/entry.js'));
+app.get('/battle/bundle.js', browserify('./screens/battle/client-js/entry.js'));
+app.get('/ship-frame/bundle.js', browserify('./screens/ship-frame/client-js/entry.js'));
 
 console.log('Loading maps...');
 tmxLoader.load(function() {
