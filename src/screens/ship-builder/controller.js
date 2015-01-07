@@ -23,11 +23,7 @@ module.exports = function(req, res, next) {
         });
     } else if (hullID) {
         //pull the ship by hull id from the database
-        prebuiltShips.get(hullID, function(error, reply) {
-            if (error) {
-                res.error(error);
-                return;
-            }
+        prebuiltShips.get(hullID).then(function(reply) {
             res.render('ship-builder/view', {
                 path: '/ship-builder/',
                 bootstrapped: JSON.stringify({
@@ -38,9 +34,10 @@ module.exports = function(req, res, next) {
                 }),
                 player: players.getPlayer(req)
             });
+        }).catch(function(e) {
+            res.render('_common/error', {error: e});
         });
     } else {
         res.error('Must specify type or hull_id in query string.');
     }
-
 };

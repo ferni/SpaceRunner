@@ -22,6 +22,7 @@ var express = require('express'),
     app = express(),
     _ = require('underscore')._,
     browserify = require('browserify-middleware'),
+    Promise = require("bluebird"),
     //TODO: change for connect-redis store
     store = new express.session.MemoryStore();
 app.use(express.cookieParser());
@@ -63,6 +64,8 @@ app.configure('development', function() {
     'use strict';
     app.use(express.errorHandler());
 });
+
+Promise.promisifyAll(require("redis"));
 
 routes.register(app);
 

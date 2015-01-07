@@ -12,6 +12,7 @@
     "tmx": "0.2.2",
     "pathfinding": "0.4.2",
     "redis": "*",
-    "browserify-middleware": "^4.1.0"
+    "browserify-middleware": "^4.1.0",
+    "bluebird": "^2.6.2"
   }
 }

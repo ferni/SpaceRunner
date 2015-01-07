@@ -40,16 +40,10 @@ function getAll(cb) {
     });
 }
 
-function get(id, cb) {
+function get(id) {
     'use strict';
     var rc = redis.createClient();
-    rc.hgetall('hull:' + id, function(error, reply) {
-        if (error) {
-            cb(error);
-        } else {
-            cb(null, reply);
-        }
-    });
+    return rc.hgetallAsync('hull:' + id);
 }
 
 function create(shipType, cb) {
