@@ -12,7 +12,8 @@ exports.register = function(app) {
     'use strict';
     //Screens
     app.get('/', require('./screens/ship-list/controller'));
-    _.each(['ship-builder', 'ship-list', 'battle', 'ship-frame'], function(screen) {
+    _.each(['ship-builder', 'ship-list', 'battle',
+        'ship-frame', 'choose-type'], function(screen) {
         app.get('/' + screen, require('./screens/' + screen + '/controller'));
     });
 
