@@ -13,16 +13,14 @@ var players = require('../../state/players'),
 
 module.exports = function(req, res, next) {
     'use strict';
-    hulls.getAll(function(error, hulls) {
-        var view;
-        if (error) {
-            res.render('_common/error', {error: error});
-        }
-        view = req.query.edit ? 'edit' : 'view';
+    var view = req.query.edit ? 'edit' : 'view';
+    hulls.getAll().then(function(hulls) {
         res.render('ship-list/' + view, {
             path: '/ship-list/',
             hulls: hulls,
             player: players.getPlayer(req)
         });
+    }).catch(function(e) {
+        next(e);
     });
 };
