@@ -46,30 +46,20 @@ function get(id) {
     return rc.hgetallAsync('hull:' + id);
 }
 
-function create(shipType, cb) {
+function create(shipType) {
     'use strict';
     var rc = redis.createClient(),
         newShip = new Ship({tmxName: shipType});
-    rc.incr('next_hull_id', function(error, id) {
-        if (error) {
-            cb(error);
-            return;
-        }
-        rc.hmset('hull:' + id, {
+    return rc.incrAsync('next_hull_id').then(function(id) {
+        return rc.hmsetAsync('hull:' + id, {
             name: shipType,
             shipJson: JSON.stringify(newShip.toJson())
-        }, function(error, reply) {
-            if (error) {
-                cb(error);
-                return;
-            }
-            rc.rpush(['hull_ids', id], function(error, reply) {
-                if (error) {
-                    cb(error);
-                    return;
-                }
-                cb(null, id);
-            });
+        }).then(function() {
+            return id;
+        });
+    }).then(function(id) {
+        return rc.rpushAsync(['hull_ids', id]).then(function() {
+            return id;
         });
     });
 }

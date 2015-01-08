@@ -15,11 +15,10 @@ module.exports = function(req, res, next) {
         hullID = req.query.hull_id;
     if (shipType) {
         //create new ship in the database
-        prebuiltShips.create(shipType, function(error, id) {
-            if (error) {
-                res.render('_common/error', {error: error});
-            }
+        prebuiltShips.create(shipType).then(function(id) {
             res.redirect('/ship-builder?hull_id=' + id);
+        }).catch(function(e) {
+            next(e);
         });
     } else if (hullID) {
         //pull the ship by hull id from the database
@@ -35,7 +34,7 @@ module.exports = function(req, res, next) {
                 player: players.getPlayer(req)
             });
         }).catch(function(e) {
-            res.render('_common/error', {error: e});
+            next(e);
         });
     } else {
         res.error('Must specify type or hull_id in query string.');
