@@ -8,13 +8,13 @@
 /*global require, module*/
 //HOME
 var players = require('../../state/players'),
-    hulls = require('../../state/prebuilt-ships'),
+    prebuiltShips = require('../../state/prebuilt-ships'),
     _ = require('underscore')._;
 
 module.exports = function(req, res, next) {
     'use strict';
     var view = req.query.edit ? 'edit' : 'view';
-    hulls.getAll().then(function(hulls) {
+    prebuiltShips.getAll().then(function(hulls) {
         res.render('ship-list/' + view, {
             path: '/ship-list/',
             hulls: hulls,
