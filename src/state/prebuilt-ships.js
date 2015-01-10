@@ -52,5 +52,10 @@ module.exports = {
             join = require('bluebird').join;
         return join(rc.lremAsync(['hull_ids', 0, id]),
             rc.delAsync('hull:' + id));
+    },
+    update: function(id, values) {
+        'use strict';
+        var rc = redis.createClient();
+        return rc.hmsetAsync('hull:' + id, values);
     }
 };

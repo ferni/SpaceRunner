@@ -6,7 +6,7 @@
 */
 
 /*global require, exports, hullMaps*/
-var redis = require('redis');
+var prebuiltShips = require('../../state/prebuilt-ships');
 
 exports.ship = {
     /**
@@ -16,15 +16,15 @@ exports.ship = {
      */
     save: function(req, res) {
         'use strict';
-        var data = req.body,
-            rc = redis.createClient();
-        rc.hmset('hull:' + data.hullID, {
+        var data = req.body;
+        prebuiltShips.update(data.hullID, {
             'shipJson': data.jsonString,
             'name': data.name
-        },
-            function(error, reply) {
-                res.json({error: error});
-            });
+        }).then(function() {
+            res.json({});
+        }).catch(function(e) {
+            res.json({error: e});
+        });
     },
     /**
      * Gets the hull maps.
