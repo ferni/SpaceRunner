@@ -1,12 +1,17 @@
 <button id="add-button">+Add</button>
-<ul>
-{{#each hulls}}
-    <li>
-        <a href="/ship-builder/?hull_id={{id}}">{{name}}</a>
-        <button class="delete-button" value="{{id}}">[X]</button>
-    </li>
-{{/each}}
+
+<ul id="ship-list">
+    {{#each hullsByTier}}
+        <h3>Tier {{@key}}</h3>
+        {{#each this}}
+            <li>
+                <a href="/ship-builder/?hull_id={{id}}">{{name}}</a>
+                <button class="delete-button" value="{{id}}">[X]</button>
+            </li>
+        {{/each}}
+    {{/each}}
 </ul>
+
 <a href="?">[Finish editing]</a>
 <script src="/_common/vendor/jquery-1.9.1.js"></script>
 <script type="text/javascript">

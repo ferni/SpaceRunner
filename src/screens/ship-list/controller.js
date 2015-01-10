@@ -15,9 +15,10 @@ module.exports = function(req, res, next) {
     'use strict';
     var view = req.query.edit ? 'edit' : 'view';
     prebuiltShips.getAll().then(function(hulls) {
+        var hullsByTier = _.groupBy(hulls, 'tier');
         res.render('ship-list/' + view, {
             path: '/ship-list/',
-            hulls: hulls,
+            hullsByTier: hullsByTier,
             player: players.getPlayer(req)
         });
     }).catch(function(e) {

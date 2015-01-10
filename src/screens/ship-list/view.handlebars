@@ -1,7 +1,10 @@
 <h2>Choose your ship</h2>
 <ul id="ship-list">
-{{#each hulls}}
-    <li><a href="#" data-id="{{id}}">{{name}}</a></li>
+{{#each hullsByTier}}
+    <h3>Tier {{@key}}</h3>
+    {{#each this}}
+        <li><a href="#" data-id="{{id}}">{{name}}</a></li>
+    {{/each}}
 {{/each}}
 </ul>
 <a href="?edit=true">[Edit list]</a>
