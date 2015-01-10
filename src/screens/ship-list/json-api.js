@@ -5,34 +5,19 @@
 * All rights reserved.
 */
 
-/*global require, exports, hullMaps*/
-var redis = require('redis'),
-    battles = require('../../state/battles'),
-    players = require('../../state/players');
+/*global require, exports*/
+var battles = require('../../state/battles'),
+    players = require('../../state/players'),
+    prebuiltShips = require('../../state/prebuilt-ships');
 
 exports.ship = {
     remove: function(req, res) {
         'use strict';
-        var id = req.body.id,
-            rc = redis.createClient(),
-            tasksDone = 0;
-        function taskDone() {
-            tasksDone++;
-            if (tasksDone >= 2) {
-                res.json({});
-            }
-        }
-        rc.lrem(['hull_ids', 0, id], function(error, reply) {
-            if (error) {
-                return res.json({error: error});
-            }
-            taskDone();
-        });
-        rc.del('hull:' + id, function(error, reply) {
-            if (error) {
-                return res.json({error: error});
-            }
-            taskDone();
+        var id = req.body.id;
+        prebuiltShips.remove(id).then(function() {
+            res.json({});
+        }).catch(function(e) {
+            res.json({error: e});
         });
     },
     pick: function(req, res) {

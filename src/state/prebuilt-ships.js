@@ -12,7 +12,7 @@ var redis = require('redis'),
     Ship = require('shared').Ship;
 
 module.exports = {
-    getAll: function () {
+    getAll: function() {
         'use strict';
         var rc = redis.createClient();
         return rc.lrangeAsync(['hull_ids', 0, -1]).map(function (id) {
@@ -24,12 +24,12 @@ module.exports = {
             });
         });
     },
-    get: function (id) {
+    get: function(id) {
         'use strict';
         var rc = redis.createClient();
         return rc.hgetallAsync('hull:' + id);
     },
-    create: function (shipType) {
+    create: function(shipType) {
         'use strict';
         var rc = redis.createClient(),
             newShip = new Ship({tmxName: shipType});
@@ -45,5 +45,12 @@ module.exports = {
                 return id;
             });
         });
+    },
+    remove: function(id) {
+        'use strict';
+        var rc = redis.createClient(),
+            join = require('bluebird').join;
+        return join(rc.lremAsync(['hull_ids', 0, id]),
+            rc.delAsync('hull:' + id));
     }
 };
