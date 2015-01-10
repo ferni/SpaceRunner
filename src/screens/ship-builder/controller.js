@@ -25,8 +25,9 @@ module.exports = function(req, res, next) {
         prebuiltShips.get(hullID).then(function(reply) {
             res.render('ship-builder/view', {
                 path: '/ship-builder/',
+                shipName: reply.name,
+                shipTier: reply.tier,
                 bootstrapped: JSON.stringify({
-                    shipName: reply.name,
                     shipJson: reply.shipJson,
                     hullID: hullID,
                     hullMaps: hullMaps

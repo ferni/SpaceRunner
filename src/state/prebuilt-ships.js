@@ -9,6 +9,7 @@
 
 var redis = require('redis'),
     rc = redis.createClient(),
+    join = require('bluebird').join,
     _ = require('underscore')._,
     Ship = require('shared').Ship;
 
@@ -16,10 +17,14 @@ module.exports = {
     getAll: function() {
         'use strict';
         return rc.lrangeAsync(['hull_ids', 0, -1]).map(function (id) {
-            return rc.hgetAsync(['hull:' + id, 'name']).then(function (reply) {
+            return join(
+                rc.hgetAsync(['hull:' + id, 'name']),
+                rc.hgetAsync(['hull:' + id, 'tier'])
+            ).then(function (reply) {
                 return {
                     id: id,
-                    name: reply
+                    name: reply[0],
+                    tier: reply[1]
                 };
             });
         });
@@ -34,6 +39,7 @@ module.exports = {
         return rc.incrAsync('next_hull_id').then(function (id) {
             return rc.hmsetAsync('hull:' + id, {
                 name: shipType,
+                tier: 1,
                 shipJson: JSON.stringify(newShip.toJson())
             }).then(function () {
                 return id;
@@ -46,7 +52,6 @@ module.exports = {
     },
     remove: function(id) {
         'use strict';
-        var join = require('bluebird').join;
         return join(rc.lremAsync(['hull_ids', 0, id]),
             rc.delAsync('hull:' + id));
     },

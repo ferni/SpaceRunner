@@ -19,7 +19,8 @@ exports.ship = {
         var data = req.body;
         prebuiltShips.update(data.hullID, {
             'shipJson': data.jsonString,
-            'name': data.name
+            'name': data.name,
+            'tier': data.tier
         }).then(function() {
             res.json({});
         }).catch(function(e) {

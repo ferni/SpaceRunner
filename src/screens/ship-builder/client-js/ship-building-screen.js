@@ -94,8 +94,7 @@ module.exports = me.ScreenObject.extend({
     },
     onHtmlLoaded: function() {
         'use strict';
-        var screen = this,
-            loadingNextScreen = false;
+        var screen = this;
         $('.item').click(function() {
             var idItem, itemName;
             if (me.state.isCurrent(me.state.LOADING)) {
@@ -106,13 +105,13 @@ module.exports = me.ScreenObject.extend({
             me.state.current().choose(itemName);
         });
 
-
         //Save
         $('#file_save').click(function() {
             var shipJson = screen.ship.toJson();
             $.post('/ship/save', {
                 hullID: bootstrapped.hullID,
                 name: $('#ship-name').val(),
+                tier: $('#ship-tier').val(),
                 jsonString: JSON.stringify(shipJson)
             },
                 function(response) {
@@ -123,7 +122,6 @@ module.exports = me.ScreenObject.extend({
                     }
                 }, 'json');
         });
-        $('#ship-name').val(bootstrapped.shipName);
         $('#jsapp').find('canvas').css({width: '', height: ''});
     },
     mouseDbClick: function() {
