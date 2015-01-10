@@ -8,13 +8,13 @@
 /*global require, module*/
 
 var redis = require('redis'),
+    rc = redis.createClient(),
     _ = require('underscore')._,
     Ship = require('shared').Ship;
 
 module.exports = {
     getAll: function() {
         'use strict';
-        var rc = redis.createClient();
         return rc.lrangeAsync(['hull_ids', 0, -1]).map(function (id) {
             return rc.hgetAsync(['hull:' + id, 'name']).then(function (reply) {
                 return {
@@ -26,13 +26,11 @@ module.exports = {
     },
     get: function(id) {
         'use strict';
-        var rc = redis.createClient();
         return rc.hgetallAsync('hull:' + id);
     },
     create: function(shipType) {
         'use strict';
-        var rc = redis.createClient(),
-            newShip = new Ship({tmxName: shipType});
+        var newShip = new Ship({tmxName: shipType});
         return rc.incrAsync('next_hull_id').then(function (id) {
             return rc.hmsetAsync('hull:' + id, {
                 name: shipType,
@@ -48,14 +46,12 @@ module.exports = {
     },
     remove: function(id) {
         'use strict';
-        var rc = redis.createClient(),
-            join = require('bluebird').join;
+        var join = require('bluebird').join;
         return join(rc.lremAsync(['hull_ids', 0, id]),
             rc.delAsync('hull:' + id));
     },
     update: function(id, values) {
         'use strict';
-        var rc = redis.createClient();
         return rc.hmsetAsync('hull:' + id, values);
     }
 };
