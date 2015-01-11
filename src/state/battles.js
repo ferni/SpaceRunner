@@ -10,9 +10,10 @@ var sh = require('shared'),
     BattleServer = require('../classes/battle-server'),
     prebuiltShips = require('./prebuilt-ships'),
     players = require('./players'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    join = require('bluebird').join;
 
-var playersWaiting = [],
+var playersWaitingByTier = {},
     battleServers = [];
 
 function createBattle(players) {
@@ -20,53 +21,53 @@ function createBattle(players) {
     var ship1,
         ship2,
         battleServer,
-        U = sh.Unit,
-        shipJsons = [];
-    function fetchedShip() {
-        if (shipJsons.length < 2) {
-            return;
-        }
-        battleServer = new BattleServer({
-            id: battleServers.length,
-            shipJsons: shipJsons
+        U = sh.Unit;
+    join(prebuiltShips.get(players[0].hullID),
+        prebuiltShips.get(players[1].hullID))
+        .then(function(ships) {
+            var shipJsons = _.map(ships, function(s) {
+                    return JSON.parse(s.shipJson);
+                });
+            battleServer = new BattleServer({
+                id: battleServers.length,
+                shipJsons: shipJsons
+            });
+            ship1 = battleServer.battleModel.ships[0];
+            ship1.owner = players[0];
+            players[0].battleID = battleServer.id;
+            ship1.putUnit(new U({imgIndex: 6, speed: 2}));
+            ship1.putUnit(new U({imgIndex: 6, speed: 2}));
+            ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
+            ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
+
+            ship2 = battleServer.battleModel.ships[1];
+            ship2.owner = players[1];
+            players[1].battleID = battleServer.id;
+            ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
+            ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
+            ship2.putUnit(new U({imgIndex: 12, speed: 2}));
+            ship2.putUnit(new U({imgIndex: 12, speed: 2}));
+
+            battleServers.push(battleServer);
+            battleServer.nextTurn();
         });
-        ship1 = battleServer.battleModel.ships[0];
-        ship1.owner = players[0];
-        players[0].battleID = battleServer.id;
-        ship1.putUnit(new U({imgIndex: 6, speed: 2}));
-        ship1.putUnit(new U({imgIndex: 6, speed: 2}));
-        ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
-        ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
-
-        ship2 = battleServer.battleModel.ships[1];
-        ship2.owner = players[1];
-        players[1].battleID = battleServer.id;
-        ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
-        ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
-        ship2.putUnit(new U({imgIndex: 12, speed: 2}));
-        ship2.putUnit(new U({imgIndex: 12, speed: 2}));
-
-        battleServers.push(battleServer);
-        battleServer.nextTurn();
-    }
-    prebuiltShips.get(players[0].hullID, function(error, reply) {
-        shipJsons.push(JSON.parse(reply.shipJson));
-        fetchedShip();
-    });
-    prebuiltShips.get(players[1].hullID, function(error, reply) {
-        shipJsons.push(JSON.parse(reply.shipJson));
-        fetchedShip();
-    });
 }
 
 
 function addPlayerToQueue(player) {
     'use strict';
-    playersWaiting.push(player);
-    if (playersWaiting.length >= 2) {
-        createBattle(playersWaiting.slice(0, 2));
-        playersWaiting = playersWaiting.slice(2);
-    }
+    prebuiltShips.getTier(player.hullID).then(function(tier) {
+        var waiting;
+        if (!playersWaitingByTier[tier]) {
+            playersWaitingByTier[tier] = [];
+        }
+        waiting = playersWaitingByTier[tier];
+        waiting.push(player);
+        if (waiting.length >= 2) {
+            createBattle(waiting.slice(0, 2));
+            playersWaitingByTier[tier] = waiting.slice(2);
+        }
+    });
 }
 
 function get(id) {

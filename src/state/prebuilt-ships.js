@@ -33,6 +33,10 @@ module.exports = {
         'use strict';
         return rc.hgetallAsync('hull:' + id);
     },
+    getTier: function(id) {
+        'use strict';
+        return rc.hgetAsync(['hull:' + id, 'tier']);
+    },
     create: function(shipType) {
         'use strict';
         var newShip = new Ship({tmxName: shipType});
