@@ -9,17 +9,32 @@
 //HOME
 var players = require('../../state/players'),
     prebuiltShips = require('../../state/prebuilt-ships'),
+    battles = require('../../state/battles'),
     _ = require('underscore')._;
 
 module.exports = function(req, res, next) {
     'use strict';
     var view = req.query.edit ? 'edit' : 'view';
     prebuiltShips.getAll().then(function(hulls) {
-        var hullsByTier = _.groupBy(hulls, 'tier');
+        var hullsByTier = _.groupBy(hulls, 'tier'),
+            player = players.getPlayer(req),
+            battle,
+            opponent;
+        if (player.state === 'inBattle') {
+            battle = battles.get(player.battleID);
+            if (!battle.isPlayerInIt(player.id)) {
+                throw new Error('Player is not in the battle his battleID' +
+                    ' indicates.');
+            }
+            opponent = _.find(battle.battleModel.getPlayers(), function(p) {
+                return p !== player;
+            }).name;
+        }
         res.render('ship-list/' + view, {
             path: '/ship-list/',
             hullsByTier: hullsByTier,
-            player: players.getPlayer(req)
+            player: player,
+            opponent: opponent
         });
     }).catch(function(e) {
         next(e);
