@@ -50,6 +50,8 @@ function createBattle(players) {
 
             battleServers.push(battleServer);
             battleServer.nextTurn();
+            players[0].state = 'inBattle';
+            players[1].state = 'inBattle';
         });
 }
 
@@ -63,6 +65,7 @@ function addPlayerToQueue(player) {
         }
         waiting = playersWaitingByTier[tier];
         waiting.push(player);
+        player.state = 'finding';
         if (waiting.length >= 2) {
             createBattle(waiting.slice(0, 2));
             playersWaitingByTier[tier] = waiting.slice(2);
@@ -75,6 +78,7 @@ function removeFromQueue(player) {
     _.each(playersWaitingByTier, function(players) {
         sh.utils.removeFromArray(player, players);
     });
+    player.state = 'idle';
 }
 
 function get(id) {

@@ -77,7 +77,8 @@ exports.createNewPlayer = function() {
     'use strict';
     var player = new sh.Player({
         id: currentPlayers.length,
-        name: exports.toUniqueName('Player')
+        name: exports.toUniqueName('Player'),
+        state: 'idle'
     });
     //chat.log('Player "' + player.name + '" connected to server.');
     currentPlayers.push(player);

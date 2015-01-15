@@ -1,5 +1,5 @@
 <div id="states">
-    <div id="picking">
+    <div id="idle">
         <h2>Choose your ship</h2>
         <ul id="ship-list">
         {{#each hullsByTier}}
@@ -14,6 +14,11 @@
     <div id="finding">
         <p>Waiting for another player...<button id="cancel-button">Cancel</button></p>
     </div>
+    <div id="inBattle">
+        <p>You are currently in battle against {{opponent}} </p>
+        <a href="battle"><button id="resume-button">Resume</button></a>
+        <button id="surrender-button">Surrender</button>
+    </div>
 </div>
 <script src="/_common/vendor/jquery-1.9.1.js"></script>
 <script type="text/javascript">
@@ -27,7 +32,7 @@
         changeState('finding');
         $.post('/ship/pick', {id: $(this).attr('data-id')}, function(data) {
             if (data.error) {
-                changeState('picking');
+                changeState('idle');
                 alert(JSON.stringify(data.error));
             } else {
                 findInterval = setInterval(function() {
@@ -39,13 +44,13 @@
                 }, 500);
             }
         }).error(function() {
-            changeState('picking');
+            changeState('idle');
             alert('Server error');
         });
     });
 
     $('#cancel-button').click(function() {
-        changeState('picking');
+        changeState('idle');
         $.post('/ship/cancel', {id: $(this).attr('data-id')}, function(data) {
             if (data.error) {
                 changeState('finding');
@@ -58,4 +63,5 @@
             alert('Server error');
         });
     });
+    changeState('{{player.state}}');
 </script>
