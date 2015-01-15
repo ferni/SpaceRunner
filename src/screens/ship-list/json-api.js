@@ -26,5 +26,11 @@ exports.ship = {
         player.hullID = req.body.id;
         battles.addPlayerToQueue(player);
         res.json({});
+    },
+    cancel: function(req, res) {
+        'use strict';
+        var player = players.getPlayer(req);
+        battles.removeFromQueue(player);
+        res.json({});
     }
 };

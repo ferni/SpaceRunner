@@ -70,6 +70,13 @@ function addPlayerToQueue(player) {
     });
 }
 
+function removeFromQueue(player) {
+    'use strict';
+    _.each(playersWaitingByTier, function(players) {
+        sh.utils.removeFromArray(player, players);
+    });
+}
+
 function get(id) {
     'use strict';
     return _.find(battleServers, function(bs) {
@@ -78,4 +85,5 @@ function get(id) {
 }
 
 exports.addPlayerToQueue = addPlayerToQueue;
+exports.removeFromQueue = removeFromQueue;
 exports.get = get;
