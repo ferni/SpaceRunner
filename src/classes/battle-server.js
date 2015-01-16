@@ -106,6 +106,19 @@ var BattleServer = module.exports = Class.extend({
             resetShip = true;
         }
         turn.script = sh.createScript(orderCollection, battle, resetShip);
+    },
+    getOpponent: function(playerID) {
+        'use strict';
+        return _.find(this.battleModel.getPlayers(), function(p) {
+            return p.id !== playerID;
+        });
+    },
+    surrender: function(playerID) {
+        'use strict';
+        if (!this.isPlayerInIt(playerID)) {
+            throw new Error('Can\'t surrender: Player is not in the battle.');
+        }
+        this.battleModel.winner = this.getOpponent(playerID).id;
     }
 });
 

@@ -26,9 +26,7 @@ module.exports = function(req, res, next) {
                 throw new Error('Player is not in the battle his battleID' +
                     ' indicates.');
             }
-            opponent = _.find(battle.battleModel.getPlayers(), function(p) {
-                return p !== player;
-            }).name;
+            opponent = battle.getOpponent(player.id).name;
         }
         res.render('ship-list/' + view, {
             path: '/ship-list/',

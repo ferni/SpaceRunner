@@ -9,6 +9,8 @@
                     <span id="turn-info">Turn #<span id="turn-number">0</span></span>
                     <span id="hp">[Own: <span data-bind="text:myShip().hp"></span>]</span>
                     <span id="enemyHP">[Enemy: <span data-bind="text:enemyShip().hp"></span>]</span>
+                    <button id="ready-button" class="button">Ready</button>
+                    <button id="surrender-button" class="button">Surrender</button>
                 </div>
                 <div id="left-hud">
                     <!-- ko if:selectedUnit() -->
@@ -63,7 +65,6 @@
                         </tr>
                     </table>
                 </div>
-                <button id="ready-button" class="button">Ready</button>
                 <div id="end-sign"></div>
             </div>
             <div id="frames">

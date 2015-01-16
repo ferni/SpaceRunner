@@ -66,8 +66,7 @@ exports.battle = {
         'use strict';
         var battle = getBattle(req),
             playerID = players.getID(req),
-            turn = battle.currentTurn,
-            winnerDeclared;
+            turn = battle.currentTurn;
         if (turn.isPlayerReady(playerID)) {
             return res.json({wasReady: true});
         }
@@ -76,12 +75,6 @@ exports.battle = {
                 !turn.script) {
             //all orders have been submitted, generate the script
             battle.generateScript();
-            winnerDeclared = _.find(turn.script.actions, function(a) {
-                return a instanceof sh.actions.DeclareWinner;
-            });
-            if (winnerDeclared) {
-                battle.winner = winnerDeclared.playerID;
-            }
         }
         return res.json({wasReady: false});
     },
@@ -111,5 +104,11 @@ exports.battle = {
         } catch (e) {
             next(new Error(e.toString()));
         }
+    },
+    surrender: function(req, res, next) {
+        'use strict';
+        var battle = getBattle(req);
+        battle.surrender(players.getID(req));
+        exports.battle.ready(req, res, next);
     }
 };

@@ -51,6 +51,34 @@ module.exports = me.ScreenObject.extend({
             };
             return btn;
         }());
+        this.surrenderButton = (function() {
+            var btn = {},
+                $surrender = $('#surrender-button');
+            btn.enabled = true;
+            $surrender.click(function() {
+                if (btn.enabled) {
+                    btn.disable();
+                    var sure = confirm('Are you sure you want to ' +
+                        'surrender the battle?');
+                    if (sure) {
+                        $.post('/battle/surrender')
+                            .fail(function() {
+                                console.error('Server error when trying to' +
+                                    ' surrender');
+                            });
+                    }
+                }
+            });
+            btn.enable = function() {
+                btn.enabled = true;
+                $surrender.removeClass('disabled');
+            };
+            btn.disable = function() {
+                btn.enabled = false;
+                $surrender.addClass('disabled');
+            };
+            return btn;
+        }());
         $('html, body, #game, #screensUi, #battle-screen')
             .css({width: '100%', height: '100%'});
     },
@@ -285,6 +313,7 @@ module.exports = me.ScreenObject.extend({
         $('#paused-indicator, #ready-button').show();
         $('#elapsed').hide();
         this.readyButton.enable();
+        this.surrenderButton.enable();
         this.timeline.update();
         me.game.sort();
         me.game.repaint();
@@ -305,6 +334,7 @@ module.exports = me.ScreenObject.extend({
         'use strict';
         var screen = this;
         screen.readyButton.disable();
+        screen.surrenderButton.disable();
         //send the orders to the server
         $.post('/battle/ready',
             {id: this.id}, function(data) {
