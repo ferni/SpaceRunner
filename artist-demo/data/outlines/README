@@ -1,0 +1,5 @@
+Map requirements
+----------------
+
+- "collision" layer should be third.
+- "colTile" tileset should be first.

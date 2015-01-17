@@ -1,0 +1,53 @@
+#chat-client{
+    position:fixed;
+    width:250px;
+    right:0px;
+    top:0px;
+    bottom: 70px;
+    max-height: 300px;
+  padding: 2px;
+    background-color: black;
+    color: #cccccc;
+    font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+    border: solid 1px white;
+}
+#chat-client p{
+    margin:1px;
+    padding:0px;
+}
+#chat-client #lines{
+    position:absolute;
+    top: 30px;
+    left: 2px;
+    right: 2px;
+    bottom: 30px;
+
+    overflow-y: scroll;
+}
+#chat-client a {
+  color: #00B7FF;
+}
+
+#chat-client form{
+	position:absolute;
+	bottom: 10px;
+}
+
+#chat-client form{
+    position:absolute;
+    right:6px;
+    left:2px;
+    bottom:2px;
+}
+#chat-client input{
+    width: 188px;
+}
+
+#chat-client .sender{
+	font-weight: bold;
+}
+
+#chat-client.disabled{
+    height: 25px;
+}

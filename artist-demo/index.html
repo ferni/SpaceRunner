@@ -5,6 +5,153 @@
     <title></title>
 </head>
 <body>
+<style>
+    .tab-page {
+        display:none;
+    }
 
+    .active-page {
+        display: block;
+    }
+</style>
+
+<ul class="ship-select-buttons simple-tabs" id="tabs">
+    <li class="cyborg active">
+        <span class="race-button button">Cyborg</span>
+    </li>
+    <li class="humanoid">
+        <span class="race-button button">Humanoid</span>
+    </li>
+    <li class="liquid">
+        <span class="race-button button">Liquid</span>
+    </li>
+    <li class="mechanoid">
+        <span class="race-button button">Mechanoid</span>
+    </li>
+</ul>
+
+<ul class="ships tab-page active-page" id="cyborg">
+    <li class="ship-button button">
+        <a href="/ship-builder/?type=cyborg_frigate">
+            <p><img alt="<ship preview>" src="data/img/render/ships/cyborg/cyborg_frigate_img.png"></p>
+            <p><span>Frigate</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button">
+        <a href="/ship-builder/?type=cyborg_cruiser">
+            <p><img alt="<ship preview>" src="data/img/render/ships/cyborg/cyborg_cruiser_img.png"></p>
+            <p><span>Cruiser</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=cyborg_battleship1">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/cyborg/cyborg_battleship1_img.png"></p>
+            <p><span >Battleship1</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=cyborg_drone">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/cyborg/cyborg_drone_img.png"></p>
+            <p><span >Drone</span></p>
+        </a>
+    </li>
+</ul>
+<ul class="ships tab-page" id="humanoid">
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=humanoid_frigate">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/humanoid/humanoid_frigate_img.png"></p>
+            <p><span >Frigate</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=humanoid_cruiser">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/humanoid/humanoid_cruiser_img.png"></p>
+            <p><span >Cruiser</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=humanoid_battleship">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/humanoid/humanoid_battleship_img.png"></p>
+            <p><span >Battleship</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=humanoid_drone">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/humanoid/humanoid_drone_img.png"></p>
+            <p><span >Drone</span></p>
+        </a>
+    </li>
+</ul>
+<ul class="ships tab-page" id="liquid">
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=liquid_frigate">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/liquid/liquid_frigate_img.png"></p>
+            <p><span >Frigate</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=liquid_cruiser">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/liquid/liquid_cruiser_img.png"></p>
+            <p><span >Cruiser</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=liquid_battleship">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/liquid/liquid_battleship_img.png"></p>
+            <p><span >Battleship</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=liquid_drone">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/liquid/liquid_drone_img.png"></p>
+            <p><span >Drone</span></p>
+        </a>
+    </li>
+</ul>
+<ul class="ships tab-page" id="mechanoid">
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=mechanoid_frigate">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/mechanoid/mechanoid_frigate_img.png"></p>
+            <p><span >Frigate</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=mechanoid_cruiser">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/mechanoid/mechanoid_cruiser_img.png"></p>
+            <p><span >Cruiser</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=mechanoid_battleship">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/mechanoid/mechanoid_battleship_img.png"></p>
+            <p><span >Battleship</span></p>
+        </a>
+    </li>
+
+    <li class="ship-button button" >
+        <a href="/ship-builder/?type=mechanoid_drone">
+            <p><img alt="<ship preview>"  src="data/img/render/ships/mechanoid/mechanoid_drone_img.png"></p>
+            <p><span >Drone</span></p>
+        </a>
+    </li>
+</ul>
+
+<script src="data/vendor/simple-tabs-pure-js.js"></script>
+<script type="text/javascript">
+    window.onload = function() {
+        new SimpleTabs(document.getElementById('tabs'));
+    };
+</script>
 </body>
 </html>
