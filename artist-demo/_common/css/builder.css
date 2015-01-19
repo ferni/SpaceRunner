@@ -1,0 +1,69 @@
+﻿#top-panel {
+    position: fixed;
+    left: 180px;
+    border: 1px solid white;
+    background-color: darkslateblue;
+    padding: 5px;
+}
+
+#file_save {
+    margin-left: 5px;
+    padding: 2px;
+}
+
+#itemboard
+{
+    width: 160px;
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+
+    overflow-y: scroll;
+}
+#items{
+    margin-left: 20px;
+}
+#itemboard .empty{
+    float:left;
+}
+
+.item {
+    width:100px;
+    height:64px;
+    background-color:rgba(254,226,235,0.8);
+    float:left;
+    text-align:center;
+    border:#000000 1px solid;
+    padding:15px 0 0 5px;
+    cursor:pointer;
+    position: relative;
+}
+.item img{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+.item span{
+    position: absolute;
+    bottom: 7px;
+    left: 5px;
+    right: 5px;
+}
+.chosen{
+    border:#FFFF33 3px solid;
+}
+
+.blackempty{
+    background:#000000;
+    text-align:center;
+    padding:0px;
+}
+
+.globalbutton{
+    width:130px;
+    height:32px;
+    text-align:center;
+    padding:2px;
+	cursor:pointer;
+}
