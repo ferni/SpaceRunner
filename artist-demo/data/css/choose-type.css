@@ -1,0 +1,48 @@
+﻿ul {
+    list-style-type: none;
+}
+
+.race-button {
+    background-color: green;
+}
+
+.race-button:hover {
+    background-color: greenyellow;
+}
+
+.active .race-button
+{
+    color: yellow;
+}
+
+.ship-select-buttons {
+    position: absolute;
+    top: 60px;
+    left: 40px;
+    
+}
+.ships {
+    position: absolute;
+    top: 0px;
+    left: 200px;
+    width: 600px;
+    height: 500px;
+}
+
+.ship-button  
+{
+    background-color: #0099FF;
+    font-size: 20px;
+    float: left;
+
+}
+.ship-button img{
+    width: 200px;
+    height: 200px;
+    float: none;
+}
+.ship-button:hover
+{
+    background-color: #66CCFF;
+}
+
