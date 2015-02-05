@@ -53,6 +53,14 @@ jsApp = {
             id: 777,
             name: 'hardcoded name'
         });
+
+        //prepare dom
+        $('#jsapp').bind('contextmenu', function() {
+            return false;//disable context menu
+        }).attr('unselectable', 'on')
+            .css('user-select', 'none')
+            .on('selectstart', false);//disable selection
+
         me.state.set('ship-building', new ShipBuilding());
         me.state.change('ship-building');
         self.loadReady = true;
