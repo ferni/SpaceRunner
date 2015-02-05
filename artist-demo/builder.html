@@ -88,6 +88,10 @@
 
     //Because Ship needs a global object "hullMaps"
     window.hullMaps = bootstrapped.hullMaps;
+
+    $('#jsapp').bind('contextmenu', function() {
+        return false;//disable context menu
+    });
 </script>
 
 <script type="text/javascript" src="./ship-builder_files/bundle.js"></script>
