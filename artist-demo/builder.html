@@ -83,7 +83,20 @@
                     .exec(window.location.search);
             return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
         }
-        return JSON.parse(getParameterByName('ship-json'));
+        var shipJson = getParameterByName('ship-json');
+        if (shipJson) {
+            return JSON.parse(shipJson);
+        } else {
+            return {
+                "tmxName":getParameterByName('type'),
+                "id":null,
+                "hp":2000,
+                "owner":null,
+                "buildings":[],
+                "units":[],
+                "GRID_SUB":2
+            }
+        }
     }());
 
     //Because Ship needs a global object "hullMaps"
