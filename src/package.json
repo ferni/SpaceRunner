@@ -13,6 +13,10 @@
     "pathfinding": "0.4.2",
     "redis": "*",
     "browserify-middleware": "^4.1.0",
-    "bluebird": "^2.6.2"
+    "bluebird": "^2.6.2",
+    "passport" : "~0.1.17",
+    "passport-local" : "~0.1.6",
+    "connect-flash" : "~0.1.1",
+    "bcrypt-nodejs" : "latest"
   }
 }

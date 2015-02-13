@@ -27,5 +27,8 @@ exports.register = function(app) {
                 });
             });
     });
+
+    //login
+    //app.get('/login');
 };
 
