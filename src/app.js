@@ -22,6 +22,8 @@ var express = require('express'),
     methodOverride = require('method-override'),
     errorHandler = require('errorhandler'),
 
+    passport = require('passport'),
+    flash = require('connect-flash'),
     chat = require('./chat'),
     players = require('./state/players'),
     http = require('http'),
@@ -34,28 +36,31 @@ var express = require('express'),
     Promise = require('bluebird'),
     //TODO: change for connect-redis store
     store = new session.MemoryStore();
-app.use(cookieParser());
-app.use(session({
-    secret: 'arerhciusinieadqe-5124S',
-    store: store
-}));
-app.use(players.authenticate);
-app.engine('handlebars', exphbs({
-    layoutsDir: 'screens/_common/layouts',
-    defaultLayout: 'plain',
-    partialsDir: 'screens/_common/partials'
-}));
 
 
+require('./config/passport')(passport);
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/screens');
 app.set('view engine', 'handlebars');
+app.use(cookieParser());
 app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
+app.use(session({
+    secret: 'arerhciusinieadqe-5124S',
+    store: store
+}));
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
+app.engine('handlebars', exphbs({
+    layoutsDir: 'screens/_common/layouts',
+    defaultLayout: 'plain',
+    partialsDir: 'screens/_common/partials'
+}));
 
 
 var env = process.env.NODE_ENV || 'development';

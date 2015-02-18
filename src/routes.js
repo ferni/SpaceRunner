@@ -6,7 +6,8 @@
 */
 
 /*global exports, require*/
-var _ = require('underscore')._;
+var _ = require('underscore')._,
+    passport = require('passport');
 
 exports.register = function(app) {
     'use strict';
@@ -28,7 +29,14 @@ exports.register = function(app) {
             });
     });
 
-    //login
-    //app.get('/login');
+
+    app.get('/signup', function(req, res) {
+        res.render('signup');
+    });
+    app.post('/signup', passport.authenticate('local-signup', {
+        successRedirect : '/profile', // redirect to the secure profile section
+        failureRedirect : '/signup', // redirect back to the signup page if there is an error
+        failureFlash : true // allow flash messages
+    }));
 };
 

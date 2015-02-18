@@ -28,8 +28,10 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        players.playerByID(id, function(err, user) {
-            done(err, user);
+        players.playerByID(id).then(function(user) {
+            done(null, user);
+        }).catch(function(e) {
+            done(e);
         });
     });
 
@@ -46,50 +48,31 @@ module.exports = function(passport) {
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
         function(req, email, password, done) {
-
             // asynchronous
             // User.findOne wont fire unless data is sent back
-            process.nextTick(function() {
-
+            process.nextTick(function () {
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
-                User.findOne({ 'local.email' :  email }, function(err, user) {
-                    // if there are any errors, return the error
-                    if (err) {
-                        return done(err);
-                    }
-
+                players.exists(email).then(function (exists) {
                     // check to see if theres already a user with that email
-                    if (user) {
+                    if (exists) {
                         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                     }
-                    // if there is no user with that email
-                    // create the user
-                    var newUser            = new User();
-
-                    // set the user's local credentials
-                    newUser.local.email    = email;
-                    newUser.local.password = newUser.generateHash(password);
-
-                    // save the user
-                    newUser.save(function(err) {
-                        if (err) {
-                            throw err;
-                        }
-                        return done(null, newUser);
+                    return players.createNewPlayer(email, generateHash(password)).then(function (player) {
+                        return done(null, player);
                     });
+                }).catch(function (err) {
+                    // if there are any errors, return the error
+                    done(err);
                 });
-
             });
-
         }));
-
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
     // we are using named strategies since we have one for login and one for signup
     // by default, if there was no name, it would just be called 'local'
-
+/*
     passport.use('local-login', new LocalStrategy({
             // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
@@ -120,5 +103,5 @@ module.exports = function(passport) {
             });
 
         }));
-
+ */
 };

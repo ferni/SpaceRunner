@@ -9,6 +9,8 @@
 
 var _ = require('underscore')._,
     sh = require('shared'),
+    rc = require('../config/redis-client'),
+    join = require('bluebird'),
     //chat = require('./chat'),
     currentPlayers = []; //filled with sh.Player;
 
@@ -20,10 +22,10 @@ var _ = require('underscore')._,
 exports.getID = function(req) {
     'use strict';
     //check that there's a player
-    var id = req.session.playerID;
-    if (id === undefined) {
+    if (!req.user) {
         throw 'Player not in session';
     }
+    var id = req.user.id;
     return parseInt(id, 10);
 };
 
@@ -34,9 +36,7 @@ exports.getID = function(req) {
 */
 exports.playerByID = function(id) {
     'use strict';
-    return _.find(currentPlayers, function(p) {
-        return p.id === id;
-    });
+    return rc.hgetallAsync('user:' + id);
 };
 
 /**
@@ -73,18 +73,27 @@ exports.toUniqueName = function(playerName) {
  * Creates a new player and add it to currentPlayers.
  * @return {sh.Player}
  */
-exports.createNewPlayer = function() {
+exports.createNewPlayer = function(email, pass) {
     'use strict';
-    var player = new sh.Player({
-        id: currentPlayers.length,
-        name: exports.toUniqueName('Player'),
+    var userHash = {
+        email: email,
+        pass: pass,
         state: 'idle'
+    };
+    return rc.incrAsync('next_user_id').then(function(id) {
+        userHash.id = id;
+        return rc.hmsetAsync('user:' + id, userHash).then(function() {
+            return rc.hsetAsync('users', email, id);
+        });
+    }).then(function() {
+        return userHash;
     });
-    //chat.log('Player "' + player.name + '" connected to server.');
-    currentPlayers.push(player);
-    return player;
 };
 
+exports.exists = function(email) {
+    'use strict';
+    return rc.hexistsAsync('users', email);
+};
 
 /**
  * Checks if the player is in currentPlayers.

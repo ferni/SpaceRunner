@@ -7,8 +7,7 @@
 
 /*global require, module*/
 
-var redis = require('redis'),
-    rc = redis.createClient(),
+var rc = require('../config/redis-client'),
     join = require('bluebird').join,
     _ = require('underscore')._,
     Ship = require('shared').Ship;
