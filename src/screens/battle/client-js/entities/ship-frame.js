@@ -31,7 +31,7 @@ module.exports = (function() {
         init: function() {
             //create an iframe, pass the model and bind with onEvent
             var self = this,
-                url = 'ship-frame/?width=' + (self.ship.width * gs.TILE_SIZE) +
+                url = '/ship-frame/?width=' + (self.ship.width * gs.TILE_SIZE) +
                     '&height=' + (self.ship.height * gs.TILE_SIZE) +
                     '&tmx=' + self.ship.tmxName,
                 iframe = $('<iframe src="' + url + '"/>')[0];
