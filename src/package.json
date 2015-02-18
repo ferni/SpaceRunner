@@ -6,8 +6,13 @@
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.1.0",
+    "express": "~4.0.0",
     "express-handlebars": "*",
+    "morgan": "latest",
+    "body-parser": "latest",
+    "method-override": "latest",
+    "serve-favicon": "latest",
+    "errorhandler": "latest",
     "underscore": "1.7.0",
     "tmx": "0.2.2",
     "pathfinding": "0.4.2",

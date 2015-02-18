@@ -13,6 +13,15 @@
 
 var express = require('express'),
     exphbs  = require('express-handlebars'),
+
+    cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    favicon = require('serve-favicon'),
+    morgan = require('morgan'),
+    bodyParser = require('body-parser'),
+    methodOverride = require('method-override'),
+    errorHandler = require('errorhandler'),
+
     chat = require('./chat'),
     players = require('./state/players'),
     http = require('http'),
@@ -22,14 +31,12 @@ var express = require('express'),
     app = express(),
     _ = require('underscore')._,
     browserify = require('browserify-middleware'),
-    Promise = require("bluebird"),
+    Promise = require('bluebird'),
     //TODO: change for connect-redis store
-    store = new express.session.MemoryStore();
-app.use(express.cookieParser());
-app.use(express.session({
-    secret: 'asdfqwerasdfaq34%RT·W4tSDFg345t3qS$T·' +
-        '345·FSdg32$1@E2345r·Tefg4Drsertq4tq4ohelfg' +
-        'xvdsrgERTWFGDFG-ete$_w4tqouyhjkhdsfghdfgkjh',
+    store = new session.MemoryStore();
+app.use(cookieParser());
+app.use(session({
+    secret: 'arerhciusinieadqe-5124S',
     store: store
 }));
 app.use(players.authenticate);
@@ -38,32 +45,31 @@ app.engine('handlebars', exphbs({
     defaultLayout: 'plain',
     partialsDir: 'screens/_common/partials'
 }));
-app.configure(function() {
-    'use strict';
-    app.set('port', process.env.PORT || 3000);
-    app.set('views', __dirname + '/screens');
-    app.set('view engine', 'handlebars');
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(path.join(__dirname, 'public')));
-});
 
-app.configure('production', function() {
-    'use strict';
-    //error handler
+
+app.set('port', process.env.PORT || 3000);
+app.set('views', __dirname + '/screens');
+app.set('view engine', 'handlebars');
+app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(methodOverride());
+
+
+var env = process.env.NODE_ENV || 'development';
+if ('production' === env) {
     app.use(function(err, req, res, next) {
+        'use strict';
         chat.error('Error');
         res.send(500, 'Something broke!');
     });
-});
+}
 
-app.configure('development', function() {
-    'use strict';
-    app.use(express.errorHandler());
-});
+if ('development' === env) {
+    app.use(errorHandler());
+}
 
 Promise.promisifyAll(require("redis"));
 
