@@ -58,7 +58,7 @@ module.exports = function(passport) {
                     if (exists) {
                         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                     }
-                    return players.createNewPlayer(email, generateHash(password)).then(function (player) {
+                    return players.createNewPlayer(email, password).then(function (player) {
                         return done(null, player);
                     });
                 }).catch(function (err) {
