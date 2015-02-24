@@ -64,14 +64,12 @@ module.exports = function(passport) {
     },
         function(req, email, password, done) {
             players.byEmail(email).then(function(user) {
-                console.log('USER RETURNED: ' + user);
                 if (!user || !isPasswordValid(password, user)) {
                     return done(null, false, req.flash('loginMessage',
                         'Invalid e-mail/password combination.'));
                 }
                 return done(null, user);
             }).catch(function(err) {
-                console.log('ERRor');
                 done(err);
             });
         }));
