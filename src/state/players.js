@@ -107,13 +107,9 @@ exports.isOnline = function(playerID) {
     });
 };
 
-exports.authenticate = function(req, res, next) {
+exports.byEmail = function(email) {
     'use strict';
-    var player;
-    if (req.session.playerID === undefined) {
-        //create the player
-        player = exports.createNewPlayer();
-        req.session.playerID = player.id;
-    }
-    next();
+    return rc.hgetAsync('users', email).then(function(id) {
+        return rc.hgetallAsync('user:' + id);
+    });
 };

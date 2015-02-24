@@ -1,67 +1,34 @@
-<div id="states">
-    <div id="idle">
-        <h2>Choose your ship</h2>
-        <ul id="ship-list">
-        {{#each hullsByTier}}
-            <h3>Tier {{@key}}</h3>
-            {{#each this}}
-                <li><a href="#" data-id="{{id}}">{{name}}</a></li>
-            {{/each}}
-        {{/each}}
-        </ul>
-        <a href="?edit=true">[Edit list]</a>
-    </div>
-    <div id="finding">
-        <p>Waiting for another player...<button id="cancel-button">Cancel</button></p>
-    </div>
-    <div id="inBattle">
-        <p>You are currently in battle against {{opponent}} </p>
-        <a href="battle"><button id="resume-button">Resume</button></a>
-        <button id="surrender-button">Surrender</button>
-    </div>
-</div>
-<script src="/_common/vendor/jquery-1.9.1.js"></script>
-<script type="text/javascript">
-    var findInterval;
-    function changeState(state) {
-        $('#states').find('div').css('display', 'none');
-        $('#' + state).css('display', 'block');
-    }
-    $('#ship-list').find('a').click(function(e) {
-        e.preventDefault();
-        changeState('finding');
-        $.post('/ship/pick', {id: $(this).attr('data-id')}, function(data) {
-            if (data.error) {
-                changeState('idle');
-                alert(JSON.stringify(data.error));
-            } else {
-                findInterval = setInterval(function() {
-                    $.post('/battle/issetup', function(data) {
-                        if (data.issetup) {
-                            location.href = '/battle';
-                        }
-                    });
-                }, 500);
-            }
-        }).error(function() {
-            changeState('idle');
-            alert('Server error');
-        });
-    });
+<div class="container">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <div class="col-sm-6 col-sm-offset-3">
 
-    $('#cancel-button').click(function() {
-        changeState('idle');
-        $.post('/ship/cancel', {id: $(this).attr('data-id')}, function(data) {
-            if (data.error) {
-                changeState('finding');
-                alert(JSON.stringify(data.error));
-            } else {
-                clearInterval(findInterval);
-            }
-        }).error(function() {
-            changeState('finding');
-            alert('Server error');
-        });
-    });
-    changeState('{{player.state}}');
-</script>
+        <h1><span class="fa fa-sign-in"></span> Login</h1>
+
+        <!-- show any messages that come back with authentication -->
+        {{#if message}}
+            <div class="alert alert-danger">{{message}}</div>
+        {{/if}}
+
+        <!-- LOGIN FORM -->
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password">
+            </div>
+
+            <button type="submit" class="btn btn-warning btn-lg">Login</button>
+        </form>
+
+        <hr>
+
+        <p>Need an account? <a href="/signup">Signup</a></p>
+        <p>Or go <a href="/">home</a>.</p>
+
+    </div>
+
+</div>
