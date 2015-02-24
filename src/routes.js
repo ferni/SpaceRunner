@@ -33,7 +33,7 @@ exports.register = function(app) {
         res.render('signup', { message: req.flash('signupMessage') });
     });
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/profile',
+        successRedirect : '/',
         failureRedirect : '/signup',
         failureFlash : true
     }));
@@ -42,7 +42,7 @@ exports.register = function(app) {
         res.render('login', { message: req.flash('loginMessage') });
     });
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/profile',
+        successRedirect : '/',
         failureRedirect : '/login',
         failureFlash : true
     }));

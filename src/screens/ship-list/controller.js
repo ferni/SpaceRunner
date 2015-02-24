@@ -14,10 +14,13 @@ var players = require('../../state/players'),
 
 module.exports = function(req, res, next) {
     'use strict';
+    if (!req.isAuthenticated()) {
+        return res.redirect('/login');
+    }
     var view = req.query.edit ? 'edit' : 'view';
     prebuiltShips.getAll().then(function(hulls) {
         var hullsByTier = _.groupBy(hulls, 'tier'),
-            player = players.getPlayer(req),
+            player = req.user,
             battle,
             opponent;
         if (player.state === 'inBattle') {
