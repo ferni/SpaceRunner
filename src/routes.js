@@ -12,16 +12,16 @@ var _ = require('underscore')._,
 exports.register = function(app) {
     'use strict';
     function loginRedirect(req, res, next) {
-        if (req.isAuthenticated()) {
-            return next();
+        if (!req.isAuthenticated()) {
+            return res.redirect('/login');
         }
-        res.redirect('/login');
+        next();
     }
     function loginError(req, res, next) {
-        if (req.isAuthenticated()) {
-            next();
+        if (!req.isAuthenticated()) {
+            return res.send(401);
         }
-        next(new Error('Must be logged in to do that.'));
+        next();
     }
 
     //Screens
