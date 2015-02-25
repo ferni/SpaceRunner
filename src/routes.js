@@ -11,20 +11,36 @@ var _ = require('underscore')._,
 
 exports.register = function(app) {
     'use strict';
+    function loginRedirect(req, res, next) {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect('/login');
+    }
+    function loginError(req, res, next) {
+        if (req.isAuthenticated()) {
+            next();
+        }
+        next(new Error('Must be logged in to do that.'));
+    }
+
     //Screens
-    app.get('/', require('./screens/ship-list/controller'));
+    app.get('/', loginRedirect, require('./screens/ship-list/controller'));
     _.each(['ship-builder', 'ship-list', 'battle',
         'ship-frame', 'choose-type'], function(screen) {
-        app.get('/' + screen, require('./screens/' + screen + '/controller'));
+        app.get('/' + screen,
+            loginRedirect,
+            require('./screens/' + screen + '/controller'));
     });
 
     //json api
     _.each(['ship-builder', 'ship-list', 'battle'], function(screen) {
-        app.get('/' + screen, require('./screens/' + screen + '/controller'));
         _.each(require('./screens/' + screen + '/json-api'),
             function(apiGroup, groupName) {
                 _.each(apiGroup, function(callback, methodName) {
-                    app.post('/' + groupName + '/' + methodName, callback);
+                    app.post('/' + groupName + '/' + methodName,
+                        loginError,
+                        callback);
                 });
             });
     });
