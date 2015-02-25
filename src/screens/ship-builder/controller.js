@@ -38,6 +38,6 @@ module.exports = function(req, res, next) {
             next(e);
         });
     } else {
-        res.error('Must specify type or hull_id in query string.');
+        next(new Error('Must specify type or hull_id in query string.'));
     }
 };
