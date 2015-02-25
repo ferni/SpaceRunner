@@ -46,5 +46,10 @@ exports.register = function(app) {
         failureRedirect : '/login',
         failureFlash : true
     }));
+
+    app.get('/logout', function(req, res) {
+        req.logout();
+        res.redirect('/login');
+    });
 };
 

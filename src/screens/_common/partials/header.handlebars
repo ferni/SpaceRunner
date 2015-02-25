@@ -1,1 +1,8 @@
-<header><div id="user-menu">Playing as: <span class="player-name">{{player.email}}</span></div></header>
+<header>
+    {{#if player}}
+    <div id="user-menu">
+        Playing as: <span class="player-name">{{player.email}}</span>
+        <a href="/logout">Log out</a>
+    </div>
+    {{/if}}
+</header>
