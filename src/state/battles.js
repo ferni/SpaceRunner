@@ -20,10 +20,12 @@ function createBattle(players) {
     'use strict';
     var ship1,
         ship2,
+        p1 = players[0],
+        p2 = players[1],
         battleServer,
         U = sh.Unit;
-    join(prebuiltShips.get(players[0].hullID),
-        prebuiltShips.get(players[1].hullID))
+    return join(prebuiltShips.get(p1.hullID),
+        prebuiltShips.get(p2.hullID))
         .then(function(ships) {
             var shipJsons = _.map(ships, function(s) {
                     return JSON.parse(s.shipJson);
@@ -32,17 +34,22 @@ function createBattle(players) {
                 id: battleServers.length,
                 shipJsons: shipJsons
             });
+            return join(
+                p1.set('battleID', battleServer.id),
+                p2.set('battleID', battleServer.id),
+                p1.set('state', 'inBattle'),
+                p2.set('state', 'inBattle')
+            );
+        }).then(function() {
             ship1 = battleServer.battleModel.ships[0];
-            ship1.owner = players[0];
-            players[0].battleID = battleServer.id;
+            ship1.owner = p1;
             ship1.putUnit(new U({imgIndex: 6, speed: 2}));
             ship1.putUnit(new U({imgIndex: 6, speed: 2}));
             ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
             ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
 
             ship2 = battleServer.battleModel.ships[1];
-            ship2.owner = players[1];
-            players[1].battleID = battleServer.id;
+            ship2.owner = p2;
             ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
             ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
             ship2.putUnit(new U({imgIndex: 12, speed: 2}));
@@ -50,8 +57,6 @@ function createBattle(players) {
 
             battleServers.push(battleServer);
             battleServer.nextTurn();
-            players[0].state = 'inBattle';
-            players[1].state = 'inBattle';
         });
 }
 
@@ -88,6 +93,7 @@ function removeFromQueue(player) {
 
 function get(id) {
     'use strict';
+    id = parseInt(id, 10);
     return _.find(battleServers, function(bs) {
         return bs.id === id;
     });

@@ -12,7 +12,7 @@ var players = require('../../state/players'),
 
 module.exports = function(req, res, next) {
     'use strict';
-    var player = players.getPlayer(req),
+    var player = req.user,
         battleID = player.battleID,
         battleServer;
     if (battleID === undefined) {

@@ -10,7 +10,8 @@
 var players = require('../../state/players'),
     prebuiltShips = require('../../state/prebuilt-ships'),
     battles = require('../../state/battles'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    join = require('bluebird').join;
 
 module.exports = function(req, res, next) {
     'use strict';
@@ -22,11 +23,15 @@ module.exports = function(req, res, next) {
             opponent;
         if (player.state === 'inBattle') {
             battle = battles.get(player.battleID);
-            if (!battle.isPlayerInIt(player.id)) {
+            if (!battle) {
+                //battle no longer in memory (server might have restarted)
+                join(player.set('state', 'idle'), player.set('battleID', undefined));
+            } else if (!battle.isPlayerInIt(player.id)) {
                 throw new Error('Player is not in the battle his battleID' +
                     ' indicates.');
+            } else {
+                opponent = battle.getOpponent(player.id).name;
             }
-            opponent = battle.getOpponent(player.id).name;
         }
         res.render('ship-list/' + view, {
             path: '/ship-list/',

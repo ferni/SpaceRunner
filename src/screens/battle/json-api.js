@@ -12,21 +12,14 @@ var players = require('../../state/players'),
     sh = require('shared'),
     _ = require('underscore')._;
 
-function getBattle(req) {
-    'use strict';
-    var player = players.getPlayer(req);
-    return battles.get(player.battleID);
-}
-
 exports.battle = {
     issetup: function(req, res) {
         'use strict';
-        var player = players.getPlayer(req);
-        return res.json({issetup: player.battleID !== undefined});
+        return res.json({issetup: req.user.battleID !== undefined});
     },
     get: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req);
+        var battle = battles.get(req.user.battleID);
         return res.json({
             id: battle.id,
             scriptReady: battle.currentTurn.script !== null,
@@ -35,7 +28,7 @@ exports.battle = {
     },
     getmodel: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req),
+        var battle = battles.get(req.user.battleID),
             battleJson = battle.battleModel.toJson();
         if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[playerID];
@@ -44,8 +37,8 @@ exports.battle = {
     },
     sendunitorders: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req),
-            playerID = players.getID(req),
+        var battle = battles.get(req.user.battleID),
+            playerID = req.user.id,
             unitOrders = new sh.UnitOrders(req.body.ordersJson),
             turn = battle.currentTurn,
             ordersValid = _.all(unitOrders.array, function(order) {
@@ -64,8 +57,8 @@ exports.battle = {
     },
     ready: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req),
-            playerID = players.getID(req),
+        var battle = battles.get(req.user.battleID),
+            playerID = req.user.id,
             turn = battle.currentTurn;
         if (turn.isPlayerReady(playerID)) {
             return res.json({wasReady: true});
@@ -80,7 +73,7 @@ exports.battle = {
     },
     getscript: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req);
+        var battle = battles.get(req.user.battleID);
         return res.json({
             script: battle.currentTurn.script.toJson(),
             resultingServerModel: battle.battleModel.toJson()
@@ -88,8 +81,8 @@ exports.battle = {
     },
     scriptreceived: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req),
-            playerID = players.getID(req),
+        var battle = battles.get(req.user.battleID),
+            playerID = req.user.id,
             nextTurnCreated,
             index;
         try {
@@ -107,8 +100,8 @@ exports.battle = {
     },
     surrender: function(req, res, next) {
         'use strict';
-        var battle = getBattle(req);
-        battle.surrender(players.getID(req));
+        var battle = battles.get(req.user.battleID);
+        battle.surrender(req.user.id);
         exports.battle.ready(req, res, next);
     }
 };
