@@ -17,15 +17,21 @@ var _ = require('underscore')._,
 function Player(hash) {
     'use strict';
     _.extend(this, hash);
+    this.hash = hash;
 }
-
 
 Player.prototype.set = function(prop, value) {
     'use strict';
     var self;
     return rc.hsetAsync('user:' + this.id, prop, value).then(function() {
         self[prop] = value;
+        self.hash[prop] = value;
     });
+};
+
+Player.prototype.toJson = function() {
+    'use strict';
+    return this.hash;
 };
 
 module.exports = {
