@@ -34,10 +34,12 @@ exports.ship = {
             next(e);
         });
     },
-    cancel: function(req, res) {
+    cancel: function(req, res, next) {
         'use strict';
-        var player = players.getPlayer(req);
-        battles.removeFromQueue(player);
-        res.json({});
+        battles.removeFromQueue(req.user).then(function() {
+            res.json({});
+        }).catch(function(e) {
+            next(e);
+        });
     }
 };

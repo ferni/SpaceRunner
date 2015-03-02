@@ -61,8 +61,9 @@ function addPlayerToQueue(player) {
     return join(
         prebuiltShips.getTier(player.hullID),
         player.set('state', 'finding')
-    ).then(function(tier) {
-        var waiting;
+    ).then(function(stuff) {
+        var waiting,
+            tier = stuff[0];
         if (!playersWaitingByTier[tier]) {
             playersWaitingByTier[tier] = [];
         }
@@ -78,10 +79,11 @@ function addPlayerToQueue(player) {
 
 function removeFromQueue(player) {
     'use strict';
-    _.each(playersWaitingByTier, function(players) {
-        sh.utils.removeFromArray(player, players);
+    return player.set('state', 'idle').then(function() {
+        _.each(playersWaitingByTier, function(players) {
+            sh.utils.removeFromArray(player, players);
+        });
     });
-    player.state = 'idle';
 }
 
 function get(id) {
