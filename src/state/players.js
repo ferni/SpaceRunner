@@ -23,9 +23,21 @@ function Player(hash) {
 Player.prototype.set = function(prop, value) {
     'use strict';
     var self = this;
+    if (value === undefined) {
+        this.del(prop);
+    }
     return rc.hsetAsync('user:' + this.id, prop, value).then(function() {
         self[prop] = value;
         self.hash[prop] = value;
+    });
+};
+
+Player.prototype.del = function(prop) {
+    'use strict';
+    var self = this;
+    return rc.hdelAsync('user:' + this.id, prop).then(function() {
+        delete self[prop];
+        delete self.hash[prop];
     });
 };
 
