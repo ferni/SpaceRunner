@@ -65,6 +65,9 @@ function addPlayerToQueue(player) {
         if (!playersWaitingByTier[tier]) {
             playersWaitingByTier[tier] = [];
         }
+
+        //TODO: playersWaitingByTier stores IDs, (maybe also hullID, "I enter the queue with this ship")
+
         waiting = playersWaitingByTier[tier];
         waiting.push(player);
         if (waiting.length >= 2) {
@@ -97,6 +100,14 @@ function getFor(user) {
     return _.find(battleServers, function(bs) {
         return bs.isPlayerInIt(user.id);
     });
+}
+
+function isUserFinding(user) {
+    'use strict';
+    return _.chain(playersWaitingByTier)
+        .values().flatten().any(function(player) {
+            return player.id === user.id;
+        }).value();
 }
 
 function finish(battleServer) {
