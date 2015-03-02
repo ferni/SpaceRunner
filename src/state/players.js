@@ -22,7 +22,7 @@ function Player(hash) {
 
 Player.prototype.set = function(prop, value) {
     'use strict';
-    var self;
+    var self = this;
     return rc.hsetAsync('user:' + this.id, prop, value).then(function() {
         self[prop] = value;
         self.hash[prop] = value;
