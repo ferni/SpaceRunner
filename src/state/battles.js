@@ -34,13 +34,6 @@ function createBattle(players) {
                 id: battleServers.length,
                 shipJsons: shipJsons
             });
-            return join(
-                p1.set('battleID', battleServer.id),
-                p2.set('battleID', battleServer.id),
-                p1.set('state', 'inBattle'),
-                p2.set('state', 'inBattle')
-            );
-        }).then(function() {
             ship1 = battleServer.battleModel.ships[0];
             ship1.owner = p1;
             ship1.putUnit(new U({imgIndex: 6, speed: 2}));
@@ -99,6 +92,20 @@ function get(id) {
     });
 }
 
+function getFor(user) {
+    'use strict';
+    return _.find(battleServers, function(bs) {
+        return bs.isPlayerInIt(user.id);
+    });
+}
+
+function finish(battleServer) {
+    'use strict';
+    sh.utils.removeFromArray(battleServer, battleServers);
+}
+
 exports.addPlayerToQueue = addPlayerToQueue;
 exports.removeFromQueue = removeFromQueue;
 exports.get = get;
+exports.getFor = getFor;
+exports.finish = finish;

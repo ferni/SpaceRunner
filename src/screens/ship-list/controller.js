@@ -19,19 +19,11 @@ module.exports = function(req, res, next) {
     prebuiltShips.getAll().then(function(hulls) {
         var hullsByTier = _.groupBy(hulls, 'tier'),
             player = req.user,
-            battle,
+            battle = battles.getFor(player),
             opponent;
-        if (player.state === 'inBattle') {
-            battle = battles.get(player.battleID);
-            if (!battle) {
-                //battle no longer in memory (server might have restarted)
-                join(player.set('state', 'idle'), player.set('battleID', undefined));
-            } else if (!battle.isPlayerInIt(player.id)) {
-                throw new Error('Player is not in the battle his battleID' +
-                    ' indicates.');
-            } else {
-                opponent = battle.getOpponent(player.id).name;
-            }
+        if (battle) {
+            opponent = battle.getOpponent(player.id).name;
+            player.state = 'inBattle';
         }
         res.render('ship-list/' + view, {
             path: '/ship-list/',

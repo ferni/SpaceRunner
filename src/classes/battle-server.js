@@ -9,7 +9,8 @@
 
 var Class = require('./class'),
     sh = require('shared'),
-    _ = require('underscore')._;
+    _ = require('underscore')._,
+    battles = require('../state/battles');
 
 function BattleTurn(params) {
     'use strict';
@@ -68,7 +69,6 @@ var BattleServer = module.exports = Class.extend({
      * When all players in the battle receive the script,
      * a new turn is created.
      * @param {int} playerID The player ID.
-     * @return {boolean} If the next turn was created or not.
      * @this exports.BattleServer
      */
     registerScriptReceived: function(playerID) {
@@ -76,10 +76,12 @@ var BattleServer = module.exports = Class.extend({
         this.receivedTheScript.push(playerID);
         if (_.uniq(this.receivedTheScript).length >= this.numberOfPlayers) {
             //all players have received the script, create next turn
-            this.nextTurn();
-            return true;
+            if (this.battleModel.winner !== undefined) {
+                battles.finish(this);
+            }else {
+                this.nextTurn();
+            }
         }
-        return false;
     },
     nextTurn: function() {
         'use strict';

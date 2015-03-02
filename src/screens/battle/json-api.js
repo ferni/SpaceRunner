@@ -19,7 +19,7 @@ exports.battle = {
     },
     get: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID);
+        var battle = battles.getFor(req.user);
         return res.json({
             id: battle.id,
             scriptReady: battle.currentTurn.script !== null,
@@ -28,7 +28,7 @@ exports.battle = {
     },
     getmodel: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID),
+        var battle = battles.getFor(req.user),
             battleJson = battle.battleModel.toJson();
         if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[playerID];
@@ -37,7 +37,7 @@ exports.battle = {
     },
     sendunitorders: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID),
+        var battle = battles.getFor(req.user),
             playerID = req.user.id,
             unitOrders = new sh.UnitOrders(req.body.ordersJson),
             turn = battle.currentTurn,
@@ -57,7 +57,7 @@ exports.battle = {
     },
     ready: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID),
+        var battle = battles.getFor(req.user),
             playerID = req.user.id,
             turn = battle.currentTurn;
         if (turn.isPlayerReady(playerID)) {
@@ -73,7 +73,7 @@ exports.battle = {
     },
     getscript: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID);
+        var battle = battles.getFor(req.user);
         return res.json({
             script: battle.currentTurn.script.toJson(),
             resultingServerModel: battle.battleModel.toJson()
@@ -81,18 +81,10 @@ exports.battle = {
     },
     scriptreceived: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID),
-            playerID = req.user.id,
-            nextTurnCreated,
-            index;
+        var battle = battles.getFor(req.user),
+            playerID = req.user.id;
         try {
-            nextTurnCreated = battle.registerScriptReceived(playerID);
-            if (nextTurnCreated) {
-                if (battle.winner !== null) {
-                    index = _.indexOf(battles, battle);
-                    battles.splice(index, 1);
-                }
-            }
+            battle.registerScriptReceived(playerID);
             return res.json({ok: true});
         } catch (e) {
             next(new Error(e.toString()));
@@ -100,7 +92,7 @@ exports.battle = {
     },
     surrender: function(req, res, next) {
         'use strict';
-        var battle = battles.get(req.user.battleID);
+        var battle = battles.getFor(req.user);
         battle.surrender(req.user.id);
         exports.battle.ready(req, res, next);
     }
