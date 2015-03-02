@@ -58,17 +58,20 @@ function createBattle(players) {
 
 function addPlayerToQueue(player) {
     'use strict';
-    prebuiltShips.getTier(player.hullID).then(function(tier) {
+    return join(
+        prebuiltShips.getTier(player.hullID),
+        player.set('state', 'finding')
+    ).then(function(tier) {
         var waiting;
         if (!playersWaitingByTier[tier]) {
             playersWaitingByTier[tier] = [];
         }
         waiting = playersWaitingByTier[tier];
         waiting.push(player);
-        player.state = 'finding';
         if (waiting.length >= 2) {
-            createBattle(waiting.slice(0, 2));
-            playersWaitingByTier[tier] = waiting.slice(2);
+            return createBattle(waiting.slice(0, 2)).then(function() {
+                playersWaitingByTier[tier] = waiting.slice(2);
+            });
         }
     });
 }

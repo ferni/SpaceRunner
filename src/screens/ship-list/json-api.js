@@ -20,12 +20,19 @@ exports.ship = {
             res.json({error: e});
         });
     },
-    pick: function(req, res) {
+    pick: function(req, res, next) {
         'use strict';
-        var player = players.getPlayer(req);
-        player.hullID = req.body.id;
-        battles.addPlayerToQueue(player);
-        res.json({});
+        var player = req.user;
+        if (req.body.id === undefined) {
+            next(new Error('Must pass an id. (The hull id)'));
+        }
+        player.set('hullID', req.body.id).then(function() {
+            return battles.addPlayerToQueue(player);
+        }).then(function() {
+            res.json({});
+        }).catch(function(e) {
+            next(e);
+        });
     },
     cancel: function(req, res) {
         'use strict';
