@@ -13,26 +13,30 @@ var sh = require('shared'),
     _ = require('underscore')._,
     join = require('bluebird').join;
 
-var playersWaitingByTier = {},
+var queueEntriesByTier = {},
     battleServers = [];
 
-function createBattle(players) {
+function createBattle(queueEntries) {
     'use strict';
-    var ship1,
-        ship2,
-        p1 = players[0],
-        p2 = players[1],
-        battleServer,
+    var battleServer,
         U = sh.Unit;
-    return join(prebuiltShips.get(p1.hullID),
-        prebuiltShips.get(p2.hullID))
-        .then(function(ships) {
-            var shipJsons = _.map(ships, function(s) {
-                    return JSON.parse(s.shipJson);
-                });
+    return join(
+        prebuiltShips.get(queueEntries[0].hullID),
+        prebuiltShips.get(queueEntries[1].hullID),
+        players.playerByID(queueEntries[0].playerID),
+        players.playerByID(queueEntries[1].playerID)
+    )
+        .then(function(stuff) {
+            var ship1 = stuff[0],
+                ship2 = stuff[1],
+                p1 = stuff[2],
+                p2 = stuff[3];
             battleServer = new BattleServer({
                 id: battleServers.length,
-                shipJsons: shipJsons
+                shipJsons: [
+                    JSON.parse(ship1.shipJson),
+                    JSON.parse(ship2.shipJson)
+                ]
             });
             ship1 = battleServer.battleModel.ships[0];
             ship1.owner = p1;
@@ -54,25 +58,19 @@ function createBattle(players) {
 }
 
 
-function addPlayerToQueue(player) {
+function addPlayerToQueue(player, hullID) {
     'use strict';
-    return join(
-        prebuiltShips.getTier(player.hullID),
-        player.set('state', 'finding')
-    ).then(function(stuff) {
+    return prebuiltShips.getTier(hullID).then(function(stuff) {
         var waiting,
             tier = stuff[0];
-        if (!playersWaitingByTier[tier]) {
-            playersWaitingByTier[tier] = [];
+        if (!queueEntriesByTier[tier]) {
+            queueEntriesByTier[tier] = [];
         }
-
-        //TODO: playersWaitingByTier stores IDs, (maybe also hullID, "I enter the queue with this ship")
-
-        waiting = playersWaitingByTier[tier];
-        waiting.push(player);
+        waiting = queueEntriesByTier[tier];
+        waiting.push({playerID: player.id, hullID: hullID});
         if (waiting.length >= 2) {
             return createBattle(waiting.slice(0, 2)).then(function() {
-                playersWaitingByTier[tier] = waiting.slice(2);
+                queueEntriesByTier[tier] = waiting.slice(2);
             });
         }
     });
@@ -80,10 +78,13 @@ function addPlayerToQueue(player) {
 
 function removeFromQueue(player) {
     'use strict';
-    return player.set('state', 'idle').then(function() {
-        _.each(playersWaitingByTier, function(players) {
-            sh.utils.removeFromArray(player, players);
+    _.each(queueEntriesByTier, function(entries) {
+        var entry = _.find(function(entry) {
+            return entry.playerID === player.id;
         });
+        if (entry) {
+            entries.splice(_.indexOf(entries, entry), 1);
+        }
     });
 }
 
@@ -104,9 +105,9 @@ function getFor(user) {
 
 function isUserFinding(user) {
     'use strict';
-    return _.chain(playersWaitingByTier)
-        .values().flatten().any(function(player) {
-            return player.id === user.id;
+    return _.chain(queueEntriesByTier)
+        .values().flatten().any(function(entry) {
+            return entry.playerID === user.id;
         }).value();
 }
 
@@ -120,3 +121,4 @@ exports.removeFromQueue = removeFromQueue;
 exports.get = get;
 exports.getFor = getFor;
 exports.finish = finish;
+exports.isUserFinding = isUserFinding;

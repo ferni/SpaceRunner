@@ -24,6 +24,10 @@ module.exports = function(req, res, next) {
         if (battle) {
             opponent = battle.getOpponent(player.id).name;
             player.state = 'inBattle';
+        } else if (battles.isUserFinding(player)) {
+            player.state = 'finding';
+        } else {
+            player.state = 'idle';
         }
         res.render('ship-list/' + view, {
             path: '/ship-list/',

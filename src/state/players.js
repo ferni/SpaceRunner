@@ -66,8 +66,7 @@ module.exports = {
         'use strict';
         var userHash = {
             email: email,
-            pass: pass,
-            state: 'idle'
+            pass: pass
         };
         return rc.incrAsync('next_user_id').then(function(id) {
             userHash.id = id;

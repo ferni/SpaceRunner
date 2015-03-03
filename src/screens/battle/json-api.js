@@ -15,7 +15,10 @@ var players = require('../../state/players'),
 exports.battle = {
     issetup: function(req, res) {
         'use strict';
-        return res.json({issetup: req.user.battleID !== undefined});
+        var battle = battles.getFor(req.user);
+        return res.json({
+            issetup: battle !== undefined && battle !== null
+        });
     },
     get: function(req, res, next) {
         'use strict';

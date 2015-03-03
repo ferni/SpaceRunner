@@ -13,14 +13,12 @@ var players = require('../../state/players'),
 module.exports = function(req, res, next) {
     'use strict';
     var player = req.user,
-        battleID = player.battleID,
-        battleServer;
-    if (battleID === undefined) {
+        battleServer = battles.getFor(player);
+    if (!battleServer) {
         res.render('_common/error', {
             error: 'You\'re not in a battle'
         });
     } else {
-        battleServer = battles.get(battleID);
         res.render('battle/view', {
             path: '/battle/',
             bootstrapped: JSON.stringify({

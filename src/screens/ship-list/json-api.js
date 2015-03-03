@@ -26,9 +26,7 @@ exports.ship = {
         if (req.body.id === undefined) {
             next(new Error('Must pass an id. (The hull id)'));
         }
-        player.set('hullID', req.body.id).then(function() {
-            return battles.addPlayerToQueue(player);
-        }).then(function() {
+        battles.addPlayerToQueue(player, req.body.id).then(function() {
             res.json({});
         }).catch(function(e) {
             next(e);
@@ -36,10 +34,11 @@ exports.ship = {
     },
     cancel: function(req, res, next) {
         'use strict';
-        battles.removeFromQueue(req.user).then(function() {
+        try {
+            battles.removeFromQueue(req.user);
             res.json({});
-        }).catch(function(e) {
+        } catch (e) {
             next(e);
-        });
+        }
     }
 };
