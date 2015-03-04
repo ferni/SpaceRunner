@@ -22,7 +22,7 @@ module.exports = function(req, res, next) {
             battle = battles.getFor(player),
             opponent;
         if (battle) {
-            opponent = battle.getOpponent(player.id).name;
+            opponent = battle.getOpponent(player.id).email;
             player.state = 'inBattle';
         } else if (battles.isUserFinding(player)) {
             player.state = 'finding';
