@@ -25,6 +25,9 @@
             message: message,
             id: chat.lines.length
         });
+        if (chat.lines > 50) {
+            chat.lines.shift();
+        }
     };
 
     chat.log = function(message) {
