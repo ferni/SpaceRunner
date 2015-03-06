@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global GLOBAL, linesInServer, exports*/
+/*global exports*/
 
 
 (function(chat) {
