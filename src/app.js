@@ -24,13 +24,14 @@ var express = require('express'),
 
     passport = require('passport'),
     flash = require('connect-flash'),
-    chat = require('./chat'),
     players = require('./state/players'),
-    http = require('http'),
     path = require('path'),
     tmxLoader = require('./tmx-loader'),
     routes = require('./routes'),
     app = express(),
+    server = require('http').Server(app),
+    io = require('socket.io')(server),
+    chat = require('./chat').init(io),
     _ = require('underscore')._,
     browserify = require('browserify-middleware'),
     Promise = require('bluebird'),
@@ -88,7 +89,7 @@ app.get('/ship-frame/bundle.js', browserify('./screens/ship-frame/client-js/entr
 console.log('Loading maps...');
 tmxLoader.load(function() {
     'use strict';
-    http.createServer(app).listen(app.get('port'), function() {
+    server.listen(app.get('port'), function() {
         console.log('Express server listening on port ' + app.get('port'));
     });
 });

@@ -11,12 +11,18 @@
 (function(chat) {
     'use strict';
     chat.lines = [];
-    chat.init = function() {
+    chat.init = function(io) {
         chat.lines = [{
             id: 0,
             sender: 'Server',
             message: 'Logged into chat'
         }];
+        io.on('connection', function(socket) {
+            socket.on('chat message', function(msg) {
+                io.emit('chat message', {sender: 'someone', message: msg});
+                chat.addLine('someone', 'message');
+            });
+        });
     };
 
     chat.addLine = function(sender, message) {
