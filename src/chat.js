@@ -10,21 +10,20 @@
 
 (function(chat) {
     'use strict';
-    chat.init = function(app, chatRoutes) {
-        GLOBAL.linesInServer = [{
+    chat.lines = [];
+    chat.init = function() {
+        chat.lines = [{
             id: 0,
             sender: 'Server',
             message: 'Logged into chat'
         }];
-        app.get('/chat/getlines', chatRoutes.getlines);
-        app.post('/chat/send', chatRoutes.send);
     };
 
     chat.addLine = function(sender, message) {
-        linesInServer.push({
+        chat.lines.push({
             sender: sender,
             message: message,
-            id: linesInServer.length
+            id: chat.lines.length
         });
     };
 

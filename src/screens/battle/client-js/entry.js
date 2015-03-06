@@ -17,7 +17,7 @@ BattleScreen = require('./battle-screen');
 
 require('client/melonjs-plugins');
 require('./knockout-custom-bindings');
-
+require('client/chat-client').start();
 
 jsApp = {
     loadReady: false,

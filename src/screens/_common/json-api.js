@@ -5,10 +5,9 @@
 * All rights reserved.
 */
 
-/*global require, exports, linesInServer*/
+/*global require, exports*/
 
 var url = require('url'),
-    auth = require('./../../state/players'),
     chat = require('./../../chat'),
     sh = require('shared');
 
@@ -20,23 +19,22 @@ exports.chat = {
      */
     getlines: function(req, res) {
         'use strict';
-        var queryData = url.parse(req.url, true).query,
-            lastLineId = parseInt(queryData.last, 10),
-            maxLines = queryData.max,
+        var lastLineId = parseInt(req.body.last, 10),
+            maxLines = req.body.max,
             lastLineIndex,
             i,
             forSending = [];
-        for (i = 0; i < linesInServer.length; i++) {
-            if (linesInServer[i].id === lastLineId) {
+        for (i = 0; i < chat.lines.length; i++) {
+            if (chat.lines[i].id === lastLineId) {
                 lastLineIndex = i;
                 break;
             }
         }
-        if (maxLines && linesInServer.length - lastLineIndex > maxLines) {
-            lastLineIndex = linesInServer.length - maxLines - 1;
+        if (maxLines && chat.lines.length - lastLineIndex > maxLines) {
+            lastLineIndex = chat.lines.length - maxLines - 1;
         }
-        for (i = lastLineIndex + 1; i < linesInServer.length; i++) {
-            forSending.push(linesInServer[i]);
+        for (i = lastLineIndex + 1; i < chat.lines.length; i++) {
+            forSending.push(chat.lines[i]);
         }
         res.json(forSending);
     },
@@ -48,7 +46,7 @@ exports.chat = {
     send: function(req, res) {
         'use strict';
         var line = req.body.line;
-        chat.addLine(players.getPlayer(req).name, line.message);
+        chat.addLine(req.user.email, line.message);
         res.json({});
     }
 };
