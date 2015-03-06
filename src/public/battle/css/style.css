@@ -13,10 +13,7 @@ h3 {
 
 #ready-button{
     border: 3px solid white;
-    position: absolute;
-    top: 5px;
     font-size: 17pt;
-    left: 450px;
 }
 
 #paused-indicator{
@@ -39,6 +36,10 @@ h3 {
     top: 10px;
     left: 70px;
     font-size: 18pt;
+}
+
+#top-hud .button {
+    font-size: 15pt;
 }
 #elapsed{
     color:white;
