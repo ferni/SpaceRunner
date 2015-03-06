@@ -34,7 +34,7 @@ exports.register = function(app) {
     });
 
     //json api
-    _.each(['ship-builder', 'ship-list', 'battle'], function(screen) {
+    _.each(['ship-builder', 'ship-list', 'battle', '_common'], function(screen) {
         _.each(require('./screens/' + screen + '/json-api'),
             function(apiGroup, groupName) {
                 _.each(apiGroup, function(callback, methodName) {
