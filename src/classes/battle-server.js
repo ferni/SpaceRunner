@@ -78,7 +78,7 @@ var BattleServer = module.exports = Class.extend({
             //all players have received the script, create next turn
             if (this.battleModel.winner !== undefined) {
                 battles.finish(this);
-            }else {
+            } else {
                 this.nextTurn();
             }
         }
