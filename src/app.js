@@ -35,8 +35,8 @@ var express = require('express'),
     _ = require('underscore')._,
     browserify = require('browserify-middleware'),
     Promise = require('bluebird'),
-    //TODO: change for connect-redis store
-    store = new session.MemoryStore();
+    RedisStore = require('connect-redis')(session),
+    redisClient = require('./config/redis-client');
 
 
 require('./config/passport')(passport);
@@ -52,7 +52,7 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(session({
     secret: 'arerhciusinieadqe-5124S',
-    store: store
+    store: new RedisStore({client: redisClient})
 }));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
