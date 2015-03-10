@@ -1,7 +1,7 @@
 /*global require, module*/
 var redis = require('redis'),
     Promise = require("bluebird"),
-    useOnline = false,
+    useOnline = true,
     url,
     redisURL,
     client;

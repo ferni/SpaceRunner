@@ -31,12 +31,14 @@ var express = require('express'),
     app = express(),
     server = require('http').Server(app),
     io = require('socket.io')(server),
-    chat = require('./chat').init(io),
+    chat = require('./chat'),
     _ = require('underscore')._,
     browserify = require('browserify-middleware'),
     Promise = require('bluebird'),
     RedisStore = require('connect-redis')(session),
-    redisClient = require('./config/redis-client');
+    redisClient = require('./config/redis-client'),
+    sessionStore = new RedisStore({client: redisClient}),
+    passportSocketIo = require('passport.socketio');
 
 
 require('./config/passport')(passport);
@@ -51,12 +53,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(session({
+    key: 'express.sid',
     secret: 'arerhciusinieadqe-5124S',
-    store: new RedisStore({client: redisClient})
+    store: sessionStore
 }));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
+io.use(passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key: 'express.sid',
+    secret: 'arerhciusinieadqe-5124S',
+    store: sessionStore,
+    passport: passport
+}));
+chat.init(io);
 app.engine('handlebars', exphbs({
     layoutsDir: 'screens/_common/layouts',
     defaultLayout: 'plain',

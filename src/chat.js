@@ -18,9 +18,14 @@
             message: 'Logged into chat'
         }];
         io.on('connection', function(socket) {
+            console.log('someone connected');
             socket.on('chat message', function(msg) {
-                io.emit('chat message', {sender: 'someone', message: msg});
-                chat.addLine('someone', 'message');
+                var email = socket.request.user.email;
+                io.emit('chat message', {
+                    sender: email,
+                    message: msg
+                });
+                chat.addLine(email, 'message');
             });
         });
     };
