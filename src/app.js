@@ -38,7 +38,8 @@ var express = require('express'),
     RedisStore = require('connect-redis')(session),
     redisClient = require('./config/redis-client'),
     sessionStore = new RedisStore({client: redisClient}),
-    passportSocketIo = require('passport.socketio');
+    passportSocketIo = require('passport.socketio'),
+    openSockets = require('./state/open-sockets');
 
 
 require('./config/passport')(passport);
@@ -68,6 +69,7 @@ io.use(passportSocketIo.authorize({
     passport: passport
 }));
 chat.init(io);
+openSockets.init(io);
 app.engine('handlebars', exphbs({
     layoutsDir: 'screens/_common/layouts',
     defaultLayout: 'plain',

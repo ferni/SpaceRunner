@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, module, me, $, ko*/
+/*global require, module, me, $, ko, socket*/
 
 var gs = require('client/game-state'),
     utils = require('client/utils'),
@@ -162,6 +162,10 @@ module.exports = me.ScreenObject.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
+        socket.on('someone surrendered', function(msg) {
+            alert('Someone surrendered (' + JSON.stringify(msg) + ')');
+        });
+        socket.emit('screen:battle');
         this.onHtmlLoaded();
         this.onResetAndLoaded();
     },

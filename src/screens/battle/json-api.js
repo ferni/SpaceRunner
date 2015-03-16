@@ -98,5 +98,11 @@ exports.battle = {
         var battle = battles.getFor(req.user);
         battle.surrender(req.user.id);
         exports.battle.ready(req, res, next);
+        require('../../state/open-sockets')
+            .sendTo(battle.getOpponent(req.user.id).id,
+                'battle',
+                'someone surrendered',
+                'asdf'
+                );
     }
 };

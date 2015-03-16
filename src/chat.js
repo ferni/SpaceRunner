@@ -5,8 +5,8 @@
 * All rights reserved.
 */
 
-/*global exports*/
-
+/*global exports, require*/
+var openSockets = require('./state/open-sockets');
 
 (function(chat) {
     'use strict';
@@ -17,7 +17,9 @@
             sender: 'Server',
             message: 'Logged into chat'
         }];
+
         io.on('connection', function(socket) {
+            var currentScreen;
             console.log('someone connected');
             socket.on('chat message', function(msg) {
                 var email = socket.request.user.email;
@@ -27,7 +29,23 @@
                 });
                 chat.addLine(email, 'message');
             });
+            socket.on('screen:battle', function() {
+                openSockets.save(socket, 'battle');
+                currentScreen = 'battle';
+            });
+            io.emit('battle message', {asdf: 'true'});
+            socket.on('disconnect', function() {
+                console.log('SOMEONE DISCONNECTED');
+                if (currentScreen) {
+                    openSockets.remove(socket, currentScreen);
+                } else {
+                    throw 'The screen never identified itself ' +
+                        '(with sockets.emit("screen:<screen>")';
+                }
+
+            });
         });
+
     };
 
     chat.addLine = function(sender, message) {
