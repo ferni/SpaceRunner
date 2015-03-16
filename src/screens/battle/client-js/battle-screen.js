@@ -25,64 +25,6 @@ module.exports = me.ScreenObject.extend({
         this.parent(true);
     },
     /**
-     * Gets executed before onReset.
-     */
-    onHtmlLoaded: function() {
-        'use strict';
-        var screen = this;
-        this.readyButton = (function() {
-            var btn = {},
-                $ready = $('#ready-button');
-            btn.enabled = true;
-            $ready.click(function() {
-                if (btn.enabled) {
-                    screen.onReady();
-                }
-            });
-            btn.enable = function() {
-                btn.enabled = true;
-                $ready.removeClass('disabled')
-                    .html('Ready');
-            };
-            btn.disable = function() {
-                btn.enabled = false;
-                $ready.addClass('disabled')
-                    .html('Awaiting players...');
-            };
-            return btn;
-        }());
-        this.surrenderButton = (function() {
-            var btn = {},
-                $surrender = $('#surrender-button');
-            btn.enabled = true;
-            $surrender.click(function() {
-                if (btn.enabled) {
-                    btn.disable();
-                    var sure = confirm('Are you sure you want to ' +
-                        'surrender the battle?');
-                    if (sure) {
-                        $.post('/battle/surrender')
-                            .fail(function() {
-                                console.error('Server error when trying to' +
-                                    ' surrender');
-                            });
-                    }
-                }
-            });
-            btn.enable = function() {
-                btn.enabled = true;
-                $surrender.removeClass('disabled');
-            };
-            btn.disable = function() {
-                btn.enabled = false;
-                $surrender.addClass('disabled');
-            };
-            return btn;
-        }());
-        $('html, body, #game, #screensUi, #battle-screen')
-            .css({width: '100%', height: '100%'});
-    },
-    /**
      *
      * @param {sh.Battle} battle
      * @param {Object} orders
@@ -91,7 +33,6 @@ module.exports = me.ScreenObject.extend({
         'use strict';
         var self = this,
             framesFinished = 0;
-        this.onHtmlLoaded();
         this.id = battle.id;
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
@@ -153,7 +94,7 @@ module.exports = me.ScreenObject.extend({
             console.log('PAGE ESC');
         });
         this.timeline = new Timeline(this, battle);
-
+        this.prepareDom();
         this.pause();
 
         if (orders) {
@@ -166,16 +107,66 @@ module.exports = me.ScreenObject.extend({
             alert('Someone surrendered (' + JSON.stringify(msg) + ')');
         });
         socket.emit('screen:battle');
-        this.onHtmlLoaded();
-        this.onResetAndLoaded();
+        this.startFetching();
     },
     onDestroyEvent: function() {
         'use strict';
         this.keys.unbindAll();
     },
-    onResetAndLoaded: function() {
+    prepareDom: function() {
         'use strict';
         var screen = this;
+        this.readyButton = (function() {
+            var btn = {},
+                $ready = $('#ready-button');
+            btn.enabled = true;
+            $ready.click(function() {
+                if (btn.enabled) {
+                    screen.onReady();
+                }
+            });
+            btn.enable = function() {
+                btn.enabled = true;
+                $ready.removeClass('disabled')
+                    .html('Ready');
+            };
+            btn.disable = function() {
+                btn.enabled = false;
+                $ready.addClass('disabled')
+                    .html('Awaiting players...');
+            };
+            return btn;
+        }());
+        this.surrenderButton = (function() {
+            var btn = {},
+                $surrender = $('#surrender-button');
+            btn.enabled = true;
+            $surrender.click(function() {
+                if (btn.enabled) {
+                    btn.disable();
+                    var sure = confirm('Are you sure you want to ' +
+                        'surrender the battle?');
+                    if (sure) {
+                        $.post('/battle/surrender')
+                            .fail(function() {
+                                console.error('Server error when trying to' +
+                                    ' surrender');
+                            });
+                    }
+                }
+            });
+            btn.enable = function() {
+                btn.enabled = true;
+                $surrender.removeClass('disabled');
+            };
+            btn.disable = function() {
+                btn.enabled = false;
+                $surrender.addClass('disabled');
+            };
+            return btn;
+        }());
+        $('html, body, #game, #screensUi, #battle-screen')
+            .css({width: '100%', height: '100%'});
         //Knockout bindings
         function ViewModel() {
             this.myShip = ko.observable(screen.myShip);
@@ -186,7 +177,6 @@ module.exports = me.ScreenObject.extend({
         this.htmlVM = new ViewModel();
         ko.applyBindings(this.htmlVM, document.getElementById('screensUi'));
         $('#time-line').jScrollPane();
-        this.startFetching();
     },
     update: function() {
         'use strict';
