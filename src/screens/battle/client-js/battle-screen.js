@@ -56,9 +56,9 @@ module.exports = me.ScreenObject.extend({
                         );
                         if (gs.battle.winner !== undefined) {
                             if (gs.battle.winner === gs.player.id) {
-                                self.showEndSign('Victory!');
+                                self.victory();
                             } else {
-                                self.showEndSign('Defeat.');
+                                self.defeat();
                             }
                         } else {
                             self.pause();
@@ -103,8 +103,8 @@ module.exports = me.ScreenObject.extend({
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
-        socket.on('someone surrendered', function(msg) {
-            alert('Someone surrendered (' + JSON.stringify(msg) + ')');
+        socket.on('opponent surrendered', function() {
+            self.victory();
         });
         socket.emit('screen:battle');
         this.startFetching();
@@ -147,7 +147,9 @@ module.exports = me.ScreenObject.extend({
                     var sure = confirm('Are you sure you want to ' +
                         'surrender the battle?');
                     if (sure) {
-                        $.post('/battle/surrender')
+                        $.post('/battle/surrender', function() {
+                            screen.defeat();
+                        })
                             .fail(function() {
                                 console.error('Server error when trying to' +
                                     ' surrender');
@@ -354,5 +356,13 @@ module.exports = me.ScreenObject.extend({
         $('#end-sign')
             .append('<a href="/">' + message + '</a>')
             .show();
+    },
+    victory: function() {
+        'use strict';
+        this.showEndSign('Victory!');
+    },
+    defeat: function() {
+        'use strict';
+        this.showEndSign('Defeat.');
     }
 });

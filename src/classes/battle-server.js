@@ -121,6 +121,7 @@ var BattleServer = module.exports = Class.extend({
             throw new Error('Can\'t surrender: Player is not in the battle.');
         }
         this.battleModel.winner = this.getOpponent(playerID).id;
+        battles.finish(this);
     }
 });
 
