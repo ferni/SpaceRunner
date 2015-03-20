@@ -20,7 +20,7 @@ exports.battle = {
             issetup: battle !== undefined && battle !== null
         });
     },
-    get: function(req, res, next) {
+    get: function(req, res) {
         'use strict';
         var battle = battles.getFor(req.user);
         return res.json({
@@ -29,7 +29,7 @@ exports.battle = {
             currentTurnID: battle.currentTurn.id
         });
     },
-    getmodel: function(req, res, next) {
+    getmodel: function(req, res) {
         'use strict';
         var battle = battles.getFor(req.user),
             battleJson = battle.battleModel.toJson();
@@ -58,7 +58,7 @@ exports.battle = {
             ' have been validated by the server');*/
         return res.json({ok: true});
     },
-    ready: function(req, res, next) {
+    ready: function(req, res) {
         'use strict';
         var battle = battles.getFor(req.user),
             playerID = req.user.id,
@@ -74,7 +74,7 @@ exports.battle = {
         }
         return res.json({wasReady: false});
     },
-    getscript: function(req, res, next) {
+    getscript: function(req, res) {
         'use strict';
         var battle = battles.getFor(req.user);
         return res.json({
