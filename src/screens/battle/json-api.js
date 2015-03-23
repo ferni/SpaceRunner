@@ -67,9 +67,12 @@ exports.battle = {
         }
         return res.json({wasReady: false});
     },
-    getscript: function(req, res) {
+    getscript: function(req, res, next) {
         'use strict';
         var battle = battles.getFor(req.user);
+        if (!battle.currentTurn.script) {
+            return next(new Error('Script not ready yet'));
+        }
         return res.json({
             script: battle.currentTurn.script.toJson(),
             resultingServerModel: battle.battleModel.toJson()
@@ -91,7 +94,7 @@ exports.battle = {
         var battle = battles.getFor(req.user);
         battle.surrender(req.user.id);
         require('../../state/open-sockets')
-            .sendTo(battle.getOpponent(req.user.id).id,
+            .sendTo(battle.getOpponent(req.user.id),
                 'opponent surrendered'
                 );
         res.json({});

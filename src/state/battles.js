@@ -23,15 +23,13 @@ function createBattle(queueEntries) {
         U = sh.Unit;
     return join(
         prebuiltShips.get(queueEntries[0].hullID),
-        prebuiltShips.get(queueEntries[1].hullID),
-        players.playerByID(queueEntries[0].playerID),
-        players.playerByID(queueEntries[1].playerID)
+        prebuiltShips.get(queueEntries[1].hullID)
     )
         .then(function(stuff) {
             var ship1 = stuff[0],
                 ship2 = stuff[1],
-                p1 = stuff[2],
-                p2 = stuff[3];
+                p1ID = queueEntries[0].playerID,
+                p2ID = queueEntries[1].playerID;
             battleServer = new BattleServer({
                 id: battleServers.length,
                 shipJsons: [
@@ -40,14 +38,14 @@ function createBattle(queueEntries) {
                 ]
             });
             ship1 = battleServer.battleModel.ships[0];
-            ship1.owner = p1;
+            ship1.ownerID = p1ID;
             ship1.putUnit(new U({imgIndex: 6, speed: 2}));
             ship1.putUnit(new U({imgIndex: 6, speed: 2}));
             ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
             ship1.putUnit(new U({imgIndex: 0, speed: 1.5}));
 
             ship2 = battleServer.battleModel.ships[1];
-            ship2.owner = p2;
+            ship2.ownerID = p2ID;
             ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
             ship2.putUnit(new U({imgIndex: 7, speed: 1.5}));
             ship2.putUnit(new U({imgIndex: 12, speed: 2}));
@@ -56,8 +54,8 @@ function createBattle(queueEntries) {
             battleServers.push(battleServer);
             battleServer.nextTurn();
             //notify players
-            openSockets.sendTo(p1.id, 'match found');
-            openSockets.sendTo(p2.id, 'match found');
+            openSockets.sendTo(p1ID, 'match found');
+            openSockets.sendTo(p2ID, 'match found');
         });
 }
 

@@ -18,8 +18,8 @@ function BattleTurn(params) {
     this.id = params.id;
     this.battle = params.battle;
     this.playersOrders = {};
-    this.battle.battleModel.getPlayers().forEach(function(player) {
-        self.playersOrders[player.id] = new sh.OrderCollection();
+    this.battle.battleModel.getPlayers().forEach(function(playerID) {
+        self.playersOrders[playerID] = new sh.OrderCollection();
     });
     //all the players ids that have submitted the orders
     this.playersSubmitted = [];
@@ -92,8 +92,8 @@ var BattleServer = module.exports = Class.extend({
     },
     isPlayerInIt: function(playerID) {
         'use strict';
-        return _.any(this.battleModel.getPlayers(), function(player) {
-            return player.id === playerID;
+        return _.any(this.battleModel.getPlayers(), function(id) {
+            return id === playerID;
         });
     },
     generateScript: function(resetShip) {
@@ -111,8 +111,8 @@ var BattleServer = module.exports = Class.extend({
     },
     getOpponent: function(playerID) {
         'use strict';
-        return _.find(this.battleModel.getPlayers(), function(p) {
-            return p.id !== playerID;
+        return _.find(this.battleModel.getPlayers(), function(id) {
+            return id !== playerID;
         });
     },
     surrender: function(playerID) {
@@ -120,7 +120,7 @@ var BattleServer = module.exports = Class.extend({
         if (!this.isPlayerInIt(playerID)) {
             throw new Error('Can\'t surrender: Player is not in the battle.');
         }
-        this.battleModel.winner = this.getOpponent(playerID).id;
+        this.battleModel.winner = this.getOpponent(playerID);
         battles.finish(this);
     }
 });

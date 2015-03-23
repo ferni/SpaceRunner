@@ -19,21 +19,30 @@ module.exports = function(req, res, next) {
     prebuiltShips.getAll().then(function(hulls) {
         var hullsByTier = _.groupBy(hulls, 'tier'),
             player = req.user,
-            battle = battles.getFor(player),
-            opponent;
+            battle = battles.getFor(player);
         if (battle) {
-            opponent = battle.getOpponent(player.id).email;
             player.state = 'inBattle';
-        } else if (battles.isUserFinding(player)) {
+            players.playerByID(battle.getOpponent(player.id)).then(function(opponent) {
+                res.render('ship-list/' + view, {
+                    path: '/ship-list/',
+                    hullsByTier: hullsByTier,
+                    player: player,
+                    opponent: opponent.email
+                });
+            });
+            return;
+        }
+
+        if (battles.isUserFinding(player)) {
             player.state = 'finding';
         } else {
             player.state = 'idle';
         }
+
         res.render('ship-list/' + view, {
             path: '/ship-list/',
             hullsByTier: hullsByTier,
-            player: player,
-            opponent: opponent
+            player: player
         });
     }).catch(function(e) {
         next(e);
