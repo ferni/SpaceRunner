@@ -82,12 +82,16 @@ function addPlayerToQueue(player, hullID) {
 
 function removeFromQueue(player) {
     'use strict';
+    var i;
     _.each(queueEntriesByTier, function(entries) {
-        var entry = _.find(function(entry) {
-            return entry.playerID === player.id;
-        });
-        if (entry) {
-            entries.splice(_.indexOf(entries, entry), 1);
+        if (entries.length === 0) {
+            return;
+        }
+        for (i = 0; i < entries.length; i++) {
+            if (entries[i].playerID === player.id) {
+                entries.splice(i, 1);
+                i--;
+            }
         }
     });
 }
