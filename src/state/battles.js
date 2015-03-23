@@ -11,7 +11,8 @@ var sh = require('shared'),
     prebuiltShips = require('./prebuilt-ships'),
     players = require('./players'),
     _ = require('underscore')._,
-    join = require('bluebird').join;
+    join = require('bluebird').join,
+    openSockets = require('./open-sockets');
 
 var queueEntriesByTier = {},
     battleServers = [];
@@ -54,6 +55,9 @@ function createBattle(queueEntries) {
 
             battleServers.push(battleServer);
             battleServer.nextTurn();
+            //notify players
+            openSockets.sendTo(p1.id, 'match found');
+            openSockets.sendTo(p2.id, 'match found');
         });
 }
 

@@ -21,12 +21,16 @@
     </div>
 </div>
 <script src="/_common/vendor/jquery-1.9.1.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
-    var findInterval;
+    var socket = io();
     function changeState(state) {
         $('#states').find('div').css('display', 'none');
         $('#' + state).css('display', 'block');
     }
+    socket.on('match found', function() {
+        location.href = '/battle';
+    });
     $('#ship-list').find('a').click(function(e) {
         e.preventDefault();
         changeState('finding');
@@ -34,29 +38,18 @@
             if (data.error) {
                 changeState('idle');
                 alert(JSON.stringify(data.error));
-            } else {
-                findInterval = setInterval(function() {
-                    $.post('/battle/issetup', function(data) {
-                        if (data.issetup) {
-                            location.href = '/battle';
-                        }
-                    });
-                }, 500);
             }
         }).error(function() {
             changeState('idle');
             alert('Server error');
         });
     });
-
     $('#cancel-button').click(function() {
         changeState('idle');
         $.post('/ship/cancel', {id: $(this).attr('data-id')}, function(data) {
             if (data.error) {
                 changeState('finding');
                 alert(JSON.stringify(data.error));
-            } else {
-                clearInterval(findInterval);
             }
         }).error(function() {
             changeState('finding');

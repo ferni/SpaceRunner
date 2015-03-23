@@ -13,13 +13,6 @@ var players = require('../../state/players'),
     _ = require('underscore')._;
 
 exports.battle = {
-    issetup: function(req, res) {
-        'use strict';
-        var battle = battles.getFor(req.user);
-        return res.json({
-            issetup: battle !== undefined && battle !== null
-        });
-    },
     get: function(req, res) {
         'use strict';
         var battle = battles.getFor(req.user);

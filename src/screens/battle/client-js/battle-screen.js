@@ -106,7 +106,6 @@ module.exports = me.ScreenObject.extend({
         socket.on('opponent surrendered', function() {
             self.victory();
         });
-        socket.emit('screen:battle');
         this.startFetching();
     },
     onDestroyEvent: function() {
