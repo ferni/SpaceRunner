@@ -19,8 +19,8 @@ var openSockets = require('./state/open-sockets');
         }];
 
         io.on('connection', function(socket) {
-            var currentScreen;
             console.log('someone connected');
+            openSockets.save(socket);
             socket.on('chat message', function(msg) {
                 var email = socket.request.user.email;
                 io.emit('chat message', {
@@ -29,20 +29,9 @@ var openSockets = require('./state/open-sockets');
                 });
                 chat.addLine(email, 'message');
             });
-            socket.on('screen:battle', function() {
-                openSockets.save(socket, 'battle');
-                currentScreen = 'battle';
-            });
             io.emit('battle message', {asdf: 'true'});
             socket.on('disconnect', function() {
                 console.log('SOMEONE DISCONNECTED');
-                if (currentScreen) {
-                    openSockets.remove(socket, currentScreen);
-                } else {
-                    throw 'The screen never identified itself ' +
-                        '(with sockets.emit("screen:<screen>")';
-                }
-
             });
         });
 

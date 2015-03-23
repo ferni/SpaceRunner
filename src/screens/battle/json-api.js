@@ -99,7 +99,6 @@ exports.battle = {
         battle.surrender(req.user.id);
         require('../../state/open-sockets')
             .sendTo(battle.getOpponent(req.user.id).id,
-                'battle',
                 'opponent surrendered'
                 );
         res.json({});
