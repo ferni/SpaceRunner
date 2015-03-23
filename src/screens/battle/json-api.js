@@ -27,7 +27,7 @@ exports.battle = {
         var battle = battles.getFor(req.user),
             battleJson = battle.battleModel.toJson();
         if (battle.currentTurn) {
-            battleJson.orders = battle.currentTurn.playersOrders[playerID];
+            battleJson.orders = battle.currentTurn.playersOrders[req.user.id];
         }
         return res.json(battleJson);
     },
