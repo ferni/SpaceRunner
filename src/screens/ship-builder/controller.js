@@ -31,8 +31,7 @@ module.exports = function(req, res, next) {
                     shipJson: reply.shipJson,
                     hullID: hullID,
                     hullMaps: hullMaps
-                }),
-                player: players.getPlayer(req)
+                })
             });
         }).catch(function(e) {
             next(e);
