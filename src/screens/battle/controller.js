@@ -8,7 +8,8 @@
 /*global require, module, hullMaps*/
 //HOME
 var players = require('../../state/players'),
-    battles = require('../../state/battles');
+    battles = require('../../state/battles'),
+    Player = require('shared/classes/player').Player;
 
 module.exports = function(req, res, next) {
     'use strict';
@@ -24,7 +25,7 @@ module.exports = function(req, res, next) {
             bootstrapped: JSON.stringify({
                 battleJson: battleServer.battleModel.toJson(),
                 hullMaps: hullMaps,
-                playerJson: player.toJson()
+                playerJson: new Player({id: parseInt(player.id, 10)}).toJson()
             }),
             player: player
         });

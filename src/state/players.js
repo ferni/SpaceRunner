@@ -16,6 +16,7 @@ var _ = require('underscore')._,
 
 function Player(hash) {
     'use strict';
+    hash.id = parseInt(hash.id, 10);
     _.extend(this, hash);
     this.hash = hash;
 }
