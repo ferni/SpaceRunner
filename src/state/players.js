@@ -66,7 +66,7 @@ module.exports = {
         return rc.hgetAsync('users', email).then(function(id) {
             return rc.hgetallAsync('user:' + id);
         }).then(function(hash) {
-            return new Player(hash);
+            return hash ? new Player(hash) : null;
         });
     }
 };
