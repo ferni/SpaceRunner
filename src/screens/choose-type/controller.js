@@ -7,12 +7,10 @@
 
 /*global require, module*/
 //HOME
-var players = require('../../state/players');
-
 module.exports = function(req, res, next) {
     'use strict';
     res.render('choose-type/view', {
         path: '/choose-type/',
-        player: players.getPlayer(req)
+        player: req.user
     });
 };
