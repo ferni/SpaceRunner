@@ -6,23 +6,31 @@
 */
 
 /*global require, module, hullMaps*/
-var players = require('../../state/players'),
-    prebuiltShips = require('../../state/prebuilt-ships');
+var prebuiltShips = require('../../state/prebuilt-ships');
 
-module.exports = function(req, res, next) {
-    'use strict';
-    var shipType = req.query.type,
-        hullID = req.query.hull_id;
-    if (shipType) {
-        //create new ship in the database
-        prebuiltShips.create(shipType).then(function(id) {
-            res.redirect('/ship-builder?hull_id=' + id);
-        }).catch(function(e) {
-            next(e);
-        });
-    } else if (hullID) {
-        //pull the ship by hull id from the database
+module.exports = {
+    create: function(req, res, next) {
+        'use strict';
+        var shipType = req.query.type;
+        if (shipType) {
+            //create new ship in the database
+            prebuiltShips.create(shipType).then(function(id) {
+                console.log('created ship with id: ' + id);
+                res.redirect('/ship-builder/' + id);
+            }).catch(function(e) {
+                next(e);
+            });
+        } else {
+            next(new Error('Must specify type in query string.'));
+        }
+    },
+    edit: function(req, res, next) {
+        'use strict';
+        var hullID = req.params.id;
         prebuiltShips.get(hullID).then(function(reply) {
+            if (!reply) {
+                throw 'Hull not found: ' + hullID;
+            }
             res.render('ship-builder/view', {
                 path: '/ship-builder/',
                 shipName: reply.name,
@@ -36,7 +44,6 @@ module.exports = function(req, res, next) {
         }).catch(function(e) {
             next(e);
         });
-    } else {
-        next(new Error('Must specify type or hull_id in query string.'));
     }
 };
+
