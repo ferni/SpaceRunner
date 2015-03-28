@@ -7,7 +7,6 @@
 
 /*global require, exports*/
 var battles = require('../../state/battles'),
-    players = require('../../state/players'),
     prebuiltShips = require('../../state/prebuilt-ships');
 
 exports.ship = {
@@ -24,7 +23,14 @@ exports.ship = {
         'use strict';
         var player = req.user;
         if (req.body.id === undefined) {
-            next(new Error('Must pass an id. (The hull id)'));
+            return next(new Error('Must pass an id. (The hull id)'));
+        }
+        if (battles.getByUser(player)) {
+            return next(new Error('You are already in a battle.' +
+            ' Leave it before joining another one.'));
+        }
+        if (battles.isUserFinding(player)) {
+            return next(new Error('You are already in the queue.'));
         }
         battles.addPlayerToQueue(player, req.body.id).then(function() {
             res.json({});
