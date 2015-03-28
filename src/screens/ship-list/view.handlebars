@@ -56,5 +56,16 @@
             alert('Server error');
         });
     });
+    $('#surrender-button').click(function() {
+        if (confirm('Are you sure you want to surrender the battle?')) {
+            $.post('/battle/surrender', function() {
+                changeState('idle');
+            }).fail(function() {
+                console.error('Server error when trying to' +
+                ' surrender');
+                changeState('inBattle');
+            });
+        }
+    });
     changeState('{{player.state}}');
 </script>
