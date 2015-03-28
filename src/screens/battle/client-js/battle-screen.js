@@ -142,10 +142,10 @@ module.exports = me.ScreenObject.extend({
             btn.enabled = true;
             $surrender.click(function() {
                 if (btn.enabled) {
-                    btn.disable();
                     var sure = confirm('Are you sure you want to ' +
                         'surrender the battle?');
                     if (sure) {
+                        btn.disable();
                         $.post('/battle/surrender', function() {
                             screen.defeat();
                         })
