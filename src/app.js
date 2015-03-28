@@ -24,7 +24,6 @@ var express = require('express'),
 
     passport = require('passport'),
     flash = require('connect-flash'),
-    players = require('./state/players'),
     path = require('path'),
     tmxLoader = require('./tmx-loader'),
     routes = require('./routes'),
