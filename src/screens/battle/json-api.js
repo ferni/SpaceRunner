@@ -15,7 +15,7 @@ var players = require('../../state/players'),
 exports.battle = {
     get: function(req, res) {
         'use strict';
-        var battle = battles.getFor(req.user);
+        var battle = battles.getByUser(req.user);
         return res.json({
             id: battle.id,
             scriptReady: battle.currentTurn.script !== null,
@@ -24,7 +24,7 @@ exports.battle = {
     },
     getmodel: function(req, res) {
         'use strict';
-        var battle = battles.getFor(req.user),
+        var battle = battles.getByUser(req.user),
             battleJson = battle.battleModel.toJson();
         if (battle.currentTurn) {
             battleJson.orders = battle.currentTurn.playersOrders[req.user.id];
@@ -33,7 +33,7 @@ exports.battle = {
     },
     sendunitorders: function(req, res, next) {
         'use strict';
-        var battle = battles.getFor(req.user),
+        var battle = battles.getByUser(req.user),
             playerID = req.user.id,
             unitOrders = new sh.UnitOrders(req.body.ordersJson),
             turn = battle.currentTurn,
@@ -53,7 +53,7 @@ exports.battle = {
     },
     ready: function(req, res) {
         'use strict';
-        var battle = battles.getFor(req.user),
+        var battle = battles.getByUser(req.user),
             playerID = req.user.id,
             turn = battle.currentTurn;
         if (turn.isPlayerReady(playerID)) {
@@ -69,7 +69,7 @@ exports.battle = {
     },
     getscript: function(req, res, next) {
         'use strict';
-        var battle = battles.getFor(req.user);
+        var battle = battles.getByUser(req.user);
         if (!battle.currentTurn.script) {
             return next(new Error('Script not ready yet'));
         }
@@ -80,7 +80,7 @@ exports.battle = {
     },
     scriptreceived: function(req, res, next) {
         'use strict';
-        var battle = battles.getFor(req.user),
+        var battle = battles.getByUser(req.user),
             playerID = req.user.id;
         try {
             battle.registerScriptReceived(playerID);
@@ -91,7 +91,7 @@ exports.battle = {
     },
     surrender: function(req, res) {
         'use strict';
-        var battle = battles.getFor(req.user);
+        var battle = battles.getByUser(req.user);
         battle.surrender(req.user.id);
         require('../../state/open-sockets')
             .sendTo(battle.getOpponent(req.user.id),

@@ -19,7 +19,7 @@ module.exports = function(req, res, next) {
     prebuiltShips.getAll().then(function(hulls) {
         var hullsByTier = _.groupBy(hulls, 'tier'),
             player = req.user,
-            battle = battles.getFor(player);
+            battle = battles.getByUser(player);
         if (battle) {
             player.state = 'inBattle';
             players.playerByID(battle.getOpponent(player.id)).then(function(opponent) {

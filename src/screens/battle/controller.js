@@ -14,7 +14,7 @@ var players = require('../../state/players'),
 module.exports = function(req, res, next) {
     'use strict';
     var player = req.user,
-        battleServer = battles.getFor(player);
+        battleServer = battles.getByUser(player);
     if (!battleServer) {
         res.render('_common/error', {
             error: 'You\'re not in a battle'
