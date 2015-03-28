@@ -98,12 +98,19 @@ app.get('/battle/bundle.js', browserify('./screens/battle/client-js/entry.js'));
 app.get('/ship-frame/bundle.js', browserify('./screens/ship-frame/client-js/entry.js'));
 routes.register(app);
 
-console.log('Loading maps...');
-tmxLoader.load(function() {
+console.log('Testing redis connection...');
+redisClient.getAsync('asdf').then(function() {
     'use strict';
-    server.listen(app.get('port'), function() {
-        console.log('Express server listening on port ' + app.get('port'));
+    console.log('Loading maps...');
+    tmxLoader.load(function() {
+        server.listen(app.get('port'), function() {
+            console.log('Express server listening on port ' + app.get('port'));
+        });
     });
+}).catch(function(e) {
+    'use strict';
+    throw e;
 });
+
 
 
