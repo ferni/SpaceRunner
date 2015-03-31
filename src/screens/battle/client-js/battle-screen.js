@@ -65,6 +65,12 @@ module.exports = me.ScreenObject.extend({
                         }
                     } else {
                         self.pause();
+                        if (orders) {
+                            _.each(new sh.OrderCollection(orders).allUnitOrders,
+                                function(unitOrders) {
+                                    self.newOrders(unitOrders.toJson(), true);
+                                });
+                        }
                     }
                 }
             } else if (e.eventName === 'unit selected') {
@@ -97,9 +103,6 @@ module.exports = me.ScreenObject.extend({
         this.prepareDom();
         this.pause();
 
-        if (orders) {
-            battle.insertOrders(orders);
-        }
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
@@ -241,18 +244,20 @@ module.exports = me.ScreenObject.extend({
         'use strict';
         clearInterval(this.fetchIntervalID);
     },
-    newOrders: function(unitOrdersJson) {
+    newOrders: function(unitOrdersJson, dontUpload) {
         'use strict';
-        $.post('/battle/sendunitorders', {
-            id: gs.battle.id,
-            ordersJson: unitOrdersJson
-        },
-            function() {
-                console.log('Orders successfully submitted');
-            }, 'json')
-            .fail(function() {
-                console.error('Server error when submitting orders.');
-            });
+        if (!dontUpload) {
+            $.post('/battle/sendunitorders', {
+                    id: gs.battle.id,
+                    ordersJson: unitOrdersJson
+                },
+                function() {
+                    console.log('Orders successfully submitted');
+                }, 'json')
+                .fail(function() {
+                    console.error('Server error when submitting orders.');
+                });
+        }
         gs.battle.addUnitOrders(new sh.UnitOrders(unitOrdersJson));
         //notify frames
         _.invoke(this.shipFrames, 'sendData', unitOrdersJson);
