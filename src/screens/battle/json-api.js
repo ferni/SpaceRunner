@@ -7,8 +7,7 @@
 
 /*global exports, require*/
 
-var players = require('../../state/players'),
-    battles = require('../../state/battles'),
+var battles = require('../../state/battles'),
     sh = require('shared'),
     _ = require('underscore')._;
 
@@ -21,15 +20,6 @@ exports.battle = {
             scriptReady: battle.currentTurn.script !== null,
             currentTurnID: battle.currentTurn.id
         });
-    },
-    getmodel: function(req, res) {
-        'use strict';
-        var battle = battles.getByUser(req.user),
-            battleJson = battle.battleModel.toJson();
-        if (battle.currentTurn) {
-            battleJson.orders = battle.currentTurn.playersOrders[req.user.id];
-        }
-        return res.json(battleJson);
     },
     sendunitorders: function(req, res, next) {
         'use strict';
