@@ -6,6 +6,10 @@
 
     <target name="run" depends="tools/node,tools/redis" description="Starts the app with the NodeJS server">
         <property name="app-url" value="http://localhost:3000"/>
+        <echo message="Running 'npm install' ..."/>
+        <exec executable="../tools/npm" dir="src">
+            <arg line="install"/>
+        </exec>
         <parallel>
             <sequential>
                 <echo message="Starting redis server ..."/>
@@ -15,8 +19,8 @@
             <sequential>
                 <sleep seconds="3"/>
                 <echo message="Starting NodeJS ..."/>
-                <exec executable="tools/${node-dir}/bin/node" >
-	        		<arg line="src/app.js"/>
+                <exec executable="../tools/${node-dir}/bin/node" dir="src">
+	        		<arg line="app.js"/>
 	      	    </exec>
             </sequential>
             <sequential>
