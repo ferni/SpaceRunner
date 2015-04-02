@@ -95,9 +95,9 @@ Promise.promisifyAll(require("redis"));
 routes.register(app);
 
 //js bundles
-app.get('/ship-builder/bundle.js', browserify('./screens/ship-builder/client-js/entry.js'));
-app.get('/battle/bundle.js', browserify('./screens/battle/client-js/entry.js'));
-app.get('/ship-frame/bundle.js', browserify('./screens/ship-frame/client-js/entry.js'));
+app.get('/ship-builder/bundle.js', browserify(__dirname + '/screens/ship-builder/client-js/entry.js'));
+app.get('/battle/bundle.js', browserify(__dirname + '/screens/battle/client-js/entry.js'));
+app.get('/ship-frame/bundle.js', browserify(__dirname + '/screens/ship-frame/client-js/entry.js'));
 
 console.log('Loading maps...');
 tmxLoader.load(function() {
