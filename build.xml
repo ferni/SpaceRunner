@@ -4,16 +4,9 @@
     <property name="redis-version" value="2.6.10"/>
     <property name="redis-dir" value="redis-${redis-version}"/>
 
-    <target name="run" depends="tools/node,tools/browserify,tools/redis" description="Starts the app with the NodeJS server">
+    <target name="run" depends="tools/node,tools/redis" description="Starts the app with the NodeJS server">
         <property name="app-url" value="http://localhost:3000"/>
         <parallel>
-	        <sequential>
-                <echo message="Bundling files ..."/>
-                <exec executable="tools/node" >
-                    <arg line="tools/node_modules/browserify/bin/cmd.js ./src/client/bundle-entries/shared.js
-                     -o ./src/public/js/bundles/shared.js"/>
-	      	</exec>
-            </sequential>
             <sequential>
                 <echo message="Starting redis server ..."/>
                 <exec executable="tools/redis" >
@@ -42,15 +35,33 @@
 	</delete>
     </target>
     <!-- Test reports -->
-
+    <target name="run2">
+        <parallel>
+            <sequential>
+                <echo message="Starting redis server ..."/>
+                <exec executable="tools/redis" >
+                </exec>
+            </sequential>
+            <sequential>
+                <echo message="Starting NodeJS ..."/>
+                <exec executable="tools/${node-dir}/bin/node" >
+                    <arg line="src/app.js"/>
+                </exec>
+            </sequential>
+        </parallel>
+    </target>
+    <target name="report">
+        <echo message="'report' task is disabled for now." />
+    </target>
+<!--
 	<target name="report" depends="tools/phantomjs" description="Runs jscoverage to instrument code, runs the instrumented tests, gets the coverage report and makes a report file">
-        <!-- Instrument javascript -->
+        <!-- Instrument javascript -- >
         <echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
 	  	<exec executable="jscoverage" >
 	    		<arg line="src/public build/instrumented --encoding=UTF-8"/>
 	  	</exec>     
 
-        <!-- Open intrumented folder -->
+        <!-- Open intrumented folder -- >
 		<echo message="Running phantomjs (build-test-report.js)..."/>
 		<delete file="build/report.html"/>
 		<exec executable="tools/phantomjs" >
@@ -60,7 +71,7 @@
 	    		<arg line="build/report.html"/>
 	  	</exec>
 	</target>
-	
+-->
 	<!-- Lint -->
 	
 	<target name="lint" depends="tools/closure_linter,tools/jslint" description="Runs a lint check in the code">
