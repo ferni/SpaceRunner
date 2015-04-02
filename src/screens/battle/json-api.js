@@ -9,18 +9,10 @@
 
 var battles = require('../../state/battles'),
     sh = require('shared'),
+    openSockets = require('../../state/open-sockets'),
     _ = require('underscore')._;
 
 exports.battle = {
-    get: function(req, res) {
-        'use strict';
-        var battle = battles.getByUser(req.user);
-        return res.json({
-            id: battle.id,
-            scriptReady: battle.currentTurn.script !== null,
-            currentTurnID: battle.currentTurn.id
-        });
-    },
     sendunitorders: function(req, res, next) {
         'use strict';
         var battle = battles.getByUser(req.user),
@@ -54,30 +46,16 @@ exports.battle = {
                 !turn.script) {
             //all orders have been submitted, generate the script
             battle.generateScript();
+            _.each(battle.battleModel.getPlayers(), function(playerID) {
+                openSockets.sendTo(playerID, 'script ready', {
+                    currentTurnID: battle.currentTurn.id,
+                    script: battle.currentTurn.script.toJson(),
+                    resultingServerModel: battle.battleModel.toJson()
+                });
+                battle.registerScriptReceived(playerID);
+            });
         }
         return res.json({wasReady: false});
-    },
-    getscript: function(req, res, next) {
-        'use strict';
-        var battle = battles.getByUser(req.user);
-        if (!battle.currentTurn.script) {
-            return next(new Error('Script not ready yet'));
-        }
-        return res.json({
-            script: battle.currentTurn.script.toJson(),
-            resultingServerModel: battle.battleModel.toJson()
-        });
-    },
-    scriptreceived: function(req, res, next) {
-        'use strict';
-        var battle = battles.getByUser(req.user),
-            playerID = req.user.id;
-        try {
-            battle.registerScriptReceived(playerID);
-            return res.json({ok: true});
-        } catch (e) {
-            next(new Error(e.toString()));
-        }
     },
     surrender: function(req, res) {
         'use strict';
