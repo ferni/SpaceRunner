@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, me, module*/
+/*global require, me, module, $*/
 
 var gs = require('client/game-state'),
     sh = require('shared'),
@@ -273,25 +273,6 @@ module.exports = me.ScreenObject.extend({
         this.turnBeginTime = me.timer.getTime();
         _.invoke(this.shipVM.unitVMs, 'deselect');
         this.paused = false;
-    },
-    //When a player clicks "Ready"
-    onReady: function() {
-        'use strict';
-        var screen = this;
-        screen.readyButton.disable();
-        //send the orders to the server
-        $.post('/battle/ready',
-            {id: this.id}, function(data) {
-                if (data.wasReady) {
-                    console.warn('According to the server, the player ' +
-                        'was already ready.');
-                }
-                screen.startFetching();
-            }, 'json')
-            .fail(function() {
-                console.error('Could not ready player: server error.');
-                screen.readyButton.enable();
-            });
     },
     deselectUnits: function() {
         'use strict';
