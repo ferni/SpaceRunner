@@ -16,6 +16,7 @@ var _ = require('underscore')._,
 
 function Player(hash) {
     'use strict';
+    hash.id = parseInt(hash.id, 10);
     _.extend(this, hash);
     this.hash = hash;
 }
@@ -65,7 +66,7 @@ module.exports = {
         return rc.hgetAsync('users', email).then(function(id) {
             return rc.hgetallAsync('user:' + id);
         }).then(function(hash) {
-            return new Player(hash);
+            return hash ? new Player(hash) : null;
         });
     }
 };

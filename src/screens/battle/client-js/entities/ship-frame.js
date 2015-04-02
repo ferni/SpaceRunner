@@ -47,12 +47,11 @@ module.exports = (function() {
                             battleJson: self.battle.toJson(),
                             shipID: self.ship.id
                         });
-                    } else {
-                        _.each(self.eventHandlers, function(handler) {
-                            event.data.frame = self;
-                            handler(event.data);
-                        });
                     }
+                    _.each(self.eventHandlers, function(handler) {
+                        event.data.frame = self;
+                        handler(event.data);
+                    });
                 }
             }, false);
             this.iframe = iframe;

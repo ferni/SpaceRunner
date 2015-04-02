@@ -5,7 +5,7 @@
         <h3>Tier {{@key}}</h3>
         {{#each this}}
             <li>
-                <a href="/ship-builder/?hull_id={{id}}">{{name}}</a>
+                <a href="/ship-builder/{{id}}">{{name}}</a>
                 <button class="delete-button" value="{{id}}">[X]</button>
             </li>
         {{/each}}

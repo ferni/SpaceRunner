@@ -26,13 +26,17 @@ exports.register = function(app) {
 
     //Screens
     app.get('/', loginRedirect, require('./screens/ship-list/controller'));
-    _.each(['ship-builder', 'ship-list', 'battle',
-        'ship-frame', 'choose-type'], function(screen) {
+    _.each(['ship-list', 'battle', 'ship-frame', 'choose-type'], function(screen) {
         app.get('/' + screen,
             loginRedirect,
             require('./screens/' + screen + '/controller'));
     });
-
+    app.get('/ship-builder/',
+        loginRedirect,
+        require('./screens/ship-builder/controller').create);
+    app.get('/ship-builder/:id',
+        loginRedirect,
+        require('./screens/ship-builder/controller').edit);
     //json api
     _.each(['ship-builder', 'ship-list', 'battle', '_common'], function(screen) {
         _.each(require('./screens/' + screen + '/json-api'),

@@ -36,7 +36,6 @@ module.exports = me.ScreenObject.extend({
         this.id = battle.id;
         this.turnDuration = battle.turnDuration;
         gs.battle = battle;
-        this.stopFetching();
         console.log('Battle id is ' + this.id);
         function frameEventHandler(e) {
             var ship;
@@ -65,6 +64,12 @@ module.exports = me.ScreenObject.extend({
                         }
                     } else {
                         self.pause();
+                        if (orders) {
+                            _.each(new sh.OrderCollection(orders).allUnitOrders,
+                                function(unitOrders) {
+                                    self.newOrders(unitOrders.toJson(), true);
+                                });
+                        }
                     }
                 }
             } else if (e.eventName === 'unit selected') {
@@ -97,16 +102,23 @@ module.exports = me.ScreenObject.extend({
         this.prepareDom();
         this.pause();
 
-        if (orders) {
-            battle.insertOrders(orders);
-        }
         //orders shown for each unit when moving the mouse around
         this.previewOrders = {};
         this.prevMouse = {x: 0, y: 0};
         socket.on('opponent surrendered', function() {
             self.victory();
         });
-        this.startFetching();
+        socket.on('script ready', function(data) {
+            self.currentTurnID = data.currentTurnID;
+            $('#turn-number').html(self.currentTurnID);
+            if (self.paused) {
+                //send script to ships through postMessage
+                self.scriptServer = new sh.Script().fromJson(data.script);
+                _.invoke(self.shipFrames, 'runScript', data.script);
+                self.resultingServerModel = data.resultingServerModel;
+                self.resume();
+            }
+        });
     },
     onDestroyEvent: function() {
         'use strict';
@@ -142,10 +154,10 @@ module.exports = me.ScreenObject.extend({
             btn.enabled = true;
             $surrender.click(function() {
                 if (btn.enabled) {
-                    btn.disable();
                     var sure = confirm('Are you sure you want to ' +
                         'surrender the battle?');
                     if (sure) {
+                        btn.disable();
                         $.post('/battle/surrender', function() {
                             screen.defeat();
                         })
@@ -205,54 +217,20 @@ module.exports = me.ScreenObject.extend({
             _.invoke(this.previewOrders, 'draw', ctx);
         }
     },
-    onData: function(data) {
+    newOrders: function(unitOrdersJson, dontUpload) {
         'use strict';
-        var screen = this;
-        this.currentTurnID = data.currentTurnID;
-        $('#turn-number').html(this.currentTurnID);
-        if (this.paused && data.scriptReady) {
-            $.post('/battle/getscript', {id: screen.id}, function(data) {
-                //send script to ships through postMessage
-                screen.scriptServer = new sh.Script().fromJson(data.script);
-                _.invoke(screen.shipFrames, 'runScript', data.script);
-                screen.resultingServerModel = data.resultingServerModel;
-                screen.resume();
-                screen.stopFetching();
-                $.post('/battle/scriptreceived', {id: screen.id}, function() {
-                    //(informs the server that the script has been received)
-                    return null;//for jslint
-                }).fail(function() {
-                    console.error('Error pinging server.');
+        if (!dontUpload) {
+            $.post('/battle/sendunitorders', {
+                    id: gs.battle.id,
+                    ordersJson: unitOrdersJson
+                },
+                function() {
+                    console.log('Orders successfully submitted');
+                }, 'json')
+                .fail(function() {
+                    console.error('Server error when submitting orders.');
                 });
-            });
         }
-    },
-    startFetching: function() {
-        'use strict';
-        var self = this;
-        this.fetchIntervalID = setInterval(function() {
-            $.post('/battle/get', {id: self.id}, function(data) {
-                self.data = data;
-                self.onData(data);
-            }, 'json');
-        }, 500);
-    },
-    stopFetching: function() {
-        'use strict';
-        clearInterval(this.fetchIntervalID);
-    },
-    newOrders: function(unitOrdersJson) {
-        'use strict';
-        $.post('/battle/sendunitorders', {
-            id: gs.battle.id,
-            ordersJson: unitOrdersJson
-        },
-            function() {
-                console.log('Orders successfully submitted');
-            }, 'json')
-            .fail(function() {
-                console.error('Server error when submitting orders.');
-            });
         gs.battle.addUnitOrders(new sh.UnitOrders(unitOrdersJson));
         //notify frames
         _.invoke(this.shipFrames, 'sendData', unitOrdersJson);
@@ -337,7 +315,6 @@ module.exports = me.ScreenObject.extend({
                     console.warn('According to the server, the player ' +
                         'was already ready.');
                 }
-                screen.startFetching();
             }, 'json')
             .fail(function() {
                 console.error('Could not ready player: server error.');

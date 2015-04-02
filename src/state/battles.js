@@ -102,7 +102,7 @@ function get(id) {
     });
 }
 
-function getFor(user) {
+function getByUser(user) {
     'use strict';
     return _.find(battleServers, function(bs) {
         return bs.isPlayerInIt(user.id);
@@ -125,6 +125,6 @@ function finish(battleServer) {
 exports.addPlayerToQueue = addPlayerToQueue;
 exports.removeFromQueue = removeFromQueue;
 exports.get = get;
-exports.getFor = getFor;
+exports.getByUser = getByUser;
 exports.finish = finish;
 exports.isUserFinding = isUserFinding;
