@@ -53,25 +53,6 @@
     <target name="report">
         <echo message="'report' task is disabled for now." />
     </target>
-<!--
-	<target name="report" depends="tools/phantomjs" description="Runs jscoverage to instrument code, runs the instrumented tests, gets the coverage report and makes a report file">
-        <!-- Instrument javascript -- >
-        <echo message="Creating jscoverage-instrumented folder: build/instrumented ..."/>
-	  	<exec executable="jscoverage" >
-	    		<arg line="src/public build/instrumented --encoding=UTF-8"/>
-	  	</exec>     
-
-        <!-- Open intrumented folder -- >
-		<echo message="Running phantomjs (build-test-report.js)..."/>
-		<delete file="build/report.html"/>
-		<exec executable="tools/phantomjs" >
-	    		<arg line="build-test-report.js build/instrumented"/>
-	  	</exec>
-		<exec executable="xdg-open" >
-	    		<arg line="build/report.html"/>
-	  	</exec>
-	</target>
--->
 	<!-- Lint -->
 	
 	<target name="lint" depends="tools/closure_linter,tools/jslint" description="Runs a lint check in the code">
