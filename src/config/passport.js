@@ -30,37 +30,37 @@ module.exports = function(passport) {
     passport.deserializeUser(function(id, done) {
         players.playerByID(id).then(function(user) {
             done(null, user);
-        }).catch(function(e) {
+        }).catch (function(e) {
             done(e);
         });
     });
 
     passport.use('local-signup', new LocalStrategy({
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
     },
         function(req, email, password, done) {
-            process.nextTick(function () {
-                players.exists(email).then(function (exists) {
+            process.nextTick(function() {
+                players.exists(email).then(function(exists) {
                     if (exists) {
                         return done(null, false,
                             req.flash('signupMessage',
                                 'That email is already taken.'));
                     }
                     return players.createNewPlayer(email, hashPass(password))
-                        .then(function (player) {
+                        .then(function(player) {
                             return done(null, player);
                         });
-                }).catch(function (err) {
+                }).catch (function(err) {
                     done(err);
                 });
             });
         }));
     passport.use('local-login', new LocalStrategy({
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
     },
         function(req, email, password, done) {
             players.byEmail(email).then(function(user) {
@@ -69,7 +69,7 @@ module.exports = function(passport) {
                         'Invalid e-mail/password combination.'));
                 }
                 return done(null, user);
-            }).catch(function(err) {
+            }).catch (function(err) {
                 done(err);
             });
         }));

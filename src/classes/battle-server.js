@@ -45,7 +45,7 @@ function BattleTurn(params) {
  * @param {{id:int}} parameters
  * @constructor
  */
-var BattleServer = module.exports = Class.extend({
+var BattleServer = Class.extend({
     numberOfPlayers: 2,
     turnCount: 0,
     currentTurn: null,
@@ -124,6 +124,8 @@ var BattleServer = module.exports = Class.extend({
         battles.finish(this);
     }
 });
+
+module.exports = BattleServer;
 
 //for playing against AI
 /*

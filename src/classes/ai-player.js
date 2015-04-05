@@ -196,7 +196,6 @@ var sh = require('../shared'),
                 id: -1,
                 name: name
             });
-            this.battleServer = battleServer;
             this.battle = battleServer.battleModel;
         },
         getStaticShipData: function(ship) {
