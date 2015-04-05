@@ -17,6 +17,15 @@ function notBackup(file){
     return file[file.length - 1] !== '~';
 }
 
+function notInArray(item, array) {
+    for(var i = 0; i < array.length; i++) {
+        if (item === array[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /**
 *Returns all the files paths in a directory
 *@param {string} directory The directory path
@@ -24,9 +33,9 @@ function notBackup(file){
 */
 function getFiles(directory, options){
     var i;
-    if(options && options.exclude){
-        for(i = 0; i < options.exclude.length; i++){
-            if(directory === options.exclude[i]){
+    if(options && options.excludeDirs){
+        for(i = 0; i < options.excludeDirs.length; i++){
+            if(directory === options.excludeDirs[i]){
                 return [];
             }
         }
@@ -37,7 +46,9 @@ function getFiles(directory, options){
     for(i = 2; i< stuff.length; i++){//starts at 2 to skip "." and ".."
         
         var path = directory + fs.separator + stuff[i];
-        if(fs.isFile(path) && (!options || !options.extension || fileHasExtension(stuff[i], options.extension))){
+        if(fs.isFile(path) &&
+            (!options || !options.extension || fileHasExtension(stuff[i], options.extension)) &&
+            (!options || !options.excludeFiles || notInArray(stuff[i], options.excludeFiles))) {
             files.push(path);
         }
         
@@ -57,10 +68,13 @@ function getOwnJsFiles() {
         files;
     files = getFiles(root, {
         extension:'js',
-        exclude:[root + s + 'public' + s + '_common' + s + 'vendor',
+        excludeDirs:[root + s + 'public' + s + '_common' + s + 'vendor',
                  root + s + 'node_modules'],
+        excludeFiles: ['class.js']
     });
-    files = files.concat(getFiles('src' + s + 'node_modules' + s + 'shared'));
+    files = files.concat(getFiles('src' + s + 'node_modules' + s + 'shared', {
+        excludeFiles: ['shared-class.js']
+    }));
     files = files.concat(getFiles('src' + s + 'node_modules' + s + 'client'));
     return files;
 }
