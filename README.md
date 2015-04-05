@@ -27,7 +27,8 @@ To check the lint type **ant lint**. It will automatically download [JSLint](htt
 ##### The following are the JSLint [options](http://www.jslint.com/lint.html#options) set to true:
 
   * **browser**: Predefine the standard global properties that are supplied by web browsers, such as document and addEventListener.
-  * **devel**: Predefine globals that are useful in development but that should be avoided in production, such as console and alert. 
+  * **devel**: Predefine globals that are useful in development but that should be avoided in production, such as console and alert.
+  * **node**: true if Node.js globals should be predefined.
   * **nomen**: true if names should not be checked for initial or trailing underbars.
   * **white**: allows for "function" and "()" to not be separated by a space.
   * **plusplus**: true if ++ and -- should be allowed.

@@ -28,7 +28,8 @@ function reportForFile(path){
 		white: true,
 		browser: true,
 		devel: true,
-		plusplus: true
+		plusplus: true,
+        node: true
 	});
     if(allOk){
         return false;
