@@ -21,7 +21,8 @@ module.exports = function(req, res) {
         });
     } else {
         if (battleServer.currentTurn) {
-            playerOrders = battleServer.currentTurn.playersOrders[player.id].toJson();
+            playerOrders = battleServer.currentTurn.playersOrders[player.id]
+                .toJson();
         }
         res.render('battle/view', {
             path: '/battle/',

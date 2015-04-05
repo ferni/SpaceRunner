@@ -22,14 +22,15 @@ module.exports = function(req, res, next) {
             battle = battles.getByUser(player);
         if (battle) {
             player.state = 'inBattle';
-            players.playerByID(battle.getOpponent(player.id)).then(function(opponent) {
-                res.render('ship-list/' + view, {
-                    path: '/ship-list/',
-                    hullsByTier: hullsByTier,
-                    player: player,
-                    opponent: opponent.email
+            players.playerByID(battle.getOpponent(player.id))
+                .then(function(opponent) {
+                    res.render('ship-list/' + view, {
+                        path: '/ship-list/',
+                        hullsByTier: hullsByTier,
+                        player: player,
+                        opponent: opponent.email
+                    });
                 });
-            });
             return;
         }
 
@@ -38,13 +39,14 @@ module.exports = function(req, res, next) {
         } else {
             player.state = 'idle';
         }
-        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+        res.header('Cache-Control', 'no-cache, private, no-store,' +
+            'must-revalidate, max-stale=0, post-check=0, pre-check=0');
         res.render('ship-list/' + view, {
             path: '/ship-list/',
             hullsByTier: hullsByTier,
             player: player
         });
-    }).catch(function(e) {
+    }).catch (function(e) {
         next(e);
     });
 };

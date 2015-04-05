@@ -51,7 +51,8 @@ jsApp = {
 
         gs.player = new sh.Player(bootstrapped.playerJson);
         me.state.set(1, new BattleScreen());
-        me.state.change(1, new sh.Battle(bootstrapped.battleJson), bootstrapped.playerOrders);
+        me.state.change(1, new sh.Battle(bootstrapped.battleJson),
+            bootstrapped.playerOrders);
         self.loadReady = true;
         self.onAppLoaded();
 

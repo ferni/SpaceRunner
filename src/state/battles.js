@@ -9,7 +9,6 @@
 var sh = require('shared'),
     BattleServer = require('../classes/battle-server'),
     prebuiltShips = require('./prebuilt-ships'),
-    players = require('./players'),
     _ = require('underscore')._,
     join = require('bluebird').join,
     openSockets = require('./open-sockets');

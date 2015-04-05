@@ -15,7 +15,7 @@ exports.ship = {
         var id = req.body.id;
         prebuiltShips.remove(id).then(function() {
             res.json({});
-        }).catch(function(e) {
+        }).catch (function(e) {
             res.json({error: e});
         });
     },
@@ -34,7 +34,7 @@ exports.ship = {
         }
         battles.addPlayerToQueue(player, req.body.id).then(function() {
             res.json({});
-        }).catch(function(e) {
+        }).catch (function(e) {
             next(e);
         });
     },

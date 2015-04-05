@@ -26,11 +26,12 @@ exports.register = function(app) {
 
     //Screens
     app.get('/', loginRedirect, require('./screens/ship-list/controller'));
-    _.each(['ship-list', 'battle', 'ship-frame', 'choose-type'], function(screen) {
-        app.get('/' + screen,
-            loginRedirect,
-            require('./screens/' + screen + '/controller'));
-    });
+    _.each(['ship-list', 'battle', 'ship-frame', 'choose-type'],
+        function(screen) {
+            app.get('/' + screen,
+                loginRedirect,
+                require('./screens/' + screen + '/controller'));
+        });
     app.get('/ship-builder/',
         loginRedirect,
         require('./screens/ship-builder/controller').create);
@@ -38,33 +39,34 @@ exports.register = function(app) {
         loginRedirect,
         require('./screens/ship-builder/controller').edit);
     //json api
-    _.each(['ship-builder', 'ship-list', 'battle', '_common'], function(screen) {
-        _.each(require('./screens/' + screen + '/json-api'),
-            function(apiGroup, groupName) {
-                _.each(apiGroup, function(callback, methodName) {
-                    app.post('/' + groupName + '/' + methodName,
-                        loginError,
-                        callback);
+    _.each(['ship-builder', 'ship-list', 'battle', '_common'],
+        function(screen) {
+            _.each(require('./screens/' + screen + '/json-api'),
+                function(apiGroup, groupName) {
+                    _.each(apiGroup, function(callback, methodName) {
+                        app.post('/' + groupName + '/' + methodName,
+                            loginError,
+                            callback);
+                    });
                 });
-            });
-    });
+        });
 
     app.get('/signup', function(req, res) {
         res.render('signup', { message: req.flash('signupMessage') });
     });
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/',
-        failureRedirect : '/signup',
-        failureFlash : true
+        successRedirect: '/',
+        failureRedirect: '/signup',
+        failureFlash: true
     }));
 
     app.get('/login', function(req, res) {
         res.render('login', { message: req.flash('loginMessage') });
     });
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/',
-        failureRedirect : '/login',
-        failureFlash : true
+        successRedirect: '/',
+        failureRedirect: '/login',
+        failureFlash: true
     }));
 
     app.get('/logout', function(req, res) {

@@ -17,7 +17,7 @@ module.exports = {
             prebuiltShips.create(shipType).then(function(id) {
                 console.log('created ship with id: ' + id);
                 res.redirect('/ship-builder/' + id);
-            }).catch(function(e) {
+            }).catch (function(e) {
                 next(e);
             });
         } else {
@@ -41,7 +41,7 @@ module.exports = {
                     hullMaps: hullMaps
                 })
             });
-        }).catch(function(e) {
+        }).catch (function(e) {
             next(e);
         });
     }

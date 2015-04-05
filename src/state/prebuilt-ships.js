@@ -15,11 +15,11 @@ var rc = require('../config/redis-client'),
 module.exports = {
     getAll: function() {
         'use strict';
-        return rc.lrangeAsync(['hull_ids', 0, -1]).map(function (id) {
+        return rc.lrangeAsync(['hull_ids', 0, -1]).map(function(id) {
             return join(
                 rc.hgetAsync(['hull:' + id, 'name']),
                 rc.hgetAsync(['hull:' + id, 'tier'])
-            ).then(function (reply) {
+            ).then(function(reply) {
                 return {
                     id: id,
                     name: reply[0],
@@ -39,16 +39,16 @@ module.exports = {
     create: function(shipType) {
         'use strict';
         var newShip = new Ship({tmxName: shipType});
-        return rc.incrAsync('next_hull_id').then(function (id) {
+        return rc.incrAsync('next_hull_id').then(function(id) {
             return rc.hmsetAsync('hull:' + id, {
                 name: shipType,
                 tier: 1,
                 shipJson: JSON.stringify(newShip.toJson())
-            }).then(function () {
+            }).then(function() {
                 return id;
             });
-        }).then(function (id) {
-            return rc.rpushAsync(['hull_ids', id]).then(function () {
+        }).then(function(id) {
+            return rc.rpushAsync(['hull_ids', id]).then(function() {
                 return id;
             });
         });
