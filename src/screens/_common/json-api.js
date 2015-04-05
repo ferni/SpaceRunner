@@ -6,7 +6,7 @@
 */
 
 /*global require, exports*/
-
+/*jslint unparam:true*/
 var sh = require('shared');
 
 exports.general = {

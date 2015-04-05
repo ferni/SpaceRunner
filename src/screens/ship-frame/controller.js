@@ -6,8 +6,8 @@
 */
 
 /*global module, hullMaps*/
-
-module.exports = function(req, res, next) {
+/*jslint unparam:true*/
+module.exports = function(req, res) {
     'use strict';
     res.render('ship-frame/view', {
         path: '/ship-frame/',

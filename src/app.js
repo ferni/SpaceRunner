@@ -12,8 +12,7 @@
  */
 
 var express = require('express'),
-    exphbs  = require('express-handlebars'),
-
+    exphbs = require('express-handlebars'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
     favicon = require('serve-favicon'),
@@ -21,7 +20,6 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
     errorHandler = require('errorhandler'),
-
     passport = require('passport'),
     flash = require('connect-flash'),
     path = require('path'),
@@ -33,7 +31,7 @@ var express = require('express'),
     chat = require('./chat'),
     _ = require('underscore')._,
     browserify = require('browserify-middleware'),
-    Promise = require('bluebird'),
+    Bromise = require('bluebird'),
     RedisStore = require('connect-redis')(session),
     redisClient = require('./config/redis-client'),
     sessionStore = new RedisStore({client: redisClient}),
@@ -78,7 +76,9 @@ app.engine('handlebars', exphbs({
 
 var env = process.env.NODE_ENV || 'development';
 if ('production' === env) {
-    app.use(function(err, req, res, next) {
+    /*jslint unparam:true*/
+    //(The only way to access res is to put the other parameters)
+    app.use(function(err, req, res) {
         'use strict';
         chat.error('Error');
         res.send(500, 'Something broke!');
@@ -89,12 +89,14 @@ if ('development' === env) {
     app.use(errorHandler());
 }
 
-Promise.promisifyAll(require("redis"));
-
+Bromise.promisifyAll(require('redis'));
 //js bundles
-app.get('/ship-builder/bundle.js', browserify(__dirname + '/screens/ship-builder/client-js/entry.js'));
-app.get('/battle/bundle.js', browserify(__dirname + '/screens/battle/client-js/entry.js'));
-app.get('/ship-frame/bundle.js', browserify(__dirname + '/screens/ship-frame/client-js/entry.js'));
+app.get('/ship-builder/bundle.js', browserify(__dirname +
+    '/screens/ship-builder/client-js/entry.js'));
+app.get('/battle/bundle.js', browserify(__dirname +
+    '/screens/battle/client-js/entry.js'));
+app.get('/ship-frame/bundle.js', browserify(__dirname +
+    '/screens/ship-frame/client-js/entry.js'));
 routes.register(app);
 
 console.log('Testing redis connection...');
@@ -106,7 +108,7 @@ redisClient.getAsync('asdf').then(function() {
             console.log('Express server listening on port ' + app.get('port'));
         });
     });
-}).catch(function(e) {
+}).catch (function(e) {
     'use strict';
     throw e;
 });

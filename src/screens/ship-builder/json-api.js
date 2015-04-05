@@ -6,6 +6,7 @@
 */
 
 /*global require, exports, hullMaps*/
+/*jslint unparam:true*/
 var prebuiltShips = require('../../state/prebuilt-ships');
 
 exports.ship = {
@@ -23,7 +24,7 @@ exports.ship = {
             'tier': data.tier
         }).then(function() {
             res.json({});
-        }).catch(function(e) {
+        }).catch (function(e) {
             res.json({error: e});
         });
     },

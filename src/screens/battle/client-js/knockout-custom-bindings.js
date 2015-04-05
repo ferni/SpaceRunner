@@ -84,6 +84,7 @@ ko.bindingHandlers.timeline = {
             jScrollApi.reinitialise();
         }, 250, {leading: false}));
         //zoom slider
+        /*jslint newcap:true*/
         sld = new dhtmlxSlider('zoom-slider', 75,
             'arrowgreen', false, 0.25, 2, 1, 0.25);
         sld.setImagePath('/_common/img/render/slider/');
@@ -100,7 +101,8 @@ ko.bindingHandlers.timeline = {
             $mouseMarker.hide();
             $markerLabelsCont.hide();
         }).mousemove(function(e) {
-            var pixelTime = e.clientY - 125 - contentTop + jScrollApi.getContentPositionY(),
+            var pixelTime = e.clientY - 125 - contentTop +
+                    jScrollApi.getContentPositionY(),
                 //time = pixelTime * 10 / timeline.zoomLevel(),
                 markers;
             $mouseMarker.css('top', (e.clientY - 68 - contentTop) + 'px');

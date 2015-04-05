@@ -7,7 +7,7 @@
 
 /*global require, module*/
 //HOME
-module.exports = function(req, res, next) {
+module.exports = function(req, res) {
     'use strict';
     res.render('choose-type/view', {
         path: '/choose-type/',

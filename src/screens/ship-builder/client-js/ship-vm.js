@@ -17,7 +17,7 @@ var utils = require('client/utils'),
  * @param {sh.Ship} shipModel the ship model.
  * @constructor
  */
-var ShipVM = module.exports = function(shipModel) {
+var ShipVM = function(shipModel) {
     'use strict';
     this.itemVMs = [];
 
@@ -58,3 +58,4 @@ var ShipVM = module.exports = function(shipModel) {
         return utils.getVM(item, this.m.built, this.itemVMs);
     };
 };
+module.exports = ShipVM;

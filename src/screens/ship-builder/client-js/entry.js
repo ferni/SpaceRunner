@@ -5,7 +5,7 @@
 * All rights reserved.
 */
 
-/*global require, me, shipType, hullMaps*/
+/*global require, me, shipType, hullMaps, $*/
 
 //sugar
 var jsApp, gs, sh, ShipBuilding, assets;
