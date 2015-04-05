@@ -53,12 +53,16 @@ function getFiles(directory, options){
 
 function getOwnJsFiles() {
     var s = fs.separator,
-        root = 'src';
-    return getFiles(root, {
+        root = 'src',
+        files;
+    files = getFiles(root, {
         extension:'js',
-        exclude:[root + s + 'public' + s + 'js' + s + 'vendor',
-                 root + s + 'node_modules']
+        exclude:[root + s + 'public' + s + '_common' + s + 'vendor',
+                 root + s + 'node_modules'],
     });
+    files = files.concat(getFiles('src' + s + 'node_modules' + s + 'shared'));
+    files = files.concat(getFiles('src' + s + 'node_modules' + s + 'client'));
+    return files;
 }
 
 

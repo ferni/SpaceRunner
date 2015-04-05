@@ -6,7 +6,7 @@
 
     <target name="run" depends="tools/node,tools/redis" description="Starts the app with the NodeJS server">
         <property name="app-url" value="http://localhost:3000"/>
-        <echo message="Running 'npm install' ..."/>
+        <echo message="Installing node modules ..."/>
         <exec executable="../tools/npm" dir="src">
             <arg line="install"/>
         </exec>
@@ -39,21 +39,6 @@
 	</delete>
     </target>
     <!-- Test reports -->
-    <target name="run2">
-        <parallel>
-            <sequential>
-                <echo message="Starting redis server ..."/>
-                <exec executable="tools/redis" >
-                </exec>
-            </sequential>
-            <sequential>
-                <echo message="Starting NodeJS ..."/>
-                <exec executable="tools/${node-dir}/bin/node" >
-                    <arg line="src/app.js"/>
-                </exec>
-            </sequential>
-        </parallel>
-    </target>
     <target name="report">
         <echo message="'report' task is disabled for now." />
     </target>
@@ -70,8 +55,14 @@
 	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
 	  	<echo message="**********************************************"/>
 	  	<exec executable="tools/closure_linter/gjslint.py">
-	  	    <arg line="-r src -e src/public/js/vendor,src/node_modules"/>
+	  	    <arg line="--nojsdoc -r src -e src/public/_common/vendor,src/node_modules"/>
 	  	</exec>
+        <exec executable="tools/closure_linter/gjslint.py">
+            <arg line="--nojsdoc -r src/node_modules/shared"/>
+        </exec>
+        <exec executable="tools/closure_linter/gjslint.py">
+            <arg line="--nojsdoc -r src/node_modules/client"/>
+        </exec>
 	</target>
 	<target name="beautify" depends="tools/jsbeautifier">
 	    <exec executable="tools/phantomjs" >
@@ -80,7 +71,7 @@
 	</target>
 	<target name="fixlint" depends="tools/closure_linter">
 	    <exec executable="tools/closure_linter/fixjsstyle.py">
-	  	    <arg line="-r src -e src/public/js/vendor,src/node_modules"/>
+	  	    <arg line="-r src -e src/public/_common/vendor,src/node_modules"/>
 	  	</exec>
 	</target>
 
