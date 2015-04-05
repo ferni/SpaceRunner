@@ -9,16 +9,20 @@
 // load all the things we need
 var LocalStrategy = require('passport-local').Strategy,
     players = require('../state/players'),
-    bcrypt = require('bcrypt-nodejs');
+    bcrypt = require('bcrypt-nodejs'),
+    Bromise = require('bluebird');
+Bromise.promisifyAll(bcrypt);
 
 function hashPass(password) {
     'use strict';
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+    return bcrypt.genSaltAsync(8).then(function(salt) {
+        return bcrypt.hashAsync(password, salt, null);
+    });
 }
 
 function isPasswordValid(password, user) {
     'use strict';
-    return bcrypt.compareSync(password, user.pass);
+    return bcrypt.compareAsync(password, user.pass);
 }
 
 module.exports = function(passport) {
@@ -48,10 +52,11 @@ module.exports = function(passport) {
                             req.flash('signupMessage',
                                 'That email is already taken.'));
                     }
-                    return players.createNewPlayer(email, hashPass(password))
-                        .then(function(player) {
-                            return done(null, player);
-                        });
+                    return hashPass(password).then(function(hashedPass) {
+                        return players.createNewPlayer(email, hashedPass);
+                    }).then(function(player) {
+                        return done(null, player);
+                    });
                 }).catch (function(err) {
                     done(err);
                 });
@@ -64,11 +69,17 @@ module.exports = function(passport) {
     },
         function(req, email, password, done) {
             players.byEmail(email).then(function(user) {
-                if (!user || !isPasswordValid(password, user)) {
+                if (!user) {
                     return done(null, false, req.flash('loginMessage',
                         'Invalid e-mail/password combination.'));
                 }
-                return done(null, user);
+                return isPasswordValid(password, user).then(function(valid) {
+                    if (valid) {
+                        return done(null, user);
+                    }
+                    return done(null, false, req.flash('loginMessage',
+                        'Invalid e-mail/password combination.'));
+                });
             }).catch (function(err) {
                 done(err);
             });
