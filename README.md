@@ -1,4 +1,4 @@
-SpaceRunner
+Space Runner
 ===========
 Turn based space action game.
 
@@ -33,3 +33,15 @@ To check the lint type **ant lint**. It will automatically download [JSLint](htt
   * **nomen**: true if names should not be checked for initial or trailing underbars.
   * **white**: allows for "function" and "()" to not be separated by a space.
   * **plusplus**: true if ++ and -- should be allowed.
+
+About this project
+------------------
+
+This project was developed by Fernando Tiberti <fertiberti@gmail.com> under contract by Tim 'mithro' Ansell <mithro@mithis.com>, the project was never completed due to a lack of funds and was thus open sourced.
+
+License
+-------
+
+The code in this game is released under the [GPLv3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+The artwork is released under the [CC-BY-SA 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/) license.
