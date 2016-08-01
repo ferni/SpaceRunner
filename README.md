@@ -1,5 +1,6 @@
 SpaceRunner
 ===========
+Turn based space action game.
 
 How to run it
 -------------
