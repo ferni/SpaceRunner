@@ -2,6 +2,26 @@ Space Runner
 ===========
 Turn based space action game.
 
+About this project
+------------------
+
+This project was developed by Fernando Tiberti <fertiberti@gmail.com> under contract by Tim 'mithro' Ansell <mithro@mithis.com>, the project was never completed due to a lack of funds and was thus open sourced.
+
+Screenshots
+-----------
+
+Choosing Ship Type
+![Choosing Ship Type](screenshots/Space Runner - Choose ship type.png)
+
+Ship Builder
+![Ship Builder](screenshots/Space Runner - Ship builder.png)
+
+Melee Combat
+![Melee Combat](screenshots/Space Runner - Melee combat.png)
+
+Firing at the Enemy
+![Firing at the Enemy](screenshots/Space Runner - Taking damage.png)
+
 How to run it
 -------------
 
@@ -33,11 +53,6 @@ To check the lint type **ant lint**. It will automatically download [JSLint](htt
   * **nomen**: true if names should not be checked for initial or trailing underbars.
   * **white**: allows for "function" and "()" to not be separated by a space.
   * **plusplus**: true if ++ and -- should be allowed.
-
-About this project
-------------------
-
-This project was developed by Fernando Tiberti <fertiberti@gmail.com> under contract by Tim 'mithro' Ansell <mithro@mithis.com>, the project was never completed due to a lack of funds and was thus open sourced.
 
 License
 -------
