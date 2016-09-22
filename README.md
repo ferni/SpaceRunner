@@ -10,17 +10,20 @@ This project was developed by Fernando Tiberti <fertiberti@gmail.com> under cont
 Screenshots
 -----------
 
-Choosing Ship Type
-![Choosing Ship Type](screenshots/Space Runner - Choose ship type.png)
+Choose Ship Type
+
+![Choose Ship Type](screenshots/Space Runner - Choose ship type.png)
 
 Ship Builder
+
 ![Ship Builder](screenshots/Space Runner - Ship builder.png)
 
 Melee Combat
+
 ![Melee Combat](screenshots/Space Runner - Melee combat.png)
 
-Firing at the Enemy
-![Firing at the Enemy](screenshots/Space Runner - Taking damage.png)
+Fire at the Enemy
+![Fire at the Enemy](screenshots/Space Runner - Taking damage.png)
 
 How to run it
 -------------
