@@ -23,6 +23,7 @@ Melee Combat
 ![Melee Combat](screenshots/Space Runner - Melee combat.png)
 
 Fire at the Enemy
+
 ![Fire at the Enemy](screenshots/Space Runner - Taking damage.png)
 
 How to run it
@@ -46,7 +47,7 @@ You need to have [jscoverage](http://siliconforks.com/jscoverage/) installed. To
 Checking the lint
 -----------------
 
-To check the lint type **ant lint**. It will automatically download [JSLint](http://www.jslint.com/) and [Closure Linter](https://developers.google.com/closure/utilities/) to check the lint, as well as the correct headers.
+To check the lint type **ant lint**. It will automatically download [JSLint](http://www.jslint.com/) to check the lint, as well as the correct headers.
 
 ##### The following are the JSLint [options](http://www.jslint.com/lint.html#options) set to true:
 

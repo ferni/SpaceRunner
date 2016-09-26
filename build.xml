@@ -1,7 +1,7 @@
 <project name="SpaceRunner" default="run">
-    <property name="node-version" value="0.10.33"/>
+    <property name="node-version" value="4.5.0"/>
     <property name="node-dir" value="node-v${node-version}-linux-x86"/>
-    <property name="redis-version" value="2.6.10"/>
+    <property name="redis-version" value="3.2.3"/>
     <property name="redis-dir" value="redis-${redis-version}"/>
 
     <target name="run" depends="tools/node,tools/redis" description="Starts the app with the NodeJS server">
@@ -43,35 +43,18 @@
         <echo message="'report' task is disabled for now." />
     </target>
 	<!-- Lint -->
-	
-	<target name="lint" depends="tools/closure_linter,tools/jslint" description="Runs a lint check in the code">
+
+	<target name="lint" depends="tools/phantomjs,tools/jslint" description="Runs a lint check in the code">
 	    <echo message="**************************************"/>
 	    <echo message="*** 1; Checking lint with 'JSLint' ***"/>
 	    <echo message="**************************************"/>
 	    <exec executable="tools/phantomjs" >
 	    		<arg line="run-jslint.js"/>
 	  	</exec>
-	  	<echo message="**********************************************"/>
-	  	<echo message="*** 2; Checking lint with 'Closure Linter' ***"/>
-	  	<echo message="**********************************************"/>
-	  	<exec executable="tools/closure_linter/gjslint.py">
-	  	    <arg line="--nojsdoc -r src -e src/public/_common/vendor,src/node_modules"/>
-	  	</exec>
-        <exec executable="tools/closure_linter/gjslint.py">
-            <arg line="--nojsdoc -r src/node_modules/shared"/>
-        </exec>
-        <exec executable="tools/closure_linter/gjslint.py">
-            <arg line="--nojsdoc -r src/node_modules/client"/>
-        </exec>
 	</target>
 	<target name="beautify" depends="tools/jsbeautifier">
 	    <exec executable="tools/phantomjs" >
 	    		<arg line="run-jsbeautifier.js"/>
-	  	</exec>
-	</target>
-	<target name="fixlint" depends="tools/closure_linter">
-	    <exec executable="tools/closure_linter/fixjsstyle.py">
-	  	    <arg line="-r src -e src/public/_common/vendor,src/node_modules"/>
 	  	</exec>
 	</target>
 
@@ -85,14 +68,14 @@
           </condition>
     </target>
 	<target name="tools/phantomjs" description="Downloads and extract phantomjs" depends="check-phantomjs" if="phantomjs-not-installed">
-        <property name="version" value="phantomjs-1.8.1-linux-x86_64"/>
+        <property name="version" value="phantomjs-2.1.1-linux-x86_64"/>
         <property name="tarball" value="${version}.tar.bz2"/>
         <delete file="tools/phantomjs"/>
 		<delete file="tools/${tarball}"/>
 		<delete dir="tools/${version}"/>
         <echo message="Downloading phantomjs..."/>
         <exec executable="wget" dir="tools">
-	        <arg line="-c http://phantomjs.googlecode.com/files/${tarball}"/>
+	        <arg line="-c https://bitbucket.org/ariya/phantomjs/downloads/${tarball}"/>
         </exec>
         <echo message="Extract phantomjs..."/>
         <exec executable="tar" dir="tools">
@@ -100,39 +83,6 @@
         </exec>
         <symlink link="tools/phantomjs" resource="${version}/bin/phantomjs"/>
     </target>
-
-    <target name="check-closure_linter">
-        <condition property="closure_linter-not-installed">
-            <not>
-              <available file="tools/closure_linter/gjslint.py"/>
-            </not>
-          </condition>
-    </target>
-
-    <target name="tools/closure_linter" depends="tools/phantomjs,check-closure_linter" if="closure_linter-not-installed" description="Downloads and installs Closure Linter">
-        <property name="closure-tar" value="closure_linter-latest.tar.gz"/>
-        <delete dir="tools/closure_linter"/>
-		<delete file="tools/${closure-tar}"/>
-        <echo message="Downloading Closure Linter ..."/>
-        <exec executable="wget" dir="tools">
-	        <arg line="-c http://closure-linter.googlecode.com/files/${closure-tar}"/>
-        </exec>
-        <echo message="Extracting Closure Linter ..."/>
-        <exec executable="tar" dir="tools">
-		    <arg line="-zxvf ${closure-tar}"/>
-        </exec>
-        <echo message="Running PhantomJS (rename-closure-linter.js) ..."/>
-        <exec executable="tools/phantomjs">
-	    		<arg line="rename-closure-linter.js"/>
-	  	</exec>
-        <exec executable="cp">
-            <arg line="tools/closure_linter/closure_linter/gjslint.py tools/closure_linter/gjslint.py"/>
-        </exec>
-        <exec executable="cp">
-            <arg line="tools/closure_linter/closure_linter/fixjsstyle.py tools/closure_linter/fixjsstyle.py"/>
-        </exec>
-    </target>
-
     <target name="check-jslint">
         <condition property="jslint-not-downloaded">
             <not>
@@ -187,7 +137,7 @@
     </target>
     <target name="tools/redis" depends="check-redis" if="redis-not-downloaded" description="Downloads redis into the tools folder">
         <exec executable="wget" dir="tools">
-	        <arg line="-c http://redis.googlecode.com/files/${redis-dir}.tar.gz"/>
+	        <arg line="-c http://download.redis.io/releases/${redis-dir}.tar.gz"/>
         </exec>
         <exec executable="tar" dir="tools">
 		    <arg line="-zxvf ${redis-dir}.tar.gz"/>

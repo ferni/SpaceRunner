@@ -15,7 +15,7 @@ if(!couldLoadGetFiles){
 function reportForFile(path){
     var report = [];
     report.push("----- (JSLint) FILE  :  "+path+"   -----");
-    if(!fs.exists(path)){ 
+    if(!fs.exists(path)){
         report.push(path+" does not exist!");
         return report;
     }
@@ -23,27 +23,27 @@ function reportForFile(path){
         report.push(path+" is not a file.");
         return report;
     }
-    var allOk = JSLINT(fs.read(path), {
-		nomen: true,
-		white: true,
-		browser: true,
-		devel: true,
-		plusplus: true,
-        node: true
-	});
-    if(allOk){
-        return false;
-    }else{
-        var errors = JSLINT.errors;
-        for(var i = 0; i < errors.length; i++){
-            if(errors[i] === null){
-                break;
-            }
-            report.push("Line "+errors[i].line+": "+errors[i].reason);
-        }
-        return report;
-    }
-}
+    var allOk = jslint(fs.read(path), {
+  		nomen: true,
+  		white: true,
+  		browser: true,
+  		devel: true,
+  		plusplus: true,
+          node: true
+  	});
+      if(allOk){
+          return false;
+      }else{
+          var errors = JSLINT.errors;
+          for(var i = 0; i < errors.length; i++){
+              if(errors[i] === null){
+                  break;
+              }
+              report.push("Line "+errors[i].line+": "+errors[i].reason);
+          }
+          return report;
+      }
+  }
 
 //returns object,
 //obj.correct = true if header is correct
@@ -109,5 +109,3 @@ console.log('\nFound problems in ' + problems +' files (' +
 
 checkHeaders(files);
 phantom.exit();
-
-
